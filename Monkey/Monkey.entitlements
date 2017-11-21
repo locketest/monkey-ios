@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>aps-environment</key>
+	<string>development</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>webcredentials:monkey.cool</string>
+		<string>applinks:monkey.cool</string>
+		<string>applinks:monkey.app.link</string>
+		<string>applinks:www.monkey.cool</string>
+		<string>webcredentials:www.monkey.cool</string>
+	</array>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)cool.monkey.ios</string>
+	</array>
+</dict>
+</plist>

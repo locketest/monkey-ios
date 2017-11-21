@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13189.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13165.3"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="lGI-jl-rWn" customClass="RatingNotificationView" customModule="Monkey" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="124"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="26f-LW-bjo" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="124"/>
+                    <subviews>
+                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M8v-og-eN2" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
+                            <rect key="frame" x="5" y="0.0" width="365" height="104"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rate your last match" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cK4-TW-0px">
+                                    <rect key="frame" x="104" y="12" width="157" height="21"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f43-u4-7ZD" userLabel="Buttons">
+                                    <rect key="frame" x="0.0" y="44" width="365" height="48"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5xw-K6-v62">
+                                            <rect key="frame" x="0.0" y="0.0" width="121.5" height="48"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1oE-9m-a4p" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                    <rect key="frame" x="37" y="0.0" width="48" height="48"/>
+                                                    <state key="normal" title="Button" image="RatingMeanButton"/>
+                                                    <connections>
+                                                        <action selector="rateNegative:" destination="lGI-jl-rWn" eventType="touchUpInside" id="oQX-GI-nLw"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstItem="1oE-9m-a4p" firstAttribute="centerY" secondItem="5xw-K6-v62" secondAttribute="centerY" id="7UO-Jm-H4i"/>
+                                                <constraint firstItem="1oE-9m-a4p" firstAttribute="height" secondItem="5xw-K6-v62" secondAttribute="height" id="OuE-Id-Jvl"/>
+                                                <constraint firstItem="1oE-9m-a4p" firstAttribute="width" secondItem="5xw-K6-v62" secondAttribute="height" multiplier="1:1" id="U6J-ub-4Ze"/>
+                                                <constraint firstItem="1oE-9m-a4p" firstAttribute="centerX" secondItem="5xw-K6-v62" secondAttribute="centerX" id="d8c-tb-GCx"/>
+                                            </constraints>
+                                        </view>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ogz-Ej-PJ4">
+                                            <rect key="frame" x="121.5" y="0.0" width="122" height="48"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BQO-oM-XJE" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                    <rect key="frame" x="37" y="0.0" width="48" height="48"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="BQO-oM-XJE" secondAttribute="height" multiplier="1:1" id="F8E-qR-3iy"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Button" image="RatingNeutralButton"/>
+                                                    <connections>
+                                                        <action selector="rateNeutral:" destination="lGI-jl-rWn" eventType="touchUpInside" id="dpq-g8-rFA"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstItem="BQO-oM-XJE" firstAttribute="height" secondItem="Ogz-Ej-PJ4" secondAttribute="height" id="G77-HF-irB"/>
+                                                <constraint firstItem="BQO-oM-XJE" firstAttribute="centerX" secondItem="Ogz-Ej-PJ4" secondAttribute="centerX" id="iQg-fF-NMD"/>
+                                                <constraint firstItem="BQO-oM-XJE" firstAttribute="centerY" secondItem="Ogz-Ej-PJ4" secondAttribute="centerY" id="k99-fg-kcG"/>
+                                            </constraints>
+                                        </view>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DhB-p8-t1J">
+                                            <rect key="frame" x="243.5" y="0.0" width="121.5" height="48"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kR5-eM-vaD" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                    <rect key="frame" x="36.5" y="0.0" width="48" height="48"/>
+                                                    <state key="normal" title="Button" image="RatingNiceButton"/>
+                                                    <connections>
+                                                        <action selector="ratePositive:" destination="lGI-jl-rWn" eventType="touchUpInside" id="0ev-oS-pUH"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstItem="kR5-eM-vaD" firstAttribute="width" secondItem="DhB-p8-t1J" secondAttribute="height" multiplier="1:1" id="AVb-C0-JRf"/>
+                                                <constraint firstItem="kR5-eM-vaD" firstAttribute="centerY" secondItem="DhB-p8-t1J" secondAttribute="centerY" id="ZiV-Bc-mk2"/>
+                                                <constraint firstItem="kR5-eM-vaD" firstAttribute="height" secondItem="DhB-p8-t1J" secondAttribute="height" id="oMh-jL-wRW"/>
+                                                <constraint firstItem="kR5-eM-vaD" firstAttribute="centerX" secondItem="DhB-p8-t1J" secondAttribute="centerX" id="xoe-5S-xF6"/>
+                                            </constraints>
+                                        </view>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="5xw-K6-v62" firstAttribute="height" secondItem="f43-u4-7ZD" secondAttribute="height" id="08o-De-Bas"/>
+                                        <constraint firstAttribute="height" constant="48" id="24K-E3-M3d"/>
+                                        <constraint firstItem="Ogz-Ej-PJ4" firstAttribute="top" secondItem="f43-u4-7ZD" secondAttribute="top" id="841-WC-GJP"/>
+                                        <constraint firstItem="5xw-K6-v62" firstAttribute="top" secondItem="f43-u4-7ZD" secondAttribute="top" id="8em-8Q-8AT"/>
+                                        <constraint firstItem="Ogz-Ej-PJ4" firstAttribute="leading" secondItem="5xw-K6-v62" secondAttribute="trailing" id="Gmz-hX-NQy"/>
+                                        <constraint firstItem="Ogz-Ej-PJ4" firstAttribute="height" secondItem="5xw-K6-v62" secondAttribute="height" id="Kfe-Qd-inZ"/>
+                                        <constraint firstItem="DhB-p8-t1J" firstAttribute="leading" secondItem="Ogz-Ej-PJ4" secondAttribute="trailing" id="RMQ-8u-RDo"/>
+                                        <constraint firstItem="5xw-K6-v62" firstAttribute="leading" secondItem="f43-u4-7ZD" secondAttribute="leading" id="aIt-BX-leq"/>
+                                        <constraint firstItem="DhB-p8-t1J" firstAttribute="width" secondItem="5xw-K6-v62" secondAttribute="width" id="bot-e9-jlz"/>
+                                        <constraint firstAttribute="trailing" secondItem="DhB-p8-t1J" secondAttribute="trailing" id="iBO-sF-s1i"/>
+                                        <constraint firstItem="DhB-p8-t1J" firstAttribute="top" secondItem="f43-u4-7ZD" secondAttribute="top" id="jbw-Yd-PL8"/>
+                                        <constraint firstItem="DhB-p8-t1J" firstAttribute="height" secondItem="5xw-K6-v62" secondAttribute="height" id="jgU-zM-00M"/>
+                                        <constraint firstItem="Ogz-Ej-PJ4" firstAttribute="width" secondItem="5xw-K6-v62" secondAttribute="width" id="nyK-ua-iYf"/>
+                                    </constraints>
+                                </view>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <gestureRecognizers/>
+                            <constraints>
+                                <constraint firstItem="cK4-TW-0px" firstAttribute="top" secondItem="M8v-og-eN2" secondAttribute="top" constant="12" id="4k4-nF-u4R"/>
+                                <constraint firstAttribute="height" constant="104" id="NJv-F3-lmI"/>
+                                <constraint firstAttribute="bottom" secondItem="f43-u4-7ZD" secondAttribute="bottom" constant="12" id="PrM-IO-dtZ"/>
+                                <constraint firstAttribute="trailing" secondItem="f43-u4-7ZD" secondAttribute="trailing" id="bzD-RE-qnD"/>
+                                <constraint firstItem="cK4-TW-0px" firstAttribute="centerX" secondItem="M8v-og-eN2" secondAttribute="centerX" id="mSI-Vx-RfJ"/>
+                                <constraint firstItem="f43-u4-7ZD" firstAttribute="leading" secondItem="M8v-og-eN2" secondAttribute="leading" id="vou-5s-EdB"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="12"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="M8v-og-eN2" firstAttribute="leading" secondItem="26f-LW-bjo" secondAttribute="leading" constant="5" id="QbY-Kk-dwi"/>
+                        <constraint firstItem="M8v-og-eN2" firstAttribute="top" secondItem="26f-LW-bjo" secondAttribute="top" id="ceY-9J-trY"/>
+                        <constraint firstAttribute="trailing" secondItem="M8v-og-eN2" secondAttribute="trailing" constant="5" id="mlG-V8-B0p"/>
+                        <constraint firstAttribute="height" constant="124" id="vcK-uZ-P27"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="12"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="shadowRadius">
+                            <real key="value" value="4"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+            <gestureRecognizers/>
+            <constraints>
+                <constraint firstItem="26f-LW-bjo" firstAttribute="top" secondItem="lGI-jl-rWn" secondAttribute="top" id="046-d8-XAK"/>
+                <constraint firstItem="26f-LW-bjo" firstAttribute="leading" secondItem="lGI-jl-rWn" secondAttribute="leading" id="EO9-YT-59z"/>
+                <constraint firstAttribute="trailing" secondItem="26f-LW-bjo" secondAttribute="trailing" id="zfk-bB-deG"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                    <real key="value" value="0.0"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="negativeButton" destination="1oE-9m-a4p" id="Om7-b4-1mV"/>
+                <outlet property="neutralButton" destination="BQO-oM-XJE" id="dri-ds-Elm"/>
+                <outlet property="positiveButton" destination="kR5-eM-vaD" id="rtg-IO-R3z"/>
+                <outlet property="profileNameLabel" destination="cK4-TW-0px" id="KQV-sE-iP7"/>
+                <outletCollection property="gestureRecognizers" destination="uyc-As-od3" appends="YES" id="bgN-Wp-lpN"/>
+                <outletCollection property="gestureRecognizers" destination="tK2-I3-afg" appends="YES" id="JJw-D8-iDt"/>
+            </connections>
+            <point key="canvasLocation" x="27.5" y="-259.5"/>
+        </view>
+        <panGestureRecognizer minimumNumberOfTouches="1" id="uyc-As-od3">
+            <connections>
+                <action selector="notificationPannedWithSender:" destination="lGI-jl-rWn" id="XIg-Zx-UEh"/>
+                <outlet property="delegate" destination="lGI-jl-rWn" id="SHK-F7-aXn"/>
+            </connections>
+        </panGestureRecognizer>
+        <tapGestureRecognizer id="tK2-I3-afg">
+            <connections>
+                <action selector="notificationTappedWithSender:" destination="lGI-jl-rWn" id="MVm-hF-uJD"/>
+            </connections>
+        </tapGestureRecognizer>
+    </objects>
+    <resources>
+        <image name="RatingMeanButton" width="48" height="48"/>
+        <image name="RatingNeutralButton" width="48" height="48"/>
+        <image name="RatingNiceButton" width="48" height="48"/>
+    </resources>
+</document>

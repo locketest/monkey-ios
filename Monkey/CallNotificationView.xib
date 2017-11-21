@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="AppleColorEmoji@2x.ttc">
+            <string>AppleColorEmoji</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="CallNotificationView" customModule="Monkey" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ezw-Ty-Y4z" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
+                    <rect key="frame" x="5" y="0.0" width="365" height="94"/>
+                    <subviews>
+                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wQe-fc-7Ie" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="365" height="74"/>
+                            <subviews>
+                                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MFA-OF-TVe" customClass="CachedImageView" customModule="Monkey" customModuleProvider="target">
+                                    <rect key="frame" x="14" y="13" width="48" height="48"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="48" id="gRD-uN-dU8"/>
+                                        <constraint firstAttribute="height" constant="48" id="ltI-rL-yth"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="24"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </view>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FirstName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TKV-m3-BKj">
+                                    <rect key="frame" x="74" y="18" width="286" height="21"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="video call" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3du-Ir-ADt">
+                                    <rect key="frame" x="74" y="40" width="57.5" height="16"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                    <color key="textColor" red="0.60392156860000001" green="0.60392156860000001" blue="0.60392156860000001" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Vi-xP-60k" customClass="JigglyButton" customModule="Monkey" customModuleProvider="target">
+                                    <rect key="frame" x="303" y="13" width="48" height="48"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🐵" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pds-2o-QC8" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                            <color key="backgroundColor" red="0.9572889805" green="0.94813776019999996" blue="0.99608600140000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="48" id="pUN-2v-35r"/>
+                                                <constraint firstAttribute="width" constant="48" id="u60-un-3f5"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="26"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstItem="Pds-2o-QC8" firstAttribute="leading" secondItem="9Vi-xP-60k" secondAttribute="leading" id="8Ja-p4-6tM"/>
+                                        <constraint firstItem="Pds-2o-QC8" firstAttribute="top" secondItem="9Vi-xP-60k" secondAttribute="top" id="CKq-br-G7L"/>
+                                        <constraint firstAttribute="trailing" secondItem="Pds-2o-QC8" secondAttribute="trailing" id="KBb-Lm-oQ8"/>
+                                        <constraint firstAttribute="width" constant="48" id="loB-NP-39l"/>
+                                        <constraint firstAttribute="height" constant="48" id="luR-ph-jh6"/>
+                                        <constraint firstAttribute="bottom" secondItem="Pds-2o-QC8" secondAttribute="bottom" id="oee-0Y-n4y"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="20"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="callFriendWithSender:" destination="iN0-l3-epB" eventType="touchUpInside" id="ZbU-Ta-xsM"/>
+                                    </connections>
+                                </view>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <gestureRecognizers/>
+                            <constraints>
+                                <constraint firstItem="TKV-m3-BKj" firstAttribute="top" secondItem="wQe-fc-7Ie" secondAttribute="top" constant="18" id="9A7-V3-94F"/>
+                                <constraint firstItem="MFA-OF-TVe" firstAttribute="leading" secondItem="wQe-fc-7Ie" secondAttribute="leading" constant="14" id="DX9-rY-TIY"/>
+                                <constraint firstAttribute="height" constant="74" id="EAn-TQ-BwC"/>
+                                <constraint firstItem="3du-Ir-ADt" firstAttribute="top" secondItem="TKV-m3-BKj" secondAttribute="bottom" constant="1" id="MNy-AR-vE4"/>
+                                <constraint firstItem="TKV-m3-BKj" firstAttribute="leading" secondItem="MFA-OF-TVe" secondAttribute="trailing" constant="12" id="Mvw-ak-jK2"/>
+                                <constraint firstItem="3du-Ir-ADt" firstAttribute="leading" secondItem="MFA-OF-TVe" secondAttribute="trailing" constant="12" id="PYl-VM-hrB"/>
+                                <constraint firstAttribute="trailing" secondItem="TKV-m3-BKj" secondAttribute="trailing" constant="5" id="VYQ-7l-Gf7"/>
+                                <constraint firstItem="9Vi-xP-60k" firstAttribute="centerY" secondItem="wQe-fc-7Ie" secondAttribute="centerY" id="aTH-cj-3Tw"/>
+                                <constraint firstAttribute="trailing" secondItem="9Vi-xP-60k" secondAttribute="trailing" constant="14" id="hlW-Zb-Sxu"/>
+                                <constraint firstItem="MFA-OF-TVe" firstAttribute="centerY" secondItem="wQe-fc-7Ie" secondAttribute="centerY" id="sLm-yb-AxV"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="12"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="wQe-fc-7Ie" firstAttribute="top" secondItem="ezw-Ty-Y4z" secondAttribute="top" id="BFa-dS-tgY"/>
+                        <constraint firstAttribute="height" constant="94" id="QZa-XN-kVf"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="94" id="VSR-77-pov"/>
+                        <constraint firstItem="wQe-fc-7Ie" firstAttribute="leading" secondItem="ezw-Ty-Y4z" secondAttribute="leading" id="hTi-TL-AAh"/>
+                        <constraint firstAttribute="trailing" secondItem="wQe-fc-7Ie" secondAttribute="trailing" id="lNK-z4-xpv"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="12"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="shadowRadius">
+                            <real key="value" value="4"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="ezw-Ty-Y4z" secondAttribute="trailing" constant="5" id="8ut-Zb-1Ff"/>
+                <constraint firstItem="ezw-Ty-Y4z" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="Ee2-fH-rZd"/>
+                <constraint firstItem="ezw-Ty-Y4z" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Vf4-ef-JLl"/>
+            </constraints>
+            <connections>
+                <outlet property="callButton" destination="9Vi-xP-60k" id="Gpq-tw-8Fr"/>
+                <outlet property="emojiLabel" destination="Pds-2o-QC8" id="aef-Aq-Z5W"/>
+                <outlet property="notificationDescriptionLabel" destination="3du-Ir-ADt" id="rbJ-ur-qVb"/>
+                <outlet property="profileImageView" destination="MFA-OF-TVe" id="paW-Cm-Iqe"/>
+                <outlet property="profileNameLabel" destination="TKV-m3-BKj" id="y2s-Lg-2ph"/>
+                <outletCollection property="gestureRecognizers" destination="ayl-C0-cF3" appends="YES" id="H7B-XD-Kii"/>
+            </connections>
+        </view>
+        <tapGestureRecognizer id="UnL-zp-TIq">
+            <connections>
+                <action selector="notificationTappedWithSender:" destination="iN0-l3-epB" id="jE1-40-P5e"/>
+            </connections>
+        </tapGestureRecognizer>
+        <panGestureRecognizer minimumNumberOfTouches="1" id="ayl-C0-cF3">
+            <connections>
+                <action selector="notificationPannedWithSender:" destination="iN0-l3-epB" id="UWX-BR-u08"/>
+                <outlet property="delegate" destination="iN0-l3-epB" id="p7T-pH-NJ4"/>
+            </connections>
+        </panGestureRecognizer>
+    </objects>
+</document>

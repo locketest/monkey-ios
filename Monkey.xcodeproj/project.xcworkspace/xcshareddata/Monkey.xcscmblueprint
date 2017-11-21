@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "89E1D086BB787EB6B096CDC00B04F4DF7A36EFC2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "69041B7AD3D571C128DCAC84A2E2D5D89D716E81" : 9223372036854775807,
+    "89E1D086BB787EB6B096CDC00B04F4DF7A36EFC2" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "C6F1B867-E44E-4F20-B58E-D6B6F8728EC0",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "69041B7AD3D571C128DCAC84A2E2D5D89D716E81" : "",
+    "89E1D086BB787EB6B096CDC00B04F4DF7A36EFC2" : "monkey\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Monkey",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ios\/Monkey.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:IsaiahJTurner\/Heroku-Proxy.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "69041B7AD3D571C128DCAC84A2E2D5D89D716E81"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:IsaiahJTurner\/monkey.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "89E1D086BB787EB6B096CDC00B04F4DF7A36EFC2"
+    }
+  ]
+}

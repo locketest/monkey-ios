@@ -1,0 +1,6 @@
+Pods/*
+build/
+Monkey.xcworkspace/xcuserdata/*
+Monkey.xcodeproj/xcuserdata/*
+.DS_Store
+*.orig

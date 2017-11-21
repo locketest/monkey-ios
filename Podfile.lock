@@ -1,0 +1,50 @@
+PODS:
+  - Alamofire (4.3.0)
+  - Amplitude-iOS (3.14.1)
+  - Branch (0.17.10):
+    - Branch/Core (= 0.17.10)
+  - Branch/Core (0.17.10)
+  - Crashlytics (3.8.6):
+    - Fabric (~> 1.6.3)
+  - Fabric (1.6.13)
+  - MMSCameraViewController (1.0.3)
+  - MMSProfileImagePicker (1.4.1):
+    - MMSCameraViewController (~> 1.0.3)
+  - OpenTok (2.11.4)
+  - Realm (2.10.0):
+    - Realm/Headers (= 2.10.0)
+  - Realm/Headers (2.10.0)
+  - RealmSwift (2.10.0):
+    - Realm (= 2.10.0)
+  - Starscream (2.1.1)
+  - SwiftyGif (3.1.0)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.3.0)
+  - Amplitude-iOS (~> 3.14.0)
+  - Branch (~> 0.17.10)
+  - Crashlytics (~> 3.8.6)
+  - Fabric (~> 1.6.13)
+  - MMSProfileImagePicker (~> 1.4.1)
+  - OpenTok (~> 2.11.4)
+  - RealmSwift (~> 2.10.0)
+  - Starscream (~> 2.1.1)
+  - SwiftyGif
+
+SPEC CHECKSUMS:
+  Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
+  Amplitude-iOS: 4a3c8807b2ea5369dc11e87e23825bff01e5a922
+  Branch: 29745957de17eb5973627f4c7720bd0eb390fd45
+  Crashlytics: 95d05f4e4c19a771250c4bd9ce344d996de32bbf
+  Fabric: 2fb5676bc811af011a04513451f463dac6803206
+  MMSCameraViewController: c32450a83d5ad18d38a1d85c68bf899362a93667
+  MMSProfileImagePicker: fa3aee5746945f7bee2cb422bf51dd4478b94e39
+  OpenTok: 7ac36eed47f19a0190b2f083fc4339bb309badd7
+  Realm: 98b3a25643cf6b3e07d2b99fb43fe0eb9c801dec
+  RealmSwift: 34073ad3a31232bbaf7c0db898c037940284cba2
+  Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
+  SwiftyGif: aad44b7ef0ad1d599ba83d7aa5759e916b520c42
+
+PODFILE CHECKSUM: 9fc412b517caedeff53aff9834f1a77256eee7b8
+
+COCOAPODS: 1.3.1
