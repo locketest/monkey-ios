@@ -800,7 +800,7 @@
 				TargetAttributes = {
 					8B6EB5091DB0817F0051C8D2 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = SLD4UTM2M7;
+						DevelopmentTeam = Q3VZHMHCPE;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -1171,7 +1171,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = SLD4UTM2M7;
+				DEVELOPMENT_TEAM = Q3VZHMHCPE;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1250,7 +1250,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALM_SYNC\"";
-				PRODUCT_BUNDLE_IDENTIFIER = "cool.monkey.ios-sandbox";
+				PRODUCT_BUNDLE_IDENTIFIER = "world.holla.monkey-sandbox";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1370,7 +1370,7 @@
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = SLD4UTM2M7;
+				DEVELOPMENT_TEAM = Q3VZHMHCPE;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1444,7 +1444,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALMSYNC\"";
-				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = world.holla.monkey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1464,7 +1464,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = SLD4UTM2M7;
+				DEVELOPMENT_TEAM = Q3VZHMHCPE;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1538,7 +1538,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\"";
-				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = world.holla.monkey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1604,7 +1604,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = SLD4UTM2M7;
+				DEVELOPMENT_TEAM = Q3VZHMHCPE;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1683,7 +1683,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALM_SYNC\"";
-				PRODUCT_BUNDLE_IDENTIFIER = "cool.monkey.ios-development";
+				PRODUCT_BUNDLE_IDENTIFIER = "world.holla.monkey-development";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1750,7 +1750,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = SLD4UTM2M7;
+				DEVELOPMENT_TEAM = Q3VZHMHCPE;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1829,7 +1829,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALM_SYNC\"";
-				PRODUCT_BUNDLE_IDENTIFIER = "cool.monkey.ios-production";
+				PRODUCT_BUNDLE_IDENTIFIER = "world.holla.monkey-production";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
