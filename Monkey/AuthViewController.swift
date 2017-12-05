@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 import Alamofire
 import Amplitude_iOS
 import RealmSwift
@@ -284,6 +285,9 @@ class AuthViewController: UIViewController {
      */
     private func showUnsupportedVersionErrorAlert() {
         let unsuportedVersionAlert = UIAlertController(title: "Unsupported Version", message: "You need to update the app to keep using Monkey.", preferredStyle: .alert)
+		unsuportedVersionAlert.addAction(UIAlertAction.init(title: "update", style: UIAlertActionStyle.default, handler: { (_) in
+			self.openURL("itms-apps://itunes.apple.com/app/id1165924249")
+		}));
         guard let presentedViewController = self.presentedViewController else {
             self.present(unsuportedVersionAlert, animated: true, completion: nil)
             return
@@ -292,7 +296,14 @@ class AuthViewController: UIViewController {
             self.present(unsuportedVersionAlert, animated: true, completion: nil)
         })
     }
-
+	
+	func openURL(_ urlString: String)
+	{
+		guard let url = URL(string: urlString) else {
+			return
+		}
+		UIApplication.shared.openURL(url)
+	}
     /// Should be called when ready to open the mainVC after launch setup is complete. Also manages opening to chat if necessary and beginning the background experiments update.
     func finishLaunchSetup() {
         NotificationCenter.default.removeObserver(self)

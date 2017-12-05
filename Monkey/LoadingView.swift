@@ -262,7 +262,7 @@ class LoadingView: MakeUIViewGreatAgain {
         self.delegate?.bananaButtonTapped(loadingView: self)
     }
 
-    func stop(withFade: Bool, completion: ((Void) -> Void)?) {
+	func stop(withFade: Bool, completion: (() -> Void)?) {
         if !self.isLoading {
             completion?()
             return

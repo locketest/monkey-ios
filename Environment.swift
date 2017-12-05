@@ -37,7 +37,8 @@ struct Environment {
     // static let version = 33 // 2.4
     // static let version = 34 // 2.4.1
     // static let version = 35 // 2.4.2, 2.4.3, 2.4.4, 2.4.5
-    static let version = 36 // 2.4.6
+    // static let version = 36 // 2.4.6
+	static let version = 37 // 2.4.7
 
     static var environment: ENV {
         let envString = (Bundle.main.object(forInfoDictionaryKey: "Configuration") as? String ?? "").lowercased()

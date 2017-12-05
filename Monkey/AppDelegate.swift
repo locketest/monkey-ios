@@ -14,6 +14,7 @@ import Branch
 import RealmSwift
 import Realm
 import Crashlytics
+import FBSDKLoginKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -31,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         BuddyBuildSDK.setup()
 
-        Amplitude.shared.initializeApiKey("a5d6376e08ee446e548b9616aec5d9e0")
+        Amplitude.shared.initializeApiKey("a7f21c75b22fc7cd2e054da19f629870")
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         Fabric.with([Answers.self, Branch.self, Crashlytics.self])
         Branch.getInstance().initSession(launchOptions: launchOptions)

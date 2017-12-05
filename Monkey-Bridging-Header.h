@@ -3,7 +3,6 @@
 //
 
 #import <OpenTok/OpenTok.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <BuddyBuildSDK/BuddyBuildSDK.h>
 #import "OTDefaultAudioDevice.h"
 #import "MonkeyVideoRender.h"

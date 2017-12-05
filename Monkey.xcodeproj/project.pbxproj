@@ -64,7 +64,6 @@
 		8B7DC74E1EF7200500A3F966 /* SwipeablePresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7DC74D1EF7200500A3F966 /* SwipeablePresentationController.swift */; };
 		8B8460D41EB324F900D54DF3 /* RealmTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8460D31EB324F900D54DF3 /* RealmTag.swift */; };
 		8B8460D61EB3338800D54DF3 /* SettingsTextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8460D51EB3338800D54DF3 /* SettingsTextFieldTableViewCell.swift */; };
-		8B8664B91F01EC2B00E5AC12 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 8B8664B81F01EC2B00E5AC12 /* .gitignore */; };
 		8B8664BB1F04902D00E5AC12 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8664BA1F04902D00E5AC12 /* Effect.swift */; };
 		8B8664BD1F04AB9700E5AC12 /* PixelationEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8664BC1F04AB9700E5AC12 /* PixelationEffect.swift */; };
 		8B8B2D741EC52B910086547C /* CachedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8B2D731EC52B910086547C /* CachedImageView.swift */; };
@@ -74,12 +73,8 @@
 		8B9A0FCD1F53315700E8A899 /* country-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 8B9A0FCC1F53315700E8A899 /* country-data.json */; };
 		8B9A0FCF1F533A0100E8A899 /* PhoneNumberViewController+PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9A0FCE1F533A0100E8A899 /* PhoneNumberViewController+PickerView.swift */; };
 		8BA4D6DF1E2362240066776A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA4D6DE1E2362240066776A /* SettingsViewController.swift */; };
-		8BA4D6E21E24BD8F0066776A /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8BA4D6E11E24BD8F0066776A /* Default-568h@2x.png */; };
 		8BA5D3561F57263900F732BF /* InputLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA5D3551F57263900F732BF /* InputLabel.swift */; };
 		8BAA4C721E5545AC0072F3F6 /* APIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAA4C711E5545AC0072F3F6 /* APIController.swift */; };
-		8BB52BAA1DB740360084DBC7 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BB52BA61DB740360084DBC7 /* FBSDKLoginKit.framework */; };
-		8BB52BAD1DB7416C0084DBC7 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BB52BAC1DB7416C0084DBC7 /* FBSDKCoreKit.framework */; };
-		8BB52BAF1DB741830084DBC7 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BB52BAE1DB741830084DBC7 /* Bolts.framework */; };
 		8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BB895871DBD2E1800FC5E53 /* Apns.swift */; };
 		8BB8958A1DBDB09F00FC5E53 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BB895891DBDB09F00FC5E53 /* Chat.swift */; };
 		8BBE244B1DC1B86B00F63CED /* LoadingTextLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BBE244A1DC1B86B00F63CED /* LoadingTextLabel.swift */; };
@@ -230,7 +225,6 @@
 		8B7DC74D1EF7200500A3F966 /* SwipeablePresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeablePresentationController.swift; sourceTree = "<group>"; };
 		8B8460D31EB324F900D54DF3 /* RealmTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmTag.swift; sourceTree = "<group>"; };
 		8B8460D51EB3338800D54DF3 /* SettingsTextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTextFieldTableViewCell.swift; sourceTree = "<group>"; };
-		8B8664B81F01EC2B00E5AC12 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		8B8664BA1F04902D00E5AC12 /* Effect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Effect.swift; sourceTree = "<group>"; };
 		8B8664BC1F04AB9700E5AC12 /* PixelationEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelationEffect.swift; sourceTree = "<group>"; };
 		8B8B2D731EC52B910086547C /* CachedImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachedImageView.swift; sourceTree = "<group>"; };
@@ -240,12 +234,8 @@
 		8B9A0FCC1F53315700E8A899 /* country-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "country-data.json"; sourceTree = "<group>"; };
 		8B9A0FCE1F533A0100E8A899 /* PhoneNumberViewController+PickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhoneNumberViewController+PickerView.swift"; sourceTree = "<group>"; };
 		8BA4D6DE1E2362240066776A /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		8BA4D6E11E24BD8F0066776A /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		8BA5D3551F57263900F732BF /* InputLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputLabel.swift; sourceTree = "<group>"; };
 		8BAA4C711E5545AC0072F3F6 /* APIController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIController.swift; sourceTree = "<group>"; };
-		8BB52BA61DB740360084DBC7 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
-		8BB52BAC1DB7416C0084DBC7 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
-		8BB52BAE1DB741830084DBC7 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		8BB895871DBD2E1800FC5E53 /* Apns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Apns.swift; sourceTree = "<group>"; };
 		8BB895891DBDB09F00FC5E53 /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		8BBE244A1DC1B86B00F63CED /* LoadingTextLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingTextLabel.swift; sourceTree = "<group>"; };
@@ -341,9 +331,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8BD4285B1DB8855900883035 /* Contacts.framework in Frameworks */,
-				8BB52BAF1DB741830084DBC7 /* Bolts.framework in Frameworks */,
-				8BB52BAA1DB740360084DBC7 /* FBSDKLoginKit.framework in Frameworks */,
-				8BB52BAD1DB7416C0084DBC7 /* FBSDKCoreKit.framework in Frameworks */,
 				8B3A787F1DB3319000FA68A7 /* AudioToolbox.framework in Frameworks */,
 				0C7F30FA63B2D253B6FC3594 /* BuddyBuildSDK.framework in Frameworks */,
 				A9067019D4255969BBBF9985 /* AssetsLibrary.framework in Frameworks */,
@@ -365,9 +352,6 @@
 			isa = PBXGroup;
 			children = (
 				8BD4285A1DB8855900883035 /* Contacts.framework */,
-				8BB52BAE1DB741830084DBC7 /* Bolts.framework */,
-				8BB52BAC1DB7416C0084DBC7 /* FBSDKCoreKit.framework */,
-				8BB52BA61DB740360084DBC7 /* FBSDKLoginKit.framework */,
 				8B3A787E1DB3319000FA68A7 /* AudioToolbox.framework */,
 				ABD4298C67DA157F15913848 /* BuddyBuildSDK.framework */,
 				04A7638BB109409425659E70 /* AssetsLibrary.framework */,
@@ -469,8 +453,6 @@
 			isa = PBXGroup;
 			children = (
 				8B0F21431F206568003F902C /* IB Logs.app */,
-				8B8664B81F01EC2B00E5AC12 /* .gitignore */,
-				8BA4D6E11E24BD8F0066776A /* Default-568h@2x.png */,
 				8B6EB50C1DB0817F0051C8D2 /* Monkey */,
 				8B6EB50B1DB0817F0051C8D2 /* Products */,
 				4CFD1997C021F7E7A16B61BD /* Frameworks */,
@@ -795,12 +777,12 @@
 					"Top Card",
 				);
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = "Monkey Squad";
 				TargetAttributes = {
 					8B6EB5091DB0817F0051C8D2 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = Q3VZHMHCPE;
+						DevelopmentTeam = 9RZJW8NK36;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -863,10 +845,8 @@
 				D43415541F33825A00A481CC /* RatingNotificationView.xib in Resources */,
 				8BC4BA501E1B617500891566 /* fail.mp3 in Resources */,
 				8B3A78761DB2F87C00FA68A7 /* score.mp3 in Resources */,
-				8B8664B91F01EC2B00E5AC12 /* .gitignore in Resources */,
 				D4656C631F4B961800966C6D /* onboarding-2.gif in Resources */,
 				8BE02A441EE9FB7E004CF000 /* Chat.storyboard in Resources */,
-				8BA4D6E21E24BD8F0066776A /* Default-568h@2x.png in Resources */,
 				8BDFD97E1E6C47A7009E5EE4 /* message.wav in Resources */,
 				8B6EB5131DB0817F0051C8D2 /* Main.storyboard in Resources */,
 				8B7DC7461EF5C98C00A3F966 /* Channels.storyboard in Resources */,
@@ -922,7 +902,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Fabric/run\" 0a3cdf14b96cc8a95db0256d9ddd273e6ed7791a a97c3c2a41f3e40710f8f3870e0fb14deb0d17f2f805c59568fab994cc8eba41";
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 2f375793da31dc2dacb662808d3113bce1be7ff1 1489aaa485cb294a40eed8819791ce566c53e63d1139cf663cda46cf24be1483";
 		};
 		D6555994811981E05851FBC4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -951,7 +931,10 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Monkey/Pods-Monkey-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Amplitude-iOS/Amplitude_iOS.framework",
+				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
 				"${BUILT_PRODUCTS_DIR}/Branch/Branch.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
 				"${BUILT_PRODUCTS_DIR}/MMSCameraViewController/MMSCameraViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/MMSProfileImagePicker/MMSProfileImagePicker.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
@@ -963,7 +946,10 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Amplitude_iOS.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Branch.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSCameraViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSProfileImagePicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
@@ -1125,7 +1111,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1133,7 +1121,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -1152,7 +1144,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = Monkey;
@@ -1171,7 +1163,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = Q3VZHMHCPE;
+				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1250,7 +1242,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALM_SYNC\"";
-				PRODUCT_BUNDLE_IDENTIFIER = "world.holla.monkey-sandbox";
+				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1273,7 +1265,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1281,7 +1275,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -1305,7 +1303,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = Monkey;
@@ -1325,7 +1323,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1333,7 +1333,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -1351,7 +1355,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Monkey;
 				SDKROOT = iphoneos;
@@ -1370,7 +1374,7 @@
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = Q3VZHMHCPE;
+				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1444,7 +1448,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALMSYNC\"";
-				PRODUCT_BUNDLE_IDENTIFIER = world.holla.monkey;
+				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1464,7 +1468,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = Q3VZHMHCPE;
+				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1538,7 +1542,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\"";
-				PRODUCT_BUNDLE_IDENTIFIER = world.holla.monkey;
+				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1558,7 +1562,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1566,7 +1572,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -1585,7 +1595,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = Monkey;
@@ -1604,7 +1614,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = Q3VZHMHCPE;
+				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1683,7 +1693,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALM_SYNC\"";
-				PRODUCT_BUNDLE_IDENTIFIER = "world.holla.monkey-development";
+				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1706,7 +1716,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1714,7 +1726,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -1732,7 +1748,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Monkey;
 				SDKROOT = iphoneos;
@@ -1750,7 +1766,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = Q3VZHMHCPE;
+				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1829,7 +1845,7 @@
 					"-lsqlite3",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALM_SYNC\"";
-				PRODUCT_BUNDLE_IDENTIFIER = "world.holla.monkey-production";
+				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -407,10 +407,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 alertController.addAction(UIAlertAction(title: "Credits", style: .default, handler: { (UIAlertAction) in
                     self.openURL(creditsURL, inVC: true)
                 }))
-            }
+			}
             self.present(alertController, animated: true, completion: nil)
         case .rateUs:
-            self.openURL("http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=1165924249&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8", inVC: false)
+            self.openURL("https://itunes.apple.com/us/app/id1165924249?action=write-review", inVC: false)
         case .signOut:
             RealmDataController.shared.deleteAllData() { (error) in
                 guard error == nil else {

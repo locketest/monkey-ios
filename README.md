@@ -2,9 +2,9 @@
 Monkey's iOS app.
 
 ## Getting Started
-1. Clone [this repository](https://github.com/DropoutsCollective/monkey-ios) by clicking the green "Clone or Download" button above and then "Open in Desktop" to open in the GitHub Desktop app. If you don't have the GitHub Desktop app, download it and repeat this step.
- 
-   For advanced users, `git clone git@github.com:DropoutsCollective/monkey-api.git` or `git clone https://github.com/DropoutsCollective/monkey-api.git` in Terminal.
+1. Clone [this repository](https://github.com/holla-world/monkey-ios) by clicking the green "Clone or Download" button above and then "Open in Desktop" to open in the GitHub Desktop app. If you don't have the GitHub Desktop app, download it and repeat this step.
+
+   For advanced users, `git clone git@github.com:holla-world/monkey-api.git` or `git clone https://github.com/holla-world/monkey-api.git` in Terminal.
  
 2. `cd` into the project directory by opening Terminal.app, typing `cd`, dragging the monkey-ios folder you downloaded in step 1 onto the Terminal window, and then press return.
 
