@@ -757,6 +757,7 @@
 				11AA607D704BCD9139134AD1 /* [CP] Copy Pods Resources */,
 				8B24F95C1DDBFE50002848E0 /* Update Endpoint */,
 				8B7C19071DB14900002FA6C9 /* Run Fabric */,
+				1B3C46AC1FDFC8570073092E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -875,6 +876,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Monkey/Pods-Monkey-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		1B3C46AC1FDFC8570073092E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TAGS=\"TODO:|FIXME:\"\necho \"searching ${SRCROOT} for ${TAGS}\"\nfind \"${SRCROOT}\" \\( -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\"";
 		};
 		8B24F95C1DDBFE50002848E0 /* Update Endpoint */ = {
 			isa = PBXShellScriptBuildPhase;

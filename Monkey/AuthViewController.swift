@@ -103,7 +103,7 @@ class AuthViewController: UIViewController {
             print("Error: Current user should be defined by now.")
             return
         }
-        currentUser.reload { (error: APIError?) in
+        currentUser.reload {[weak currentUser] (error: APIError?) in
             guard error == nil else {
                 if error!.status == "401" {
                     return self.resetToWelcome()
@@ -114,8 +114,11 @@ class AuthViewController: UIViewController {
                 return
             }
 
-            if currentUser.is_snapcode_uploaded.value == false {
-                self.fetchAndUploadSnapcode()
+            // FIXME: the current user object may be nil , the func will not execute when it is nil
+            if let is_snapcode_uploaded = currentUser?.is_snapcode_uploaded.value {
+                if is_snapcode_uploaded == false {
+                    self.fetchAndUploadSnapcode()
+                }
             }
 
             print("Reloaded current user")

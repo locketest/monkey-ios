@@ -37,7 +37,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     /// The previous location of the user's finger, used to calculate velocity to pass to instagramVC if they do not lift finger to pan
     var previousLongPressLocation: CGPoint?
     
-    override func viewDidLoad() {
+    override func viewDidLoad() {        
         super.viewDidLoad()
         
         self.panGestureRecognizer.delegate = self
@@ -128,9 +128,12 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let friendship = self.viewModel.openChats?[indexPath.row] else {
+        // FIXME: why the openChats array out of range?
+        guard let openChats = self.viewModel.openChats , openChats.count > indexPath.row else {
             return FriendTableViewCell()
         }
+        
+        let friendship = openChats[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "friendshipCell", for: indexPath) as! FriendTableViewCell
         

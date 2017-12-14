@@ -83,6 +83,12 @@ import Amplitude_iOS
         paddingView.backgroundColor = .clear
         return paddingView
     }
+    
+    internal override func delete(_ sender: Any?) {
+        if super.responds(to: #selector(delete(_:))) {
+            super.delete(sender)
+        }
+    }
 
 }
 extension UITextField {

@@ -84,22 +84,27 @@ class PixelationEffect: Effect {
                                                   pixelBufferAttributes,
                                                   &pixelBuffer)
             
-            CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
+            guard let pb = pixelBuffer else {
+                free(nvDataPointer)
+                return
+            }
             
-            let yDestPlane = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer!, 0)
+            CVPixelBufferLockBaseAddress(pb, CVPixelBufferLockFlags(rawValue: 0))
+            
+            let yDestPlane = CVPixelBufferGetBaseAddressOfPlane(pb, 0)
             memcpy(yDestPlane, nvDataPointer, yData.count)
             
-            let uvDestPlane = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer!, 1)
+            let uvDestPlane = CVPixelBufferGetBaseAddressOfPlane(pb, 1)
             memcpy(uvDestPlane, nvDataPointer.advanced(by: yData.count), yData.count / 2)
             
-            CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
+            CVPixelBufferUnlockBaseAddress(pb, CVPixelBufferLockFlags(rawValue: 0))
             
             
             guard result == kCVReturnSuccess else {
                 print("Error: Failed to create pixel buffer.")
                 return
             }
-            let image = CIImage(cvPixelBuffer: pixelBuffer!, options: [
+            let image = CIImage(cvPixelBuffer: pb, options: [
                 kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange
                 ])
             pixelationFilter.setValue(image, forKey: kCIInputImageKey)
@@ -113,14 +118,14 @@ class PixelationEffect: Effect {
             
             scaleFilter.setValue(CGAffineTransform(scaleX: scale, y: scale).translatedBy(x: -translation, y: -translation), forKey: kCIInputTransformKey)
 
-            self.filterContext.render(scaleFilter.outputImage!, to: pixelBuffer!)
+            self.filterContext.render(scaleFilter.outputImage!, to: pb)
 
-            CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
+            CVPixelBufferLockBaseAddress(pb, CVPixelBufferLockFlags(rawValue: 0))
 
-            let finalYPlane = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer!, 0)
+            let finalYPlane = CVPixelBufferGetBaseAddressOfPlane(pb, 0)
             memcpy(yDataPointer, finalYPlane, yData.count)
 
-            let finalUVPlane = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer!, 1)
+            let finalUVPlane = CVPixelBufferGetBaseAddressOfPlane(pb, 1)
             let finalUVData = UnsafeMutableBufferPointer(start: finalUVPlane!.assumingMemoryBound(to: UInt8.self), count: yData.count / 2)
             var finalPlanarLocation = 0
             for bit in stride(from: 0, to: finalUVData.count, by: 2) {
@@ -129,7 +134,7 @@ class PixelationEffect: Effect {
                 finalPlanarLocation += 1
             }
             
-            CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
+            CVPixelBufferUnlockBaseAddress(pb, CVPixelBufferLockFlags(rawValue: 0))
         }
         
         free(nvDataPointer)

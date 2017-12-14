@@ -134,7 +134,11 @@ class ChatViewModel {
             return
         }
 
-        let url = URL(string: "snapchat://add/\(username)")!
+        // TODO: the user have snapchat username but his username is not correct
+        guard let url = URL(string: "snapchat://add/\(username)") else {
+            print("Error: could not get snapchat username to add")
+            return
+        }
 
         if UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.openURL(url)
