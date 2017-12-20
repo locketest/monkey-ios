@@ -81,7 +81,7 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
             }
             toViewController.view.frame.size.height = containerView.frame.height
         }
-
+        
         // set the final offset for the arrow within this transition
         if let controller = fromViewController as? MainViewController, let toController = toViewController as? SettingsViewController {
             controller.bottomArrowPadding.constant = toController.contentHeight + 20

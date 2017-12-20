@@ -291,7 +291,10 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
     private func uploadProfile() {
         
         // You should not be able to access edit profile when not signed in.
-        let currentUser = APIController.shared.currentUser!
+        guard let currentUser = APIController.shared.currentUser else {
+            print("can't get current user!")
+            return
+        }
         
         var attributes: [RealmUser.Attribute] = [
             .first_name(self.nameTextField.text),

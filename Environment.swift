@@ -47,8 +47,10 @@ struct Environment {
     static var baseURL: String {
         switch self.environment {
         case .local: return "https://ngrok.monkey.engineering:21016"
-        case .sandbox: return "https://monkey-api-sandbox.monkey.engineering"
+//        case .sandbox: return "https://monkey-api-sandbox.monkey.engineering"
+        case .sandbox: return "http://test.monkey.cool"
         case .development: return "https://monkey-api-development.monkey.engineering"
+//        case .production: return "http://test.monkey.cool"
         case .production: return "https://api.monkey.cool"
         case .release: return "https://api.monkey.cool"
         }

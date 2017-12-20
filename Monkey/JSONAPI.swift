@@ -56,7 +56,7 @@ class JSONAPIRequest {
             } // End switch statement.
         }
 
-        self.dataRequest = Alamofire.request(url, method: method, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        self.dataRequest = Alamofire.request(url, method: method, parameters: parameters, encoding: method == HTTPMethod.get ? URLEncoding.default : JSONEncoding.default, headers: headers)
             //.validate(statusCode: acceptableStatusCodes)
             .validate(contentType: ["application/json", "application/vnd.api+json"])
     }

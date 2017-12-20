@@ -40,14 +40,17 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     var soundPlayer = SoundPlayer.shared
     weak var callDelegate:CallViewControllerDelegate?
     let throttleFunction = throttle(delay: 0.25, queue: DispatchQueue.main) {
-        if let feedbackSupportLevel = UIDevice.current.value(forKey: "_feedbackSupportLevel") as? Int {
-            if feedbackSupportLevel >= 2 {
-                TapticFeedback.impact(style: .heavy)
-                return
+        // FIXME: what is this function do ?
+        if UIDevice.current.responds(to: Selector("_feedbackSupportLevel")) {
+            if let feedbackSupportLevel = UIDevice.current.value(forKey: "_feedbackSupportLevel") as? Int {
+                if feedbackSupportLevel >= 2 {
+                    TapticFeedback.impact(style: .heavy)
+                    return
+                }
             }
+            // fall back on System vibration
+            AudioServicesPlayAlertSound(1519) // kSystemSoundID_Vibrate: (this is  `Peek` or a weak boom, 1520 is `Pop` or a strong boom)
         }
-        // fall back on System vibration
-        AudioServicesPlayAlertSound(1519) // kSystemSoundID_Vibrate: (this is  `Peek` or a weak boom, 1520 is `Pop` or a strong boom)
     }
 
     var chatSession:ChatSession? {

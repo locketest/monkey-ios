@@ -811,10 +811,10 @@ static const GLsizei kNumTextures = 3 * kNumTextureSets;
     NSUInteger textureOffset = _currentTextureSet * 3;
     NSAssert(textureOffset + 3 <= kNumTextures, @"invalid offset");
 
-    glActiveTexture(GL_TEXTURE0 + textureOffset);
+    glActiveTexture((GLenum)(GL_TEXTURE0 + textureOffset));
     // When setting texture sampler uniforms, the texture index is used not
     // the texture handle.
-    glUniform1i(_ySampler, textureOffset);
+    glUniform1i(_ySampler, (GLenum)(textureOffset));
     glTexImage2D(GL_TEXTURE_2D,
                  0,
                  GL_LUMINANCE,
@@ -825,8 +825,8 @@ static const GLsizei kNumTextures = 3 * kNumTextureSets;
                  GL_UNSIGNED_BYTE,
                  [frame.planes pointerAtIndex:0]);
 
-    glActiveTexture(GL_TEXTURE0 + textureOffset + 1);
-    glUniform1i(_uSampler, textureOffset + 1);
+    glActiveTexture((GLenum)(GL_TEXTURE0 + textureOffset + 1));
+    glUniform1i(_uSampler, (GLenum)(textureOffset + 1));
     glTexImage2D(GL_TEXTURE_2D,
                  0,
                  GL_LUMINANCE,
@@ -837,8 +837,8 @@ static const GLsizei kNumTextures = 3 * kNumTextureSets;
                  GL_UNSIGNED_BYTE,
                  [frame.planes pointerAtIndex:1]);
 
-    glActiveTexture(GL_TEXTURE0 + textureOffset + 2);
-    glUniform1i(_vSampler, textureOffset + 2);
+    glActiveTexture((GLenum)(GL_TEXTURE0 + textureOffset + 2));
+    glUniform1i(_vSampler, (GLenum)(textureOffset + 2));
     glTexImage2D(GL_TEXTURE_2D,
                  0,
                  GL_LUMINANCE,

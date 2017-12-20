@@ -151,7 +151,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.chatSession = chatSession
     }
 
-    override func viewDidLoad() {
+    override func viewDidLoad() {        
         super.viewDidLoad()
         self.viewModel.delegate = self
 
@@ -712,14 +712,16 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     @available(iOS 10.0, *)
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+    func textView(_ textView: UITextView, shouldInteractWith targetURL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
 
-        if interaction == .invokeDefaultAction {
-            let safariViewController = SFSafariViewController(url: URL, entersReaderIfAvailable: false)
-            safariViewController.modalPresentationCapturesStatusBarAppearance = true
-            safariViewController.modalPresentationStyle = .overFullScreen
-            self.present(safariViewController, animated: true)
-            return false
+        if interaction == .invokeDefaultAction , let scheme = targetURL.scheme{
+            if scheme == "http" || scheme == "https" {
+                let safariViewController = SFSafariViewController(url: targetURL, entersReaderIfAvailable: false)
+                safariViewController.modalPresentationCapturesStatusBarAppearance = true
+                safariViewController.modalPresentationStyle = .overFullScreen
+                self.present(safariViewController, animated: true)
+                return false
+            }
         }
         return true
     }

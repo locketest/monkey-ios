@@ -251,6 +251,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      // MARK: UIViewController
      override func viewDidLoad() {
           super.viewDidLoad()
+          
           self.view.backgroundColor = Colors.purple
           NotificationManager.shared.viewManager = self
           NotificationManager.shared.chatSessionLoadingDelegate = self
