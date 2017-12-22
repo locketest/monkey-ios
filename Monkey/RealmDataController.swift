@@ -75,7 +75,7 @@ class RealmDataController: NSObject {
         
         let config = Realm.Configuration(
             syncConfiguration: nil,
-            schemaVersion: 11,
+            schemaVersion: 12,
             migrationBlock: { migration, oldSchemaVersion in
                 if oldSchemaVersion < 1 {
                     // Nothing to do!
@@ -160,8 +160,15 @@ class RealmDataController: NSObject {
                 if oldSchemaVersion < 11 {
                     // Something to do!
                     // RealmRelationship -> RealmFriendship
-                    migration.deleteData(forType: "RealmRelationship")
+                    // migration.deleteData(forType: "RealmRelationship")
                 }
+				if oldSchemaVersion < 12 {
+					// Something to do!
+					/*
+					- Property 'RealmUser.is_banned' has been added
+					*/
+					migration.deleteData(forType: "RealmRelationship")
+				}
                 
         }, objectTypes: objectTypes)
         

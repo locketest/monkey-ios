@@ -15,6 +15,7 @@ import RealmSwift
 import Realm
 import Crashlytics
 import FBSDKLoginKit
+import FBSDKCoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -97,6 +98,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+		FBSDKAppEvents.activateApp()
+		
         userEnteredAt = Date()
         APIController.shared.currentUser?.reload(completion: { (error: APIError?) in
              guard error == nil else {
@@ -164,6 +167,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "state": UIApplication.shared.applicationState.rawValue,
                 ])
         }
+		
         if let text = userInfo["t"] as? String ?? notificationUserInfo.aps?["alert"] as? String, let emoji = notificationUserInfo.emoji {
             var emojiNotificationUserInfo:[String:Any] = [
                 "text": text,
@@ -182,6 +186,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             NotificationCenter.default.post(name: .emojiNotification, object: nil, userInfo: emojiNotificationUserInfo)
         }
+		
         if (notificationUserInfo.alwaysOpenURL == 1 || application.applicationState != UIApplicationState.active), let urls = notificationUserInfo.urls {
             self.openNotificationURLs(urls: urls)
         }
