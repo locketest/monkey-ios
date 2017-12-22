@@ -219,6 +219,19 @@ extension CallViewController {
         
         Alamofire.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
             .responseJSON { (response) in
+                
+                if let error = response.result.error {
+                    print("scst- upload error :\(error)")
+                    return
+                }
+                
+                if response.response!.statusCode >= 400  {
+                    print("scst- upload fail status code : \(response.response!.statusCode)")
+                    return
+                }
+                
+                if response.result.isSuccess == false {return}
+                
                 let data = (response.result.value as! Dictionary<String, Any>)["data"] as! Dictionary<String, Any>
                 let attributes = data["attributes"] as! Dictionary<String, Any>
                 

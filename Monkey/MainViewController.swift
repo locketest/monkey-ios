@@ -987,12 +987,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
           self.present(alert, animated: true, completion: nil)
      }
      
-     func matchTimerCallback(){
-          if let session = self.chatSession {
-//               if session
-          }
-     }
-     
      deinit {
           NotificationCenter.default.removeObserver(self)
           self.bananaNotificationToken?.stop()
