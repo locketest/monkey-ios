@@ -31,6 +31,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     var disconnectReason:DisconnectReason?
     var response:Response?
     var wasSkippable = false
+    var hadAddTime = false
     var shouldShowRating:Bool {
         guard let ratingValue = self.subscriberData?["r"] else {
             return false
@@ -128,6 +129,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     }
 
     func accept() {
+        self.hadAddTime = false
         self.response = .accepted
         guard let connection = self.subscriberConnection else {
             // call will be accepted as soon as the subscriber connected
@@ -206,6 +208,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         if chat.theirMinutesAdded >= chat.minutesAdded {
             self.log(.info, "Adding minute")
             self.callDelegate?.minuteAdded(in: self)
+            self.hadAddTime = true
             return false
         }
         return true

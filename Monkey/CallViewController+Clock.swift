@@ -116,10 +116,16 @@ extension CallViewController: CountingLabelDelegate {
         if self.chatSession?.isDialedCall == true {
             clockTime += 100
             clockLabel.text = "\(String(format: "%02d", (Int(clockTime / 1000) / 60))):\(String(format: "%02d", Int(clockTime / 1000) % 60))"
+            currentMatchPastTime = 0
         } else {
             if clockTime > 0 {
                 clockTime -= 100
                 clockLabel.text = "\(String(format: "%02d", (Int(clockTime / 1000) / 60))):\(String(format: "%02d", Int(clockTime / 1000) % 60))"
+                
+                currentMatchPastTime += 100
+                if currentMatchPastTime == 5000 {
+                    autoScreenShotUpload(source: .match_5s)
+                }
             }
             if clockTime <= 3900 && clockTime > 300 {
                 dripClock()

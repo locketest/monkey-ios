@@ -35,12 +35,13 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     /// The orange view behind the clock label, animated on addMinute
     @IBOutlet var clockLabelBackgroundView: UIView!
 
-    var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧".characters
+    static var lastScreenShotTime:TimeInterval = 0
+    var currentMatchPastTime:TimeInterval = 0
+    var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧"
     let truthOrDareView = TruthOrDareView.instanceFromNib()
     var soundPlayer = SoundPlayer.shared
     weak var callDelegate:CallViewControllerDelegate?
     let throttleFunction = throttle(delay: 0.25, queue: DispatchQueue.main) {
-        // FIXME: what is this function do ?
         if UIDevice.current.responds(to: Selector("_feedbackSupportLevel")) {
             if let feedbackSupportLevel = UIDevice.current.value(forKey: "_feedbackSupportLevel") as? Int {
                 if feedbackSupportLevel >= 2 {
@@ -197,11 +198,6 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     override func viewDidDisappear(_ animated: Bool) {
         self.ticker?.invalidate()
         self.ticker = nil
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     func unhideAfterReportScreenshot() {
