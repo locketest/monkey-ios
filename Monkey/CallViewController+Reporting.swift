@@ -30,7 +30,7 @@ extension CallViewController {
             return
         }
         
-        guard let imageData = UIImageJPEGRepresentation(reportImage, 1.0) else {
+        guard let imageData = UIImageJPEGRepresentation(reportImage, 0.1) else {
             print("Error: Could not generate image data")
             return
         }
@@ -125,43 +125,110 @@ extension CallViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    func takeScreenshot() {
-        guard Achievements.shared.secretScreenshotAbility == true else {
-            return
+//    func takeScreenshot() {
+//        guard Achievements.shared.secretScreenshotAbility == true else {
+//            return
+//        }
+//        guard let subscriberView = self.chatSession?.subscriber?.view else {
+//            return
+//        }
+//        self.policeButton.isHidden = true
+//        hideStatusBarForScreenshot = true
+//        guard let screenCapture = subscriberView.snapshotView(afterScreenUpdates: true) else {
+//            return
+//        }
+//        self.containerView.addSubview(screenCapture)
+//        UIGraphicsBeginImageContextWithOptions(subscriberView.bounds.size, false, UIScreen.main.scale)
+//        view.drawHierarchy(in: subscriberView.bounds, afterScreenUpdates: true)
+//        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+//            UIGraphicsEndImageContext()
+//            screenCapture.removeFromSuperview()
+//            return
+//        }
+//        UIGraphicsEndImageContext()
+//        screenCapture.removeFromSuperview()
+//
+//        self.policeButton.isHidden = false
+//        hideStatusBarForScreenshot = false
+//        guard let snapchatShareVC = SLComposeViewController(forServiceType: "com.toyopagroup.picaboo.share") else {
+//            print("Couldn't open share extension")
+//            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+//            return
+//        }
+//       self.callDelegate?.stopFindingChats(andDisconnect: false, forReason: "snapchat-sharing")
+//
+//        snapchatShareVC.completionHandler = { (SLComposeViewControllerResult) in
+//           self.callDelegate?.startFindingChats(forReason: "snapchat-sharing")
+//        }
+//        snapchatShareVC.add(image)
+//        self.present(snapchatShareVC, animated: true, completion: nil)
+//    }
+    
+    func autoScreenShotUpload(source:AutoScreenShotType) {
+        if let gender = APIController.shared.currentUser?.gender {
+            if gender == "female"{
+                return
+            }
         }
-        guard let subscriberView = self.chatSession?.subscriber?.view else {
-            return
-        }
-        self.policeButton.isHidden = true
-        hideStatusBarForScreenshot = true
-        guard let screenCapture = subscriberView.snapshotView(afterScreenUpdates: true) else {
-            return
-        }
-        self.containerView.addSubview(screenCapture)
-        UIGraphicsBeginImageContextWithOptions(subscriberView.bounds.size, false, UIScreen.main.scale)
-        view.drawHierarchy(in: subscriberView.bounds, afterScreenUpdates: true)
-        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
-            UIGraphicsEndImageContext()
-            screenCapture.removeFromSuperview()
-            return
-        }
-        UIGraphicsEndImageContext()
-        screenCapture.removeFromSuperview()
         
-        self.policeButton.isHidden = false
-        hideStatusBarForScreenshot = false
-        guard let snapchatShareVC = SLComposeViewController(forServiceType: "com.toyopagroup.picaboo.share") else {
-            print("Couldn't open share extension")
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+        if let ban = APIController.shared.currentUser?.is_banned.value {
+            if ban == true {return}
+        }
+        
+        if (Date().timeIntervalSince1970 - CallViewController.lastScreenShotTime) < 30 {
+            print("scst- source:\(source.rawValue) fail - time not arrive")
             return
         }
-       self.callDelegate?.stopFindingChats(andDisconnect: false, forReason: "snapchat-sharing")
         
-        snapchatShareVC.completionHandler = { (SLComposeViewControllerResult) in
-           self.callDelegate?.startFindingChats(forReason: "snapchat-sharing")
+        print("scst- source:\(source.rawValue)")
+        
+        if !self.screenShotForSelf() {
+            print("Failed to take screenshot")
+            return
         }
-        snapchatShareVC.add(image)
-        self.present(snapchatShareVC, animated: true, completion: nil)
+        guard let reportImage = self.reportImage else {
+            print("Error: No image available")
+            return
+        }
+//        guard let chatId = self.reportChatId else {
+//            print("Error: No chat id available")
+//            return
+//        }
+        
+        guard let imageData = UIImageJPEGRepresentation(reportImage, 0.1) else {
+            print("Error: Could not generate image data")
+            return
+        }
+        
+        let url = "\(Environment.baseURL)/api/v1.3/screenshot"
+        
+        let headers: HTTPHeaders = [
+            "Authorization": APIController.authorization!, // Only authorized users can access MainViewController.
+            "Accept": "application/json"
+        ]
+        
+        let parameters: Parameters = [
+            "data": [
+                "type": "screenshots",
+                "attributes": [
+//                    "chat_id": chatId,
+                    "reason":source.rawValue
+                ]
+            ]
+        ]
+        
+        Alamofire.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+            .responseJSON { (response) in
+                let data = (response.result.value as! Dictionary<String, Any>)["data"] as! Dictionary<String, Any>
+                let attributes = data["attributes"] as! Dictionary<String, Any>
+                
+                print(response)
+                
+                //    open func upload(_ data: Data, to url: URLConvertible, method: Alamofire.HTTPMethod = default, headers: HTTPHeaders? = default) -> Alamofire.UploadRequest
+                if let uploadURL = attributes["upload_url"] as? String {
+                    self.uploadReportImage(imageData, to: uploadURL,needShowAlert: false)
+                }
+        }
     }
     
     func screenshotForReport() -> Bool {
@@ -204,6 +271,58 @@ extension CallViewController {
         UIGraphicsEndImageContext()
         screenCapture.removeFromSuperview()
         unhideAfterReportScreenshot()
+        return true
+    }
+    
+    func screenShotForSelf() -> Bool{
+        let capV = MonkeyPublisher.shared.view
+        
+//        UIGraphicsBeginImageContext(self.view.bounds.size)
+//
+//        guard let context = UIGraphicsGetCurrentContext() else {
+//            print("screen shot get context fail")
+//            return false
+//        }
+//
+//        screenCapture.layer.render(in: context)
+//        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+//            print("screen shot fail")
+//            return false
+//        }
+        
+        self.policeButton.isHidden = true
+        self.addMinuteButton.isHidden = true
+        self.snapchatButton.isHidden = true
+        self.clockLabelBackgroundView.isHidden = true
+        
+        self.isPublisherViewEnlarged = true
+        self.publisherContainerViewTopConstraint.constant = 0
+        self.publisherContainerViewHeightConstraint.constant = self.view.frame.size.height
+        
+        self.chatSession?.subscriber?.view?.effectsEnabled = false
+
+        self.hideStatusBarForScreenshot = true
+        guard let screenCapture = capV.snapshotView(afterScreenUpdates: true) else {
+            unhideAfterReportScreenshot()
+            return false
+        }
+        self.containerView.addSubview(screenCapture)
+
+        UIGraphicsBeginImageContextWithOptions(capV.frame.size, false, UIScreen.main.scale)
+        view.drawHierarchy(in: capV.frame, afterScreenUpdates: true)
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+            UIGraphicsEndImageContext()
+            screenCapture.removeFromSuperview()
+            return false
+        }
+        
+        // FIXME: there is a yellow view below capV will draw in screen shot , fix it
+        self.reportImage = image
+        self.isPublisherViewEnlarged = false
+        screenCapture.removeFromSuperview()
+        unhideAfterReportScreenshot()
+        self.clockLabelBackgroundView.isHidden = false
+        
         return true
     }
     
@@ -260,30 +379,33 @@ extension CallViewController {
             
             //    open func upload(_ data: Data, to url: URLConvertible, method: Alamofire.HTTPMethod = default, headers: HTTPHeaders? = default) -> Alamofire.UploadRequest
             if let uploadURL = attributes["upload_url"] as? String {
-                self.uploadReportImage(imageData, to: uploadURL)
+                self.uploadReportImage(imageData, to: uploadURL,needShowAlert: true)
             }
         }
     }
     
-    func uploadReportImage(_ imageData: Data, to url: URLConvertible) {
+    func uploadReportImage(_ imageData: Data, to url: URLConvertible,needShowAlert need:Bool) {
         Alamofire.upload(imageData, to: url, method: .put, headers: ["Content-Type": "image/jpeg"])
             .validate(statusCode: 200..<300)
             .responseData { response in
                 switch response.result {
                 case .success:
-                    print("Validation Successful")
+                    CallViewController.lastScreenShotTime = Date().timeIntervalSince1970
+                    print("scst- Validation Successful")
                 case .failure(let error):
-                    let alert = UIAlertController(title: "Fatal Report Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {
-                        (UIAlertAction) in
-                        alert.dismiss(animated: true, completion: nil)
-                    }))
-                    alert.addAction(UIAlertAction(title: "Retry", style: .default, handler: {
-                        (UIAlertAction) in
-                        alert.dismiss(animated: true, completion: nil)
-                        self.uploadReportImage(imageData, to: url)
-                    }))
-                    self.present(alert, animated: true, completion: nil)
+                    if need {
+                        let alert = UIAlertController(title: "Fatal Report Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {
+                            (UIAlertAction) in
+                            alert.dismiss(animated: true, completion: nil)
+                        }))
+                        alert.addAction(UIAlertAction(title: "Retry", style: .default, handler: {
+                            (UIAlertAction) in
+                            alert.dismiss(animated: true, completion: nil)
+                            self.uploadReportImage(imageData, to: url,needShowAlert: need)
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                    }
                     return;
                 }
         }

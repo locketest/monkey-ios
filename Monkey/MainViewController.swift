@@ -34,6 +34,11 @@ enum ReportType: Int {
      case other = 15
 }
 
+enum AutoScreenShotType:String {
+     case match_5s = "match_5s"
+     case match_disconnec = "match_disconnec"
+}
+
 class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, FacebookViewControllerDelegate {
 
      internal func showAlert(alert: UIAlertController) {
@@ -855,6 +860,10 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
           let presentingViewController = self.callViewController?.presentingViewController
           self.factTextView.text = self.nextFact
           let callViewController = self.callViewController
+          if chatSession.hadAddTime == false {
+               self.callViewController?.autoScreenShotUpload(source: .match_disconnec)
+          }
+          self.timer?.fireDate = Date.distantFuture
           UIView.animate(withDuration: 0.3, animations: {
                callViewController?.isPublisherViewEnlarged = true
                callViewController?.view.layoutIfNeeded()
@@ -976,6 +985,12 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                self.startFindingChats(forReason: "ignoring")
           }))
           self.present(alert, animated: true, completion: nil)
+     }
+     
+     func matchTimerCallback(){
+          if let session = self.chatSession {
+//               if session
+          }
      }
      
      deinit {
