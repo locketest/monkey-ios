@@ -21,7 +21,8 @@ target 'Monkey' do
   pod 'Alamofire', '~> 4.3.0'
   pod 'Starscream', '~> 2.1.1'
   pod 'Branch', '~> 0.17.10'
-  pod 'OpenTok', '~> 2.11.4'
+#  pod 'OpenTok', '~> 2.11.4'
+  pod 'OpenTok'
   pod 'RealmSwift', '~> 2.10.0'
   pod 'MMSProfileImagePicker', '~> 1.4.1'
   post_install do |installer|

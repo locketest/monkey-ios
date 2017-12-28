@@ -404,7 +404,7 @@ extension CallViewController {
                 switch response.result {
                 case .success:
                     CallViewController.lastScreenShotTime = Date().timeIntervalSince1970
-                    print("scst- Validation Successful")
+                    print("scst- Validation Successful - url : \(url)")
                 case .failure(let error):
                     if need {
                         let alert = UIAlertController(title: "Fatal Report Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)

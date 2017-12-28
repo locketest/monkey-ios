@@ -20,7 +20,7 @@ PODS:
   - MMSCameraViewController (1.0.3)
   - MMSProfileImagePicker (1.4.1):
     - MMSCameraViewController (~> 1.0.3)
-  - OpenTok (2.11.5)
+  - OpenTok (2.12.1)
   - Realm (2.10.2):
     - Realm/Headers (= 2.10.2)
   - Realm/Headers (2.10.2)
@@ -38,7 +38,7 @@ DEPENDENCIES:
   - FBSDKCoreKit
   - FBSDKLoginKit
   - MMSProfileImagePicker (~> 1.4.1)
-  - OpenTok (~> 2.11.4)
+  - OpenTok
   - RealmSwift (~> 2.10.0)
   - Starscream (~> 2.1.1)
   - SwiftyGif
@@ -54,12 +54,12 @@ SPEC CHECKSUMS:
   FBSDKLoginKit: 56a057ca6822535ea0faa25f57a7c41edb697fd4
   MMSCameraViewController: c32450a83d5ad18d38a1d85c68bf899362a93667
   MMSProfileImagePicker: fa3aee5746945f7bee2cb422bf51dd4478b94e39
-  OpenTok: 7c3ccba3ca4911439a2aafd3a0a1e2cce4c9769a
+  OpenTok: 869a96d84104b9de2b525c2e8a2a809561b47cec
   Realm: 0ef72b837fb67e9f4b098bac771ddd72c7fdbb69
   RealmSwift: 07a9ae0505091eda6b2ee7c190c3786d6e90a7b0
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftyGif: 3d3300065d5f30a4159a6488a22f89fde2998b9e
 
-PODFILE CHECKSUM: 89485bb3d68691b2fd528a163103578d7d8b5307
+PODFILE CHECKSUM: 9acb87bd151747184ef2ced21273b66008ec1d62
 
 COCOAPODS: 1.3.1

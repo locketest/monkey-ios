@@ -127,6 +127,10 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             return
         }
     }
+    
+    deinit {
+        print("sh-1226 \(self) deinit")
+    }
 
     func accept() {
         self.hadAddTime = false
@@ -340,7 +344,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         }
     }
     internal func sessionDidConnect(_ session: OTSession) {
-        self.log(.info, "sessionDidConnect")
+        self.log(.info, "sh-1226- \(self) sessionDidConnect")
         self.sessionStatus = .connected
         /**
          * Sets up an instance of OTPublisher to use with this session. OTPubilsher
@@ -396,6 +400,8 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.subscriber = subscriber
         // Don't subscribe to audio until loading completed
         subscriber.subscribeToAudio = false
+        
+        print("sh-1226- streamCreated")
 
         var maybeError : OTError?
         session.subscribe(subscriber, error: &maybeError)
@@ -480,11 +486,15 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.connections.forEach { (connection) in
             var maybeError : OTError?
             for connection in connections {
-                self.session.signal(withType: "\(messageHandler.chatSessionMessagingPrefix)-\(type)", string: message, connection: connection, retryAfterReconnect: true, error: &maybeError)
-                if let error = maybeError {
-                    self.disconnect(.consumedWithError)
-                    self.log(.error, "Send minute error \(error)")
-                }
+                DispatchQueue.global().async {
+                    self.session.signal(withType: "\(messageHandler.chatSessionMessagingPrefix)-\(type)", string: message, connection: connection, retryAfterReconnect: true, error: &maybeError)
+                    if let error = maybeError {
+                        DispatchQueue.main.async {
+                            self.disconnect(.consumedWithError)
+                            self.log(.error, "Send minute error \(error)")
+                        }
+                    }
+                };
             }
         }
     }

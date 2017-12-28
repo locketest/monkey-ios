@@ -15,6 +15,7 @@ protocol CallViewControllerDelegate:class {
     func startFindingChats(forReason:String)
 }
 
+// TODO: this class shouldn't create and destroy every time
 class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSessionCallDelegate {
 
     // MARK: Interface Elements
@@ -127,7 +128,21 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         }
         return .slide
     }
-
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        print("sh-1226- \(self) callVC init...")
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        print("sh-1226- \(self) callVC init...")
+    }
+    
+    deinit {
+        print("sh-1226- \(self) callVC deinit...")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -139,7 +154,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         self.clockLabel.font = UIFont.monospacedDigitSystemFont(ofSize: self.clockLabel.font.pointSize, weight: UIFontWeightMedium)
         animator = UIDynamicAnimator(referenceView: self.containerView)
         self.ticker = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(tick), userInfo: nil,   repeats: true)
-        // make sure timer always runs correctly
+//        // make sure timer always runs correctly
         RunLoop.main.add(self.ticker!, forMode: .commonModes)
         self.endCallButton.isHidden = true
         self.clockLabel.delegate = self
@@ -192,9 +207,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         maskLayer.path = path.cgPath
         clockLabelBackgroundView.layer.mask = maskLayer
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         self.ticker?.invalidate()
         self.ticker = nil
@@ -236,7 +249,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         self.endCallButton.layer.opacity = 0.5
         self.chatSession?.disconnect(.consumed)
     }
-    var winEmojis = "🎉👻🌟😀💎♥️🎊🎁🐬🙉🔥".characters
+    var winEmojis = "🎉👻🌟😀💎♥️🎊🎁🐬🙉🔥"
 
     // MARK: Report Button
     var reportedLabel:UILabel?
