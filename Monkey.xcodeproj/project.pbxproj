@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0C7F30FA63B2D253B6FC3594 /* BuddyBuildSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD4298C67DA157F15913848 /* BuddyBuildSDK.framework */; };
+		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
 		5D419F63CE951F23C4C7D274 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */; };
 		8435C2E11F12EE6600C80AC6 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2E01F12EE6600C80AC6 /* ChatViewController.swift */; };
@@ -130,6 +131,7 @@
 		C0DAAB141F538C5300739F42 /* RealmInstagramPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */; };
 		C0FC9E301F63106A00A813C5 /* ChannelLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */; };
 		C1048846AC127C35C9B1C80E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1061E7F5DF089EB4FD9C2809 /* CoreVideo.framework */; };
+		D11F05CD1FF5DF2200FAB0BB /* AppGroupDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */; };
 		D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
 		D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */; };
 		D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D433C1501F44D35500C9F704 /* IncomingCallManager.swift */; };
@@ -163,6 +165,7 @@
 		0CC1931042C0D849CBDEF7C6 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		1061E7F5DF089EB4FD9C2809 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		1680612B3D43C974FC315A41 /* Pods-Monkey.sandbox.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.sandbox.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.sandbox.xcconfig"; sourceTree = "<group>"; };
+		1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKNetworkHelper.swift; sourceTree = "<group>"; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE97C1F3FCD83F9563287C4 /* Pods-Monkey.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.production.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.production.xcconfig"; sourceTree = "<group>"; };
 		36BDAAEC1AB6615D506ADC62 /* Pods-Monkey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.release.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.release.xcconfig"; sourceTree = "<group>"; };
@@ -298,6 +301,7 @@
 		C0DAAB111F53816000739F42 /* RealmInstagramAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmInstagramAccount.swift; sourceTree = "<group>"; };
 		C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmInstagramPhoto.swift; sourceTree = "<group>"; };
 		C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelLabelView.swift; sourceTree = "<group>"; };
+		D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDataManager.swift; sourceTree = "<group>"; };
 		D40E59331F3A81510091A7B2 /* CallNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallNotificationView.swift; sourceTree = "<group>"; };
 		D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CallNotificationView.xib; sourceTree = "<group>"; };
 		D433C1501F44D35500C9F704 /* IncomingCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallManager.swift; sourceTree = "<group>"; tabWidth = 5; };
@@ -348,6 +352,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1BCCDE551FE284E50081CFD2 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */,
+				D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */,
+			);
+			name = Manager;
+			sourceTree = "<group>";
+		};
 		4CFD1997C021F7E7A16B61BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -495,6 +508,7 @@
 				8BA4D6E01E2366930066776A /* Settings */,
 				D4F35BCD1F5B1DA7003D3902 /* Growth Hacks */,
 				8BE35E2A1DB9D58D002049B5 /* Game */,
+				1BCCDE551FE284E50081CFD2 /* Manager */,
 				8B8B2D731EC52B910086547C /* CachedImageView.swift */,
 			);
 			path = Monkey;
@@ -774,6 +788,7 @@
 		8B6EB5021DB0817F0051C8D2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = MK;
 				KnownAssetTags = (
 					"Top Card",
 				);
@@ -787,6 +802,9 @@
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.Keychain = {
 								enabled = 1;
 							};
@@ -1015,6 +1033,7 @@
 				D43415521F33812C00A481CC /* RatingNotificationView.swift in Sources */,
 				8BFD6D621EFAEA87002C9F9C /* MonkeyPublisher.swift in Sources */,
 				8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */,
+				D11F05CD1FF5DF2200FAB0BB /* AppGroupDataManager.swift in Sources */,
 				847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */,
 				8B2ED8BE1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift in Sources */,
 				C047D7C71F6C36160048286F /* CountingLabel.swift in Sources */,
@@ -1025,6 +1044,7 @@
 				D4C767A51F689C6E002606C6 /* RealmSnapcode.swift in Sources */,
 				8B19B6761EBD5D9000493A3A /* EditProfilePopupViewController.swift in Sources */,
 				D4656C4D1F49F98700966C6D /* PermissionViewController.swift in Sources */,
+				1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */,
 				D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */,
 				D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */,
 				8BC903291EBE7012004B46D8 /* PopupTransitionPresentNewPopupAnimator.swift in Sources */,

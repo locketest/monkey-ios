@@ -12,6 +12,10 @@
 		<string>applinks:www.monkey.cool</string>
 		<string>webcredentials:www.monkey.cool</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.monkey.ios</string>
+	</array>
 	<key>keychain-access-groups</key>
 	<array>
 		<string>$(AppIdentifierPrefix)cool.monkey.ios</string>

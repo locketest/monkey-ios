@@ -7,10 +7,10 @@
 //
 
 import Foundation
-import Alamofire
 import CoreData
 import UIKit
 import RealmSwift
+
 class APIController {
 
     static let shared = APIController()
@@ -46,6 +46,7 @@ class APIController {
         }
         set(auth) {
             UserDefaults.standard.set(auth, forKey: "authorization")
+			AppGroupDataManager.appGroupUserDefaults?.set(auth, forKey: "Monkey_authorization")
         }
     }
     class func urlTo(_ model: String) -> String {

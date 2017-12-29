@@ -48,19 +48,22 @@ struct Environment {
         switch self.environment {
         case .local: return "https://ngrok.monkey.engineering:21016"
 //        case .sandbox: return "https://monkey-api-sandbox.monkey.engineering"
+//        case .sandbox: return "http://test.monkey.cool"
         case .sandbox: return "http://test.monkey.cool"
         case .development: return "https://monkey-api-development.monkey.engineering"
-//        case .production: return "http://test.monkey.cool"
         case .production: return "https://api.monkey.cool"
+//        case .production: return "http://test.monkey.cool"
         case .release: return "https://api.monkey.cool"
         }
     }
     static var socketURL: String {
         switch self.environment {
         case .local: return "wss://ngrok.monkey.engineering:21016/api/v2.0/sockets/websocket"
-        case .sandbox: return "wss://monkey-api-sandbox.monkey.engineering/api/v2.0/sockets/websocket"
+//        case .sandbox: return "wss://monkey-api-sandbox.monkey.engineering/api/v2.0/sockets/websocket"
+        case .sandbox: return "ws://test.monkey.cool/api/v2.0/sockets/websocket"
         case .development: return "wss://monkey-api-development.monkey.engineering/api/v2.0/sockets/websocket"
         case .production: return "wss://ws.monkey.cool/api/v2.0/sockets/websocket"
+//        case .production: return "ws://test.monkey.cool/api/v2.0/sockets/websocket"
         case .release: return "wss://ws.monkey.cool/api/v2.0/sockets/websocket"
         }
     }

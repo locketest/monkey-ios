@@ -319,15 +319,31 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
             }
             let identity = AMPIdentify()
 
-            currentUser.first_name.then { identity.set("first_name", value: $0 as NSString) }
+            currentUser.first_name.then {
+				identity.set("first_name", value: $0 as NSString)
+				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_first_name")
+			}
 
-            currentUser.snapchat_username.then { self.snapchatTextField.username = $0 }
+            currentUser.snapchat_username.then {
+				self.snapchatTextField.username = $0
+				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_username")
+			}
 
-            currentUser.user_id.then { identity.set("user_id", value: $0 as NSString) }
+            currentUser.user_id.then {
+				identity.set("user_id", value: $0 as NSString)
+				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_user_id")
+			}
 
-            currentUser.birth_date.then { identity.set("birth_date", value: $0 as NSDate) }
+            currentUser.birth_date.then {
+				identity.set("birth_date", value: $0 as NSDate)
+				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_birth_date")
+			}
 
-            currentUser.gender.then { identity.set("gender", value: $0 as NSString) }
+            currentUser.gender.then {
+				identity.set("gender", value: $0 as NSString)
+				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_gender")
+			}
+			
 
             Amplitude.shared.identify(identity)
             self.nextVC()

@@ -23,6 +23,7 @@ import MediaPlayer
 import RealmSwift
 import MessageUI
 import Crashlytics
+import FBSDKCoreKit
 
 enum ReportType: Int {
      case mean = 9
@@ -633,7 +634,34 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      var chatRequest: JSONAPIRequest?
      var gettingNewSession = false
      var sessionIndex = 0 // used to make sure we don't run more than one DispatchQueue.main.asyncAfter
+	
+	 var shouldLogFirstMatchSuccess = false
+	
      func getNewSession() {
+		  // log first match request event
+		if shouldLogFirstMatchSuccess {
+			shouldLogFirstMatchSuccess = false
+			
+			UserDefaults.standard.set(false, forKey: "MonkeyLogEventFirstMatchSuccess")
+			UserDefaults.standard.synchronize()
+		}
+		
+		 if UserDefaults.standard.bool(forKey: "MonkeyLogEventFirstMatchRequest") {
+			let currentUser = APIController.shared.currentUser
+			
+			let eventParameters:[String: Any] = [
+				"user_gender": currentUser?.show_gender ?? "male",
+				"user_age": currentUser?.age as Any,
+			]
+		    Amplitude.shared.logEvent("MATCH_1ST_REQUEST", withEventProperties: eventParameters)
+		    FBSDKAppEvents.logEvent("MATCH_1ST_REQUEST", parameters: eventParameters)
+			
+		    UserDefaults.standard.set(false, forKey: "MonkeyLogEventFirstMatchRequest")
+			UserDefaults.standard.synchronize()
+			
+			shouldLogFirstMatchSuccess = true
+		 }
+		
           guard self.nextSessionToPresent == nil else {
                self.chatSession = self.nextSessionToPresent
                self.nextSessionToPresent = nil

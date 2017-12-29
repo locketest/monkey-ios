@@ -14,7 +14,7 @@ target 'Monkey' do
   # Pods for Monkey
   pod 'FBSDKCoreKit'
   pod 'FBSDKLoginKit'
-  pod 'Amplitude-iOS', '~> 4.0.4'
+  pod 'Amplitude-iOS'
   pod 'Fabric'
   pod 'Crashlytics'
   pod 'SwiftyGif'

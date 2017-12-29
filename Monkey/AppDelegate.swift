@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         BuddyBuildSDK.setup()
 
         Amplitude.shared.initializeApiKey("a7f21c75b22fc7cd2e054da19f629870")
+		Amplitude.shared.trackingSessionEvents = true;
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         Fabric.with([Answers.self, Branch.self, Crashlytics.self])
         Branch.getInstance().initSession(launchOptions: launchOptions)

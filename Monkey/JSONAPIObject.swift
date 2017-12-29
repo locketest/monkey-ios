@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Alamofire
 import RealmSwift
 typealias JSONAPIOperationCompletionHandler<T> = (_ result: JSONAPIResult<[T]>) -> Void
 class JSONAPIObject: Object {

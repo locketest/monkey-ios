@@ -76,7 +76,7 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Sandbox"
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"

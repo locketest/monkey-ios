@@ -8,6 +8,8 @@
 
 import Foundation
 import RealmSwift
+import Amplitude_iOS
+import FBSDKCoreKit
 
 class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     weak var callDelegate:ChatSessionCallDelegate?
@@ -231,6 +233,20 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 
         self.subscriber?.subscribeToAudio = true
         self.updateStatusTo(.connected)
+		
+		if UserDefaults.standard.bool(forKey: "MonkeyLogEventFirstMatchSuccess") {
+			let currentUser = APIController.shared.currentUser
+			
+			let eventParameters:[String: Any] = [
+				"user_gender": currentUser?.show_gender ?? "male",
+				"user_age": currentUser?.age as Any,
+				]
+			Amplitude.shared.logEvent("MATCH_1ST_SUCCESS", withEventProperties: eventParameters)
+			FBSDKAppEvents.logEvent("MATCH_1ST_SUCCESS", parameters: eventParameters)
+			
+			UserDefaults.standard.set(false, forKey: "MonkeyLogEventFirstMatchSuccess")
+			UserDefaults.standard.synchronize()
+		}
     }
     /**
      Prints a message to the console.

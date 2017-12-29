@@ -11,6 +11,7 @@ import SafariServices
 import Alamofire
 import Amplitude_iOS
 import RealmSwift
+import FBSDKCoreKit
 
 class AuthViewController: UIViewController {
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
@@ -89,11 +90,33 @@ class AuthViewController: UIViewController {
                 self.nextVC()
                 return
             }
+			var loginResult: String = "new"
+			
             if APIController.shared.currentUser?.birth_date == nil || APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.gender == nil  {
                     let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
                     accountVC.shouldDismissAfterEntry = true
                     (self.presentedViewController as? MainViewController)?.present(accountVC, animated: true, completion: nil)
-            }
+				loginResult = "new"
+				
+				UserDefaults.standard.set(true, forKey: "MonkeySignUp")
+				UserDefaults.standard.set(true, forKey: "MonkeyLogEventFirstMatchRequest")
+				UserDefaults.standard.set(true, forKey: "MonkeyLogEventFirstMatchSuccess")
+				UserDefaults.standard.synchronize()
+			}else {
+				guard let currentUser = APIController.shared.currentUser else {
+					print("Error: Current user should be defined by now.")
+					return
+				}
+				
+				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.first_name, forKey: "Monkey_first_name")
+				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.username, forKey: "Monkey_username")
+				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.user_id, forKey: "Monkey_user_id")
+				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.birth_date, forKey: "Monkey_birth_date")
+				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.gender, forKey: "Monkey_gender")
+			}
+			
+			Amplitude.shared.logEvent("SIGNUP_LOGIN", withEventProperties: ["result": loginResult])
+			FBSDKAppEvents.logEvent("SIGNUP_LOGIN", parameters: ["result": loginResult])
             print("Updates completed in background")
         }
     }

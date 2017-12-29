@@ -149,10 +149,6 @@
     return self;
 }
 
-- (instancetype)retain{
-     return [super retain];
-}
-
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     UIApplicationState appState =
