@@ -165,12 +165,6 @@ extension CallViewController {
 //    }
     
     func autoScreenShotUpload(source:AutoScreenShotType) {
-        if let gender = APIController.shared.currentUser?.gender {
-            if gender == "female"{
-                return
-            }
-        }
-        
         if let ban = APIController.shared.currentUser?.is_banned.value {
             if ban == true {return}
         }
@@ -178,6 +172,14 @@ extension CallViewController {
         if (Date().timeIntervalSince1970 - CallViewController.lastScreenShotTime) < 30 {
             print("scst- source:\(source.rawValue) fail - time not arrive")
             return
+        }
+        
+        if let gender = APIController.shared.currentUser?.gender {
+            if gender == "female"{
+                return
+            }else if (arc4random() % UInt32(2)) == 1{
+                return
+            }
         }
         
         print("scst- source:\(source.rawValue)")
@@ -304,8 +306,10 @@ extension CallViewController {
 //        }
         
         self.policeButton.isHidden = true
-        self.addMinuteButton.alpha = 0
-        self.snapchatButton.isHidden = true
+        let addMinuteBtnCenter = self.addMinuteButton.center
+        let snapchatBtnCenter = self.snapchatButton.center
+        self.addMinuteButton.center = CGPoint(x:-200,y:-200)
+        self.snapchatButton.center = CGPoint(x:-200,y:-200)
         self.clockLabelBackgroundView.isHidden = true
         
         self.isPublisherViewEnlarged = true
@@ -317,7 +321,8 @@ extension CallViewController {
         self.hideStatusBarForScreenshot = true
         guard let screenCapture = capV.snapshotView(afterScreenUpdates: true) else {
             unhideAfterReportScreenshot()
-            self.addMinuteButton.alpha = 1;
+            self.addMinuteButton.center = addMinuteBtnCenter
+            self.snapchatButton.center = snapchatBtnCenter
             return false
         }
         self.containerView.addSubview(screenCapture)
@@ -335,7 +340,8 @@ extension CallViewController {
         self.isPublisherViewEnlarged = false
         screenCapture.removeFromSuperview()
         unhideAfterReportScreenshot()
-        self.addMinuteButton.alpha = 1;
+        self.addMinuteButton.center = addMinuteBtnCenter
+        self.snapchatButton.center = snapchatBtnCenter
         self.clockLabelBackgroundView.isHidden = false
         
         return true
