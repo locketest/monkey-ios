@@ -37,6 +37,8 @@
 #import <libkern/OSAtomic.h>
 #import <OpenGLES/ES2/gl.h>
 
+#warning this class shouldn't create and destroy every time
+
 @interface TBDisplayLinkProxy : NSObject
 - (id)initWithGLKView:(GLKView*)view delegate:(MonkeyVideoRender*)delegate;
 - (void)displayLinkDidFire:(CADisplayLink*)displayLink;
@@ -145,6 +147,10 @@
         [self setupGL];
     }
     return self;
+}
+
+- (instancetype)retain{
+     return [super retain];
 }
 
 - (void)dealloc {

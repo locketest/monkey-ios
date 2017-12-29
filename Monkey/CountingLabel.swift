@@ -27,7 +27,7 @@ class CountingLabel: UILabel {
     /// A timer object which updates the label based off framerate
     private weak var timer: CADisplayLink?
     /// The delegate for the label, currently only notified of updates to value
-    var delegate:CountingLabelDelegate?
+    weak var delegate:CountingLabelDelegate?
     
     
     /// This method triggers the animation of the label

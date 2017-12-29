@@ -778,7 +778,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      }
      
      func presentCallViewController(for chatSession:ChatSession) {
-          print("presentCallViewController \(chatSession)")
           // This will do nothing if the current chat
           IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
           var vcToPresentOn:UIViewController = self
@@ -794,6 +793,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
           }
      }
      func presentCallViewControllerOn(_ viewController: UIViewController, for chatSession: ChatSession) {
+          print("sh-1226- presentCallViewControllerOn")
           guard self.chatSession == chatSession || self.chatSession == nil else {
                print("Error: Refusing to dangerously present a chat session while another session is in progress")
                return
@@ -812,6 +812,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                self.colorGradientView.alpha = 0.0
           }) { (Bool) in
                let callViewController = self.storyboard?.instantiateViewController(withIdentifier: "callVC") as! CallViewController
+               print("sh-1226- \(callViewController) get callVC")
                self.callViewController = callViewController
                callViewController.chatSession = chatSession
                //          self.callViewController?.callDelegate = self
