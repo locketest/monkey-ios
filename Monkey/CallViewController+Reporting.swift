@@ -304,7 +304,7 @@ extension CallViewController {
 //        }
         
         self.policeButton.isHidden = true
-        self.addMinuteButton.isHidden = true
+        self.addMinuteButton.alpha = 0
         self.snapchatButton.isHidden = true
         self.clockLabelBackgroundView.isHidden = true
         
@@ -317,6 +317,7 @@ extension CallViewController {
         self.hideStatusBarForScreenshot = true
         guard let screenCapture = capV.snapshotView(afterScreenUpdates: true) else {
             unhideAfterReportScreenshot()
+            self.addMinuteButton.alpha = 1;
             return false
         }
         self.containerView.addSubview(screenCapture)
@@ -334,6 +335,7 @@ extension CallViewController {
         self.isPublisherViewEnlarged = false
         screenCapture.removeFromSuperview()
         unhideAfterReportScreenshot()
+        self.addMinuteButton.alpha = 1;
         self.clockLabelBackgroundView.isHidden = false
         
         return true
