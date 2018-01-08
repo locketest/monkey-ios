@@ -35,13 +35,15 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     var wasSkippable = false
     var hadAddTime = false
     var shouldShowRating:Bool {
-        guard let ratingValue = self.subscriberData?["r"] else {
-            return false
-        }
-        guard let divider = Int(ratingValue) else {
-            return false
-        }
-        return divider > 0 && self.didConnect && !self.friendMatched && Achievements.shared.totalChats % divider == 0
+        // TODO: now just make shouldShowRating always false , if make sure don't need match rate anymore, you shuld delete all the logic about match rating
+        return false;
+//        guard let ratingValue = self.subscriberData?["r"] else {
+//            return false
+//        }
+//        guard let divider = Int(ratingValue) else {
+//            return false
+//        }
+//        return divider > 0 && self.didConnect && !self.friendMatched && Achievements.shared.totalChats % divider == 0
     }
     var friendMatched = false {
         didSet {
@@ -119,7 +121,8 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             }
         }
 
-        self.session = OTSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, delegate: self)
+        weak var weakSelf = self
+        self.session = OTSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, delegate: weakSelf)
         var maybeError : OTError?
         session.connect(withToken: token, error: &maybeError)
         if let error = maybeError {

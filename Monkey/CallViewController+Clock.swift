@@ -108,7 +108,7 @@ extension CallViewController: CountingLabelDelegate {
     func tick() {
         if isAnimatingMinuteAdd { return }
         
-        if clockTime == -1 {
+        if clockTime <= -1 {
             clockLabel.text = "99:99"
             return
         }
