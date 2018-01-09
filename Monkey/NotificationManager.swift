@@ -11,7 +11,6 @@ import UserNotifications
 import UserNotificationsUI
 import RealmSwift
 import Alamofire
-import Amplitude_iOS
 
 protocol SlideViewManager:class {
     func shouldShowNotification()->Bool
@@ -185,7 +184,10 @@ class NotificationManager {
     }
     
     private func rateFriendship(_ rating:ChatRating, chatId:String) {
-        Amplitude.shared.logEvent("Rated Call", withEventProperties: ["rating":rating.rawValue, "chat_id":chatId])
+		AnaliticsCenter.log(withEvent: .ratedCall, andParameter: [
+			"rating": rating.rawValue,
+			"chat_id": chatId,
+			])
         let paramaters = [
             "data": [
                 "type": "chats",

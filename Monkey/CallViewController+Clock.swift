@@ -7,14 +7,13 @@
 //
 
 import Foundation
-import Amplitude_iOS
 import AudioToolbox
 
 // Extension for MainViewController to help with Timimg
 extension CallViewController: CountingLabelDelegate {
     
     func minuteAdded(in chatSession:ChatSession) {
-        Amplitude.shared.logEvent("Minute Added To Call")
+		AnaliticsCenter.log(event: .minuteAddedToCall)
         self.enableAddMinute()
         
         clockLabel.formatBlock = {
@@ -159,7 +158,7 @@ extension CallViewController: CountingLabelDelegate {
     }
     
     func addMinute() {
-        Amplitude.shared.logEvent("Requested Minute During Call")
+		AnaliticsCenter.log(event: .requestedMinuteDuringCall)
         self.disableAddMinute()
         Achievements.shared.addedFirstMinute = true
         let isWaiting = self.chatSession?.sendMinute() ?? false

@@ -7,7 +7,6 @@
 //
 
 import Alamofire
-import Amplitude_iOS
 import FBSDKLoginKit
 
 class FacebookViewController: UIViewController, UIWebViewDelegate {
@@ -39,7 +38,7 @@ class FacebookViewController: UIViewController, UIWebViewDelegate {
             self.delegate?.loginCompleted(facebookViewController: self)
             // if login fails (facebook's fault) or there is a token (facebook login worked), track the event.
             if error != nil || result?.token?.tokenString != nil {
-                Amplitude.instance().logEvent("Logged In With Facebook", withEventProperties: [
+                AnaliticsCenter.log(withEvent: .loggedInWithFacebook, andParameter: [
                     "via": "bonus_bananas",
                     "success": error == nil,
                     ])
@@ -137,7 +136,9 @@ class FacebookViewController: UIViewController, UIWebViewDelegate {
         guard let currentUser = APIController.shared.currentUser else {
             return
         }
-        Amplitude.shared.logEvent("Invited Facebook Friends", withEventProperties:["count":inviteCount])
+		AnaliticsCenter.log(withEvent: .invitedFacebookFriends, andParameter: [
+			"count": inviteCount
+			])
 
         print("Updating user attribute `facebook_friends_invited` to value \(inviteCount)")
         currentUser.update(attributes: [.facebook_friends_invited(inviteCount)]) { (error:APIError?) in

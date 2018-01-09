@@ -9,7 +9,6 @@
 import Foundation
 import Realm
 import RealmSwift
-import Amplitude_iOS
 
 protocol IncomingCallManagerDelegate:class {
     func incomingCallManager(_ incomingCallManager: IncomingCallManager, shouldShowNotificationFor chatSession:ChatSession) -> Bool
@@ -77,7 +76,7 @@ class IncomingCallManager {
            self.initiateCallTimer()
            self.showingNotification = NotificationManager.shared.showCallNotification(chatSession: chatSession, completion: { [unowned self] (response) in
                 if response == .accepted {
-                    Amplitude.shared.logEvent("Accepted Friend’s Call")
+				AnaliticsCenter.log(event: .acceptedFriendCall)
                     self.stopCallSound()
                     self.showingNotification?.notificationDescriptionLabel.text = "connecting..."
                     self.showingNotification?.callButton.isJiggling = false

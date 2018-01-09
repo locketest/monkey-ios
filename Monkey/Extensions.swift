@@ -84,16 +84,19 @@ import Amplitude_iOS
         return paddingView
     }
     
-    internal override func delete(_ sender: Any?) {
-        if super.responds(to: #selector(delete(_:))) {
-            super.delete(sender)
-        }
+	override func delete(_ sender: Any?) {
+		if let superclass = self.superclass {
+			if superclass.instancesRespond(to: #selector(delete(_:))) {
+				super.delete(sender)
+			}
+		}
     }
 
 }
+
 extension UITextField {
     var charactersCount: Int {
-        return self.text?.characters.count ?? 0
+        return self.text?.count ?? 0
     }
 }
 
@@ -235,7 +238,7 @@ extension UIImage {
 
 public extension String {
     func trunc(length: Int, trailing: String? = "...") -> String {
-        if self.characters.count > length {
+        if self.count > length {
             return self.substring(to: self.index(self.startIndex, offsetBy: length)) + (trailing ?? "")
         } else {
             return self
@@ -464,8 +467,8 @@ extension String {
             return self
         }
         
-        let first = String(characters.prefix(1)).capitalized
-        let other = String(characters.dropFirst())
+        let first = String(prefix(1)).capitalized
+        let other = String(dropFirst())
         return first + other
     }
 }

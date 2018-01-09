@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Amplitude_iOS
 
 extension PhoneNumberViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {

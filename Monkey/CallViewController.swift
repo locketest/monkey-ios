@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Amplitude_iOS
 import AudioToolbox
 
 protocol CallViewControllerDelegate:class {
@@ -238,7 +237,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 
     // MARK: Snapchat Button
     @IBAction func addSnapchat(_ sender: BigYellowButton) {
-        Amplitude.shared.logEvent("Requested Snapchat During Call")
+		AnaliticsCenter.log(event: .requestedSnapchatDuringCall)
         sender.isEnabled = false
         sender.layer.opacity = 0.5
         Achievements.shared.addedFirstSnapchat = true
@@ -258,8 +257,8 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 
 
     internal func friendMatched(in chatSession:ChatSession) {
-        Amplitude.shared.logEvent("Snapchat Matched During Call")
-
+		AnaliticsCenter.log(event: .snapchatMatchedDuringCall)
+		
         Achievements.shared.snapchatMatches += 1
         soundPlayer.play(sound: .win)
         animator.removeAllBehaviors()

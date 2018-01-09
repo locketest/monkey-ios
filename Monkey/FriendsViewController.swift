@@ -5,7 +5,6 @@
 //  Created by Harrison Weinerman on 7/10/17.
 //  Copyright © 2017 Monkey Squad. All rights reserved.
 //
-import Amplitude_iOS
 import UIKit
 
 class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, FriendsViewModelDelegate {
@@ -89,7 +88,33 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         // Do not allow user to return to chat they just swiped away from
         self.swipableViewControllerToPresentOnLeft = nil
         self.checkDeepLink()
+		
+		self.showMonkeyChatWhenOpenChat();
     }
+	
+	func showMonkeyChatWhenOpenChat() {
+		let showMonkeyChatOpenChatCount = UserDefaults.standard.integer(forKey: "MKShowMonkeyChatCountOpenChatChat")
+		let lastShowTime = UserDefaults.standard.double(forKey: "MKShowMonkeyChatTimeOpenChatChat")
+		let lastShowDate = Date.init(timeIntervalSince1970: lastShowTime)
+		let monkeychatScheme = URL.init(string: Environment.MonkeyChatScheme)
+		let monkeychatUrl = APIController.shared.currentExperiment?.monkeychat_link
+		if monkeychatUrl != nil && showMonkeyChatOpenChatCount < 3 && lastShowDate.compare(.isToday) == false && UIApplication.shared.canOpenURL(monkeychatScheme!) == false {
+			UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "MKShowMonkeyChatTimeOpenChatChat")
+			UserDefaults.standard.set(showMonkeyChatOpenChatCount + 1, forKey: "MKShowMonkeyChatCountOpenChatChat")
+			UserDefaults.standard.synchronize()
+			
+			let controller = UIAlertController(title: nil, message: "Check out our new app Monkey Chat, it's awesome, just trust", preferredStyle: .alert)
+			let monkeychat = UIAlertAction(title: "Try it", style: .default) { (action) in
+				UIApplication.shared.openURL(URL.init(string: monkeychatUrl!)!)
+			}
+			controller.addAction(monkeychat)
+			
+			let cancel = UIAlertAction(title: "No trust", style: .cancel, handler: nil)
+			controller.addAction(cancel)
+			
+			present(controller, animated: true, completion: nil)
+		}
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -186,7 +211,9 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             })
             
             self.instagramViewController = instagramVC
-            Amplitude.shared.logEvent("Opened Instagram Account", withEventProperties: ["via":"friends"])
+			AnaliticsCenter.log(withEvent: .openedInstagramAccount, andParameter: [
+				"via": "friends"
+				])
  
         case .changed:
             guard let instagramVC = self.instagramViewController else {

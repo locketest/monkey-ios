@@ -9,7 +9,6 @@
 import UIKit
 import Realm
 import RealmSwift
-import Amplitude_iOS
 
 class ConfirmNumberViewController: MonkeyViewController {
     
@@ -41,8 +40,8 @@ class ConfirmNumberViewController: MonkeyViewController {
     var userInputCode = "" {
         didSet {
             for (index, element) in self.inputLabels.enumerated() {
-                if self.userInputCode.characters.count > index {
-                    let stringValue = String(self.userInputCode.characters[self.userInputCode.index(userInputCode.startIndex, offsetBy: index)])
+                if self.userInputCode.count > index {
+                    let stringValue = String(self.userInputCode[self.userInputCode.index(userInputCode.startIndex, offsetBy: index)])
                     element.text = keypadButton(for: stringValue)?.titleLabel?.text
                 } else {
                     element.text = ""
@@ -169,7 +168,7 @@ class ConfirmNumberViewController: MonkeyViewController {
             return
         }
     
-        if self.userInputCode.characters.count >= codeLength { // don't want to do anything if already full
+        if self.userInputCode.count >= codeLength { // don't want to do anything if already full
             return
         }
         
@@ -180,7 +179,7 @@ class ConfirmNumberViewController: MonkeyViewController {
         
         TapticFeedback.impact(style: .heavy)
         self.userInputCode = self.userInputCode + keyboardIndex
-        self.nextButton.isEnabled = self.userInputCode.characters.count == realmPhoneAuth?.code_length.value
+        self.nextButton.isEnabled = self.userInputCode.count == realmPhoneAuth?.code_length.value
     }
     
     // Sent by the 'deleteButton', this method simply removes the last written user input. If we have no user inputs, the method should end without execution.
@@ -189,14 +188,14 @@ class ConfirmNumberViewController: MonkeyViewController {
             return
         }
 
-        self.userInputCode = String(self.userInputCode.characters.dropLast())
+        self.userInputCode = String(self.userInputCode.dropLast())
         self.nextButton.isEnabled = false
     }
     
     @IBAction func submitUserCode(_ sender: BigYellowButton) {
         self.nextButton.isLoading =  true
         self.view.isUserInteractionEnabled = false
-        guard self.userInputCode.characters.count == realmPhoneAuth?.code_length.value else {
+        guard self.userInputCode.count == realmPhoneAuth?.code_length.value else {
             print("Next button was improperly enabled in ConfirmViewController. User attempted to validate a code with incorrect length")
             self.clearUserInput()
             self.displayInvalidCodeAlert(title:"Incorrect Code:", message:"😬 Please check your code and try again", responseStatus: nil)
@@ -224,10 +223,10 @@ class ConfirmNumberViewController: MonkeyViewController {
                 error?.log()
                 self.clearUserInput()
                 self.displayInvalidCodeAlert(title:"Uh oh!", message: error?.message ?? "😬 Please check your code and try again", responseStatus: error?.status)
-                Amplitude.shared.logEvent("Error Validating Phone Verification Code", withEventProperties: [
-                    "code": code,
-                    "message": error?.message ?? "😬 Please check your code and try again"
-                    ])
+				AnaliticsCenter.log(withEvent: .errorValidatingPhoneVerificationCode, andParameter: [
+					"code": code,
+					"message": error?.message ?? "😬 Please check your code and try again"
+					])
                 return
             }
             
@@ -237,17 +236,18 @@ class ConfirmNumberViewController: MonkeyViewController {
                 self.displayInvalidCodeAlert(title:"Incorrect Code:", message:"😬 Please check your code and try again", responseStatus:nil)
                 return
             }
-            Amplitude.shared.logEvent("Validated Phone Verification Code", withEventProperties: [
-                "code": code,
-                ])
+			AnaliticsCenter.log(withEvent: .validatedPhoneVerificationCode, andParameter: [
+				"code": code,
+				])
             let authorization = "Bearer \(token)"
-
-            Amplitude.shared.setUserId(user.user_id!)
-                
-            UserDefaults.standard.set(user.user_id!, forKey: "user_id")
+			
             APIController.authorization = authorization
-            
+            AnaliticsCenter.loginAccount()
+			UserDefaults.standard.set(user.user_id!, forKey: "user_id")
             Apns.update(callback: nil)
+			
+			UserDefaults.standard.set(true, forKey: "MonkeySignUp")
+			UserDefaults.standard.synchronize()
             
             UIView.animate(
                 withDuration: self.transitionTime,
@@ -281,13 +281,13 @@ class ConfirmNumberViewController: MonkeyViewController {
                     alert.dismiss(animated: true, completion: nil)
                 }))
                 self?.present(alert, animated: true, completion: nil)
-                Amplitude.shared.logEvent("Error Resending Phone Verification Code", withEventProperties: [
-                    "message": error?.message ?? "Please try again."
-                    ])
+				AnaliticsCenter.log(withEvent: .errorResendingPhoneVerificationCode, andParameter: [
+					"message": error?.message ?? "Please try again."
+					])
                 return
             }
-            Amplitude.shared.logEvent("Resent Phone Verification Code")
-        })
+			AnaliticsCenter.log(event: .resentPhoneVerificationCode)
+		})
     }
     
     fileprivate func displayInvalidCodeAlert(title:String, message:String, responseStatus:String?) {

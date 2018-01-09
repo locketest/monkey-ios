@@ -8,7 +8,6 @@
 
 import RealmSwift
 import Alamofire
-import Amplitude_iOS
 
 class RealmUser: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "users"

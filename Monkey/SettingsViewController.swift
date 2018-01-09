@@ -8,7 +8,6 @@
 
 import Foundation
 import Alamofire
-import Amplitude_iOS
 import SafariServices
 import MessageUI
 import SafariServices
@@ -261,14 +260,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         if APIController.shared.currentUser?.instagram_account != nil { // remove instagram account
             alertController.addAction(UIAlertAction(title: "🌅 Unlink Instagram", style: .destructive, handler: { [weak self] (UIAlertAction) in
                 self?.unlinkInstagram()
-                Amplitude.shared.logEvent("Unlinked Instagram")
-
+				AnaliticsCenter.log(event: .unlinkedInstagram)
             }))
         } else { // add instagram account
             alertController.addAction(UIAlertAction(title: "🌅 Link Instagram", style: .default, handler: { [weak self] (UIAlertAction) in
                 self?.linkInstagram()
-                Amplitude.shared.logEvent("Linked Instagram")
-
+				AnaliticsCenter.log(event: .linkedInstagram)
             }))
         }
 
@@ -434,7 +431,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             // The logic actually hasnt been rewritten, however, since currently we do not allow for the user to edit these values (this is legacy code)
             break
         case .inviteFriends:
-            Amplitude.shared.logEvent("Invited Friends Manually")
+			AnaliticsCenter.log(event: .invitedFriendsManually)
             guard let inviteFriendsViewController = self.inviteFriendsViewController else {
                 return
             }

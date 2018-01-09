@@ -90,4 +90,18 @@ struct Environment {
     static let realmSyncServerURL = "https://realm-object-server.monkey.cool:9443"
     static let defaultRealmURL = "realms://realm-object-server.monkey.cool:9443/~/default"
     #endif
+	
+	static var amplitudeKey: String {
+		switch self.environment {
+		case .local: return "04f72fae8a9c614c47cc38e822778a36"
+		case .sandbox: return "04f72fae8a9c614c47cc38e822778a36"
+		case .development: return "04f72fae8a9c614c47cc38e822778a36"
+		case .production: return "a7f21c75b22fc7cd2e054da19f629870"
+		case .release: return "a7f21c75b22fc7cd2e054da19f629870"
+		}
+	}
+	
+	static let MonkeyAppStoreUrl = "itms-apps://itunes.apple.com/app/id1165924249"
+	static let MonkeyChatAppStoreUrl = "itms-apps://itunes.apple.com/app/id1330119861"
+	static let MonkeyChatScheme = "monkeychat://"
 }

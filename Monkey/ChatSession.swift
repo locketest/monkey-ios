@@ -8,8 +8,6 @@
 
 import Foundation
 import RealmSwift
-import Amplitude_iOS
-import FBSDKCoreKit
 
 class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     weak var callDelegate:ChatSessionCallDelegate?
@@ -242,10 +240,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			
 			let eventParameters:[String: Any] = [
 				"user_gender": currentUser?.show_gender ?? "male",
-				"user_age": currentUser?.age as Any,
+				"user_age": currentUser?.age.value ?? 0,
 				]
-			Amplitude.shared.logEvent("MATCH_1ST_SUCCESS", withEventProperties: eventParameters)
-			FBSDKAppEvents.logEvent("MATCH_1ST_SUCCESS", parameters: eventParameters)
+			AnaliticsCenter.log(withEvent: .matchFirstSuccess, andParameter: eventParameters)
 			
 			UserDefaults.standard.set(false, forKey: "MonkeyLogEventFirstMatchSuccess")
 			UserDefaults.standard.synchronize()
@@ -277,6 +274,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             self.log(.warning, "Chat is already consumed as \(self.status) and can not be updated to \(newStatus)")
             return
         }
+		
+		if self.status == .connected && newStatus == .disconnecting {
+			self.loadingDelegate?.consumeFromConnected?()
+		}
+		
         guard self.status != newStatus else {
             self.log(.warning, "Status is already \(newStatus)")
             return
@@ -663,4 +665,5 @@ protocol MessageHandler: class {
     func dismissCallViewController(for chatSession: ChatSession)
     func chatSession(_ chatSession: ChatSession, callEndedWithError error:Error?)
     @objc optional func warnConnectionTimeout(in chatSession: ChatSession)
+	@objc optional func consumeFromConnected()
 }

@@ -9,7 +9,6 @@
 import UIKit
 import Foundation
 import RealmSwift
-import Amplitude_iOS
 
 protocol ChatViewModelDelegate:class {
     func reloadData()
@@ -170,7 +169,7 @@ class ChatViewModel {
             self.delegate?.reloadData()
         }
 
-        Amplitude.shared.logEvent("Sent Message")
+		AnaliticsCenter.log(event: .sentMessage)
         let messageText:Any = message ?? NSNull()
 
         let messageData =  [
@@ -225,7 +224,7 @@ class ChatViewModel {
             return
         }
 
-        Amplitude.shared.logEvent("Called Friend")
+		AnaliticsCenter.log(event: .calledFriend)
 
         let parameters:[String:Any] = [
             "data": [
@@ -284,7 +283,7 @@ class ChatViewModel {
             return
         }
 
-        Amplitude.shared.logEvent("Read Message")
+		AnaliticsCenter.log(event: .readMessage)
 
         self.friendship?.update(attributes: [.last_message_read_at(lastMessageAt)], completion: { (error) in
             error?.log()

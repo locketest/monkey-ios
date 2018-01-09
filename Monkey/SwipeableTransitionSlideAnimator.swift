@@ -68,7 +68,9 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
         } else if !isPresenting && toViewController.swipableViewControllerToPresentOnBottom == fromViewController {
                 directionalViewOffset = fromViewController.contentHeight
         } else {
-            fatalError("Error: Unexpected view controller stack.")
+//            fatalError("Error: Unexpected view controller stack.")
+			// 防止 crash
+			directionalViewOffset = containerView.frame.size.width
         }
         
         if !isToMainViewController && isPresenting {

@@ -9,7 +9,6 @@
 import UIKit
 import Foundation
 import RealmSwift
-import Amplitude_iOS
 import SafariServices
 
 class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UITextViewDelegate, IncomingCallManagerDelegate {
@@ -245,8 +244,10 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             })
 
             self.instagramViewController = instagramVC
-            Amplitude.shared.logEvent("Opened Instagram Account", withEventProperties: ["via":"chat"])
-
+			AnaliticsCenter.log(withEvent: .openedInstagramAccount, andParameter: [
+				"via": "chat",
+				])
+			
 
         case .changed:
             guard let instagramVC = self.instagramViewController, let initialLocation = self.initialLongPressLocation, let previousLocation = self.previousLongPressLocation else {
@@ -391,7 +392,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
     /// When we get a newline (and ONLY a newline, prevents pasting things with a newline from triggering send), we treat that as a 'send' action
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        if textView.text.characters.count == 0 && text.characters.count == 0 {
+        if textView.text.count == 0 && text.count == 0 {
             // Pressing backspace for no reason.
             return false
         }
@@ -401,7 +402,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         }
         self.isShowingPlaceholderText = false
         let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
-        if newText.characters.count == 0 {
+        if newText.count == 0 {
             self.isShowingPlaceholderText = true
         }
         return true
@@ -450,8 +451,9 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                 self.callButton.isSpinning = true
                 self.profileActiveLabel.text = "connecting..."
                 self.chatSession?.accept()
-                Amplitude.shared.logEvent("Friend Accepted Call")
-            }
+				AnaliticsCenter.log(event: .friendAcceptedCall)
+
+			}
             return
         }
         self.callButton.isJiggling = true
@@ -546,6 +548,7 @@ extension ChatViewController: ChatSessionLoadingDelegate {
             }
         }
     }
+	
 
     internal func initiateCallTimer() {
 

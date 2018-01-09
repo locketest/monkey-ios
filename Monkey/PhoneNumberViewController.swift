@@ -8,7 +8,6 @@
 
 import UIKit
 import SafariServices
-import Amplitude_iOS
 
 class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
     @IBOutlet var phoneNumberTextField: MakeTextFieldGreatAgain!
@@ -26,10 +25,10 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
                 self.countryPickerView.selectRow(self.countries?.index(of: selectedCountry) ?? 0, inComponent: 0, animated: false)
                 countryCodeButtonTitle = "\(selectedCountry.emoji) +\(selectedCountry.code)"
                 if let oldValue = oldValue {
-                    Amplitude.shared.logEvent("Changed Phone Verification Country", withEventProperties: [
-                        "from_country": oldValue.code,
-                        "to_country": selectedCountry.code
-                        ])
+					AnaliticsCenter.log(withEvent: .changedPhoneVerificationCountry, andParameter: [
+						"from_country": oldValue.code,
+						"to_country": selectedCountry.code
+						])
                 }
             } else {
                 self.countryPickerView.selectRow(0, inComponent: 0, animated: false)
@@ -160,10 +159,10 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
     /// Makes JSONAPIRequest and then moves the user onto the next screen with information we get from the response (character set).
     /// Returns no value. phoneNumber and countryCode are implicitly unwrapped, should guard against nil values before calling this function.
     func requestVerificationCode(_ phoneNumber:String, countryCode:String) {
-        Amplitude.shared.logEvent("Requested Phone Verification Code", withEventProperties: [
-            "country_code": countryCode,
-            "phone_number": phoneNumber,
-            ])
+		AnaliticsCenter.log(withEvent: .requestedPhoneVerificationCode, andParameter: [
+			"country_code": countryCode,
+			"phone_number": phoneNumber,
+			])
         let parameters:[String:Any] = ["data":["type":"phone_auths", "attributes":["country_code":countryCode, "phone_number":phoneNumber]]]
         
         self.sendButton.setTitle("Sending secret code", for: .normal)
@@ -218,9 +217,9 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
     }
     
     func showConnectionErrorAlert(message: String) {
-        Amplitude.shared.logEvent("Error Requesting Phone Verification Code", withEventProperties: [
-            "message": message,
-            ])
+		AnaliticsCenter.log(withEvent: .errorRequestingPhoneVerificationCode, andParameter: [
+			"message": message,
+			])
         self.hasUserConfirmedNumber = false
         self.sendButton.titleLabel?.text = "Send secret code"
         self.sendButton.emojiLabel?.layer.removeAllAnimations()

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Amplitude_iOS
 import Alamofire
 import RealmSwift
 
@@ -263,17 +262,17 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
 
             return
         }
-        
-        Amplitude.shared.logEvent("Edit Profile Completed")
+		
+		AnaliticsCenter.log(event: .editProfileCompleted)
         
         if self.isOnSecondPageIfSmall { // called first to avoid setup of small screen below on second time around
-            Amplitude.shared.logEvent("Edit Profile Name Completed")
+			AnaliticsCenter.log(event: .editProfileNameCompleted)
             self.view.isUserInteractionEnabled = false
             self.nextButton.isLoading = true
             self.uploadProfile()
         } else if !self.isSmallScreen { // if it's a big screen they've completed everything in one
-            Amplitude.shared.logEvent("Edit Profile Name Completed")
-            
+			
+			AnaliticsCenter.log(event: .editProfileNameCompleted)
             self.view.isUserInteractionEnabled = false
             self.nextButton.isLoading = true
             self.uploadProfile()
@@ -317,10 +316,10 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
                 }), animated: true, completion: nil)
                 return
             }
-            let identity = AMPIdentify()
-
+			var userProperty = [String: Any]()
+			
             currentUser.first_name.then {
-				identity.set("first_name", value: $0 as NSString)
+				userProperty["first_name"] = $0
 				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_first_name")
 			}
 
@@ -330,22 +329,21 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
 			}
 
             currentUser.user_id.then {
-				identity.set("user_id", value: $0 as NSString)
+				userProperty["user_id"] = $0
 				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_user_id")
 			}
 
             currentUser.birth_date.then {
-				identity.set("birth_date", value: $0 as NSDate)
+				userProperty["birth_date"] = $0
 				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_birth_date")
 			}
 
             currentUser.gender.then {
-				identity.set("gender", value: $0 as NSString)
+				userProperty["gender"] = $0
 				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_gender")
 			}
 			
-
-            Amplitude.shared.identify(identity)
+			AnaliticsCenter.update(userProperty: userProperty)
             self.nextVC()
         }
     }

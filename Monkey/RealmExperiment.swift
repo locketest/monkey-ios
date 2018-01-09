@@ -139,6 +139,8 @@ class RealmExperiment: JSONAPIObject, JSONAPIObjectProtocol {
     dynamic var talk_to_alert_message:String?
     /// The URL we callback to after a successful instagram login (the url is sent with the loaded instagram url)
     dynamic var instagram_login_url:String?
+	/// when user launch app, should jump to download monkeychat
+	dynamic var monkeychat_link:String?
     
     override static func primaryKey() -> String {
         return "experiment_id"

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Amplitude_iOS
 import SafariServices
 
 class BannedViewController: UIViewController {

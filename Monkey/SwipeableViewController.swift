@@ -238,7 +238,7 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
         super.present(viewControllerToPresent, animated: flag, completion: completion)
     }
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        print("Dismissing \(self), presenting view controller: \(self.presentingViewController)")
+		print("Dismissing \(self), presenting view controller: \(String(describing: self.presentingViewController))")
         if flag {
             self.transitioningDelegate = self
             if let swipeableViewController = self.presentingViewController as? SwipeableViewController {

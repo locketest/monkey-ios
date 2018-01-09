@@ -9,9 +9,7 @@
 import UIKit
 import SafariServices
 import Alamofire
-import Amplitude_iOS
 import RealmSwift
-import FBSDKCoreKit
 
 class AuthViewController: UIViewController {
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
@@ -41,10 +39,11 @@ class AuthViewController: UIViewController {
             return // Will be called when error dismissed.
         }
         RealmDataController.shared.setupRealm(presentingErrorsOnViewController: self) {
-
+			// 如果是已经登录的账号
             if APIController.authorization != nil {
                 self.sync()
             } else {
+				// 未登录，跳转到登录
                 let when = DispatchTime.now() + (Double(0.1))
                 DispatchQueue.main.asyncAfter(deadline: when) {
                     let vc = self.storyboard!.instantiateViewController(withIdentifier: "welcomeVC")
@@ -90,24 +89,26 @@ class AuthViewController: UIViewController {
                 self.nextVC()
                 return
             }
-			var loginResult: String = "new"
+			
+			let monkeySignUp = UserDefaults.standard.bool(forKey: "MonkeySignUp")
+			var monkeyProfileComplete = true
 			
             if APIController.shared.currentUser?.birth_date == nil || APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.gender == nil  {
+				monkeyProfileComplete = false
+				
+				// 资料不全，编辑信息
                     let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
                     accountVC.shouldDismissAfterEntry = true
                     (self.presentedViewController as? MainViewController)?.present(accountVC, animated: true, completion: nil)
-				loginResult = "new"
 				
-				UserDefaults.standard.set(true, forKey: "MonkeySignUp")
-				UserDefaults.standard.set(true, forKey: "MonkeyLogEventFirstMatchRequest")
-				UserDefaults.standard.set(true, forKey: "MonkeyLogEventFirstMatchSuccess")
-				UserDefaults.standard.synchronize()
 			}else {
 				guard let currentUser = APIController.shared.currentUser else {
 					print("Error: Current user should be defined by now.")
 					return
 				}
+				monkeyProfileComplete = true
 				
+				// 存储用户资料到共享 app groups 存储区
 				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.first_name, forKey: "Monkey_first_name")
 				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.username, forKey: "Monkey_username")
 				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.user_id, forKey: "Monkey_user_id")
@@ -115,8 +116,24 @@ class AuthViewController: UIViewController {
 				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.gender, forKey: "Monkey_gender")
 			}
 			
-			Amplitude.shared.logEvent("SIGNUP_LOGIN", withEventProperties: ["result": loginResult])
-			FBSDKAppEvents.logEvent("SIGNUP_LOGIN", parameters: ["result": loginResult])
+			if (monkeySignUp == true) {
+				var loginResult = "new"
+
+				if (monkeyProfileComplete == true) {
+					loginResult = "new"
+				}else {
+					loginResult = "old"
+				}
+				AnaliticsCenter.log(withEvent: .signUpLogin, andParameter: [
+					"result": loginResult,
+					])
+				
+				UserDefaults.standard.set(false, forKey: "MonkeySignUp")
+				UserDefaults.standard.set(true, forKey: "MonkeyLogEventFirstMatchRequest")
+				UserDefaults.standard.set(true, forKey: "MonkeyLogEventFirstMatchSuccess")
+				UserDefaults.standard.synchronize()
+			}
+			
             print("Updates completed in background")
         }
     }
@@ -312,7 +329,7 @@ class AuthViewController: UIViewController {
     private func showUnsupportedVersionErrorAlert() {
         let unsuportedVersionAlert = UIAlertController(title: "Unsupported Version", message: "You need to update the app to keep using Monkey.", preferredStyle: .alert)
 		unsuportedVersionAlert.addAction(UIAlertAction.init(title: "update", style: UIAlertActionStyle.default, handler: { (_) in
-			self.openURL("itms-apps://itunes.apple.com/app/id1165924249")
+			self.openURL(Environment.MonkeyAppStoreUrl)
 		}));
         guard let presentedViewController = self.presentedViewController else {
             self.present(unsuportedVersionAlert, animated: true, completion: nil)

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Amplitude_iOS
 import Alamofire
 import SafariServices
 
@@ -115,7 +114,7 @@ class WelcomeViewController: MonkeyViewController {
             print("Error: Missing verification view controller.")
             return
         }
-        Amplitude.shared.logEvent("Opened Phone Login Page")
+		AnaliticsCenter.log(event: .openedPhoneLoginPage)
         UIView.animate(withDuration: 0.4, animations: {
             self.containerView.layer.opacity = 0
         }) { (Bool) in

@@ -131,7 +131,9 @@
 		C0DAAB141F538C5300739F42 /* RealmInstagramPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */; };
 		C0FC9E301F63106A00A813C5 /* ChannelLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */; };
 		C1048846AC127C35C9B1C80E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1061E7F5DF089EB4FD9C2809 /* CoreVideo.framework */; };
+		D105079F20034D5B0018A14F /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D105079E20034D5B0018A14F /* DateHelper.swift */; };
 		D11F05CD1FF5DF2200FAB0BB /* AppGroupDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */; };
+		D14E0E441FFB7968005D2C66 /* MKEventAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D14E0E431FFB7968005D2C66 /* MKEventAnalytics.swift */; };
 		D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
 		D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */; };
 		D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D433C1501F44D35500C9F704 /* IncomingCallManager.swift */; };
@@ -301,7 +303,9 @@
 		C0DAAB111F53816000739F42 /* RealmInstagramAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmInstagramAccount.swift; sourceTree = "<group>"; };
 		C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmInstagramPhoto.swift; sourceTree = "<group>"; };
 		C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelLabelView.swift; sourceTree = "<group>"; };
+		D105079E20034D5B0018A14F /* DateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDataManager.swift; sourceTree = "<group>"; };
+		D14E0E431FFB7968005D2C66 /* MKEventAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKEventAnalytics.swift; sourceTree = "<group>"; };
 		D40E59331F3A81510091A7B2 /* CallNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallNotificationView.swift; sourceTree = "<group>"; };
 		D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CallNotificationView.xib; sourceTree = "<group>"; };
 		D433C1501F44D35500C9F704 /* IncomingCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallManager.swift; sourceTree = "<group>"; tabWidth = 5; };
@@ -357,6 +361,7 @@
 			children = (
 				1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */,
 				D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */,
+				D14E0E431FFB7968005D2C66 /* MKEventAnalytics.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -498,6 +503,7 @@
 				8BC64B9C1E88A82D00120777 /* Buttons */,
 				8BE491341E8763A0002E9D78 /* MonkeyViewController.swift */,
 				8BA5D3551F57263900F732BF /* InputLabel.swift */,
+				D105079E20034D5B0018A14F /* DateHelper.swift */,
 				8BC4E2DB1DB121240018F2C3 /* Extensions.swift */,
 				8B46EAEB1E8770360069C7D7 /* Colors.swift */,
 				8B19B66E1EBCFA1C00493A3A /* Popups / Introducing Profiles */,
@@ -1076,6 +1082,7 @@
 				8435C2E11F12EE6600C80AC6 /* ChatViewController.swift in Sources */,
 				8BC4E2DC1DB121240018F2C3 /* Extensions.swift in Sources */,
 				8BC64B9E1E88A83A00120777 /* SelectableButton.swift in Sources */,
+				D105079F20034D5B0018A14F /* DateHelper.swift in Sources */,
 				D49796021F36304E00E5382E /* CallViewController.swift in Sources */,
 				8435C2F21F14500000C80AC6 /* NewFriendCollectionViewCell.swift in Sources */,
 				8BE491351E8763A0002E9D78 /* MonkeyViewController.swift in Sources */,
@@ -1086,6 +1093,7 @@
 				8435C2E81F13DBBC00C80AC6 /* ChatViewModel.swift in Sources */,
 				8BC95FFA1DF626DD00710628 /* WelcomeViewController.swift in Sources */,
 				C0BDAF5B1F4F51D500FA2F38 /* KeypadButton.swift in Sources */,
+				D14E0E441FFB7968005D2C66 /* MKEventAnalytics.swift in Sources */,
 				8B7C19361DB15A6F002FA6C9 /* AuthViewController.swift in Sources */,
 				8B52F1721EBF6726008BD779 /* VerifyBirthdayPopupViewController.swift in Sources */,
 				8BFD6D641EFAF8FC002C9F9C /* MonkeyVideoRender.swift in Sources */,

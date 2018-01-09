@@ -10,8 +10,6 @@ import UIKit
 import SwiftyGif
 import CoreLocation
 import Alamofire
-import Contacts
-import Amplitude_iOS
 import UserNotifications
 
 class PermissionViewController: UIViewController, CLLocationManagerDelegate {
@@ -289,10 +287,9 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
             
             self.present(mainVC, animated: true, completion: { _ in })
             Achievements.shared.grantedPermissionsV2 = true
-            Amplitude.shared.logEvent("Permissions Granted")
+			AnaliticsCenter.log(event: .permissionsGranted)
         }
     }
-
 }
 
 enum PermissionType:String {

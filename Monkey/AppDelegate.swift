@@ -9,13 +9,11 @@
 
 import UIKit
 import Fabric
-import Amplitude_iOS
 import Branch
 import RealmSwift
 import Realm
 import Crashlytics
 import FBSDKLoginKit
-import FBSDKCoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -33,9 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         BuddyBuildSDK.setup()
 
-        Amplitude.shared.initializeApiKey("a7f21c75b22fc7cd2e054da19f629870")
-		Amplitude.shared.trackingSessionEvents = true;
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+		AnaliticsCenter.logLaunchApp()
         Fabric.with([Answers.self, Branch.self, Crashlytics.self])
         Branch.getInstance().initSession(launchOptions: launchOptions)
 
@@ -163,10 +160,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         if application.applicationState != UIApplicationState.active {
-            Amplitude.shared.logEvent("Opened App Via Push Notification", withEventProperties: [
-                "info": userInfo,
-                "state": UIApplication.shared.applicationState.rawValue,
-                ])
+			AnaliticsCenter.log(withEvent: .openedAppViaPushNotification, andParameter: [
+				"info": userInfo,
+				"state": UIApplication.shared.applicationState.rawValue,
+				])
         }
 		
         if let text = userInfo["t"] as? String ?? notificationUserInfo.aps?["alert"] as? String, let emoji = notificationUserInfo.emoji {
@@ -205,7 +202,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         }
                         UIApplication.shared.openURL(url)
                     }
-                    Amplitude.shared.logEvent("Opened URL From Push Notification", withEventProperties: [
+					AnaliticsCenter.log(withEvent: .openedURLFromPushNotification, andParameter: [
                         "url": urlString,
                         "state": UIApplication.shared.applicationState.rawValue
                         ])

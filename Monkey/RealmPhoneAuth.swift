@@ -9,7 +9,6 @@
 import Foundation
 import RealmSwift
 import Alamofire
-import Amplitude_iOS
 
 class RealmPhoneAuth: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "phone_auths"

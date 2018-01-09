@@ -8,7 +8,6 @@
 
 import UIKit
 import RealmSwift
-import Amplitude_iOS
 
 class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate {
     /// The user's Monkey profile pic
@@ -230,7 +229,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         let unfriendAction = UIAlertAction(title: "Unfriend", style: .default, handler: { (alert: UIAlertAction!) -> Void in
             // Note to future engineers: Confirmation popups are tricky because this action causes a dismiss to be called automatically,
             // and since the alert view is a childVC of the instagramVC that goes dismissed with it
-            Amplitude.shared.logEvent("Unfriended User")
+			AnaliticsCenter.log(event: .unfriendedUser)
 
             friendship.delete(completion: { (error:APIError?) in
                 if error != nil {
@@ -243,7 +242,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         let deleteAction = UIAlertAction(title: "Block", style: .destructive, handler: { (alert: UIAlertAction!) -> Void in
             // Note to future engineers: Confirmation popups are tricky because this action causes a dismiss to be called automatically,
             // and since the alert view is a childVC of the instagramVC that goes dismissed with it
-            Amplitude.shared.logEvent("Blocked User")
+			AnaliticsCenter.log(event: .blockedUser)
 
             guard let userId = friendship.user?.user_id else {
                 return

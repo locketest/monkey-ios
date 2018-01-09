@@ -8,7 +8,6 @@
 
 import RealmSwift
 import Alamofire
-import Amplitude_iOS
 
 class RealmSnapcode: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "snapcodes"
