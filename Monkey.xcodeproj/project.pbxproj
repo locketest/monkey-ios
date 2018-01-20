@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C7F30FA63B2D253B6FC3594 /* BuddyBuildSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD4298C67DA157F15913848 /* BuddyBuildSDK.framework */; };
 		1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76554620132B0600FAB045 /* MKMatchManager.swift */; };
-		1B9E2F9C2011F2A200318A88 /* MKRemoteConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9E2F9B2011F2A200318A88 /* MKRemoteConfigHelper.swift */; };
 		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
 		5D419F63CE951F23C4C7D274 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */; };
@@ -170,7 +168,6 @@
 		1061E7F5DF089EB4FD9C2809 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		1680612B3D43C974FC315A41 /* Pods-Monkey.sandbox.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.sandbox.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.sandbox.xcconfig"; sourceTree = "<group>"; };
 		1B76554620132B0600FAB045 /* MKMatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMatchManager.swift; sourceTree = "<group>"; };
-		1B9E2F9B2011F2A200318A88 /* MKRemoteConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKRemoteConfigHelper.swift; sourceTree = "<group>"; };
 		1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKNetworkHelper.swift; sourceTree = "<group>"; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE97C1F3FCD83F9563287C4 /* Pods-Monkey.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.production.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.production.xcconfig"; sourceTree = "<group>"; };
@@ -363,9 +360,6 @@
 			children = (
 				1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */,
 				D12E22932010747200703F9B /* RemoteConfig.swift */,
-				D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */,
-				D14E0E431FFB7968005D2C66 /* MKEventAnalytics.swift */,
-				1B9E2F9B2011F2A200318A88 /* MKRemoteConfigHelper.swift */,
 				1B76554620132B0600FAB045 /* MKMatchManager.swift */,
 			);
 			name = Manager;
@@ -1084,7 +1078,6 @@
 				C01873711F4F2B92008C8790 /* InstagramPopupViewController.swift in Sources */,
 				8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */,
 				8BA5D3561F57263900F732BF /* InputLabel.swift in Sources */,
-				1B9E2F9C2011F2A200318A88 /* MKRemoteConfigHelper.swift in Sources */,
 				8BC260131E54122000B9CC16 /* Socket.swift in Sources */,
 				8435C2F01F144DA800C80AC6 /* FriendTableViewCell.swift in Sources */,
 				848727B11E86B1AD00F13501 /* ConfettiView.swift in Sources */,

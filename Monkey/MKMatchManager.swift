@@ -13,7 +13,7 @@ class MKMatchManager: NSObject {
     var afmCount: Int = 0
     
     var needShowAFMAlert : Bool {
-        return  self.afmCount >= ((MKRemoteConfigHelper.shareHelper.configValues[MKRemoteConfigKeys.MatchAutoSkipTimesOut.rawValue])?.numberValue?.intValue)!
+        return  self.afmCount >= RemoteConfigManager.shared.match_autoskip_warncount
     }
     
     static let shareManager = MKMatchManager()

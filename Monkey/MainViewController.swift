@@ -560,9 +560,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	
 	@IBAction func acceptButtonTapped(sender: Any) {
-		AnaliticsCenter.log(withEvent: .acceptedCall, andParameter: [
-			"data": self.chatSession?.subscriberData ?? [String:String]()
-			])
 		
         MKMatchManager.shareManager.afmCount = 0
 		self.chatSession?.accept()
@@ -582,7 +579,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	
 	@IBAction func skipButtonTapped(sender: Any) {
-		AnaliticsCenter.log(event: .skippedCall)
         MKMatchManager.shareManager.afmCount = 0
 		self.resetFact()
 		self.chatSession?.response = .skipped
