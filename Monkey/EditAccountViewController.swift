@@ -35,6 +35,7 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
     
     @IBOutlet var titleLabel: UILabel!
     /// The speed the UI animates into view after displaying Colors.blue.
+    var smallScreenBackBtn: UIButton?
     let transitionTime = 0.4
     /// The delay before the UI animates into view after displaying Colors.blue.
     let transitionDelay = 0.1
@@ -104,6 +105,15 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
         
         self.snapchatTextField.addTarget(self, action: #selector(snapchatDidChange), for: .editingChanged)
         self.birthDateTextField.selectable = false
+        
+        if self.isSmallScreen {
+            self.smallScreenBackBtn = UIButton()
+            self.smallScreenBackBtn!.frame = CGRect(x:10,y:41,width:22,height:22)
+            self.smallScreenBackBtn!.setImage(UIImage.init(named: "back"), for: .normal)
+            self.smallScreenBackBtn!.isHidden = true
+            self.smallScreenBackBtn!.addTarget(self, action: #selector(smallScreenBackBtnClocked(_:)), for: .touchUpInside)
+            self.view.addSubview(self.smallScreenBackBtn!)
+        }
 
         UIView.animate(
             withDuration: transitionTime / 2,
@@ -160,7 +170,7 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
             return
         }
         
-        self.pickerViewBottomConstraint.constant = keyboardSize.height + 20
+        self.pickerViewBottomConstraint.constant = keyboardSize.height + 30
             
         UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions(rawValue: curve), animations: {() -> Void in
             self.view.layoutIfNeeded()
@@ -242,15 +252,19 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
     @IBAction func selectFemaleGender(_ sender: SelectableButton) {
         self.selectedGender = .female
     }
-    
-    /// True after user confirms they cannot change DOB/gender in alert and allows submission to continue
-    var hasConfirmedData = false
 
     /**
      Will trigger data submission except when the provided data is invalid.
      */
+    func smallScreenBackBtnClocked(_ sender: Any) {
+        if self.isSmallScreen {self.smallScreenBackBtn!.isHidden = true}
+        self.nextButton.isEnabled = (self.snapchatTextField.isValid && self.nameTextField.charactersCount > 2) // reset for second page
+        self.isOnSecondPageIfSmall = false
+        self.contentScrollView.setContentOffset(CGPoint(x:0, y:0), animated:true)
+        self.nameTextField.becomeFirstResponder()
+    }
+    
     @IBAction func nextVC(_ sender: BigYellowButton) {
-        
         if !hasConfirmedData {
             hasConfirmedData = true
             let confirmation = UIAlertController(title: "yo you can’t change this later so make sure it's all good 💁", message: "", preferredStyle: .alert)
@@ -262,6 +276,7 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
 
             return
         }
+		AnaliticsCenter.log(event: .editProfileCompleted)
         
         if self.isOnSecondPageIfSmall { // called first to avoid setup of small screen below on second time around
             self.view.isUserInteractionEnabled = false
@@ -272,7 +287,8 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
             self.nextButton.isLoading = true
             self.uploadProfile()
         } else {
-            self.nextButton.isEnabled = false // reset for second page
+            if self.isSmallScreen {self.smallScreenBackBtn!.isHidden = false}
+            self.nextButton.isEnabled = (self.selectedGender != nil && self.birthDateTextField.charactersCount > 0) // reset for second page
             self.isOnSecondPageIfSmall = true
             self.contentScrollView.setContentOffset(CGPoint(x:self.contentScrollView.frame.size.width, y:0), animated:true)
             self.birthDateTextField.becomeFirstResponder()

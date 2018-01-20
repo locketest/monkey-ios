@@ -60,6 +60,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	@IBOutlet weak public var loadingTextLabel: LoadingTextLabel!
 	@IBOutlet var skippedTextBottomConstraint: NSLayoutConstraint!
 	@IBOutlet var skippedText: UILabel!
+     @IBOutlet var waitingText: UILabel!
+    @IBOutlet weak var connectText: UILabel!
+    
 	@IBOutlet weak var bananaView: BigYellowButton!
 	@IBOutlet weak var bananaCountLabel: UILabel!
 	@IBOutlet weak var bananaViewWidthConstraint:NSLayoutConstraint!
@@ -557,10 +560,16 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	
 	@IBAction func acceptButtonTapped(sender: Any) {
+		AnaliticsCenter.log(withEvent: .acceptedCall, andParameter: [
+			"data": self.chatSession?.subscriberData ?? [String:String]()
+			])
+		
+        MKMatchManager.shareManager.afmCount = 0
 		self.chatSession?.accept()
 		self.skipButton?.isHidden = true
 		self.acceptButton?.isHidden = true
 		
+        self.waitingText.isHidden = false
 		UIView.animate(withDuration: 0.3, animations: {
 			self.acceptButton?.isHidden = true
 		})
@@ -573,6 +582,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	
 	@IBAction func skipButtonTapped(sender: Any) {
+		AnaliticsCenter.log(event: .skippedCall)
+        MKMatchManager.shareManager.afmCount = 0
 		self.resetFact()
 		self.chatSession?.response = .skipped
 		self.chatSession?.chat?.skipped = true
@@ -783,6 +794,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	func presentCallViewController(for chatSession:ChatSession) {
 		// This will do nothing if the current chat
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
+        self.waitingText.isHidden = true
+        self.connectText.isHidden = true
 		var vcToPresentOn:UIViewController = self
 		while vcToPresentOn.presentedViewController is SwipeableViewController {
 			vcToPresentOn = vcToPresentOn.presentedViewController!
@@ -928,6 +941,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	func chatSession(_ chatSession: ChatSession, callEndedWithError error:Error?) {
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
+        self.waitingText.isHidden = true
+        self.connectText.isHidden = true
 		if !chatSession.didConnect {
 			self.skipped()
 		}
