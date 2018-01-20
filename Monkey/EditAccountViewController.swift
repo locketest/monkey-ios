@@ -265,18 +265,6 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
     }
     
     @IBAction func nextVC(_ sender: BigYellowButton) {
-        if !hasConfirmedData {
-            hasConfirmedData = true
-            let confirmation = UIAlertController(title: "yo you can’t change this later so make sure it's all good 💁", message: "", preferredStyle: .alert)
-            confirmation.addAction(UIAlertAction(title: "kk", style: .default, handler: nil))
-            
-            /// to avoid the keyboard dismissing we need to present on different window (See: https://stackoverflow.com/questions/28564710/keep-keyboard-on-when-uialertcontroller-is-presented-in-swift)
-            let rootViewController: UIViewController = (UIApplication.shared.windows.last?.rootViewController)!
-            rootViewController.present(confirmation, animated: true)
-
-            return
-        }
-		AnaliticsCenter.log(event: .editProfileCompleted)
         
         if self.isOnSecondPageIfSmall { // called first to avoid setup of small screen below on second time around
             self.view.isUserInteractionEnabled = false
