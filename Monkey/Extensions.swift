@@ -100,12 +100,6 @@ extension UITextField {
     }
 }
 
-class StopReverseEngineeringMonkeyAndAskForAJob {
-    let ourEmail = "security@monkey.cool (PLEASE DONT PUBLISH SO I KNOW WHO THE SMARTEST PEOPLE ARE)"
-    init() {
-        
-    }
-}
 @IBDesignable class MakeTextViewGreatAgain: UITextView {
     /// Don't forget to disable scrolling.
     @IBInspectable var isPaddingRemoved = false {

@@ -557,10 +557,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	
 	@IBAction func acceptButtonTapped(sender: Any) {
-		AnaliticsCenter.log(withEvent: .acceptedCall, andParameter: [
-			"data": self.chatSession?.subscriberData ?? [String:String]()
-			])
-		
 		self.chatSession?.accept()
 		self.skipButton?.isHidden = true
 		self.acceptButton?.isHidden = true
@@ -577,7 +573,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	
 	@IBAction func skipButtonTapped(sender: Any) {
-		AnaliticsCenter.log(event: .skippedCall)
 		self.resetFact()
 		self.chatSession?.response = .skipped
 		self.chatSession?.chat?.skipped = true
@@ -590,21 +585,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.startFindingChats(forReason: "onboarding-video")
 		}
 		self.stopFindingChats(andDisconnect: true, forReason: "onboarding-video")
-	}
-	
-	internal func modeSelectorTapped(loadingView: LoadingView) {
-		let modeSelector = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-		modeSelector.addAction(UIAlertAction(title: "Discover mode 🌎", style: .default, handler: { (UIAlertAction) in
-			self.selectedMode(.discover)
-		}))
-		modeSelector.addAction(UIAlertAction(title: "Friends mode 👯", style: .default, handler: { (UIAlertAction) in
-			self.selectedMode(.friends)
-		}))
-		modeSelector.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-			self.selectedMode(self.matchingMode)
-		}))
-		self.stopFindingChats(andDisconnect: false, forReason: "mode-selection")
-		self.present(modeSelector, animated: true) {}
 	}
 	
 	private func selectedMode(_ newMatchingMode: MatchingMode) {

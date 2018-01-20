@@ -160,7 +160,6 @@ extension CallViewController: CountingLabelDelegate {
     func addMinute() {
 		AnaliticsCenter.log(event: .requestedMinuteDuringCall)
         self.disableAddMinute()
-        Achievements.shared.addedFirstMinute = true
         let isWaiting = self.chatSession?.sendMinute() ?? false
         if isWaiting && !Achievements.shared.isOnboardingExplainTheyAddTimePopupCompleted {
             let explainAddTimeAlert = UIAlertController(title: "😢 You both have to tap Time", message: "The person you're talking to has to tap the Time button too for the call to continue.", preferredStyle: .alert)

@@ -13,12 +13,12 @@ import Branch
 import RealmSwift
 import Realm
 import Crashlytics
+import Firebase
 import FBSDKLoginKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    let secretMessage = StopReverseEngineeringMonkeyAndAskForAJob()
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -28,25 +28,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Achievements.shared.grantedPermissionsV2 = true
             Achievements.shared.promptedNotifications = true
         }
-
-        BuddyBuildSDK.setup()
+		// Reset achievements for bonus bananas on launch, uses `facebook_friends_invited` and whether or not its enabled by the server upon reset
+		Achievements.shared.authorizedFacebookForBonusBananas = false
 
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 		AnaliticsCenter.logLaunchApp()
         Fabric.with([Answers.self, Branch.self, Crashlytics.self])
         Branch.getInstance().initSession(launchOptions: launchOptions)
-
+		FirebaseApp.configure(options: FirebaseOptions.init(contentsOfFile: Environment.firebaseConfigurationPath)!)
+		RemoteConfigManager.shared.fetchLatestConfig()
+		
         window?.layer.cornerRadius = 4
         window?.layer.masksToBounds = true
         OTAudioDeviceManager.setAudioDevice(OTDefaultAudioDevice.shared())
-
-        if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as? [AnyHashable : Any] {
-            handleNotification(application: application, userInfo: userInfo)
-        }
-
-        if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? [AnyHashable : Any] {
-            handleNotification(application: application, userInfo: userInfo)
-        }
         if window?.rootViewController == nil {
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let mainVC = mainStoryboard.instantiateInitialViewController()
@@ -54,9 +48,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = mainVC
         }
 
-        // Reset achievements for bonus bananas on launch, uses `facebook_friends_invited` and whether or not its enabled by the server upon reset
-        Achievements.shared.authorizedFacebookForBonusBananas = false
-
+		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as? [AnyHashable : Any] {
+			handleNotification(application: application, userInfo: userInfo)
+		}
+		
+		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? [AnyHashable : Any] {
+			handleNotification(application: application, userInfo: userInfo)
+		}
+		
         return true
     }
 
@@ -131,9 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], withResponseInfo responseInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
      completionHandler()
      }*/
-    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
-
-    }
+	
     // e: emoji for in app notification
     // t: text for in app emoji notifcation (optional - alert used by default)
     // a: weather the url provided should be opened even if the app is already open

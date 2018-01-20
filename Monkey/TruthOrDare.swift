@@ -30,7 +30,6 @@ class TruthOrDareView: UIView, MessageHandler {
             return
         }
         AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-		AnaliticsCenter.log(event: .startedtruthordaregame)
         SoundPlayer.shared.play(sound: .todGame)
         status = "started"
         chatSession.send(message: "", from: self, withType: "start")
@@ -105,7 +104,6 @@ class TruthOrDareView: UIView, MessageHandler {
             guard status == "started" else {
                 return
             }
-			AnaliticsCenter.log(event: .receivedtruthordaregamerequest)
             let truthOrDareInputView = TruthOrDareInputView.instanceFromNib()
             var isTruth = false
             if message == "dare" {
@@ -190,10 +188,6 @@ class TruthOrDareView: UIView, MessageHandler {
             case .dare:
                 truthOrDareAlertView.textLabel.text = "I dare you to..."
             }
-			AnaliticsCenter.log(withEvent: .gotdare, andParameter: [
-				"id": dareId,
-				"attributes": attributes,
-				])
             truthOrDareAlertView.responseHandler = { () in
                 self.status = ""
                 self.hideAlert(view: truthOrDareAlertView)
@@ -267,10 +261,6 @@ class TruthOrDareView: UIView, MessageHandler {
                 print("Id parsing issues")
                 return
             }
-			AnaliticsCenter.log(withEvent: .sentdare, andParameter: [
-				"id": dareId,
-				"attributes": attributes,
-				])
             chatSession.send(message: dareId, from: self, withType: "response")
             guard ((attributes["is_banned"] as? Bool) ?? false) == false else {
                 print("is banned")

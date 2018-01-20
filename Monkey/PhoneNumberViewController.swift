@@ -159,10 +159,6 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
     /// Makes JSONAPIRequest and then moves the user onto the next screen with information we get from the response (character set).
     /// Returns no value. phoneNumber and countryCode are implicitly unwrapped, should guard against nil values before calling this function.
     func requestVerificationCode(_ phoneNumber:String, countryCode:String) {
-		AnaliticsCenter.log(withEvent: .requestedPhoneVerificationCode, andParameter: [
-			"country_code": countryCode,
-			"phone_number": phoneNumber,
-			])
         let parameters:[String:Any] = ["data":["type":"phone_auths", "attributes":["country_code":countryCode, "phone_number":phoneNumber]]]
         
         self.sendButton.setTitle("Sending secret code", for: .normal)
@@ -217,9 +213,6 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
     }
     
     func showConnectionErrorAlert(message: String) {
-		AnaliticsCenter.log(withEvent: .errorRequestingPhoneVerificationCode, andParameter: [
-			"message": message,
-			])
         self.hasUserConfirmedNumber = false
         self.sendButton.titleLabel?.text = "Send secret code"
         self.sendButton.emojiLabel?.layer.removeAllAnimations()

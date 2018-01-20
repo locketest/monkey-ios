@@ -262,17 +262,12 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
 
             return
         }
-		
-		AnaliticsCenter.log(event: .editProfileCompleted)
         
         if self.isOnSecondPageIfSmall { // called first to avoid setup of small screen below on second time around
-			AnaliticsCenter.log(event: .editProfileNameCompleted)
             self.view.isUserInteractionEnabled = false
             self.nextButton.isLoading = true
             self.uploadProfile()
         } else if !self.isSmallScreen { // if it's a big screen they've completed everything in one
-			
-			AnaliticsCenter.log(event: .editProfileNameCompleted)
             self.view.isUserInteractionEnabled = false
             self.nextButton.isLoading = true
             self.uploadProfile()
@@ -320,27 +315,22 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
 			
             currentUser.first_name.then {
 				userProperty["first_name"] = $0
-				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_first_name")
 			}
 
             currentUser.snapchat_username.then {
 				self.snapchatTextField.username = $0
-				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_username")
 			}
 
             currentUser.user_id.then {
 				userProperty["user_id"] = $0
-				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_user_id")
 			}
 
             currentUser.birth_date.then {
 				userProperty["birth_date"] = $0
-				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_birth_date")
 			}
 
             currentUser.gender.then {
 				userProperty["gender"] = $0
-				AppGroupDataManager.appGroupUserDefaults?.set($0, forKey: "Monkey_gender")
 			}
 			
 			AnaliticsCenter.update(userProperty: userProperty)

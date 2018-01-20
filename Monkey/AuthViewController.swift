@@ -109,24 +109,25 @@ class AuthViewController: UIViewController {
 				monkeyProfileComplete = true
 				
 				// 存储用户资料到共享 app groups 存储区
-				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.first_name, forKey: "Monkey_first_name")
-				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.username, forKey: "Monkey_username")
-				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.user_id, forKey: "Monkey_user_id")
-				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.birth_date, forKey: "Monkey_birth_date")
-				AppGroupDataManager.appGroupUserDefaults?.set(currentUser.gender, forKey: "Monkey_gender")
+				Achievements.shared.group_first_name = currentUser.first_name;
+				Achievements.shared.group_username = currentUser.username;
+				Achievements.shared.group_user_id = currentUser.user_id;
+				Achievements.shared.group_birth_date = currentUser.birth_date?.timeIntervalSince1970;
+				Achievements.shared.group_gender = currentUser.gender;
+				Achievements.shared.group_profile_photo = currentUser.profile_photo_url;
 			}
 			
 			if (monkeySignUp == true) {
-				var loginResult = "new"
-
-				if (monkeyProfileComplete == true) {
-					loginResult = "new"
-				}else {
-					loginResult = "old"
-				}
-				AnaliticsCenter.log(withEvent: .signUpLogin, andParameter: [
-					"result": loginResult,
-					])
+//				var loginResult = "new"
+//
+//				if (monkeyProfileComplete == true) {
+//					loginResult = "new"
+//				}else {
+//					loginResult = "old"
+//				}
+//				AnaliticsCenter.log(withEvent: .signUpLogin, andParameter: [
+//					"result": loginResult,
+//					])
 				
 				UserDefaults.standard.set(false, forKey: "MonkeySignUp")
 				UserDefaults.standard.set(true, forKey: "MonkeyLogEventFirstMatchRequest")

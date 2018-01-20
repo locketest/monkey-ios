@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C7F30FA63B2D253B6FC3594 /* BuddyBuildSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD4298C67DA157F15913848 /* BuddyBuildSDK.framework */; };
 		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
 		5D419F63CE951F23C4C7D274 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */; };
@@ -68,8 +67,6 @@
 		8B8664BB1F04902D00E5AC12 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8664BA1F04902D00E5AC12 /* Effect.swift */; };
 		8B8664BD1F04AB9700E5AC12 /* PixelationEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8664BC1F04AB9700E5AC12 /* PixelationEffect.swift */; };
 		8B8B2D741EC52B910086547C /* CachedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8B2D731EC52B910086547C /* CachedImageView.swift */; };
-		8B8FD9061DB1BC6300621A76 /* LoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8B8FD9051DB1BC6300621A76 /* LoadingView.xib */; };
-		8B8FD9081DB1BCFF00621A76 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8FD9071DB1BCFF00621A76 /* LoadingView.swift */; };
 		8B9A0FCB1F532CC800E8A899 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9A0FCA1F532CC800E8A899 /* Country.swift */; };
 		8B9A0FCD1F53315700E8A899 /* country-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 8B9A0FCC1F53315700E8A899 /* country-data.json */; };
 		8B9A0FCF1F533A0100E8A899 /* PhoneNumberViewController+PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9A0FCE1F533A0100E8A899 /* PhoneNumberViewController+PickerView.swift */; };
@@ -132,8 +129,10 @@
 		C0FC9E301F63106A00A813C5 /* ChannelLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */; };
 		C1048846AC127C35C9B1C80E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1061E7F5DF089EB4FD9C2809 /* CoreVideo.framework */; };
 		D105079F20034D5B0018A14F /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D105079E20034D5B0018A14F /* DateHelper.swift */; };
-		D11F05CD1FF5DF2200FAB0BB /* AppGroupDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */; };
-		D14E0E441FFB7968005D2C66 /* MKEventAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D14E0E431FFB7968005D2C66 /* MKEventAnalytics.swift */; };
+		D12E22942010747200703F9B /* RemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12E22932010747200703F9B /* RemoteConfig.swift */; };
+		D17CE9852009C2E4002F4F9D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D17CE9842009C2E4002F4F9D /* GoogleService-Info.plist */; };
+		D17CE9872009E47A002F4F9D /* GoogleService-Info-Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = D17CE9862009E47A002F4F9D /* GoogleService-Info-Dev.plist */; };
+		D17CE989200A1186002F4F9D /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17CE988200A1185002F4F9D /* Analytics.swift */; };
 		D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
 		D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */; };
 		D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D433C1501F44D35500C9F704 /* IncomingCallManager.swift */; };
@@ -211,7 +210,7 @@
 		8B6A579F1EAE9E6100136311 /* APIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		8B6A57A11EAEBF3E00136311 /* JSONAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONAPI.swift; sourceTree = "<group>"; };
 		8B6DC3341DB4978A004F787E /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Environment.swift; path = ../Environment.swift; sourceTree = "<group>"; };
-		8B6EB50A1DB0817F0051C8D2 /* Monkey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monkey.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B6EB50A1DB0817F0051C8D2 /* Monkey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Monkey.app; path = Monkey_Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B6EB50D1DB0817F0051C8D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8B6EB50F1DB0817F0051C8D2 /* EditAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountViewController.swift; sourceTree = "<group>"; };
 		8B6EB5121DB0817F0051C8D2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -233,8 +232,6 @@
 		8B8664BA1F04902D00E5AC12 /* Effect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Effect.swift; sourceTree = "<group>"; };
 		8B8664BC1F04AB9700E5AC12 /* PixelationEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelationEffect.swift; sourceTree = "<group>"; };
 		8B8B2D731EC52B910086547C /* CachedImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachedImageView.swift; sourceTree = "<group>"; };
-		8B8FD9051DB1BC6300621A76 /* LoadingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoadingView.xib; sourceTree = "<group>"; };
-		8B8FD9071DB1BCFF00621A76 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		8B9A0FCA1F532CC800E8A899 /* Country.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		8B9A0FCC1F53315700E8A899 /* country-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "country-data.json"; sourceTree = "<group>"; };
 		8B9A0FCE1F533A0100E8A899 /* PhoneNumberViewController+PickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhoneNumberViewController+PickerView.swift"; sourceTree = "<group>"; };
@@ -279,7 +276,6 @@
 		8BFD6D631EFAF8FC002C9F9C /* MonkeyVideoRender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyVideoRender.swift; sourceTree = "<group>"; };
 		8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EffectsCoordinator.swift; sourceTree = "<group>"; };
 		8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeySubscriber.swift; sourceTree = "<group>"; };
-		ABD4298C67DA157F15913848 /* BuddyBuildSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BuddyBuildSDK.framework; sourceTree = "<group>"; };
 		AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		B9991ED105ADE4E332E64721 /* Pods_Monkey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Monkey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE54E7880503939DF9ADCFC1 /* Pods-Monkey.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.development.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.development.xcconfig"; sourceTree = "<group>"; };
@@ -304,8 +300,10 @@
 		C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmInstagramPhoto.swift; sourceTree = "<group>"; };
 		C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelLabelView.swift; sourceTree = "<group>"; };
 		D105079E20034D5B0018A14F /* DateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
-		D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupDataManager.swift; sourceTree = "<group>"; };
-		D14E0E431FFB7968005D2C66 /* MKEventAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKEventAnalytics.swift; sourceTree = "<group>"; };
+		D12E22932010747200703F9B /* RemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfig.swift; sourceTree = "<group>"; };
+		D17CE9842009C2E4002F4F9D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D17CE9862009E47A002F4F9D /* GoogleService-Info-Dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Dev.plist"; sourceTree = "<group>"; };
+		D17CE988200A1185002F4F9D /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		D40E59331F3A81510091A7B2 /* CallNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallNotificationView.swift; sourceTree = "<group>"; };
 		D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CallNotificationView.xib; sourceTree = "<group>"; };
 		D433C1501F44D35500C9F704 /* IncomingCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallManager.swift; sourceTree = "<group>"; tabWidth = 5; };
@@ -340,7 +338,6 @@
 			files = (
 				8BD4285B1DB8855900883035 /* Contacts.framework in Frameworks */,
 				8B3A787F1DB3319000FA68A7 /* AudioToolbox.framework in Frameworks */,
-				0C7F30FA63B2D253B6FC3594 /* BuddyBuildSDK.framework in Frameworks */,
 				A9067019D4255969BBBF9985 /* AssetsLibrary.framework in Frameworks */,
 				EC27374740C4C4CD0330B218 /* CoreText.framework in Frameworks */,
 				5D419F63CE951F23C4C7D274 /* CoreTelephony.framework in Frameworks */,
@@ -360,8 +357,7 @@
 			isa = PBXGroup;
 			children = (
 				1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */,
-				D11F05CC1FF5DF2200FAB0BB /* AppGroupDataManager.swift */,
-				D14E0E431FFB7968005D2C66 /* MKEventAnalytics.swift */,
+				D12E22932010747200703F9B /* RemoteConfig.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -371,7 +367,6 @@
 			children = (
 				8BD4285A1DB8855900883035 /* Contacts.framework */,
 				8B3A787E1DB3319000FA68A7 /* AudioToolbox.framework */,
-				ABD4298C67DA157F15913848 /* BuddyBuildSDK.framework */,
 				04A7638BB109409425659E70 /* AssetsLibrary.framework */,
 				274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */,
 				AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */,
@@ -490,6 +485,8 @@
 			isa = PBXGroup;
 			children = (
 				8B6EB5191DB0817F0051C8D2 /* Info.plist */,
+				D17CE9842009C2E4002F4F9D /* GoogleService-Info.plist */,
+				D17CE9862009E47A002F4F9D /* GoogleService-Info-Dev.plist */,
 				8BD428591DB87DAF00883035 /* Monkey.entitlements */,
 				8B6EB5161DB0817F0051C8D2 /* LaunchScreen.storyboard */,
 				8B7C193B1DB179B0002FA6C9 /* Monkey-Bridging-Header.h */,
@@ -587,6 +584,7 @@
 		8BE35E291DB9D567002049B5 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				D17CE988200A1185002F4F9D /* Analytics.swift */,
 				8BAA4C711E5545AC0072F3F6 /* APIController.swift */,
 				8B6A57A31EAEE7C400136311 /* Modern API Wrapper */,
 				8BC260171E552D0400B9CC16 /* Old API Wrapper */,
@@ -617,8 +615,6 @@
 				8B3A78771DB2F88200FA68A7 /* Sounds */,
 				8B3A787A1DB32ABF00FA68A7 /* EmojiLabel.swift */,
 				C047D7C61F6C36160048286F /* CountingLabel.swift */,
-				8B8FD9071DB1BCFF00621A76 /* LoadingView.swift */,
-				8B8FD9051DB1BC6300621A76 /* LoadingView.xib */,
 				8BBE244A1DC1B86B00F63CED /* LoadingTextLabel.swift */,
 				D49796011F36304E00E5382E /* CallViewController.swift */,
 			);
@@ -852,7 +848,6 @@
 				8B465FC71E3C196D0023CD74 /* tod_game.wav in Resources */,
 				84BD64011E74AFCB00C08983 /* whoosh.wav in Resources */,
 				8BE02A461EE9FBC7004CF000 /* Settings.storyboard in Resources */,
-				8B8FD9061DB1BC6300621A76 /* LoadingView.xib in Resources */,
 				8BC4BA4D1E1B5CEE00891566 /* swipe.wav in Resources */,
 				8BC4BA4E1E1B5CEE00891566 /* sword.wav in Resources */,
 				C063D7591F3D459900D94BF1 /* call.m4a in Resources */,
@@ -862,8 +857,10 @@
 				8B756CA71DFB323400BA7503 /* magic.m4a in Resources */,
 				8B465FC51E3C191F0023CD74 /* click.mp3 in Resources */,
 				8B3A78741DB2F87C00FA68A7 /* clock.mp3 in Resources */,
+				D17CE9852009C2E4002F4F9D /* GoogleService-Info.plist in Resources */,
 				D4656C621F4B961800966C6D /* onboarding-1.gif in Resources */,
 				8B3A78751DB2F87C00FA68A7 /* win.mp3 in Resources */,
+				D17CE9872009E47A002F4F9D /* GoogleService-Info-Dev.plist in Resources */,
 				C01873741F4F2DDF008C8790 /* Instagram.storyboard in Resources */,
 				D4656C681F4C8C6900966C6D /* Verification.storyboard in Resources */,
 				D4656C641F4B961800966C6D /* onboarding-3.gif in Resources */,
@@ -973,12 +970,15 @@
 				"${BUILT_PRODUCTS_DIR}/Branch/Branch.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/MMSCameraViewController/MMSCameraViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/MMSProfileImagePicker/MMSProfileImagePicker.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyGif/SwiftyGif.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -988,12 +988,15 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Branch.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSCameraViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSProfileImagePicker.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyGif.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1038,8 +1041,8 @@
 				C0CF020D1F58CA66009D7B33 /* DismissPopupTransitionAnimator.swift in Sources */,
 				D43415521F33812C00A481CC /* RatingNotificationView.swift in Sources */,
 				8BFD6D621EFAEA87002C9F9C /* MonkeyPublisher.swift in Sources */,
+				D12E22942010747200703F9B /* RemoteConfig.swift in Sources */,
 				8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */,
-				D11F05CD1FF5DF2200FAB0BB /* AppGroupDataManager.swift in Sources */,
 				847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */,
 				8B2ED8BE1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift in Sources */,
 				C047D7C71F6C36160048286F /* CountingLabel.swift in Sources */,
@@ -1056,6 +1059,7 @@
 				8BC903291EBE7012004B46D8 /* PopupTransitionPresentNewPopupAnimator.swift in Sources */,
 				8BBE244B1DC1B86B00F63CED /* LoadingTextLabel.swift in Sources */,
 				8B6EB5101DB0817F0051C8D2 /* EditAccountViewController.swift in Sources */,
+				D17CE989200A1186002F4F9D /* Analytics.swift in Sources */,
 				8BB8958A1DBDB09F00FC5E53 /* Chat.swift in Sources */,
 				8B9A0FCF1F533A0100E8A899 /* PhoneNumberViewController+PickerView.swift in Sources */,
 				8B6A579E1EAE9AE300136311 /* JSONAPIObject.swift in Sources */,
@@ -1071,7 +1075,6 @@
 				8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */,
 				8BA5D3561F57263900F732BF /* InputLabel.swift in Sources */,
 				8BC260131E54122000B9CC16 /* Socket.swift in Sources */,
-				8B8FD9081DB1BCFF00621A76 /* LoadingView.swift in Sources */,
 				8435C2F01F144DA800C80AC6 /* FriendTableViewCell.swift in Sources */,
 				848727B11E86B1AD00F13501 /* ConfettiView.swift in Sources */,
 				BF8C38B51E9A0B620089B313 /* MainViewController+Location.swift in Sources */,
@@ -1093,7 +1096,6 @@
 				8435C2E81F13DBBC00C80AC6 /* ChatViewModel.swift in Sources */,
 				8BC95FFA1DF626DD00710628 /* WelcomeViewController.swift in Sources */,
 				C0BDAF5B1F4F51D500FA2F38 /* KeypadButton.swift in Sources */,
-				D14E0E441FFB7968005D2C66 /* MKEventAnalytics.swift in Sources */,
 				8B7C19361DB15A6F002FA6C9 /* AuthViewController.swift in Sources */,
 				8B52F1721EBF6726008BD779 /* VerifyBirthdayPopupViewController.swift in Sources */,
 				8BFD6D641EFAF8FC002C9F9C /* MonkeyVideoRender.swift in Sources */,
@@ -1147,7 +1149,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Beta AppIcon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1201,17 +1203,12 @@
 			baseConfigurationReference = 1680612B3D43C974FC315A41 /* Pods-Monkey.sandbox.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Sandbox AppIcon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1285,7 +1282,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALM_SYNC\"";
 				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Monkey_Sandbox;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -1301,7 +1298,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Beta AppIcon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1411,16 +1408,10 @@
 			baseConfigurationReference = EB50A077819A2AA5EA197797 /* Pods-Monkey.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Sandbox AppIcon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 9RZJW8NK36;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -1491,7 +1482,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALMSYNC\"";
 				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Monkey_Debug;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Monkey-Bridging-Header.h";
@@ -1506,15 +1497,9 @@
 			baseConfigurationReference = 36BDAAEC1AB6615D506ADC62 /* Pods-Monkey.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9RZJW8NK36;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -1598,7 +1583,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Beta AppIcon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1652,17 +1637,12 @@
 			baseConfigurationReference = BE54E7880503939DF9ADCFC1 /* Pods-Monkey.development.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Beta AppIcon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1736,7 +1716,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALM_SYNC\"";
 				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Monkey_Development;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -1752,7 +1732,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Beta AppIcon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1804,17 +1784,12 @@
 			baseConfigurationReference = 2AE97C1F3FCD83F9563287C4 /* Pods-Monkey.production.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "Production AppIcon";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Monkey/Monkey.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1888,7 +1863,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"REALM_SYNC\"";
 				PRODUCT_BUNDLE_IDENTIFIER = cool.monkey.ios;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Monkey_Production;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;

@@ -79,7 +79,7 @@ class LoadingTextLabel: UILabel {
 extension String {
     func replace(charAt index: Int, with newCharacter: Character) -> String {
         var modifiedString = String()
-        for (i, char) in self.characters.enumerated() {
+        for (i, char) in self.enumerated() {
             modifiedString += String((i == index) ? newCharacter : char)
         }
         return modifiedString

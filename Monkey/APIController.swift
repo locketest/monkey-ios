@@ -46,7 +46,7 @@ class APIController {
         }
         set(auth) {
             UserDefaults.standard.set(auth, forKey: "authorization")
-			AppGroupDataManager.appGroupUserDefaults?.set(auth, forKey: "Monkey_authorization")
+			Achievements.shared.group_authorization = auth;
         }
     }
     class func urlTo(_ model: String) -> String {

@@ -287,7 +287,6 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
             
             self.present(mainVC, animated: true, completion: { _ in })
             Achievements.shared.grantedPermissionsV2 = true
-			AnaliticsCenter.log(event: .permissionsGranted)
         }
     }
 }

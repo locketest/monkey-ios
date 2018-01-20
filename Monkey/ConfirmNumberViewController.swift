@@ -223,10 +223,6 @@ class ConfirmNumberViewController: MonkeyViewController {
                 error?.log()
                 self.clearUserInput()
                 self.displayInvalidCodeAlert(title:"Uh oh!", message: error?.message ?? "😬 Please check your code and try again", responseStatus: error?.status)
-				AnaliticsCenter.log(withEvent: .errorValidatingPhoneVerificationCode, andParameter: [
-					"code": code,
-					"message": error?.message ?? "😬 Please check your code and try again"
-					])
                 return
             }
             
@@ -236,9 +232,6 @@ class ConfirmNumberViewController: MonkeyViewController {
                 self.displayInvalidCodeAlert(title:"Incorrect Code:", message:"😬 Please check your code and try again", responseStatus:nil)
                 return
             }
-			AnaliticsCenter.log(withEvent: .validatedPhoneVerificationCode, andParameter: [
-				"code": code,
-				])
             let authorization = "Bearer \(token)"
 			
             APIController.authorization = authorization
@@ -281,12 +274,8 @@ class ConfirmNumberViewController: MonkeyViewController {
                     alert.dismiss(animated: true, completion: nil)
                 }))
                 self?.present(alert, animated: true, completion: nil)
-				AnaliticsCenter.log(withEvent: .errorResendingPhoneVerificationCode, andParameter: [
-					"message": error?.message ?? "Please try again."
-					])
                 return
             }
-			AnaliticsCenter.log(event: .resentPhoneVerificationCode)
 		})
     }
     

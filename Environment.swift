@@ -38,7 +38,7 @@ struct Environment {
     // static let version = 34 // 2.4.1
     // static let version = 35 // 2.4.2, 2.4.3, 2.4.4, 2.4.5
     // static let version = 36 // 2.4.6
-	static let version = 37 // 2.4.7
+	static let version = 37 // 2.4.7, 2.4.8, 2.4.9, 2.5.0
 
     static var environment: ENV {
         let envString = (Bundle.main.object(forInfoDictionaryKey: "Configuration") as? String ?? "").lowercased()
@@ -47,23 +47,18 @@ struct Environment {
     static var baseURL: String {
         switch self.environment {
         case .local: return "https://ngrok.monkey.engineering:21016"
-//        case .sandbox: return "https://monkey-api-sandbox.monkey.engineering"
-//        case .sandbox: return "http://test.monkey.cool"
         case .sandbox: return "http://test.monkey.cool"
         case .development: return "https://monkey-api-development.monkey.engineering"
         case .production: return "https://api.monkey.cool"
-//        case .production: return "http://test.monkey.cool"
         case .release: return "https://api.monkey.cool"
         }
     }
     static var socketURL: String {
         switch self.environment {
         case .local: return "wss://ngrok.monkey.engineering:21016/api/v2.0/sockets/websocket"
-//        case .sandbox: return "wss://monkey-api-sandbox.monkey.engineering/api/v2.0/sockets/websocket"
         case .sandbox: return "ws://test.monkey.cool/api/v2.0/sockets/websocket"
         case .development: return "wss://monkey-api-development.monkey.engineering/api/v2.0/sockets/websocket"
         case .production: return "wss://ws.monkey.cool/api/v2.0/sockets/websocket"
-//        case .production: return "ws://test.monkey.cool/api/v2.0/sockets/websocket"
         case .release: return "wss://ws.monkey.cool/api/v2.0/sockets/websocket"
         }
     }
@@ -93,11 +88,15 @@ struct Environment {
 	
 	static var amplitudeKey: String {
 		switch self.environment {
-		case .local: return "04f72fae8a9c614c47cc38e822778a36"
-		case .sandbox: return "04f72fae8a9c614c47cc38e822778a36"
-		case .development: return "04f72fae8a9c614c47cc38e822778a36"
-		case .production: return "a7f21c75b22fc7cd2e054da19f629870"
-		case .release: return "a7f21c75b22fc7cd2e054da19f629870"
+		case .production, .release: return "a7f21c75b22fc7cd2e054da19f629870"
+		default: return "04f72fae8a9c614c47cc38e822778a36"
+		}
+	}
+	
+	static var firebaseConfigurationPath: String {
+		switch self.environment {
+		case .production, .release: return Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")!
+		default: return Bundle.main.path(forResource: "GoogleService-Info-Dev", ofType: "plist")!
 		}
 	}
 	
