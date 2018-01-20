@@ -34,6 +34,7 @@ class ConfirmNumberViewController: MonkeyViewController {
     let transitionTime = 0.4
     /// The delay before the UI animates into view after displaying Colors.blue.
     let transitionDelay = 0.1
+    var hadShow = false
     /// The button responsible for resending a code
     @IBOutlet var resendCodeButton: UIButton!
     /// This string contains the current code the user has input, converted from emojis to numbers if necessary
@@ -94,6 +95,9 @@ class ConfirmNumberViewController: MonkeyViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if self.hadShow {
+            return
+        }
         self.containerViewTrailingMarginConstraint.constant = -self.containerView.frame.size.width
         // layer is animated back to 1 in viewDidAppaer as part of the present animation
         self.containerView.layer.opacity = 0
@@ -105,6 +109,10 @@ class ConfirmNumberViewController: MonkeyViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        if self.hadShow {
+            return
+        }
         UIView.animate(
             withDuration: transitionTime,
             delay: transitionDelay,
@@ -114,6 +122,8 @@ class ConfirmNumberViewController: MonkeyViewController {
                 self.containerViewTrailingMarginConstraint.constant = 0
                 self.view.layoutIfNeeded()
         })
+        
+        self.hadShow = true
     }
     
     /// Counts down 1 second from the `secondsToResendCode`, when it reaches 0 it enables the resend button & invalidates the timer
@@ -269,7 +279,7 @@ class ConfirmNumberViewController: MonkeyViewController {
             guard error == nil else {
                 error?.log()
                 let alert = UIAlertController(title: "Something went wrong", message: error?.message ?? "Please try again.", preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: {
+                alert.addAction(UIAlertAction(title: "Ok", style: .`default`, handler: {
                     (UIAlertAction) in
                     alert.dismiss(animated: true, completion: nil)
                 }))

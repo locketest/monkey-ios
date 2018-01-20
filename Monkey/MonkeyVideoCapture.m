@@ -579,6 +579,7 @@
 - (OTVideoOrientation)currentDeviceOrientation {
     UIInterfaceOrientation orientation =
     [[UIApplication sharedApplication] statusBarOrientation];
+    
     // transforms are different for
     if (AVCaptureDevicePositionFront == self.cameraPosition)
     {

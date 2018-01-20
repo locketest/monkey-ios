@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -1470,7 +1470,7 @@ types of Monkey species in the entire world.</string>
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
                                                         <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="🚫"/>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="➡️ "/>
                                                             <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
                                                                 <color key="value" red="1" green="1" blue="1" alpha="0.20000000000000001" colorSpace="calibratedRGB"/>
                                                             </userDefinedRuntimeAttribute>
@@ -1579,10 +1579,31 @@ types of Monkey species in the entire world.</string>
                                                     <constraint firstAttribute="height" constant="128" id="kKL-2D-a4v"/>
                                                 </constraints>
                                             </view>
+                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Waiting..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DYS-hp-fSP">
+                                                <rect key="frame" x="147" y="535" width="82" height="21"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="82" id="4PA-se-JS7"/>
+                                                    <constraint firstAttribute="height" constant="21" id="qcL-7H-cY2"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Connecting..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Era-aI-5mW">
+                                                <rect key="frame" x="128" y="485" width="120" height="21"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="21" id="mfB-bM-BYA"/>
+                                                    <constraint firstAttribute="width" constant="120" id="o1D-ZI-ViD"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="Ulj-5R-07I" firstAttribute="leading" relation="lessThanOrEqual" secondItem="ZLF-OB-nU9" secondAttribute="leading" priority="995" constant="40" id="4Md-d2-2G7"/>
+                                            <constraint firstItem="Era-aI-5mW" firstAttribute="centerY" secondItem="4OG-VV-HHr" secondAttribute="centerY" id="8Fv-Kx-pTV"/>
                                             <constraint firstAttribute="bottom" secondItem="2CN-Mj-9Gg" secondAttribute="bottom" constant="30" id="DUk-aP-Ab3"/>
                                             <constraint firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Ulj-5R-07I" secondAttribute="trailing" priority="995" constant="40" id="EOV-E3-60V"/>
                                             <constraint firstAttribute="bottom" secondItem="psw-iu-AsM" secondAttribute="bottom" constant="20" id="FCf-TC-v4E"/>
@@ -1596,7 +1617,10 @@ types of Monkey species in the entire world.</string>
                                             <constraint firstItem="IDy-13-zRY" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="guH-Zs-FDt"/>
                                             <constraint firstItem="kBC-65-2jJ" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="hFH-m1-lsm"/>
                                             <constraint firstAttribute="bottom" secondItem="Uh6-Lu-Kac" secondAttribute="bottom" constant="-6" id="hjg-0g-L2G"/>
+                                            <constraint firstItem="DYS-hp-fSP" firstAttribute="centerY" secondItem="4OG-VV-HHr" secondAttribute="centerY" id="iic-q9-24W"/>
+                                            <constraint firstItem="DYS-hp-fSP" firstAttribute="centerX" secondItem="4OG-VV-HHr" secondAttribute="centerX" id="mIz-vt-epe"/>
                                             <constraint firstItem="5GL-k1-GiO" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="34" id="mfa-BL-9Bs"/>
+                                            <constraint firstItem="Era-aI-5mW" firstAttribute="centerX" secondItem="4OG-VV-HHr" secondAttribute="centerX" id="mnQ-SR-lVU"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="r3c-Jx-4VP"/>
                                             <constraint firstAttribute="trailing" secondItem="lzF-W2-0kz" secondAttribute="trailing" id="spX-Eu-ksQ"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="top" secondItem="4OG-VV-HHr" secondAttribute="bottom" constant="10" id="ucC-27-WkF"/>
@@ -1632,6 +1656,7 @@ types of Monkey species in the entire world.</string>
                         <outlet property="bottomArrowPadding" destination="DUk-aP-Ab3" id="0cJ-Qg-8YH"/>
                         <outlet property="chatButton" destination="IDy-13-zRY" id="Xtq-9E-v9s"/>
                         <outlet property="colorGradientView" destination="e3d-za-UK6" id="4Yv-Zd-oTA"/>
+                        <outlet property="connectText" destination="Era-aI-5mW" id="qi7-BD-a4C"/>
                         <outlet property="containerView" destination="N5m-MM-8GO" id="bW5-GI-0Xk"/>
                         <outlet property="factTextView" destination="v9E-7V-2CY" id="k9n-mv-dwN"/>
                         <outlet property="inviteFriendsView" destination="lzF-W2-0kz" id="KzI-0g-tH6"/>
@@ -1641,6 +1666,7 @@ types of Monkey species in the entire world.</string>
                         <outlet property="skipButton" destination="SSL-hy-Vte" id="tcF-JJ-NtZ"/>
                         <outlet property="skippedText" destination="4OG-VV-HHr" id="oUr-NU-SUe"/>
                         <outlet property="skippedTextBottomConstraint" destination="ucC-27-WkF" id="88B-JP-U0N"/>
+                        <outlet property="waitingText" destination="DYS-hp-fSP" id="P1r-iM-bl4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mEO-JA-PUA" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2317,16 +2343,16 @@ types of Monkey species in the entire world.</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ptC-ge-Xhz" userLabel="Dummy">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="272"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="262"/>
                                 <subviews>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" alwaysBounceHorizontal="YES" scrollEnabled="NO" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7jP-ZF-QkE">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="272"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="262"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jcr-wa-Lpo" userLabel="Container View">
-                                                <rect key="frame" x="0.0" y="0.0" width="640" height="272"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="640" height="262"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pqF-jZ-gRD" userLabel="Page 1">
-                                                        <rect key="frame" x="0.0" y="0.0" width="320" height="272"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="320" height="262"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Profile (1/2)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DuZ-Ri-ofH">
                                                                 <rect key="frame" x="20" y="30" width="280" height="21"/>
@@ -2341,10 +2367,10 @@ types of Monkey species in the entire world.</string>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Ng-4h-WY3" userLabel="Another Container">
-                                                                <rect key="frame" x="0.0" y="71" width="320" height="202"/>
+                                                                <rect key="frame" x="0.0" y="71" width="320" height="192"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cy7-v3-cBD" userLabel="Text Field Container View">
-                                                                        <rect key="frame" x="20" y="45" width="280" height="113"/>
+                                                                        <rect key="frame" x="20" y="40" width="280" height="113"/>
                                                                         <subviews>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8xZ-W5-ijU" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="280" height="48"/>
@@ -2455,7 +2481,7 @@ types of Monkey species in the entire world.</string>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D8A-qH-w5X" userLabel="Page 2">
-                                                        <rect key="frame" x="320" y="0.0" width="320" height="272"/>
+                                                        <rect key="frame" x="320" y="0.0" width="320" height="262"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Profile (2/2)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kK0-mK-mnt">
                                                                 <rect key="frame" x="20" y="30" width="280" height="21"/>
@@ -2470,7 +2496,7 @@ types of Monkey species in the entire world.</string>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dLO-op-U2g" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
-                                                                <rect key="frame" x="20" y="116" width="280" height="48"/>
+                                                                <rect key="frame" x="20" y="111" width="280" height="48"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.34999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🎂" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pH2-nc-4gy">
                                                                         <rect key="frame" x="14" y="14" width="23" height="21"/>
@@ -2508,7 +2534,7 @@ types of Monkey species in the entire world.</string>
                                                                 </userDefinedRuntimeAttributes>
                                                             </view>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pj1-bA-vwH">
-                                                                <rect key="frame" x="20" y="179" width="280" height="48"/>
+                                                                <rect key="frame" x="20" y="174" width="280" height="48"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2j6-3h-IAn" customClass="SelectableButton" customModule="Monkey" customModuleProvider="target">
                                                                         <rect key="frame" x="0.0" y="0.0" width="135" height="48"/>
@@ -2642,7 +2668,7 @@ types of Monkey species in the entire world.</string>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LNH-Kh-WEh" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                <rect key="frame" x="20" y="272" width="280" height="56"/>
+                                <rect key="frame" x="20" y="262" width="280" height="56"/>
                                 <color key="backgroundColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="56" id="qBm-9I-7Bx"/>
@@ -2672,7 +2698,7 @@ types of Monkey species in the entire world.</string>
                             <constraint firstItem="LNH-Kh-WEh" firstAttribute="leading" secondItem="FE7-2l-BEE" secondAttribute="leading" constant="20" id="dsS-XL-f78"/>
                             <constraint firstAttribute="trailing" secondItem="Mv5-To-bGf" secondAttribute="trailing" id="lh6-Ps-9eJ"/>
                             <constraint firstItem="Mv5-To-bGf" firstAttribute="bottom" secondItem="8ST-7Z-ZDn" secondAttribute="top" id="n0Q-49-oXU"/>
-                            <constraint firstAttribute="bottom" secondItem="LNH-Kh-WEh" secondAttribute="bottom" constant="240" id="pn4-O6-zXk"/>
+                            <constraint firstAttribute="bottom" secondItem="LNH-Kh-WEh" secondAttribute="bottom" constant="250" id="pn4-O6-zXk"/>
                             <constraint firstItem="LNH-Kh-WEh" firstAttribute="top" secondItem="ptC-ge-Xhz" secondAttribute="bottom" id="vhp-XS-0jc"/>
                         </constraints>
                     </view>
@@ -2700,7 +2726,7 @@ types of Monkey species in the entire world.</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="puX-vV-Cee" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1566.4000000000001" y="-690.85457271364328"/>
+            <point key="canvasLocation" x="-1567" y="-691"/>
         </scene>
     </scenes>
     <resources>

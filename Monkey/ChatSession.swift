@@ -472,7 +472,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             guard let `self` = self else { return }
             if self.response == nil {
                 print("Inactivity detected")
-                self.loadingDelegate?.warnConnectionTimeout?(in: self)
+                MKMatchManager.shareManager.afmCount += 1
+                if MKMatchManager.shareManager.needShowAFMAlert {
+                    self.loadingDelegate?.warnConnectionTimeout?(in: self)
+                    MKMatchManager.shareManager.afmCount = 0
+                }
             }
             DispatchQueue.main.asyncAfter(deadline: .after(seconds: APIController.shared.currentExperiment?.skip_time.value ?? 15.5)) { [weak self] in
                 guard let `self` = self else { return }
