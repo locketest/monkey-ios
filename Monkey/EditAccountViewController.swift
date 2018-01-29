@@ -338,6 +338,7 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
 			}
 			
 			AnaliticsCenter.update(userProperty: userProperty)
+            APIController.trackSignUpFinish()
             self.nextVC()
         }
     }

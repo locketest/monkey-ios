@@ -91,10 +91,9 @@ class AuthViewController: UIViewController {
             }
 			
 			let monkeySignUp = UserDefaults.standard.bool(forKey: "MonkeySignUp")
-			var monkeyProfileComplete = true
 			
             if APIController.shared.currentUser?.birth_date == nil || APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.gender == nil  {
-				monkeyProfileComplete = false
+                APIController.trackCodeVerifyIfNeed(result: true, isProfileComp: false)
 				
 				// 资料不全，编辑信息
                     let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
@@ -106,8 +105,8 @@ class AuthViewController: UIViewController {
 					print("Error: Current user should be defined by now.")
 					return
 				}
-				monkeyProfileComplete = true
-				
+                APIController.trackCodeVerifyIfNeed(result: true, isProfileComp: true)
+                
 				// 存储用户资料到共享 app groups 存储区
 				Achievements.shared.group_first_name = currentUser.first_name;
 				Achievements.shared.group_username = currentUser.username;

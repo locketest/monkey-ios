@@ -32,12 +32,36 @@ public enum AnalyticEvent: String {
 	case loggedInWithFacebook    = "Logged In With Facebook" /// link facebook
 	case invitedFacebookFriends    = "Invited Facebook Friends" /// link facebook 成功后邀请好友
 	case invitedFriendsSearchingScreen    = "Invited Friends Searching Screen" /// 在主页面点击了Bonus Bananas 按钮
-	case matchFirstRequest    = "MATCH_1ST_REQUEST" /// First match request
 	case minuteAddedToCall    = "Minute Added To Call" /// add time 成功
 	case requestedMinuteDuringCall    = "Requested Minute During Call" /// add time 请求
-	case matchFirstSuccess    = "MATCH_1ST_SUCCESS" /// First match success
 	case requestedSnapchatDuringCall    = "Requested Snapchat During Call" /// match 中请求添加好友
 	case snapchatMatchedDuringCall    = "Snapchat Matched During Call" /// match到好友
+    
+    //  ----------------------------  login  ------------------------------
+    case codeRequest = "CODE_REQUEST"
+    case codeVerify = "CODE_VERIFY"
+    case signUpFinish = "SIGNUP_FINISH"
+    
+    //  ----------------------------  Match  ------------------------------
+    case matchFirstRequest = "MATCH_1ST_REQUEST"
+    case matchFirstRecieve = "MATCH_1ST_RECEIVE"
+    case matchFirstSuccess = "MATCH_1ST_SUCCESS" /// First match success
+    case matchFirstAddTime = "MATCH_1ST_ADDTIME"
+    case matchFirstAddFriend = "MATCH_1ST_ADDFRIEND"
+    
+    case matchReveived = "MATCH_RECEIVED"
+    case matchConnecting = "MATCH_CONNECT"
+    case matchConnectTimeOut = "MATCH_CONNECT_TIME_OUT"
+    case matchSuccess = "MATCH_SUCCESS"
+    
+    //  ----------------------------  Chat  -------------------------------
+    case chatAddTimeRequest = "CHAT_ADD_TIME_REQUEST"
+    case chatAddTimeSuccess = "CHAT_ADD_TiIME_SUCCESS"
+    case chatAddFriendRequest = "CHAT_ADD_FRIEND_REQUEST"
+    case chatAddFriendSuccess = "CHAT_ADD_FRIEND_SUCCESS"
+    case chatPixel = "CHAT_PIXEL"
+    case chatReport = "CHAT_REPORT"
+    case chatTimeout = "CHAT_TIMEOUT"
 }
 
 
@@ -139,6 +163,25 @@ extension AnaliticsCenter {
 		AnalyticEvent.snapchatMatchedDuringCall,
 		AnalyticEvent.unlinkedInstagram,
 		AnalyticEvent.unfriendedUser,
+        .codeRequest,
+        .codeVerify,
+        .signUpFinish,
+        .matchFirstRequest,
+        .matchFirstRecieve,
+        .matchFirstSuccess,
+        .matchFirstAddTime,
+        .matchFirstAddFriend,
+//        .matchReveived,
+//        .matchConnecting,
+//        .matchConnectTimeOut,
+//        .matchSuccess,
+//        .chatAddTimeRequest,
+//        .chatAddTimeSuccess,
+//        .chatAddFriendRequest,
+//        .chatAddFriendSuccess,
+//        .chatPixel,
+//        .chatReport,
+//        .chatTimeout,
 	]
 	
 	fileprivate static let oneTimeEvents: Set<AnalyticEvent> = [

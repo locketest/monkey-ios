@@ -13,7 +13,7 @@ import AudioToolbox
 extension CallViewController: CountingLabelDelegate {
     
     func minuteAdded(in chatSession:ChatSession) {
-		AnaliticsCenter.log(event: .minuteAddedToCall)
+        APIController.trackChatAddTimeSuccess()
         self.enableAddMinute()
         
         clockLabel.formatBlock = {

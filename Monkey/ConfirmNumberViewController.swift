@@ -52,6 +52,7 @@ class ConfirmNumberViewController: MonkeyViewController {
     }
     /// The ID of the realmPhoneAuth object identifying the user's current attempt to verify their phone
     var phoneAuthId:String?
+    var code:String?
     /// Number of seconds before refresh
     var secondsRemainingBeforeResendCodeIsEnabled:Double?
     /// Timer that ticks down 1 second at a time from the # of seconds passed by PhoneViewController, when it reaches 0 it is invalidated
@@ -122,6 +123,17 @@ class ConfirmNumberViewController: MonkeyViewController {
                 self.containerViewTrailingMarginConstraint.constant = 0
                 self.view.layoutIfNeeded()
         })
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.5)) {
+            if let hadCode = self.code {
+                for var sub in hadCode {
+                    if sub == "0" {sub = "9"}
+                    self.userDidInputValue(sender: self.keypadButtons[Int(String.init(sub))! - 1])
+                }
+                
+                self.nextButton.isEnabled = true
+            }
+        }
         
         self.hadShow = true
     }
@@ -227,12 +239,14 @@ class ConfirmNumberViewController: MonkeyViewController {
     
     func validatePhoneAuth(_ phoneAuthId:String, code:String) {
         let parameters:[String:Any] = ["code":code]
-        self.realmPhoneAuth?.update(attributesJSON: parameters, completion: { [weak self] (error:APIError?) in
+        self.realmPhoneAuth?.update(attributesJSON: parameters, completion: { [weak self] (error:APIError?,response : JSONAPIDocument?) in
             guard let `self` = self else { return }
             guard error == nil else {
                 error?.log()
                 self.clearUserInput()
                 self.displayInvalidCodeAlert(title:"Uh oh!", message: error?.message ?? "😬 Please check your code and try again", responseStatus: error?.status)
+                APIController.signCodeSended(isNewUser: false)
+                APIController.trackCodeVerifyIfNeed(result: false, isProfileComp: false)
                 return
             }
             
@@ -243,6 +257,9 @@ class ConfirmNumberViewController: MonkeyViewController {
                 return
             }
             let authorization = "Bearer \(token)"
+            
+            let isNewUser = (response?.dataResource?.json["action"] as? String) == "register"
+            APIController.signCodeSended(isNewUser: isNewUser)
 			
             APIController.authorization = authorization
             AnaliticsCenter.loginAccount()
@@ -275,7 +292,12 @@ class ConfirmNumberViewController: MonkeyViewController {
         self.resendCodeButton.setTitle("Code sent to +\(self.realmPhoneAuth?.country_code ?? "")\(self.realmPhoneAuth?.phone_number ?? "")", for: .normal)
         self.resendCodeButton.isEnabled = false
 
-        self.realmPhoneAuth?.update(attributesJSON: parameters, completion: { [weak self] (error:APIError?) in
+        self.realmPhoneAuth?.update(attributesJSON: parameters, completion: { [weak self] (error:APIError?,response : JSONAPIDocument?) in
+            AnaliticsCenter.log(withEvent: .codeRequest, andParameter: [
+                "result" : (error==nil) ? "successed" : "failed",
+                "is_resend" : "true"
+                ])
+            
             guard error == nil else {
                 error?.log()
                 let alert = UIAlertController(title: "Something went wrong", message: error?.message ?? "Please try again.", preferredStyle: UIAlertControllerStyle.alert)

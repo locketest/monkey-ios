@@ -38,6 +38,8 @@ enum AutoScreenShotType:String {
 	case match_disconnec = "match_disconnec"
 }
 
+let treeLabelWidth:CGFloat = 48.0
+
 class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, FacebookViewControllerDelegate {
 	
 	internal func showAlert(alert: UIAlertController) {
@@ -47,6 +49,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	@IBOutlet var bonusBananasButton: BigYellowButton!
 	@IBOutlet weak public var acceptButton: BigYellowButton?
 	
+     @IBOutlet weak var loadingContentView: MakeUIViewGreatAgain!
+     
+     
 	@IBOutlet weak var pageViewIndicator: UIPageControl!
 	@IBOutlet weak var arrowButton: BigYellowButton!
 	@IBOutlet weak var bottomArrowPadding: NSLayoutConstraint!
@@ -77,6 +82,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var nextSessionToPresent:ChatSession?
 	var currentUserNotifcationToken:NotificationToken?
 	var currentExperimentNotifcationToken:NotificationToken?
+     var channels: Results<RealmChannel>?
 	
 	var waitingForFriendToken:NotificationToken?
 	/// After a friendship is made, if there is no snapchat name, we wait for the user id to come down from the socket and push to their chat page
@@ -293,6 +299,21 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			else {
 				return
 		}
+     
+     let realm = try? Realm()
+     self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true"))
+     
+     if self.channels?.count == 0 {
+          RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>) in
+               switch result {
+               case .success(_):
+                    self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true"))
+                    break
+               case .error(let error):
+                    error.log()
+               }
+          }
+     }
 		
 		guard let selectedChannels = APIController.shared.currentUser?.channels else {
 			return
@@ -426,8 +447,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.checkCamAccess()
 		
 		self.view.layoutIfNeeded()
-		
-		
 		
 		self.currentUserNotifcationToken = APIController.shared.currentUser?.addNotificationBlock({ (change) in
 			self.updateInvitationButton()
@@ -566,7 +585,15 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.skipButton?.isHidden = true
 		self.acceptButton?.isHidden = true
 		
-        self.waitingText.isHidden = false
+     if let chatSessionReady = self.chatSession?.matchUserDidAccept {
+          if chatSessionReady {
+               self.connectText.isHidden = false
+               AnaliticsCenter.log(event: .matchConnecting)
+          }else{
+               self.waitingText.isHidden = false
+          }
+     }
+     
 		UIView.animate(withDuration: 0.3, animations: {
 			self.acceptButton?.isHidden = true
 		})
@@ -583,7 +610,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.resetFact()
 		self.chatSession?.response = .skipped
 		self.chatSession?.chat?.skipped = true
-		self.chatSession?.disconnect(.consumed)
+     //  the connection may not created , this will cause connection destroy callback never call , and it will not going to find next chat
+//          self.chatSession?.disconnect(.consumed)
 		self.start()
 	}
 	
@@ -701,9 +729,29 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 						self.nextFact = nextFact
 					}
 				}
-				if let bio = jsonAPIDocument.dataResource?.attributes?["bio"] as? String {
-					self.start(fact: bio.removingPercentEncoding ?? "Connecting")
-				}
+//                    if let bio = jsonAPIDocument.dataResource?.attributes?["bio"] as? String {
+//                         self.start(fact: bio.removingPercentEncoding ?? "Connecting")
+//                    }
+
+                if let included = jsonAPIDocument.included ,
+                    let lastObj = included.last,
+                     let attr:[String:Any] = lastObj.json["attrs"] as? [String:Any],
+                    var gender = attr["gender"],
+                    let firstName = attr["first_name"],
+                    let age = attr["age"],
+                    let location = attr["location"]
+                {
+                    gender = (String(describing: gender) == "male") ? "He" : "She"
+                    
+                    let bio = "Say hi to \(firstName)! \(gender) is \(String(describing:age )) and from \(String(describing:location ))."
+                    self.start(fact: bio)
+                    
+                    if let trees:Array<String> = attr["channels"] as? Array<String> {
+                         self.listTrees(trees: trees)
+                    }
+                }else {
+                    self.start(fact: "Connecting...")
+                }
 				
 				guard let sessionId = call.session_id, let chatId = call.chat_id, let token = call.token else {
 					print("Error: RealmCall object did not return with sufficient data to create a chatSession")
@@ -712,7 +760,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				}
 				
 				self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name:call.user?.first_name, profile_image_url:call.user?.profile_photo_url, user_id:call.user?.user_id), token: token, loadingDelegate: self, isDialedCall: false)
-				
+               APIController.trackMatchRecieve()
+               
 			case .error(let error):
 				error.log(context:"Create (POST) a matched call")
 				let statusCode = error.status
@@ -792,6 +841,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
         self.waitingText.isHidden = true
         self.connectText.isHidden = true
+        self.hideTreeLabels()
 		var vcToPresentOn:UIViewController = self
 		while vcToPresentOn.presentedViewController is SwipeableViewController {
 			vcToPresentOn = vcToPresentOn.presentedViewController!
@@ -843,12 +893,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		let lastShowDate = Date.init(timeIntervalSince1970: lastShowTime)
 		let monkeychatScheme = URL.init(string: Environment.MonkeyChatScheme)
 		let monkeychatUrl = APIController.shared.currentExperiment?.monkeychat_link
+     let monkeychatDes = APIController.shared.currentExperiment?.mc_invite_desc ?? "Check out our new app Monkey Chat, it's awesome, just trust"
+     let monkeychatConfirm = APIController.shared.currentExperiment?.mc_invite_btn_pos_text ?? "Try it"
 	    if monkeychatUrl != nil && showMonkeyChatConsumeCount < 3 && lastShowDate.compare(.isToday) == false && UIApplication.shared.canOpenURL(monkeychatScheme!) == false {
 			 UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "MKShowMonkeyChatTimeConsumeChat")
 			 UserDefaults.standard.set(showMonkeyChatConsumeCount + 1, forKey: "MKShowMonkeyChatCountConsumeChat")
 		
-			let controller = UIAlertController(title: nil, message: "Check out our new app Monkey Chat, it's awesome, just trust", preferredStyle: .alert)
-			let monkeychat = UIAlertAction(title: "Try it", style: .default) { (action) in
+			let controller = UIAlertController(title: nil, message: monkeychatDes, preferredStyle: .alert)
+			let monkeychat = UIAlertAction(title: monkeychatConfirm, style: .default) { (action) in
 				UIApplication.shared.openURL(URL.init(string: monkeychatUrl!)!)
 			}
 			controller.addAction(monkeychat)
@@ -884,6 +936,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.skipped()
 			return
 		}
+     
+        self.waitingText.isHidden = true
+        self.connectText.isHidden = true
 		//
 		print("Disconnecting event fired")
 		self.start()
@@ -937,6 +992,10 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	func chatSession(_ chatSession: ChatSession, callEndedWithError error:Error?) {
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
+     if (self.connectText.isHidden == false) && (error != nil) {
+          AnaliticsCenter.log(event: .matchConnectTimeOut)
+     }
+     
         self.waitingText.isHidden = true
         self.connectText.isHidden = true
 		if !chatSession.didConnect {
@@ -992,6 +1051,12 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}
 		}
 	}
+     
+     func shouldShowConnectingStatus(in chatSession: ChatSession) {
+          self.waitingText.isHidden = true
+          self.connectText.isHidden = false
+          AnaliticsCenter.log(event: .matchConnecting)
+     }
 	
 	@IBAction func bananaButtonTapped(sender: Any) {
 		let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
@@ -1122,6 +1187,54 @@ extension MainViewController {
 			self.isLoading = true
 		}
 	}
+     
+     func listTrees(trees:Array<String>){
+          if trees.count == 0 {
+               return
+          }
+          
+          guard let allTree = self.channels else {
+               print("no tree info now")
+               return
+          }
+          
+          var count = 0
+          var org_emoji_str = "🍌🍌🍌🍌"
+          var emojiArr:[String] = []
+
+          for treeInfo in allTree{
+               if count >= 3 {break}
+               
+               if let channelID = treeInfo.channel_id , trees.contains(channelID) ,
+                    let emojiStr = treeInfo.emoji {
+                    org_emoji_str.remove(at: org_emoji_str.startIndex)
+                    org_emoji_str.append(emojiStr)
+                    
+                    count += 1
+               }
+          }
+          
+          for i in 0...3 {
+               if i == 0 {
+                    emojiArr.append(org_emoji_str)
+               }else{
+                    var newStr = emojiArr[i-1]
+                    let cha = newStr.remove(at: newStr.startIndex)
+                    newStr.append(cha)
+                    emojiArr.append(newStr)
+                    emojiArr[i-1].remove(at: emojiArr[i-1].startIndex)
+               }
+          }
+          
+          emojiArr[3].remove(at: emojiArr[3].startIndex)
+          
+          self.loadingTextLabel.setTicksWithArray(ticks: emojiArr)
+     }
+     
+     func hideTreeLabels(){
+          self.loadingTextLabel.setDefaultTicks()
+     }
+     
 	func skipped() {
 		DispatchQueue.main.async {
 			self.start()
@@ -1131,6 +1244,7 @@ extension MainViewController {
 				self.factTextView.text = self.nextFact
 				self.view.layoutIfNeeded()
 			})
+            self.hideTreeLabels()
 		}
 	}
 	func start() {

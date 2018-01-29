@@ -12,6 +12,13 @@ import UIKit
 import RealmSwift
 
 class APIController {
+    
+    static let kCodeVerifyJustNow = "kCodeVerifyJustNow"
+    static let kNewAccountCodeVerify = "kNewAccountCodeVerify"
+    static let kNewAccountSignUpFinish = "kNewAccountSignUpFinish"
+    static let kNewAccountMatch1stRecieve = "kNewAccountMatch1stRecieve"
+    static let kNewAccountMatch1stAddTime = "kNewAccountMatch1stAddTime"
+    static let kNewAccountMatch1stAddFriend = "kNewAccountMatch1stAddFriend"
 
     static let shared = APIController()
     private init() {}

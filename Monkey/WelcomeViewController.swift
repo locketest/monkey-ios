@@ -108,6 +108,10 @@ class WelcomeViewController: MonkeyViewController {
             }
         }
 
+//        let label = UILabel.init(frame: CGRect.init(x: 0, y: 40, width: 1, height: 2))
+//        label.text = Environment.baseURL + " ... " + Environment.environment.rawValue
+//        label.sizeToFit()
+//        self.view.addSubview(label)
     }
     @IBAction func nextVC(_ sender: BigYellowButton) {
         guard let phoneVC = UIStoryboard(name: "Verification", bundle: nil).instantiateInitialViewController() else {

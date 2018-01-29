@@ -31,9 +31,9 @@ class RealmPhoneAuth: JSONAPIObject, JSONAPIObjectProtocol {
         return "phone_auth_id"
     }
     
-    func update(attributesJSON: [String:Any], completion: @escaping (_ error: APIError?) -> Void) {
+    func update(attributesJSON: [String:Any], completion: @escaping (_ error: APIError?,_ response : JSONAPIDocument?) -> Void) {
         guard let auth_id = self.phone_auth_id else {
-            completion(APIError(code: "-1", status: nil, message: "A ID must exist for updates."))
+            completion(APIError(code: "-1", status: nil, message: "A ID must exist for updates."),nil)
             return
         }
         
@@ -48,14 +48,14 @@ class RealmPhoneAuth: JSONAPIObject, JSONAPIObjectProtocol {
                 ]).addCompletionHandler { (response) in
                     switch response {
                     case .error(let error):
-                        return completion(error)
+                        return completion(error,nil)
                     case .success(let jsonAPIDocument):
                         RealmDataController.shared.apply(jsonAPIDocument) { (result) in
                             switch result {
                             case .error(let error):
-                                return completion(error)
+                                return completion(error,nil)
                             case .success(_):
-                                return completion(nil)
+                                return completion(nil,jsonAPIDocument)
                             }
                         }
                     }

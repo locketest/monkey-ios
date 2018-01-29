@@ -51,6 +51,7 @@ struct Environment {
         case .development: return "https://monkey-api-development.monkey.engineering"
         case .production: return "https://api.monkey.cool"
         case .release: return "https://api.monkey.cool"
+//        case .release: return "https://test.monkey.cool"
         }
     }
     static var socketURL: String {
@@ -60,6 +61,7 @@ struct Environment {
         case .development: return "wss://monkey-api-development.monkey.engineering/api/v2.0/sockets/websocket"
         case .production: return "wss://ws.monkey.cool/api/v2.0/sockets/websocket"
         case .release: return "wss://ws.monkey.cool/api/v2.0/sockets/websocket"
+//        case .release: return "ws://test.monkey.cool/api/v2.0/sockets/websocket"
         }
     }
     static var bundleId: String {

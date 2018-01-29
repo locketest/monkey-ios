@@ -96,7 +96,7 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Sandbox"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

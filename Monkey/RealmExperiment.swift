@@ -141,6 +141,8 @@ class RealmExperiment: JSONAPIObject, JSONAPIObjectProtocol {
     dynamic var instagram_login_url:String?
 	/// when user launch app, should jump to download monkeychat
 	dynamic var monkeychat_link:String?
+    dynamic var mc_invite_desc:String?
+    dynamic var mc_invite_btn_pos_text:String?
     
     override static func primaryKey() -> String {
         return "experiment_id"

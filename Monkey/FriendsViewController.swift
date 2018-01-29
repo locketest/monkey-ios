@@ -98,13 +98,15 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
 		let lastShowDate = Date.init(timeIntervalSince1970: lastShowTime)
 		let monkeychatScheme = URL.init(string: Environment.MonkeyChatScheme)
 		let monkeychatUrl = APIController.shared.currentExperiment?.monkeychat_link
+        let monkeychatDes = APIController.shared.currentExperiment?.mc_invite_desc ?? "Check out our new app Monkey Chat, it's awesome, just trust"
+        let monkeychatConfirm = APIController.shared.currentExperiment?.mc_invite_btn_pos_text ?? "Try it"
 		if monkeychatUrl != nil && showMonkeyChatOpenChatCount < 3 && lastShowDate.compare(.isToday) == false && UIApplication.shared.canOpenURL(monkeychatScheme!) == false {
 			UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "MKShowMonkeyChatTimeOpenChatChat")
 			UserDefaults.standard.set(showMonkeyChatOpenChatCount + 1, forKey: "MKShowMonkeyChatCountOpenChatChat")
 			UserDefaults.standard.synchronize()
 			
-			let controller = UIAlertController(title: nil, message: "Check out our new app Monkey Chat, it's awesome, just trust", preferredStyle: .alert)
-			let monkeychat = UIAlertAction(title: "Try it", style: .default) { (action) in
+			let controller = UIAlertController(title: nil, message: monkeychatDes, preferredStyle: .alert)
+			let monkeychat = UIAlertAction(title: monkeychatConfirm, style: .default) { (action) in
 				UIApplication.shared.openURL(URL.init(string: monkeychatUrl!)!)
 			}
 			controller.addAction(monkeychat)

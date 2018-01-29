@@ -75,7 +75,7 @@ class RealmDataController: NSObject {
         
         let config = Realm.Configuration(
             syncConfiguration: nil,
-            schemaVersion: 13,
+            schemaVersion: 14,
             migrationBlock: { migration, oldSchemaVersion in
                 if oldSchemaVersion < 1 {
                     // Nothing to do!
@@ -173,8 +173,10 @@ class RealmDataController: NSObject {
 					/*
 					- Property 'RealmExperiment.monkeychat_link' has been added
 					*/
-					migration.deleteData(forType: "RealmRelationship")
 				}
+                if oldSchemaVersion < 14 {
+                    migration.deleteData(forType: "RealmRelationship")
+                }
                 
         }, objectTypes: objectTypes)
         
@@ -280,7 +282,10 @@ class RealmDataController: NSObject {
                     // If the above failed, parse the response as an array of resources
                     try jsonAPIDocument.dataResourceCollection?.forEach { newObjects.append(try self.parseJSONAPIResource($0)) }
                     // If some items were included, lets parse those too.
-                    try jsonAPIDocument.included?.forEach { try self.parseJSONAPIResource($0) }
+                    // TODO: Will cause match error
+//                    try jsonAPIDocument.included?.forEach {
+//                        try self.parseJSONAPIResource($0)
+//                    }
                 }
                 let threadSafeNewObjects = newObjects.map { ThreadSafeReference(to: $0) }
                 DispatchQueue.main.async {

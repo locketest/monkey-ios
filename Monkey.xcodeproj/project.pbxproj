@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F79A1201831140069D473 /* APIController+UserCenter.swift */; };
 		1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76554620132B0600FAB045 /* MKMatchManager.swift */; };
 		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
@@ -167,6 +168,7 @@
 		0CC1931042C0D849CBDEF7C6 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		1061E7F5DF089EB4FD9C2809 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		1680612B3D43C974FC315A41 /* Pods-Monkey.sandbox.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.sandbox.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.sandbox.xcconfig"; sourceTree = "<group>"; };
+		1B3F79A1201831140069D473 /* APIController+UserCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIController+UserCenter.swift"; sourceTree = "<group>"; };
 		1B76554620132B0600FAB045 /* MKMatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMatchManager.swift; sourceTree = "<group>"; };
 		1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKNetworkHelper.swift; sourceTree = "<group>"; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -212,7 +214,7 @@
 		8B6A579F1EAE9E6100136311 /* APIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		8B6A57A11EAEBF3E00136311 /* JSONAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONAPI.swift; sourceTree = "<group>"; };
 		8B6DC3341DB4978A004F787E /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Environment.swift; path = ../Environment.swift; sourceTree = "<group>"; };
-		8B6EB50A1DB0817F0051C8D2 /* Monkey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Monkey.app; path = Monkey_Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B6EB50A1DB0817F0051C8D2 /* Monkey_Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monkey_Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B6EB50D1DB0817F0051C8D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8B6EB50F1DB0817F0051C8D2 /* EditAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountViewController.swift; sourceTree = "<group>"; };
 		8B6EB5121DB0817F0051C8D2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -479,7 +481,7 @@
 		8B6EB50B1DB0817F0051C8D2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8B6EB50A1DB0817F0051C8D2 /* Monkey.app */,
+				8B6EB50A1DB0817F0051C8D2 /* Monkey_Debug.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -593,6 +595,7 @@
 				8BC260171E552D0400B9CC16 /* Old API Wrapper */,
 				8BE35E241DB9BF97002049B5 /* Achievements.swift */,
 				8B6DC3341DB4978A004F787E /* Environment.swift */,
+				1B3F79A1201831140069D473 /* APIController+UserCenter.swift */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -784,7 +787,7 @@
 			);
 			name = Monkey;
 			productName = Monkey;
-			productReference = 8B6EB50A1DB0817F0051C8D2 /* Monkey.app */;
+			productReference = 8B6EB50A1DB0817F0051C8D2 /* Monkey_Debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1095,6 +1098,7 @@
 				8BE491351E8763A0002E9D78 /* MonkeyViewController.swift in Sources */,
 				84DAB7CB1E8F3E6400E36D59 /* Async.swift in Sources */,
 				D43AD40B1F12B52600DE6BBD /* CallViewController+Clock.swift in Sources */,
+				1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */,
 				8B7DC7481EF5C9E000A3F966 /* RealmChannel.swift in Sources */,
 				C0197E371F60A435005F121A /* RealmBlock.swift in Sources */,
 				8435C2E81F13DBBC00C80AC6 /* ChatViewModel.swift in Sources */,

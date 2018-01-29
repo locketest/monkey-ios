@@ -175,6 +175,11 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
         RealmPhoneAuth.create(parameters: parameters) { (result: JSONAPIResult<[RealmPhoneAuth]>) in
             switch result {
             case .success(let phoneAuths):
+                AnaliticsCenter.log(withEvent: .codeRequest, andParameter: [
+                    "result" : "successed",
+                    "is_resend" : "false"
+                    ])
+                
                 guard let authObject = phoneAuths.first else {
                     self.showConnectionErrorAlert(message:"Uh oh! Something went wrong. Try again")
                     return
@@ -186,6 +191,10 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
                 }
                 
                 verifyViewController.phoneAuthId = authObject.phone_auth_id
+                
+                if let code = authObject.code {
+                    verifyViewController.code = code
+                }
                 
                 UIView.animate(
                     withDuration: self.transitionTime,
@@ -202,6 +211,10 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
                 }
 
             case .error(let error):
+                AnaliticsCenter.log(withEvent: .codeRequest, andParameter: [
+                    "result" : "failed",
+                    "is_resend" : "false"
+                    ])
                 error.log()
                 self.showConnectionErrorAlert(message:error.message)
             }

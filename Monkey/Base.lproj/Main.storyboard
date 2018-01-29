@@ -1436,6 +1436,30 @@ types of Monkey species in the entire world.</string>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="Ulj-5R-07I">
                                                 <rect key="frame" x="40" y="647" width="295" height="0.0"/>
                                                 <subviews>
+                                                    <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SSL-hy-Vte" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                        <rect key="frame" x="-40" y="-647" width="140" height="56"/>
+                                                        <color key="backgroundColor" red="0.50196081400000003" green="0.0" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="56" id="F8f-rY-nW3"/>
+                                                            <constraint firstAttribute="width" constant="140" id="dQz-vs-dgt"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                                        <state key="normal" title="Next">
+                                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        </state>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="➡️ "/>
+                                                            <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                                <color key="value" red="1" green="1" blue="1" alpha="0.20000000000000001" colorSpace="calibratedRGB"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                                <real key="value" value="2"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
+                                                        <connections>
+                                                            <action selector="skipButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="oOp-WT-wMM"/>
+                                                        </connections>
+                                                    </button>
                                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QMF-mv-VbF" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="-40" y="-647" width="140" height="56"/>
                                                         <color key="backgroundColor" red="0.57952511309999999" green="0.21596130729999999" blue="0.99958437680000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1456,30 +1480,6 @@ types of Monkey species in the entire world.</string>
                                                         </userDefinedRuntimeAttributes>
                                                         <connections>
                                                             <action selector="acceptButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="MoT-wb-ya8"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SSL-hy-Vte" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="-40" y="-647" width="140" height="56"/>
-                                                        <color key="backgroundColor" red="0.50196081400000003" green="0.0" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="56" id="F8f-rY-nW3"/>
-                                                            <constraint firstAttribute="width" constant="140" id="dQz-vs-dgt"/>
-                                                        </constraints>
-                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
-                                                        <state key="normal" title="Skip">
-                                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </state>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="➡️ "/>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                                                <color key="value" red="1" green="1" blue="1" alpha="0.20000000000000001" colorSpace="calibratedRGB"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                                <real key="value" value="2"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                        </userDefinedRuntimeAttributes>
-                                                        <connections>
-                                                            <action selector="skipButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="oOp-WT-wMM"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -1660,7 +1660,8 @@ types of Monkey species in the entire world.</string>
                         <outlet property="containerView" destination="N5m-MM-8GO" id="bW5-GI-0Xk"/>
                         <outlet property="factTextView" destination="v9E-7V-2CY" id="k9n-mv-dwN"/>
                         <outlet property="inviteFriendsView" destination="lzF-W2-0kz" id="KzI-0g-tH6"/>
-                        <outlet property="loadingTextLabel" destination="wQB-BV-u1O" id="lTH-hi-46S"/>
+                        <outlet property="loadingContentView" destination="kBC-65-2jJ" id="a0G-6t-FNc"/>
+                        <outlet property="loadingTextLabel" destination="wQB-BV-u1O" id="8gH-r0-Hip"/>
                         <outlet property="pageViewIndicator" destination="Uh6-Lu-Kac" id="3L2-Up-F8D"/>
                         <outlet property="settingsButton" destination="psw-iu-AsM" id="BXU-cv-1A2"/>
                         <outlet property="skipButton" destination="SSL-hy-Vte" id="tcF-JJ-NtZ"/>

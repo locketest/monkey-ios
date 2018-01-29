@@ -21,6 +21,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     private var chatNotificationToken: NotificationToken?
 
     var didConnect = false
+    var matchUserDidAccept = false
     var isDialedCall = false
     var session: OTSession!
     var connections = [OTConnection]()
@@ -29,7 +30,13 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     var subscriberData: Dictionary<String, String>?
     var status: ChatSessionStatus = .loading
     var disconnectReason:DisconnectReason?
-    var response:Response?
+    var response:Response?{
+        didSet{
+            if self.wasSkippable && response == .skipped {
+                self.sendSkip()
+            }
+        }
+    }
     var wasSkippable = false
     var hadAddTime = false
     var shouldShowRating:Bool {
@@ -71,13 +78,14 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         }
     }
 
-    private var matchReady = false {
+    var matchReady = false {
         didSet {
             if self.matchReady {
                 self.tryConnecting()
             }
         }
     }
+    
     private enum SessionStatus {
         case connecting
         case connected
@@ -119,8 +127,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             }
         }
 
-        weak var weakSelf = self
-        self.session = OTSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, delegate: weakSelf)
+        self.session = OTSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, delegate: self)
         var maybeError : OTError?
         session.connect(withToken: token, error: &maybeError)
         if let error = maybeError {
@@ -221,6 +228,14 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         return true
     }
 
+    private func sendSkip(){
+        var maybeError : OTError?
+        session.signal(withType: "skip", string: "", connection: self.connections.last, error: &maybeError)
+        self.disconnect(.consumed)
+        if let error = maybeError {
+            print("send skip message error : \(error)")
+        }
+    }
 
     private func tryConnecting() {
         guard self.initiatorReadyChecks == 2 else {
@@ -243,6 +258,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				"user_age": currentUser?.age.value ?? 0,
 				]
 			AnaliticsCenter.log(withEvent: .matchFirstSuccess, andParameter: eventParameters)
+            AnaliticsCenter.log(withEvent: .matchSuccess, andParameter: eventParameters)
 			
 			UserDefaults.standard.set(false, forKey: "MonkeyLogEventFirstMatchSuccess")
 			UserDefaults.standard.synchronize()
@@ -381,7 +397,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             self.log(.error, "Do publish error \(error)")
         }
         // Wait up to 5 seconds before giving up on connecting to the session
-        var callLoadingTimeout = APIController.shared.currentExperiment?.call_loading_timeout.value ?? 5.0
+        var callLoadingTimeout = Double(RemoteConfigManager.shared.match_connect_time)
         if isDialedCall {
             callLoadingTimeout = 30
         }
@@ -467,8 +483,10 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.subscriberConnection = connection
         if self.response == .accepted {
             self.accept()
+        }else if self.response == .skipped {
+            self.sendSkip()
         }
-        DispatchQueue.main.asyncAfter(deadline: .after(seconds: APIController.shared.currentExperiment?.ignored_call_warning.value ?? 17.0)) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_accept_time))) { [weak self] in
             guard let `self` = self else { return }
             if self.response == nil {
                 print("Inactivity detected")
@@ -478,17 +496,22 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
                     MKMatchManager.shareManager.afmCount = 0
                 }
             }
-            DispatchQueue.main.asyncAfter(deadline: .after(seconds: APIController.shared.currentExperiment?.skip_time.value ?? 15.5)) { [weak self] in
-                guard let `self` = self else { return }
-                if self.response == nil {
-                    if self.initiatorReadyChecks != 2 {
-                        self.disconnectReason = .initiatorNotReady
-                    } else {
-                        self.disconnectReason = .matchNotReady
+            if self.response != nil || self.matchUserDidAccept {
+                DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_waiting_time))) { [weak self] in
+                    guard let `self` = self else { return }
+                    if self.response == nil {
+                        if self.initiatorReadyChecks != 2 {
+                            self.disconnectReason = .initiatorNotReady
+                        } else {
+                            self.disconnectReason = .matchNotReady
+                        }
+                        self.disconnect(.consumed)
                     }
-                    self.disconnect(.consumed)
                 }
+            }else {
+                self.disconnect(.consumed)
             }
+        
         }
         self.wasSkippable = true
         self.updateStatusTo(.skippable)
@@ -558,9 +581,16 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             if self.chat?.sharedSnapchat == true {
                self.log(.info, "Openning snapchat")
                 self.friendMatched = true
+                APIController.trackChatAddFriendSuccess()
             }
         } else if (type == "ready") {
             self.matchReady = true
+            if self.response == .accepted {
+                self.loadingDelegate?.shouldShowConnectingStatus!(in: self)
+            }
+            self.matchUserDidAccept = true
+        }else if(type == "skip"){
+            self.disconnect(.consumed)
         }
     }
 
@@ -670,4 +700,5 @@ protocol MessageHandler: class {
     func chatSession(_ chatSession: ChatSession, callEndedWithError error:Error?)
     @objc optional func warnConnectionTimeout(in chatSession: ChatSession)
 	@objc optional func consumeFromConnected()
+    @objc optional func shouldShowConnectingStatus(in chatSession:ChatSession)
 }

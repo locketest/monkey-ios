@@ -53,6 +53,15 @@ class LoadingTextLabel: UILabel {
         ticks = nextTicks
         tick()
     }
+    
+    func setDefaultTicks() {
+        self.nextTicks = defaultTicks
+    }
+    
+    func setTicksWithArray(ticks:[String]) {
+        self.nextTicks = ticks
+    }
+    
     @objc private func tickIfNeeded() {
         if !isTicking {
             return

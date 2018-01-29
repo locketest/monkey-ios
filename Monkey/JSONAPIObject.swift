@@ -105,6 +105,8 @@ class JSONAPIObject: Object {
                 case .error(let error):
                     return operationCompletionHandler(.error(error))
                 case .success(let jsonAPIDocument):
+                    print("----------------------------->>>>>>>>>>>>>>>>>>>>>")
+                    print(jsonAPIDocument.json)
                     RealmDataController.shared.apply(jsonAPIDocument) { result in
                         switch result {
                         case .error(let error):
