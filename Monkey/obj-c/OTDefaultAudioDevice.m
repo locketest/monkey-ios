@@ -287,10 +287,10 @@ static OSStatus playout_cb(void *ref_con,
             }
         }
         
-//        OSStatus result = AudioOutputUnitStart(recording_voice_unit);
-//        if (CheckError(result, @"startCapture.AudioOutputUnitStart")) {
-//            _recording = NO;
-//        }
+        OSStatus result = AudioOutputUnitStart(recording_voice_unit);
+        if (CheckError(result, @"startCapture.AudioOutputUnitStart")) {
+            _recording = NO;
+        }
         
         return _recording;
     }

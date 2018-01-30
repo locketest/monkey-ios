@@ -219,6 +219,7 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
             let center = UNUserNotificationCenter.current()
             center.requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in
                 // Enable or disable features based on authorization.
+                Achievements.shared.promptedNotifications = granted
             }
         } else { // iOS 9 notification granting
             UIApplication.shared.registerForRemoteNotifications()

@@ -142,9 +142,12 @@ class JSONAPIDocument {
     }
     /// json.included
     var included:[JSONAPIResource]? {
-        guard let data:[String:Any] = json["data"] as? [String : Any],
-            let included = data["included"] as? [[String:Any]] else {
-            return nil // Top level data object doesn't exist or is in the incorrect format.
+        guard let included = json["included"] as? [[String:Any]] else {
+            guard let data:[String:Any] = json["data"] as? [String : Any],
+                let included2 = data["included"] as? [[String:Any]] else {
+                    return nil
+            }
+            return included2.map { JSONAPIResource(data: $0) } // Top level data object doesn't exist or is in the incorrect format.
         }
         return included.map { JSONAPIResource(data: $0) }
     }

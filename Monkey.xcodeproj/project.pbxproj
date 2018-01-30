@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F79A1201831140069D473 /* APIController+UserCenter.swift */; };
+		1B42FBFD201EF96800268A42 /* RealmMatchUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B42FBFC201EF96800268A42 /* RealmMatchUser.swift */; };
 		1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76554620132B0600FAB045 /* MKMatchManager.swift */; };
 		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
@@ -169,6 +170,7 @@
 		1061E7F5DF089EB4FD9C2809 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		1680612B3D43C974FC315A41 /* Pods-Monkey.sandbox.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.sandbox.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.sandbox.xcconfig"; sourceTree = "<group>"; };
 		1B3F79A1201831140069D473 /* APIController+UserCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIController+UserCenter.swift"; sourceTree = "<group>"; };
+		1B42FBFC201EF96800268A42 /* RealmMatchUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmMatchUser.swift; sourceTree = "<group>"; };
 		1B76554620132B0600FAB045 /* MKMatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMatchManager.swift; sourceTree = "<group>"; };
 		1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKNetworkHelper.swift; sourceTree = "<group>"; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -463,6 +465,7 @@
 				C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */,
 				C0197E361F60A435005F121A /* RealmBlock.swift */,
 				C0AD96B91F6721A9007932AF /* RealmFriendship.swift */,
+				1B42FBFC201EF96800268A42 /* RealmMatchUser.swift */,
 			);
 			name = "Modern API Wrapper";
 			sourceTree = "<group>";
@@ -1088,6 +1091,7 @@
 				8BFD6D5C1EF99422002C9F9C /* MonkeyVideoCapture.m in Sources */,
 				8BE02A4A1EEA4187004CF000 /* SwipeableViewController.swift in Sources */,
 				8B7DC74A1EF5CADB00A3F966 /* ChannelsViewController.swift in Sources */,
+				1B42FBFD201EF96800268A42 /* RealmMatchUser.swift in Sources */,
 				8B6A57A01EAE9E6100136311 /* APIError.swift in Sources */,
 				8435C2E11F12EE6600C80AC6 /* ChatViewController.swift in Sources */,
 				8BC4E2DC1DB121240018F2C3 /* Extensions.swift in Sources */,
