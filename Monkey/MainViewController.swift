@@ -22,6 +22,7 @@ import MediaPlayer
 import RealmSwift
 import MessageUI
 import CoreLocation
+import UserNotifications
 
 enum ReportType: Int {
 	case mean = 9
@@ -77,6 +78,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var incomingCallNotificationToken:NotificationToken?
 	var callNotification:CallNotificationView?
 	var signedOut = false
+     var hadRegiNoti = false
 	var incomingCallId:String?
 	var incomingCallBio:String?
 	var nextSessionToPresent:ChatSession?
@@ -301,7 +303,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		}
      
      let realm = try? Realm()
-     self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true"))
+     self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true")).sorted(byKeyPath: "channel_id")
      
      if self.channels?.count == 0 {
           RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>) in
@@ -423,12 +425,18 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		if Achievements.shared.promptedNotifications {
-			UIApplication.shared.registerForRemoteNotifications()
-		}
-		if APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.birth_date == nil {
-			self.present(self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0 ? "editAccountSmallVC" : "editAccountVC"), animated: true, completion: nil)
-		}
+     if !self.hadRegiNoti {
+          if Achievements.shared.promptedNotifications {
+               self.hadRegiNoti = true
+               UIApplication.shared.registerForRemoteNotifications()
+          }else {
+               self.checkNotifiPermission()
+          }
+     }
+     
+     if APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.birth_date == nil {
+          self.present(self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0 ? "editAccountSmallVC" : "editAccountVC"), animated: true, completion: nil)
+     }
 		
 		// Tell bonus bananas button to hide if we have unlocked the achievement
 		self.updateInvitationButton()
@@ -604,6 +612,28 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.setFactText(self.nextFact)
 		}
 	}
+     
+     
+     func checkNotifiPermission(){
+          if #available(iOS 10.0, *) {
+               let center = UNUserNotificationCenter.current()
+               DispatchQueue.main.async {
+                    center.getNotificationSettings(completionHandler: { (setting) in
+                         if setting.authorizationStatus == UNAuthorizationStatus.authorized {
+                              DispatchQueue.main.async {
+                                   UIApplication.shared.registerForRemoteNotifications()
+                                   self.hadRegiNoti = true
+                              }
+                         }
+                    })
+               }
+          }else{
+               if UIApplication.shared.isRegisteredForRemoteNotifications {
+                    UIApplication.shared.registerForRemoteNotifications()
+                    self.hadRegiNoti = true
+               }
+          }
+     }
 	
 	@IBAction func skipButtonTapped(sender: Any) {
         MKMatchManager.shareManager.afmCount = 0
@@ -741,6 +771,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                     let age = attr["age"],
                     let location = attr["location"]
                 {
+                    print(attr)
                     gender = (String(describing: gender) == "male") ? "He" : "She"
                     
                     let bio = "Say hi to \(firstName)! \(gender) is \(String(describing:age )) and from \(String(describing:location ))."
@@ -1127,7 +1158,7 @@ extension MainViewController {
 		let isNotBlocking = NSPredicate(format: "is_blocking == NO")
 		let isUnreadConversation = NSPredicate(format: "last_message_read_at < last_message_received_at")
 		
-		let realm = try? Realm()
+     let realm = try? Realm()
 		self.friendships = realm?.objects(RealmFriendship.self).filter(NSCompoundPredicate(andPredicateWithSubpredicates: [
 			isNotBlocker,
 			isNotBlocking,
@@ -1135,7 +1166,6 @@ extension MainViewController {
 			isInConversation,
 			isUnreadConversation
 			]))
-		
 		self.updateFriendshipCount()
 		
 		self.unreadMessageNotificationToken = self.friendships?.addNotificationBlock { [weak self] (changes) in
@@ -1198,6 +1228,20 @@ extension MainViewController {
                return
           }
           
+          guard let curTrees = APIController.shared.currentUser?.channels else { return  }
+          var commonTrees = Array<String>.init()
+          for tree in curTrees {
+               if let treeID = tree.channel_id {
+                    if trees.contains(treeID) {
+                         commonTrees.append(treeID)
+                    }
+               }
+          }
+          
+          commonTrees = commonTrees.sorted { (string1, string2) -> Bool in
+               return string1 > string2
+          }
+          
           var count = 0
           var org_emoji_str = "🍌🍌🍌🍌"
           var emojiArr:[String] = []
@@ -1205,7 +1249,7 @@ extension MainViewController {
           for treeInfo in allTree{
                if count >= 3 {break}
                
-               if let channelID = treeInfo.channel_id , trees.contains(channelID) ,
+               if let channelID = treeInfo.channel_id , commonTrees.contains(channelID) ,
                     let emojiStr = treeInfo.emoji {
                     org_emoji_str.remove(at: org_emoji_str.startIndex)
                     org_emoji_str.append(emojiStr)

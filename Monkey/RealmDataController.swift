@@ -19,16 +19,17 @@ class RealmDataController: NSObject {
     let realmObjectClasses:[JSONAPIObjectProtocol.Type] = [
         RealmExperiment.self,
         RealmMessage.self,
+        RealmUser.self,
         RealmFriendship.self,
         RealmRelationship.self, // reference has to be kept until (https://github.com/realm/realm-cocoa/issues/3686) is fixed
         RealmTag.self,
-        RealmUser.self,
         RealmChannel.self,
         RealmCall.self,
         RealmPhoneAuth.self,
         RealmInstagramAccount.self,
         RealmInstagramPhoto.self,
         RealmBlock.self,
+        RealmMatchedUser.self,
         ]
     
     /**
@@ -75,7 +76,7 @@ class RealmDataController: NSObject {
         
         let config = Realm.Configuration(
             syncConfiguration: nil,
-            schemaVersion: 14,
+            schemaVersion: 15,
             migrationBlock: { migration, oldSchemaVersion in
                 if oldSchemaVersion < 1 {
                     // Nothing to do!
@@ -175,6 +176,9 @@ class RealmDataController: NSObject {
 					*/
 				}
                 if oldSchemaVersion < 14 {
+                    
+                }
+                if oldSchemaVersion < 15 {
                     migration.deleteData(forType: "RealmRelationship")
                 }
                 
@@ -283,9 +287,9 @@ class RealmDataController: NSObject {
                     try jsonAPIDocument.dataResourceCollection?.forEach { newObjects.append(try self.parseJSONAPIResource($0)) }
                     // If some items were included, lets parse those too.
                     // TODO: Will cause match error
-//                    try jsonAPIDocument.included?.forEach {
-//                        try self.parseJSONAPIResource($0)
-//                    }
+                    try jsonAPIDocument.included?.forEach {
+                        try self.parseJSONAPIResource($0)
+                    }
                 }
                 let threadSafeNewObjects = newObjects.map { ThreadSafeReference(to: $0) }
                 DispatchQueue.main.async {

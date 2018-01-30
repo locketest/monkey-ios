@@ -122,6 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         UserDefaults.standard.set(deviceToken.base64EncodedString(), forKey: "apns_token")
+        print("~~~\(deviceToken.base64EncodedString())")
         Apns.update(callback: nil)
     }
     /*func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
