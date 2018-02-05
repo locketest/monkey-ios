@@ -89,9 +89,7 @@ class AuthViewController: UIViewController {
                 self.nextVC()
                 return
             }
-			
-			let monkeySignUp = UserDefaults.standard.bool(forKey: "MonkeySignUp")
-			
+						
             if APIController.shared.currentUser?.birth_date == nil || APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.gender == nil  {
                 APIController.trackCodeVerifyIfNeed(result: true, isProfileComp: false)
 				
@@ -113,25 +111,7 @@ class AuthViewController: UIViewController {
 				Achievements.shared.group_user_id = currentUser.user_id;
 				Achievements.shared.group_birth_date = currentUser.birth_date?.timeIntervalSince1970;
 				Achievements.shared.group_gender = currentUser.gender;
-				Achievements.shared.group_profile_photo = currentUser.profile_photo_url;
-			}
-			
-			if (monkeySignUp == true) {
-//				var loginResult = "new"
-//
-//				if (monkeyProfileComplete == true) {
-//					loginResult = "new"
-//				}else {
-//					loginResult = "old"
-//				}
-//				AnaliticsCenter.log(withEvent: .signUpLogin, andParameter: [
-//					"result": loginResult,
-//					])
-				
-				UserDefaults.standard.set(false, forKey: "MonkeySignUp")
-				UserDefaults.standard.set(true, forKey: "MonkeyLogEventFirstMatchRequest")
-				UserDefaults.standard.set(true, forKey: "MonkeyLogEventFirstMatchSuccess")
-				UserDefaults.standard.synchronize()
+				Achievements.shared.group_profile_photo = currentUser.profile_photo_url;                
 			}
 			
             print("Updates completed in background")

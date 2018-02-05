@@ -18,11 +18,12 @@ extension APIController {
         userDef.set(true, forKey: kNewAccountMatch1stAddTime)
         userDef.set(true, forKey: kNewAccountMatch1stRecieve)
         userDef.set(true, forKey: kNewAccountMatch1stAddFriend)
+        userDef.set(true, forKey: "MonkeyLogEventFirstMatchRequest")
+        userDef.set(true, forKey: "MonkeyLogEventFirstMatchSuccess")
     }
     
     class func signCodeSended(isNewUser:Bool){
         userDef.set(true, forKey: kCodeVerifyJustNow)
-        print("signCodeSended")
         
         if isNewUser {
             self.signAsNewUser()
@@ -33,11 +34,15 @@ extension APIController {
         if !userDef.bool(forKey: kCodeVerifyJustNow) {
             return
         }
-        
         userDef.set(false, forKey: kCodeVerifyJustNow)
         
         let isAccountNew = userDef.bool(forKey: kNewAccountCodeVerify)
         userDef.set(false, forKey: kNewAccountCodeVerify)
+        
+        //  code verify success ,sign as login
+        if result {
+            userDef.set(true, forKey: kSignAsLogin)
+        }
         
         AnaliticsCenter.log(withEvent: .codeVerify, andParameter: [
             "result" : result ? "succeed" : "failed",
@@ -47,6 +52,12 @@ extension APIController {
     }
     
     class func trackSignUpFinish() {
+        if !userDef.bool(forKey: kSignAsLogin) {
+            return;
+        }
+        
+        userDef.set(false, forKey: kSignAsLogin)
+        
         let isAccountNew = userDef.bool(forKey: kNewAccountSignUpFinish) ? "true" : "false"
         
         AnaliticsCenter.log(withEvent: .signUpFinish, andParameter: [

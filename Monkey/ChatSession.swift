@@ -250,19 +250,22 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.subscriber?.subscribeToAudio = true
         self.updateStatusTo(.connected)
 		
+        let currentUser = APIController.shared.currentUser
+        
+        let eventParameters:[String: Any] = [
+            "user_gender": currentUser?.show_gender ?? "male",
+            "user_age": currentUser?.age.value ?? 0,
+            ]
+        
 		if UserDefaults.standard.bool(forKey: "MonkeyLogEventFirstMatchSuccess") {
-			let currentUser = APIController.shared.currentUser
 			
-			let eventParameters:[String: Any] = [
-				"user_gender": currentUser?.show_gender ?? "male",
-				"user_age": currentUser?.age.value ?? 0,
-				]
 			AnaliticsCenter.log(withEvent: .matchFirstSuccess, andParameter: eventParameters)
-            AnaliticsCenter.log(withEvent: .matchSuccess, andParameter: eventParameters)
 			
 			UserDefaults.standard.set(false, forKey: "MonkeyLogEventFirstMatchSuccess")
 			UserDefaults.standard.synchronize()
 		}
+        
+        AnaliticsCenter.log(withEvent: .matchSuccess, andParameter: eventParameters)
     }
     /**
      Prints a message to the console.

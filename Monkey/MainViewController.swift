@@ -425,6 +425,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
+     APIController.trackSignUpFinish()
      if !self.hadRegiNoti {
           if Achievements.shared.promptedNotifications {
                self.hadRegiNoti = true

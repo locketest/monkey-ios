@@ -46,6 +46,8 @@ extension MainViewController {
             let attributes: [RealmUser.Attribute] = [
                 .latitude(latitude),
                 .longitude(longitude),
+//                .latitude(41),
+//                .longitude(-74),
                 .address(address),
             ]
             APIController.shared.currentUser?.update(attributes: attributes, completion: {(error) in

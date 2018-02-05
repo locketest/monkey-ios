@@ -292,13 +292,13 @@ extension AnaliticsCenter {
 	fileprivate static let facebookEvents: Set<AnalyticEvent> = AnaliticsCenter.allEvents
 	
 	fileprivate class func log(forFacebook event: AnalyticEvent, andParameter parameter: [String: Any]?) {
-//		if self.facebookEvents.contains(event) {
+        if self.facebookEvents.contains(event) {
 			if (parameter != nil) {
 				FBSDKAppEvents.logEvent(event.rawValue, parameters: parameter!)
 			}else {
 				FBSDKAppEvents.logEvent(event.rawValue)
 			}
-//		}
+        }
 	}
 	
 	fileprivate class func update(facebookUserProperty userProperties: [String: Any]) {
