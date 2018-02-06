@@ -25,6 +25,9 @@ target 'Monkey' do
   pod 'OpenTok'
   pod 'RealmSwift', '~> 2.10.0'
   pod 'MMSProfileImagePicker', '~> 1.4.1'
+  pod 'AccountKit'
+  pod 'SVProgressHUD'
+  pod 'MMMaterialDesignSpinner'
   post_install do |installer|
       installer.pods_project.targets.each do |target|
           target.build_configurations.each do |config|

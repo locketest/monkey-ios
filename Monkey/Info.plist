@@ -31,6 +31,7 @@
 				<string>fb591189427560737</string>
 				<string>fb1731011946972323</string>
 				<string>monkey</string>
+				<string>ak1731011946972323</string>
 			</array>
 		</dict>
 	</array>
@@ -69,6 +70,8 @@
 	</dict>
 	<key>FacebookAppID</key>
 	<string>1731011946972323</string>
+	<key>AccountKitClientToken</key>
+	<string>cae6e3f40efb030879df587591602102</string>
 	<key>FacebookDisplayName</key>
 	<string>Monkey</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
