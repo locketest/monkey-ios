@@ -127,10 +127,14 @@ extension CallViewController: CountingLabelDelegate {
                 }
             }
             if clockTime <= 3900 && clockTime > 300 {
-                dripClock()
+                if let reported = self.chatSession?.isReportedChat , !reported {
+                    dripClock()
+                }
             }
             if clockTime == 3900 {
-                self.soundPlayer.play(sound: .clock)
+                if let reported = self.chatSession?.isReportedChat , !reported {
+                    self.soundPlayer.play(sound: .clock)
+                }
             } else if clockTime == 900 {
                 // self.soundPlayer.play(sound: .fail)
             } else if clockTime == 400 {

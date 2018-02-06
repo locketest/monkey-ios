@@ -79,6 +79,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var callNotification:CallNotificationView?
 	var signedOut = false
      var hadRegiNoti = false
+     var mySkip = false
 	var incomingCallId:String?
 	var incomingCallBio:String?
 	var nextSessionToPresent:ChatSession?
@@ -638,9 +639,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	
 	@IBAction func skipButtonTapped(sender: Any) {
         MKMatchManager.shareManager.afmCount = 0
+     self.mySkip = true
 		self.resetFact()
 		self.chatSession?.response = .skipped
 		self.chatSession?.chat?.skipped = true
+     self.hideTreeLabels()
      //  the connection may not created , this will cause connection destroy callback never call , and it will not going to find next chat
 //          self.chatSession?.disconnect(.consumed)
 		self.start()
@@ -964,6 +967,37 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	
 	func dismissCallViewController(for chatSession: ChatSession) {
+        EffectsCoordinator().effects.removeAll()
+     if chatSession.isReportedChat , chatSession.friendMatched , let userID = chatSession.chat?.user_id {
+          if let friendShipID = FriendsViewModel().friendships?.filter("user.user_id = \(userID)").last?.friendship_id {
+               let alert = UIAlertController(title: nil, message: "Do you want to remove this user in your friend list?", preferredStyle: .actionSheet)
+               let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
+                    JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/friendships/\(friendShipID)", method: .patch, parameters: [
+                         "data": [
+                              "id": friendShipID,
+                              "type": "friendships",
+                         ],
+                         ], options: [
+                              .header("Authorization", APIController.authorization),
+                              ]).addCompletionHandler { (response) in
+                                   
+                              }
+                    self.startFindingChats(forReason: "delete_report_friend")
+               })
+               
+               
+               let cancel = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
+                    self.startFindingChats(forReason: "delete_report_friend")
+               })
+               
+               alert.addAction(remove)
+               alert.addAction(cancel)
+               
+               self.stopFindingChats(andDisconnect: false, forReason: "delete_report_friend")
+               self.present(alert, animated: true)
+          }
+     }
+     
 		guard self.callViewController != nil else {
 			self.skipped()
 			return
@@ -1283,12 +1317,15 @@ extension MainViewController {
 	func skipped() {
 		DispatchQueue.main.async {
 			self.start()
-			self.skippedText.layer.opacity = 1.0
-			UIView.animate(withDuration: 1.0, animations: {
-				self.skippedText.layer.opacity = 0.0
-				self.factTextView.text = self.nextFact
-				self.view.layoutIfNeeded()
-			})
+          if !self.mySkip {
+               self.skippedText.layer.opacity = 1.0
+          }
+          self.mySkip = false
+            UIView.animate(withDuration: 1.0, animations: {
+                self.skippedText.layer.opacity = 0.0
+                self.factTextView.text = self.nextFact
+                self.view.layoutIfNeeded()
+            })
             self.hideTreeLabels()
 		}
 	}

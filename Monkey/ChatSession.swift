@@ -23,6 +23,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     var didConnect = false
     var matchUserDidAccept = false
     var isDialedCall = false
+    var isReportedChat = false
     var session: OTSession!
     var connections = [OTConnection]()
     weak var subscriber: MonkeySubscriber?
@@ -167,6 +168,10 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
      - Returns: isWaiting. Wether the other person still has to tap Add Snapchat.
      */
     func sendSnapchat(username: String) -> Bool {
+        if isReportedChat {
+            return false
+        }
+        
         guard let chat = self.chat else {
             self.log(.error, "Missing chat")
             return false
@@ -201,6 +206,10 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
      - Returns: isWaiting. Whether the other person still has to tap Add Minute.
      */
     func sendMinute() -> Bool {
+        if self.isReportedChat {
+            return false
+        }
+        
         guard let chat = self.chat else {
             self.log(.error, "Missing chat")
             return false
