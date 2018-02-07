@@ -13,7 +13,8 @@ PODS:
   - Branch/Core (0.17.10)
   - Crashlytics (3.9.3):
     - Fabric (~> 1.7.2)
-  - Fabric (1.7.2)
+  - DeviceKit (1.5.0)
+  - Fabric (1.7.3)
   - FBSDKCoreKit (4.30.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.30.0):
@@ -46,15 +47,15 @@ PODS:
   - GoogleToolboxForMac/Defines (2.1.3)
   - GoogleToolboxForMac/NSData+zlib (2.1.3):
     - GoogleToolboxForMac/Defines (= 2.1.3)
-  - MMMaterialDesignSpinner (0.2.5)
-  - MMSCameraViewController (1.0.3)
-  - MMSProfileImagePicker (1.4.1):
-    - MMSCameraViewController (~> 1.0.3)
+  - MMSCameraViewController (1.2.1)
+  - MMSProfileImagePicker (1.5.1):
+    - MMSCameraViewController (~> 1.2.1)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - ObjectMapper (3.1.0)
   - OpenTok (2.13.0)
   - Protobuf (3.5.0)
   - Realm (2.10.2):
@@ -63,7 +64,6 @@ PODS:
   - RealmSwift (2.10.2):
     - Realm (= 2.10.2)
   - Starscream (2.1.1)
-  - SVProgressHUD (2.2.2)
   - SwiftyGif (4.0.0)
 
 DEPENDENCIES:
@@ -72,16 +72,16 @@ DEPENDENCIES:
   - Amplitude-iOS
   - Branch (~> 0.17.10)
   - Crashlytics
+  - DeviceKit (~> 1.0)
   - Fabric
   - FBSDKCoreKit
   - FBSDKLoginKit
   - Firebase/RemoteConfig
-  - MMMaterialDesignSpinner
-  - MMSProfileImagePicker (~> 1.4.1)
+  - MMSProfileImagePicker
+  - ObjectMapper (~> 3.1)
   - OpenTok
   - RealmSwift (~> 2.10.0)
   - Starscream (~> 2.1.1)
-  - SVProgressHUD
   - SwiftyGif
 
 SPEC CHECKSUMS:
@@ -91,7 +91,8 @@ SPEC CHECKSUMS:
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   Branch: 29745957de17eb5973627f4c7720bd0eb390fd45
   Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
-  Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
+  DeviceKit: 883552d64028056216e913a88f892e7e29678e75
+  Fabric: bb495bb9a7a7677c6d03a1f8b83d95bc49b47e41
   FBSDKCoreKit: 7c4bba2877781a131ab5d54c0a78c405d4307b62
   FBSDKLoginKit: fe7a7e82373dc5daad92e1623219e86224ab1fb1
   Firebase: 7d3b8cd837ad9fcd391657734c0d56dab8e9a5a3
@@ -101,18 +102,17 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
   FirebaseRemoteConfig: 3310f264fff78b6c2e78b24dcfc4c1b3d6766209
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
-  MMMaterialDesignSpinner: a548042720c2e5f04212048483085d7942ac3e81
-  MMSCameraViewController: c32450a83d5ad18d38a1d85c68bf899362a93667
-  MMSProfileImagePicker: fa3aee5746945f7bee2cb422bf51dd4478b94e39
+  MMSCameraViewController: 70e128c8398686e323645e032aa8d1ea2b0cb54a
+  MMSProfileImagePicker: 46b3640a9d9c97ecf711e514cefdc53a2aac21e1
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
   OpenTok: 9fa8d108284d751f284bf294a91c20529bde7df6
   Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
   Realm: 0ef72b837fb67e9f4b098bac771ddd72c7fdbb69
   RealmSwift: 07a9ae0505091eda6b2ee7c190c3786d6e90a7b0
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
-  SVProgressHUD: 59b2d3dabacbd051576d21d32293ca7228dc18b0
   SwiftyGif: 14c0e2dddb1b51da4919b68f7ad97a1c45785460
 
-PODFILE CHECKSUM: a964ab633431c1a21a2e48c9ac2ee6be1547ffbf
+PODFILE CHECKSUM: 242fa9da7f731ba861d9f47f398379c3d35efe92
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.3.1

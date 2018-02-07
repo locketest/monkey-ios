@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-protocol FriendsViewModelDelegate:class {
+protocol FriendsViewModelDelegate: class {
     func reloadNewFriends()
     func reloadOpenChats()
     func reloadData()

@@ -13,19 +13,38 @@ import Alamofire
 class Chat {
     var chatId:String
     var wastedTime = 0
+	
     var theirMinutesAdded = 0
     var minutesAdded = 0
+	
     var theySharedSnapchat = false
     var sharedSnapchat = false
+	
+	var unMute = false
+	var theyUnMute = false
+	
+	var reporting = false
+	var reported = false
+	
     var skipped = false
-    var first_name:String?
-    var profile_image_url:String?
-    var user_id:String?
-    init(chat_id: String, first_name:String?, profile_image_url:String?, user_id:String?) {
+	
+    var first_name: String?
+    var profile_image_url: String?
+    var user_id: String?
+	var match_mode: MatchMode = MatchMode.VideoMode
+	var match_with_mode: MatchMode {
+		if let selectedMatchMode = Achievements.shared.selectMatchMode, selectedMatchMode == .TextMode, match_mode == .TextMode {
+			return .TextMode
+		}
+		return .VideoMode
+	}
+	
+	init(chat_id: String, first_name: String?, profile_image_url: String?, user_id: String?, match_mode: String? = MatchMode.VideoMode.rawValue) {
         self.chatId = chat_id
         self.first_name = first_name
         self.profile_image_url = profile_image_url
         self.user_id = user_id
+		self.match_mode = MatchMode.init(string: match_mode ?? MatchMode.VideoMode.rawValue)
     }
     
     /**

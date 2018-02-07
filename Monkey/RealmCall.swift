@@ -18,10 +18,11 @@ class RealmCall: JSONAPIObject, JSONAPIObjectProtocol {
     dynamic var token: String?
     dynamic var bio: String?
     dynamic var created_at: NSDate?
-    
+	
+	dynamic var match_mode: String?
     dynamic var user: RealmUser?
     dynamic var friendship: RealmFriendship?
-    dynamic var initiator:RealmUser?
+    dynamic var initiator: RealmUser?
     
     override static func primaryKey() -> String {
         return "chat_id"

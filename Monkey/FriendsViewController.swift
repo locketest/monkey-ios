@@ -213,9 +213,6 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             })
             
             self.instagramViewController = instagramVC
-			AnaliticsCenter.log(withEvent: .openedInstagramAccount, andParameter: [
-				"via": "friends"
-				])
  
         case .changed:
             guard let instagramVC = self.instagramViewController else {

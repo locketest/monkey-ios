@@ -8,12 +8,13 @@
 
 import Foundation
 import RealmSwift
+import ObjectMapper
 
 class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     weak var callDelegate:ChatSessionCallDelegate?
     weak var loadingDelegate:ChatSessionLoadingDelegate?
 
-    var chat:Chat? // TODO This actually isnt an optional its always passed in init. cool cool
+    var chat: Chat? // TODO This actually isnt an optional its always passed in init. cool cool
     var realmCall:RealmCall? {
         let realm = try? Realm()
         return realm?.object(ofType: RealmCall.self, forPrimaryKey: self.chat?.chatId)
@@ -24,13 +25,16 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     var matchUserDidAccept = false
     var isDialedCall = false
     var isReportedChat = false
+	var isReportedByOther = false
+	var textMode = false
+	
     var session: OTSession!
     var connections = [OTConnection]()
     weak var subscriber: MonkeySubscriber?
     weak var subscriberConnection: OTConnection?
     var subscriberData: Dictionary<String, String>?
     var status: ChatSessionStatus = .loading
-    var disconnectReason:DisconnectReason?
+    var disconnectReason: DisconnectReason?
     var response:Response?{
         didSet{
             if self.wasSkippable && response == .skipped {
@@ -63,12 +67,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             }
         }
     }
-    private var sessionStatus:SessionStatus = .disconnected
+    private var sessionStatus: SessionStatus = .disconnected
 
     /// When a disconnect is completed async, this will be the result (consumed or consumedWithError)
-    private var disconnectStatus:ChatSessionStatus?
+    private var disconnectStatus: ChatSessionStatus?
 
-    private(set) var theirSnapchatUsername:String?
+    private(set) var theirSnapchatUsername: String?
 
     /// The count of checks such as time and subscriber connection that have been completed (should be zero, one, or two)
     private var initiatorReadyChecks = 0 {
@@ -190,9 +194,92 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             self.log(.error, "Send minute error \(error)")
         }
         self.friendMatched = chat.theySharedSnapchat
+		
         return !self.friendMatched
     }
 
+	func sentUnMute() {
+		if isReportedChat {
+			return
+		}
+		
+		guard let chat = self.chat else {
+			self.log(.error, "Missing chat")
+			return
+		}
+		
+		guard let connection = self.subscriberConnection else {
+			self.log(.error, "Could not add a unmute")
+			self.sessionStatus = .disconnected
+			self.updateStatusTo(.consumedWithError)
+			return
+		}
+		chat.unMute = true
+		var maybeError : OTError?
+		self.session.signal(withType: MessageType.UnMute.rawValue, string: "", connection: connection, retryAfterReconnect: true, error: &maybeError)
+		if let error = maybeError {
+			self.updateStatusTo(.consumedWithError)
+			self.log(.error, "Send minute error \(error)")
+		}
+		
+		if self.chat?.theyUnMute == true {
+			self.subscriber?.subscribeToAudio = true
+			self.callDelegate?.soundUnMuted(in: self)
+		}
+	}
+	
+	func sentReport() {
+		guard let chat = self.chat else {
+			self.log(.error, "Missing chat")
+			return
+		}
+		
+		guard let connection = self.subscriberConnection else {
+			self.log(.error, "Could not send a report")
+			self.sessionStatus = .disconnected
+			self.updateStatusTo(.consumedWithError)
+			return
+		}
+		chat.reporting = true
+		var maybeError : OTError?
+		self.session.signal(withType: MessageType.Report.rawValue, string: "", connection: connection, retryAfterReconnect: true, error: &maybeError)
+		if let error = maybeError {
+			self.updateStatusTo(.consumedWithError)
+			self.log(.error, "Send report error \(error)")
+		}
+	}
+	
+	func sentTypeStatus() {
+		guard let connection = self.subscriberConnection else {
+			self.log(.error, "Could not send a typing")
+			self.sessionStatus = .disconnected
+			self.updateStatusTo(.consumedWithError)
+			return
+		}
+		
+		var maybeError : OTError?
+		self.session.signal(withType: MessageType.Typing.rawValue, string: "Typing", connection: connection, retryAfterReconnect: true, error: &maybeError)
+		if let error = maybeError {
+			self.updateStatusTo(.consumedWithError)
+			self.log(.error, "Send typing error \(error)")
+		}
+	}
+	
+	func sentTextMessage(text: String) {
+		guard let connection = self.subscriberConnection else {
+			self.log(.error, "Could not send a message")
+			self.sessionStatus = .disconnected
+			self.updateStatusTo(.consumedWithError)
+			return
+		}
+		
+		var maybeError : OTError?
+		self.session.signal(withType: MessageType.Text.rawValue, string: text, connection: connection, retryAfterReconnect: true, error: &maybeError)
+		if let error = maybeError {
+			self.updateStatusTo(.consumedWithError)
+			self.log(.error, "Send text message error \(error)")
+		}
+	}
 
     func addFriend() -> Bool {
         //TODO:
@@ -256,7 +343,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             return
         }
 
-        self.subscriber?.subscribeToAudio = true
+		if textMode == false {
+			self.subscriber?.subscribeToAudio = true
+		}
         self.updateStatusTo(.connected)
 		
         let currentUser = APIController.shared.currentUser
@@ -579,31 +668,56 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
                 return
             }
         }
-        if (type == "request") {
-            if (string == "minute") {
-                self.chat?.theirMinutesAdded += 1
-                if self.chat!.minutesAdded >= self.chat!.theirMinutesAdded {
-                    self.log(.info, "Adding minute")
-                    self.callDelegate?.minuteAdded(in: self)
-                }
-            }
-        } else if (type == "snapchat_username") {
-            self.chat?.theySharedSnapchat = true
-            self.theirSnapchatUsername = string
-            if self.chat?.sharedSnapchat == true {
-               self.log(.info, "Openning snapchat")
-                self.friendMatched = true
-                APIController.trackChatAddFriendSuccess()
-            }
-        } else if (type == "ready") {
-            self.matchReady = true
-            if self.response == .accepted {
-                self.loadingDelegate?.shouldShowConnectingStatus!(in: self)
-            }
-            self.matchUserDidAccept = true
-        }else if(type == "skip"){
-            self.disconnect(.consumed)
-        }
+		
+		if let messageType = MessageType.init(type: type) {
+			
+			switch messageType {
+			case .AddTime:
+				if (message == "minute") {
+					self.chat?.theirMinutesAdded += 1
+					if self.chat!.minutesAdded >= self.chat!.theirMinutesAdded {
+						self.log(.info, "Adding minute")
+						self.callDelegate?.minuteAdded(in: self)
+					}
+				}
+			case .AddFriend:
+				self.chat?.theySharedSnapchat = true
+				self.theirSnapchatUsername = string
+				if self.chat?.sharedSnapchat == true {
+					self.log(.info, "Openning snapchat")
+					self.friendMatched = true
+					APIController.trackChatAddFriendSuccess()
+				}
+			case .Accept:
+				self.matchReady = true
+				if self.response == .accepted {
+					self.loadingDelegate?.shouldShowConnectingStatus!(in: self)
+				}
+				self.matchUserDidAccept = true
+			case .UnMute:
+				self.chat?.theyUnMute = true
+				if self.chat?.unMute == true {
+					self.subscriber?.subscribeToAudio = true
+					self.callDelegate?.soundUnMuted(in: self)
+				}
+			case .Skip:
+				self.disconnect(.consumed)
+			case .Report:
+				self.chat?.reported = true
+			case .Typing:
+				fallthrough
+			case .Text:
+				let messageInfo = [
+					"type": messageType.rawValue,
+					"body": message,
+					"sender": chat?.user_id ?? ""
+				]
+				if let textMessage = Mapper<TextMessage>().map(JSON: messageInfo) {
+					self.callDelegate?.received(textMessage: textMessage, in: self)
+				}
+			default: break
+			}
+		}
     }
 
     func session(_ session: OTSession, connectionDestroyed connection : OTConnection) {
@@ -694,8 +808,11 @@ enum DisconnectReason {
  */
 
 protocol ChatSessionCallDelegate: class {
-    func minuteAdded(in chatSession: ChatSession)
-    func friendMatched(in chatSession: ChatSession)
+	func friendMatched(in chatSession: ChatSession)
+	func minuteAdded(in chatSession: ChatSession)
+	func soundUnMuted(in chatSession: ChatSession)
+	
+	func received(textMessage: TextMessage, in chatSession: ChatSession)
 }
 
 protocol MessageHandler: class {

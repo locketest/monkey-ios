@@ -53,4 +53,18 @@ class RemoteConfigManager {
             return 8; // default value
         }
     }
+	var text_chat_mode: Bool {
+		if let text_chat_mode = remoteConfig.configValue(forKey: "text_chat_mode").numberValue?.boolValue {
+			return text_chat_mode;
+		}else {
+			return false; // default value
+		}
+	}
+	var next_show_time: Int {
+		if let next_show_time = remoteConfig.configValue(forKey: "next_show").numberValue?.intValue {
+			return (next_show_time == 0) ? 6 : next_show_time;
+		}else {
+			return 6; // default value
+		}
+	}
 }

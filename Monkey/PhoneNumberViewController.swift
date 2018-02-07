@@ -24,12 +24,6 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
             if let selectedCountry = self.selectedCountry {
                 self.countryPickerView.selectRow(self.countries?.index(of: selectedCountry) ?? 0, inComponent: 0, animated: false)
                 countryCodeButtonTitle = "\(selectedCountry.emoji) +\(selectedCountry.code)"
-                if let oldValue = oldValue {
-					AnaliticsCenter.log(withEvent: .changedPhoneVerificationCountry, andParameter: [
-						"from_country": oldValue.code,
-						"to_country": selectedCountry.code
-						])
-                }
             } else {
                 self.countryPickerView.selectRow(0, inComponent: 0, animated: false)
             }
@@ -175,11 +169,6 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
         RealmPhoneAuth.create(parameters: parameters) { (result: JSONAPIResult<[RealmPhoneAuth]>) in
             switch result {
             case .success(let phoneAuths):
-                AnaliticsCenter.log(withEvent: .codeRequest, andParameter: [
-                    "result" : "successed",
-                    "is_resend" : "false"
-                    ])
-                
                 guard let authObject = phoneAuths.first else {
                     self.showConnectionErrorAlert(message:"Uh oh! Something went wrong. Try again")
                     return
@@ -211,10 +200,6 @@ class PhoneNumberViewController: MonkeyViewController, UITextViewDelegate {
                 }
 
             case .error(let error):
-                AnaliticsCenter.log(withEvent: .codeRequest, andParameter: [
-                    "result" : "failed",
-                    "is_resend" : "false"
-                    ])
                 error.log()
                 self.showConnectionErrorAlert(message:error.message)
             }

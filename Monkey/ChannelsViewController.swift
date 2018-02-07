@@ -86,14 +86,6 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         
         self.selectedChannels.append(channel)
         self.updateChannels(selectedChannels: List(selectedChannels))
-		
-		AnaliticsCenter.log(withEvent: .joinedChannel, andParameter: [
-			"channel_id": channel.channel_id ?? NSNull(),
-			"channel_title": channel.title ?? NSNull(),
-			"channel_subtitle": channel.subtitle ?? NSNull(),
-			"channel_users_online": channel.users_online.value ?? NSNull(),
-			"channel_emoji": channel.emoji ?? NSNull(),
-			])
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

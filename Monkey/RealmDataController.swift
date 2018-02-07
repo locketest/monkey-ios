@@ -76,7 +76,7 @@ class RealmDataController: NSObject {
         
         let config = Realm.Configuration(
             syncConfiguration: nil,
-            schemaVersion: 15,
+            schemaVersion: 16,
             migrationBlock: { migration, oldSchemaVersion in
                 if oldSchemaVersion < 1 {
                     // Nothing to do!
@@ -176,11 +176,20 @@ class RealmDataController: NSObject {
 					*/
 				}
                 if oldSchemaVersion < 14 {
-                    
+					// Something to do!
+					/*
+					- Property 'RealmCall.user' has been added
+					*/
                 }
                 if oldSchemaVersion < 15 {
-                    migration.deleteData(forType: "RealmRelationship")
+					// Something to do!
+					/*
+					- Property 'RealmCall.match_mode' has been added
+					*/
                 }
+				if oldSchemaVersion < 15 {
+					migration.deleteData(forType: "RealmRelationship")
+				}
                 
         }, objectTypes: objectTypes)
         

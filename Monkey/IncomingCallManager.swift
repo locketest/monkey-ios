@@ -76,7 +76,6 @@ class IncomingCallManager {
            self.initiateCallTimer()
            self.showingNotification = NotificationManager.shared.showCallNotification(chatSession: chatSession, completion: { [unowned self] (response) in
                 if response == .accepted {
-				AnaliticsCenter.log(event: .acceptedFriendCall)
                     self.stopCallSound()
                     self.showingNotification?.notificationDescriptionLabel.text = "connecting..."
                     self.showingNotification?.callButton.isJiggling = false

@@ -7,6 +7,25 @@
 //
 
 import Foundation
+
+/// match mode the user selected
+///
+/// - TextMode: text mode first
+/// - VideoMode: only video mode
+public enum MatchMode: String {
+	init(string: String) {
+		switch string {
+		case MatchMode.TextMode.rawValue:
+			self = .TextMode
+		default:
+			self = .VideoMode
+		}
+	}
+	
+	case TextMode = "2"
+	case VideoMode = "1"
+}
+
 class Achievements {
 	static let shared = Achievements()
 	private init() {}
@@ -248,6 +267,30 @@ class Achievements {
 			return defaults.integer(forKey: "minute_matches")
 		}
 	}
+	var unMuteFirstTextMode: Bool {
+		set {
+			defaults.set(newValue, forKey: "unmute_first_textmode")
+		}
+		get {
+			return defaults.bool(forKey: "unmute_first_textmode") == true
+		}
+	}
+	var unMutedFirstTextMode: Bool {
+		set {
+			defaults.set(newValue, forKey: "unmuted_first_textmode")
+		}
+		get {
+			return defaults.bool(forKey: "unmuted_first_textmode") == true
+		}
+	}
+	var addFirstSnapchat: Bool {
+		set {
+			defaults.set(newValue, forKey: "add_first_snapchat")
+		}
+		get {
+			return defaults.bool(forKey: "add_first_snapchat") == true
+		}
+	}
 	var addedFirstSnapchat: Bool {
 		set {
 			defaults.set(newValue, forKey: "added_first_snapchat")
@@ -296,14 +339,6 @@ class Achievements {
 			return defaults.bool(forKey: "authorized_facebook_for_bonus_bananas") == true
 		}
 	}
-	var signUp: Bool {
-		set {
-			defaults.set(newValue, forKey: "MonkeySignUp")
-		}
-		get {
-			return defaults.bool(forKey: "MonkeySignUp") == true
-		}
-	}
 	var firstMatchRequest: Bool {
 		set {
 			defaults.set(newValue, forKey: "MonkeyLogEventFirstMatchRequest")
@@ -318,6 +353,18 @@ class Achievements {
 		}
 		get {
 			return defaults.bool(forKey: "MonkeyLogEventFirstMatchSuccess") == true
+		}
+	}
+	var selectMatchMode: MatchMode? {
+		set {
+			defaults.set(newValue?.rawValue, forKey: "MonkeySelectMatchMode")
+			defaults.synchronize()
+		}
+		get {
+			if let selectMatchMode = defaults.string(forKey: "MonkeySelectMatchMode") {
+				return MatchMode.init(rawValue: selectMatchMode)
+			}
+			return nil
 		}
 	}
 	

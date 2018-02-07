@@ -43,7 +43,7 @@ class TruthOrDareView: UIView, MessageHandler {
         let xConstraint = NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0)
         
         self.currentAlertYConstraint = NSLayoutConstraint(item: view, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0)
-        self.currentAlertYConstraint!.priority = 1000
+		self.currentAlertYConstraint!.priority = UILayoutPriority.init(1000)
         
         NSLayoutConstraint.activate([xConstraint, self.currentAlertYConstraint!])
         view.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
@@ -330,8 +330,8 @@ class TruthOrDareInputView: UIView, UITextFieldDelegate, TruthOrDareResizableVie
     }
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let newText = ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string)
-        if newText.characters.count < 140 {
-            if newText.characters.count == 0 {
+        if newText.count < 140 {
+            if newText.count == 0 {
                 self.submitButton.isEnabled = false
                 self.submitButton.layer.opacity = 0.5
             } else {

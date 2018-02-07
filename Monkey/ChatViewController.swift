@@ -227,7 +227,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                 return
             }
 
-            let instagramAccountId = friendship.user?.instagram_account?.instagram_account_id
             guard let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as? InstagramPopupViewController else {
                 return
             }
@@ -244,10 +243,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             })
 
             self.instagramViewController = instagramVC
-			AnaliticsCenter.log(withEvent: .openedInstagramAccount, andParameter: [
-				"via": "chat",
-				])
-			
 
         case .changed:
             guard let instagramVC = self.instagramViewController, let initialLocation = self.initialLongPressLocation, let previousLocation = self.previousLongPressLocation else {
@@ -451,8 +446,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                 self.callButton.isSpinning = true
                 self.profileActiveLabel.text = "connecting..."
                 self.chatSession?.accept()
-				AnaliticsCenter.log(event: .friendAcceptedCall)
-
 			}
             return
         }

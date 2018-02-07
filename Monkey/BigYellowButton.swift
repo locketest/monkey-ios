@@ -71,7 +71,7 @@ import UIKit
             if let currentLabel = emojiLabel {
                 currentLabel.removeFromSuperview()
             }
-             emojiLabel = EmojiLabel()
+			emojiLabel = EmojiLabel()
             if let emojiString = emoji {
                 emojiLabel!.text = emojiString
                 emojiLabel!.layer.cornerRadius = 6.5

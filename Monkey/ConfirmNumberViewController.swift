@@ -265,9 +265,6 @@ class ConfirmNumberViewController: MonkeyViewController {
             AnaliticsCenter.loginAccount()
 			UserDefaults.standard.set(user.user_id!, forKey: "user_id")
             Apns.update(callback: nil)
-			
-			UserDefaults.standard.set(true, forKey: "MonkeySignUp")
-			UserDefaults.standard.synchronize()
             
             UIView.animate(
                 withDuration: self.transitionTime,
@@ -293,11 +290,6 @@ class ConfirmNumberViewController: MonkeyViewController {
         self.resendCodeButton.isEnabled = false
 
         self.realmPhoneAuth?.update(attributesJSON: parameters, completion: { [weak self] (error:APIError?,response : JSONAPIDocument?) in
-            AnaliticsCenter.log(withEvent: .codeRequest, andParameter: [
-                "result" : (error==nil) ? "successed" : "failed",
-                "is_resend" : "true"
-                ])
-            
             guard error == nil else {
                 error?.log()
                 let alert = UIAlertController(title: "Something went wrong", message: error?.message ?? "Please try again.", preferredStyle: UIAlertControllerStyle.alert)

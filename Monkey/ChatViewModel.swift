@@ -160,7 +160,7 @@ class ChatViewModel {
 
         // Check that message is not just whitespace/empty lines
         if let messageToSend = message {
-            guard messageToSend.trimmingCharacters(in: .whitespacesAndNewlines).characters.count > 0 else {
+            guard messageToSend.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 else {
                return
             }
             // create the pending message
@@ -169,7 +169,6 @@ class ChatViewModel {
             self.delegate?.reloadData()
         }
 
-		AnaliticsCenter.log(event: .sentMessage)
         let messageText:Any = message ?? NSNull()
 
         let messageData =  [
@@ -223,8 +222,6 @@ class ChatViewModel {
             print("Error: Missing user id which makes no sense")
             return
         }
-
-		AnaliticsCenter.log(event: .calledFriend)
 
         let parameters:[String:Any] = [
             "data": [
@@ -282,8 +279,6 @@ class ChatViewModel {
         guard let lastMessageAt = self.messages?.last?.created_at else {
             return
         }
-
-		AnaliticsCenter.log(event: .readMessage)
 
         self.friendship?.update(attributes: [.last_message_read_at(lastMessageAt)], completion: { (error) in
             error?.log()

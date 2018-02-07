@@ -37,12 +37,6 @@ class FacebookViewController: UIViewController, UIWebViewDelegate {
             (result: FBSDKLoginManagerLoginResult?, error: Error?) in
             self.delegate?.loginCompleted(facebookViewController: self)
             // if login fails (facebook's fault) or there is a token (facebook login worked), track the event.
-            if error != nil || result?.token?.tokenString != nil {
-                AnaliticsCenter.log(withEvent: .loggedInWithFacebook, andParameter: [
-                    "via": "bonus_bananas",
-                    "success": error == nil,
-                    ])
-            }
             if let error = error {
                 print("Login error", error)
                 self.dismiss(animated: true, completion: nil)
@@ -136,11 +130,7 @@ class FacebookViewController: UIViewController, UIWebViewDelegate {
         guard let currentUser = APIController.shared.currentUser else {
             return
         }
-		AnaliticsCenter.log(withEvent: .invitedFacebookFriends, andParameter: [
-			"count": inviteCount
-			])
-
-        print("Updating user attribute `facebook_friends_invited` to value \(inviteCount)")
+		
         currentUser.update(attributes: [.facebook_friends_invited(inviteCount)]) { (error:APIError?) in
             guard error == nil else {
                 error?.log()

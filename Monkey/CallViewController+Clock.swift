@@ -11,7 +11,10 @@ import AudioToolbox
 
 // Extension for MainViewController to help with Timimg
 extension CallViewController: CountingLabelDelegate {
-    
+	func soundUnMuted(in chatSession: ChatSession) {
+		
+	}
+	
     func minuteAdded(in chatSession:ChatSession) {
         APIController.trackChatAddTimeSuccess()
         self.enableAddMinute()
@@ -162,7 +165,8 @@ extension CallViewController: CountingLabelDelegate {
     }
     
     func addMinute() {
-		AnaliticsCenter.log(event: .requestedMinuteDuringCall)
+		// requested to add minute
+//		AnaliticsCenter.log(event: .requestedMinuteDuringCall)
         self.disableAddMinute()
         let isWaiting = self.chatSession?.sendMinute() ?? false
         if isWaiting && !Achievements.shared.isOnboardingExplainTheyAddTimePopupCompleted {

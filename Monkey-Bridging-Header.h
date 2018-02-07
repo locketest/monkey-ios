@@ -6,4 +6,6 @@
 #import "OTDefaultAudioDevice.h"
 #import "MonkeyVideoRender.h"
 #import "MonkeyVideoCapture.h"
+#import "KeyboardManager.h"
+
 #import <CommonCrypto/CommonCrypto.h>

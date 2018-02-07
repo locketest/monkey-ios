@@ -136,6 +136,14 @@
 		D17CE9852009C2E4002F4F9D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D17CE9842009C2E4002F4F9D /* GoogleService-Info.plist */; };
 		D17CE9872009E47A002F4F9D /* GoogleService-Info-Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = D17CE9862009E47A002F4F9D /* GoogleService-Info-Dev.plist */; };
 		D17CE989200A1186002F4F9D /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17CE988200A1185002F4F9D /* Analytics.swift */; };
+		D192A3DB20286E0600791002 /* TextChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DA20286E0600791002 /* TextChatViewController.swift */; };
+		D192A3DD2029966E00791002 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DC2029966E00791002 /* Message.swift */; };
+		D192A3DF2029AD8300791002 /* TextModeMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DE2029AD8300791002 /* TextModeMessageCell.swift */; };
+		D192A3E1202A0E1A00791002 /* MatchModeSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E0202A0E1A00791002 /* MatchModeSwitch.swift */; };
+		D192A3E5202ACE5E00791002 /* TextChatViewController+Reporting.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E4202ACE5E00791002 /* TextChatViewController+Reporting.swift */; };
+		D192A3E7202AD1CE00791002 /* MatchViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E6202AD1CE00791002 /* MatchViewControllerProtocol.swift */; };
+		D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E8202ADF1000791002 /* SmallYellowButton.swift */; };
+		D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D192A3EB202B015A00791002 /* KeyboardManager.m */; };
 		D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
 		D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */; };
 		D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D433C1501F44D35500C9F704 /* IncomingCallManager.swift */; };
@@ -310,6 +318,15 @@
 		D17CE9842009C2E4002F4F9D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D17CE9862009E47A002F4F9D /* GoogleService-Info-Dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Dev.plist"; sourceTree = "<group>"; };
 		D17CE988200A1185002F4F9D /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		D192A3DA20286E0600791002 /* TextChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextChatViewController.swift; sourceTree = "<group>"; };
+		D192A3DC2029966E00791002 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		D192A3DE2029AD8300791002 /* TextModeMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextModeMessageCell.swift; sourceTree = "<group>"; };
+		D192A3E0202A0E1A00791002 /* MatchModeSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchModeSwitch.swift; sourceTree = "<group>"; };
+		D192A3E4202ACE5E00791002 /* TextChatViewController+Reporting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextChatViewController+Reporting.swift"; sourceTree = "<group>"; };
+		D192A3E6202AD1CE00791002 /* MatchViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchViewControllerProtocol.swift; sourceTree = "<group>"; };
+		D192A3E8202ADF1000791002 /* SmallYellowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallYellowButton.swift; sourceTree = "<group>"; };
+		D192A3EA202B015A00791002 /* KeyboardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardManager.h; sourceTree = "<group>"; };
+		D192A3EB202B015A00791002 /* KeyboardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardManager.m; sourceTree = "<group>"; };
 		D40E59331F3A81510091A7B2 /* CallNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallNotificationView.swift; sourceTree = "<group>"; };
 		D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CallNotificationView.xib; sourceTree = "<group>"; };
 		D433C1501F44D35500C9F704 /* IncomingCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallManager.swift; sourceTree = "<group>"; tabWidth = 5; };
@@ -362,6 +379,8 @@
 		1BCCDE551FE284E50081CFD2 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
+				D192A3EA202B015A00791002 /* KeyboardManager.h */,
+				D192A3EB202B015A00791002 /* KeyboardManager.m */,
 				1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */,
 				D12E22932010747200703F9B /* RemoteConfig.swift */,
 				1B76554620132B0600FAB045 /* MKMatchManager.swift */,
@@ -466,6 +485,7 @@
 				C0197E361F60A435005F121A /* RealmBlock.swift */,
 				C0AD96B91F6721A9007932AF /* RealmFriendship.swift */,
 				1B42FBFC201EF96800268A42 /* RealmMatchUser.swift */,
+				D192A3DC2029966E00791002 /* Message.swift */,
 			);
 			name = "Modern API Wrapper";
 			sourceTree = "<group>";
@@ -572,6 +592,7 @@
 				847EABF91EBE813F000F9575 /* ProfilePhotoButtonView.swift */,
 				8BC4E2D51DB08CC30018F2C3 /* BigYellowButton.swift */,
 				8BC64B9D1E88A83A00120777 /* SelectableButton.swift */,
+				D192A3E8202ADF1000791002 /* SmallYellowButton.swift */,
 			);
 			name = Buttons;
 			sourceTree = "<group>";
@@ -606,15 +627,15 @@
 		8BE35E2A1DB9D58D002049B5 /* Game */ = {
 			isa = PBXGroup;
 			children = (
+				8BC260121E54122000B9CC16 /* Socket.swift */,
 				D4F35BCB1F5AF564003D3902 /* AsyncCarouselImageView.swift */,
 				D4C767A41F689C6E002606C6 /* RealmSnapcode.swift */,
-				8BE02A491EEA4187004CF000 /* SwipeableViewController.swift */,
 				D433C1501F44D35500C9F704 /* IncomingCallManager.swift */,
+				8BE02A491EEA4187004CF000 /* SwipeableViewController.swift */,
 				8BE02A4D1EEA4B62004CF000 /* SwipeableInteractiveTransition.swift */,
 				8BE02A4B1EEA42A2004CF000 /* SwipeableTransitionSlideAnimator.swift */,
 				8B2ED8BD1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift */,
 				8B7DC74D1EF7200500A3F966 /* SwipeablePresentationController.swift */,
-				8BC260121E54122000B9CC16 /* Socket.swift */,
 				8BEB20031EFC6067001AAC3C /* BackgroundColorGradientLayer.swift */,
 				8B24D4C41E3197DE006EFCFA /* TruthOrDare */,
 				8B7C19391DB17967002FA6C9 /* MainViewController.swift */,
@@ -626,6 +647,9 @@
 				C047D7C61F6C36160048286F /* CountingLabel.swift */,
 				8BBE244A1DC1B86B00F63CED /* LoadingTextLabel.swift */,
 				D49796011F36304E00E5382E /* CallViewController.swift */,
+				D192A3DA20286E0600791002 /* TextChatViewController.swift */,
+				D192A3DE2029AD8300791002 /* TextModeMessageCell.swift */,
+				D192A3E0202A0E1A00791002 /* MatchModeSwitch.swift */,
 			);
 			name = Game;
 			sourceTree = "<group>";
@@ -719,6 +743,8 @@
 				BF8C38B41E9A0B620089B313 /* MainViewController+Location.swift */,
 				D43AD40A1F12B52600DE6BBD /* CallViewController+Clock.swift */,
 				D43AD40E1F12B5A700DE6BBD /* CallViewController+Reporting.swift */,
+				D192A3E4202ACE5E00791002 /* TextChatViewController+Reporting.swift */,
+				D192A3E6202AD1CE00791002 /* MatchViewControllerProtocol.swift */,
 			);
 			name = "View Controller Extensions";
 			sourceTree = "<group>";
@@ -896,7 +922,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Monkey/Pods-Monkey-resources.sh",
-				"${PODS_ROOT}/Digits/iOS/DigitsKit.framework/Versions/A/Resources/DigitsKitResources.bundle",
+				"${PODS_ROOT}/AccountKit/AccountKitStrings.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -963,7 +989,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D8D5D759BE37E5A176A848BF /* [CP] Embed Pods Frameworks */ = {
@@ -977,11 +1003,13 @@
 				"${BUILT_PRODUCTS_DIR}/Amplitude-iOS/Amplitude_iOS.framework",
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
 				"${BUILT_PRODUCTS_DIR}/Branch/Branch.framework",
+				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/MMSCameraViewController/MMSCameraViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/MMSProfileImagePicker/MMSProfileImagePicker.framework",
+				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
@@ -995,11 +1023,13 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Amplitude_iOS.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Branch.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSCameraViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSProfileImagePicker.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
@@ -1025,6 +1055,7 @@
 				8435C2EE1F1443F200C80AC6 /* FriendsViewController.swift in Sources */,
 				D47833E21F2BF276007F37DB /* NotificationManager.swift in Sources */,
 				8B6A57A21EAEBF3E00136311 /* JSONAPI.swift in Sources */,
+				D192A3E5202ACE5E00791002 /* TextChatViewController+Reporting.swift in Sources */,
 				8BFD6D681EFB280D002C9F9C /* EffectsCoordinator.swift in Sources */,
 				8BE02A4C1EEA42A2004CF000 /* SwipeableTransitionSlideAnimator.swift in Sources */,
 				8435C2EA1F14018100C80AC6 /* FriendsViewModel.swift in Sources */,
@@ -1037,6 +1068,7 @@
 				C07D32061F57687B0087BEA1 /* DataController.swift in Sources */,
 				8BC903271EBE6DE6004B46D8 /* PopupTransitionDismissAnimator.swift in Sources */,
 				8BE04A0A1DE518020016A593 /* OTDefaultAudioDevice.m in Sources */,
+				D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */,
 				8B19B6781EBD5F3D00493A3A /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */,
 				C0FC9E301F63106A00A813C5 /* ChannelLabelView.swift in Sources */,
 				C06FBB521F3A559B00659489 /* RealmCall.swift in Sources */,
@@ -1054,8 +1086,10 @@
 				8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */,
 				847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */,
 				8B2ED8BE1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift in Sources */,
+				D192A3DB20286E0600791002 /* TextChatViewController.swift in Sources */,
 				C047D7C71F6C36160048286F /* CountingLabel.swift in Sources */,
 				D4656C6C1F4C8C9700966C6D /* ConfirmNumberViewController.swift in Sources */,
+				D192A3E7202AD1CE00791002 /* MatchViewControllerProtocol.swift in Sources */,
 				8B3A787B1DB32ABF00FA68A7 /* EmojiLabel.swift in Sources */,
 				C0AD96BA1F6721A9007932AF /* RealmFriendship.swift in Sources */,
 				8B3A787D1DB32CB000FA68A7 /* SoundPlayer.swift in Sources */,
@@ -1064,6 +1098,7 @@
 				D4656C4D1F49F98700966C6D /* PermissionViewController.swift in Sources */,
 				1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */,
 				D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */,
+				D192A3DD2029966E00791002 /* Message.swift in Sources */,
 				D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */,
 				8BC903291EBE7012004B46D8 /* PopupTransitionPresentNewPopupAnimator.swift in Sources */,
 				8BBE244B1DC1B86B00F63CED /* LoadingTextLabel.swift in Sources */,
@@ -1091,6 +1126,7 @@
 				8BFD6D5C1EF99422002C9F9C /* MonkeyVideoCapture.m in Sources */,
 				8BE02A4A1EEA4187004CF000 /* SwipeableViewController.swift in Sources */,
 				8B7DC74A1EF5CADB00A3F966 /* ChannelsViewController.swift in Sources */,
+				D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */,
 				1B42FBFD201EF96800268A42 /* RealmMatchUser.swift in Sources */,
 				8B6A57A01EAE9E6100136311 /* APIError.swift in Sources */,
 				8435C2E11F12EE6600C80AC6 /* ChatViewController.swift in Sources */,
@@ -1112,10 +1148,12 @@
 				8B52F1721EBF6726008BD779 /* VerifyBirthdayPopupViewController.swift in Sources */,
 				8BFD6D641EFAF8FC002C9F9C /* MonkeyVideoRender.swift in Sources */,
 				8BE35E2C1DB9DD93002049B5 /* BannedViewController.swift in Sources */,
+				D192A3E1202A0E1A00791002 /* MatchModeSwitch.swift in Sources */,
 				8BFD6D6D1EFB2DF0002C9F9C /* MonkeySubscriber.swift in Sources */,
 				8B8664BD1F04AB9700E5AC12 /* PixelationEffect.swift in Sources */,
 				8B6FC3E31EADAB6E00429964 /* RealmExperiment.swift in Sources */,
 				8B8460D41EB324F900D54DF3 /* RealmTag.swift in Sources */,
+				D192A3DF2029AD8300791002 /* TextModeMessageCell.swift in Sources */,
 				8BE02A4E1EEA4B62004CF000 /* SwipeableInteractiveTransition.swift in Sources */,
 				BF8C38B71E9A188E0089B313 /* RealmDataController.swift in Sources */,
 				8B7C193A1DB17967002FA6C9 /* MainViewController.swift in Sources */,

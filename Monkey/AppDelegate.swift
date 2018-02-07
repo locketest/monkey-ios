@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 		AnaliticsCenter.logLaunchApp()
-        Fabric.with([Answers.self, Branch.self, Crashlytics.self])
+        Fabric.with([Branch.self, Crashlytics.self])
         Branch.getInstance().initSession(launchOptions: launchOptions)
 		FirebaseApp.configure(options: FirebaseOptions.init(contentsOfFile: Environment.firebaseConfigurationPath)!)
 		RemoteConfigManager.shared.fetchLatestConfig()
@@ -151,17 +151,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             application.applicationIconBadgeNumber = badgeNumber
         }
 
-
         guard application.applicationState != .active else {
             NotificationManager.shared.handleNotification(userInfo)
             return
-        }
-
-        if application.applicationState != UIApplicationState.active {
-			AnaliticsCenter.log(withEvent: .openedAppViaPushNotification, andParameter: [
-				"info": userInfo,
-				"state": UIApplication.shared.applicationState.rawValue,
-				])
         }
 		
         if let text = userInfo["t"] as? String ?? notificationUserInfo.aps?["alert"] as? String, let emoji = notificationUserInfo.emoji {
@@ -200,10 +192,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         }
                         UIApplication.shared.openURL(url)
                     }
-					AnaliticsCenter.log(withEvent: .openedURLFromPushNotification, andParameter: [
-                        "url": urlString,
-                        "state": UIApplication.shared.applicationState.rawValue
-                        ])
                     return
                 }
             }

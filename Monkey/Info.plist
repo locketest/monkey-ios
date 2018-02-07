@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AccountKitClientToken</key>
+	<string>cae6e3f40efb030879df587591602102</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -15,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.5.3</string>
+	<string>3.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -36,7 +38,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>12</string>
+	<string>13</string>
 	<key>Configuration</key>
 	<string>$(CONFIGURATION)</string>
 	<key>Fabric</key>
@@ -45,12 +47,6 @@
 		<string>2f375793da31dc2dacb662808d3113bce1be7ff1</string>
 		<key>Kits</key>
 		<array>
-			<dict>
-				<key>KitInfo</key>
-				<dict/>
-				<key>KitName</key>
-				<string>Answers</string>
-			</dict>
 			<dict>
 				<key>KitInfo</key>
 				<dict>
@@ -70,8 +66,6 @@
 	</dict>
 	<key>FacebookAppID</key>
 	<string>1731011946972323</string>
-	<key>AccountKitClientToken</key>
-	<string>cae6e3f40efb030879df587591602102</string>
 	<key>FacebookDisplayName</key>
 	<string>Monkey</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

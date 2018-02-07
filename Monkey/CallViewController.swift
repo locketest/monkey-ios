@@ -15,7 +15,7 @@ protocol CallViewControllerDelegate:class {
 }
 
 // TODO: this class shouldn't create and destroy every time
-class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSessionCallDelegate {
+class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSessionCallDelegate, MatchViewControllerProtocol {
 
     // MARK: Interface Elements
     @IBOutlet var addTimeHorizontalCenterConstraint: NSLayoutConstraint!
@@ -42,16 +42,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     var soundPlayer = SoundPlayer.shared
     weak var callDelegate:CallViewControllerDelegate?
     let throttleFunction = throttle(delay: 0.25, queue: DispatchQueue.main) {
-        if UIDevice.current.responds(to: Selector("_feedbackSupportLevel")) {
-            if let feedbackSupportLevel = UIDevice.current.value(forKey: "_feedbackSupportLevel") as? Int {
-                if feedbackSupportLevel >= 2 {
-                    TapticFeedback.impact(style: .heavy)
-                    return
-                }
-            }
-            // fall back on System vibration
-            AudioServicesPlayAlertSound(1519) // kSystemSoundID_Vibrate: (this is  `Peek` or a weak boom, 1520 is `Pop` or a strong boom)
-        }
+		TapticFeedback.impact(style: .heavy)
     }
 
     var chatSession:ChatSession? {
@@ -237,7 +228,8 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 
     // MARK: Snapchat Button
     @IBAction func addSnapchat(_ sender: BigYellowButton) {
-		AnaliticsCenter.log(event: .requestedSnapchatDuringCall)
+		// add friend
+//		AnaliticsCenter.log(event: .requestedSnapchatDuringCall)
         sender.isEnabled = false
         sender.layer.opacity = 0.5
         Achievements.shared.addedFirstSnapchat = true
@@ -251,13 +243,17 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     var winEmojis = "🎉👻🌟😀💎♥️🎊🎁🐬🙉🔥"
 
     // MARK: Report Button
-    var reportedLabel:UILabel?
-    var reportImage:UIImage?
-    var reportChatId:String?
+    var reportedLabel: UILabel?
+    var reportImage: UIImage?
+    var reportChatId: String?
 
+	func received(textMessage: TextMessage, in chatSession: ChatSession) {
+		
+	}
 
     internal func friendMatched(in chatSession:ChatSession) {
-		AnaliticsCenter.log(event: .snapchatMatchedDuringCall)
+		// friend added
+//		AnaliticsCenter.log(event: .snapchatMatchedDuringCall)
 		
         Achievements.shared.snapchatMatches += 1
         soundPlayer.play(sound: .win)

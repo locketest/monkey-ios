@@ -184,10 +184,6 @@ class NotificationManager {
     }
     
     private func rateFriendship(_ rating:ChatRating, chatId:String) {
-		AnaliticsCenter.log(withEvent: .ratedCall, andParameter: [
-			"rating": rating.rawValue,
-			"chat_id": chatId,
-			])
         let paramaters = [
             "data": [
                 "type": "chats",
