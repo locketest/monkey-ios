@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -9,6 +9,7 @@
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -21,35 +22,25 @@
         <scene sceneID="ivU-ih-IB3">
             <objects>
                 <viewController storyboardIdentifier="authVC" title=" " useStoryboardIdentifierAsRestorationIdentifier="YES" id="uTr-4E-JMI" customClass="AuthViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="2zi-kr-Ap6"/>
-                        <viewControllerLayoutGuide type="bottom" id="OYD-q9-ori"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="XMt-zU-tTP">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="ibA-5L-wze">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="ibA-5L-wze">
                                 <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3T-gE-Pxx">
+                            <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w3T-gE-Pxx">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <connections>
                                     <segue destination="VMl-F2-JEn" kind="embed" id="0IN-JS-gd1"/>
                                 </connections>
                             </containerView>
                         </subviews>
                         <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="w3T-gE-Pxx" firstAttribute="top" secondItem="XMt-zU-tTP" secondAttribute="top" id="0m9-pM-3gD"/>
-                            <constraint firstItem="ibA-5L-wze" firstAttribute="centerY" secondItem="XMt-zU-tTP" secondAttribute="centerY" id="EPO-se-97g"/>
-                            <constraint firstItem="ibA-5L-wze" firstAttribute="centerX" secondItem="XMt-zU-tTP" secondAttribute="centerX" id="Uux-W7-D50"/>
-                            <constraint firstItem="w3T-gE-Pxx" firstAttribute="leading" secondItem="XMt-zU-tTP" secondAttribute="leading" id="aeR-cX-uBM"/>
-                            <constraint firstItem="OYD-q9-ori" firstAttribute="top" secondItem="w3T-gE-Pxx" secondAttribute="bottom" id="h1D-cS-TCs"/>
-                            <constraint firstAttribute="trailing" secondItem="w3T-gE-Pxx" secondAttribute="trailing" id="qrA-2Q-eFe"/>
-                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="b8u-d9-pSj"/>
                     </view>
-                    <navigationItem key="navigationItem" id="exX-f6-XEu"/>
                     <connections>
                         <outlet property="activityIndicator" destination="ibA-5L-wze" id="P5z-Gq-at8"/>
                         <outlet property="onboardingContainerView" destination="w3T-gE-Pxx" id="bYr-4C-ghp"/>
@@ -71,10 +62,6 @@
         <scene sceneID="MD2-qF-q0w">
             <objects>
                 <viewController storyboardIdentifier="welcomeVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Yof-0h-XrG" customClass="WelcomeViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="wHE-WY-iR6"/>
-                        <viewControllerLayoutGuide type="bottom" id="dyn-X8-1yd"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="hWM-97-iXR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -82,15 +69,16 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wHu-jB-PwC">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gb2-8Q-lVH" customClass="ConfettiView" customModule="Monkey" customModuleProvider="target">
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gb2-8Q-lVH" customClass="ConfettiView" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yNH-Yi-tg9" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="20" y="591" width="335" height="56"/>
                                         <color key="backgroundColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="56" id="P8k-Kd-RVs"/>
+                                            <constraint firstAttribute="height" constant="56" id="uRW-Hj-84r"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -115,15 +103,11 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="Xzg-Tm-YZ7" firstAttribute="centerY" secondItem="wHu-jB-PwC" secondAttribute="centerY" constant="-20" id="MqL-JV-59Z"/>
-                                    <constraint firstAttribute="bottom" secondItem="gb2-8Q-lVH" secondAttribute="bottom" id="OHo-nw-DQe"/>
-                                    <constraint firstAttribute="trailing" secondItem="gb2-8Q-lVH" secondAttribute="trailing" id="Pal-IY-Y8Z"/>
-                                    <constraint firstItem="gb2-8Q-lVH" firstAttribute="leading" secondItem="wHu-jB-PwC" secondAttribute="leading" id="Xtk-LO-q05"/>
-                                    <constraint firstAttribute="trailing" secondItem="yNH-Yi-tg9" secondAttribute="trailing" constant="20" id="hSb-XC-IfG"/>
-                                    <constraint firstAttribute="bottom" secondItem="yNH-Yi-tg9" secondAttribute="bottom" constant="20" id="kB5-3C-eLu"/>
-                                    <constraint firstItem="Xzg-Tm-YZ7" firstAttribute="centerX" secondItem="wHu-jB-PwC" secondAttribute="centerX" id="obh-AC-t1i"/>
-                                    <constraint firstItem="yNH-Yi-tg9" firstAttribute="centerX" secondItem="wHu-jB-PwC" secondAttribute="centerX" id="s6B-a0-WAs"/>
-                                    <constraint firstItem="gb2-8Q-lVH" firstAttribute="top" secondItem="wHu-jB-PwC" secondAttribute="top" id="wNV-Sp-hoS"/>
+                                    <constraint firstAttribute="bottom" secondItem="yNH-Yi-tg9" secondAttribute="bottom" constant="20" id="BCV-R6-iGv"/>
+                                    <constraint firstItem="Xzg-Tm-YZ7" firstAttribute="centerX" secondItem="wHu-jB-PwC" secondAttribute="centerX" id="HEW-lj-L1S"/>
+                                    <constraint firstItem="yNH-Yi-tg9" firstAttribute="leading" secondItem="wHu-jB-PwC" secondAttribute="leading" constant="20" id="Qe6-r8-dPZ"/>
+                                    <constraint firstAttribute="trailing" secondItem="yNH-Yi-tg9" secondAttribute="trailing" constant="20" id="Zc0-kE-6b0"/>
+                                    <constraint firstItem="Xzg-Tm-YZ7" firstAttribute="centerY" secondItem="wHu-jB-PwC" secondAttribute="centerY" constant="-20" id="mjL-32-f8Z"/>
                                 </constraints>
                             </view>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="9T9-cg-jN0">
@@ -132,13 +116,14 @@
                         </subviews>
                         <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="wHu-jB-PwC" firstAttribute="leading" secondItem="hWM-97-iXR" secondAttribute="leading" id="8eu-xO-Yo2"/>
-                            <constraint firstItem="9T9-cg-jN0" firstAttribute="centerX" secondItem="hWM-97-iXR" secondAttribute="centerX" id="IDe-Eb-oNN"/>
-                            <constraint firstAttribute="trailing" secondItem="wHu-jB-PwC" secondAttribute="trailing" id="KLp-aC-vG5"/>
-                            <constraint firstAttribute="bottom" secondItem="wHu-jB-PwC" secondAttribute="bottom" id="TQx-uu-4wl"/>
-                            <constraint firstItem="9T9-cg-jN0" firstAttribute="centerY" secondItem="hWM-97-iXR" secondAttribute="centerY" id="dd3-Et-UJc"/>
-                            <constraint firstItem="wHu-jB-PwC" firstAttribute="top" secondItem="hWM-97-iXR" secondAttribute="top" id="gTZ-0M-SiF"/>
+                            <constraint firstItem="wHu-jB-PwC" firstAttribute="top" secondItem="hWM-97-iXR" secondAttribute="top" id="6hi-OX-EHL"/>
+                            <constraint firstItem="9T9-cg-jN0" firstAttribute="centerX" secondItem="hWM-97-iXR" secondAttribute="centerX" id="8oz-8I-YaU"/>
+                            <constraint firstItem="wHu-jB-PwC" firstAttribute="leading" secondItem="hWM-97-iXR" secondAttribute="leading" id="COI-9h-9dH"/>
+                            <constraint firstItem="myy-On-nbh" firstAttribute="bottom" secondItem="wHu-jB-PwC" secondAttribute="bottom" id="RIl-PO-agI"/>
+                            <constraint firstAttribute="trailing" secondItem="wHu-jB-PwC" secondAttribute="trailing" id="ah1-lt-afC"/>
+                            <constraint firstItem="9T9-cg-jN0" firstAttribute="centerY" secondItem="hWM-97-iXR" secondAttribute="centerY" id="g6W-Gn-Fyc"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="myy-On-nbh"/>
                     </view>
                     <connections>
                         <outlet property="confettiView" destination="gb2-8Q-lVH" id="GKl-ks-mVT"/>
@@ -155,10 +140,6 @@
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController storyboardIdentifier="editAccountVC" title=" " useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="EditAccountViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -511,12 +492,13 @@
                             <constraint firstItem="ul8-CP-Vhm" firstAttribute="top" secondItem="4lX-xn-RWG" secondAttribute="bottom" id="76t-S3-JhK"/>
                             <constraint firstAttribute="bottom" secondItem="ul8-CP-Vhm" secondAttribute="bottom" id="B9S-3r-ljq"/>
                             <constraint firstItem="ul8-CP-Vhm" firstAttribute="top" secondItem="9hf-Vu-Ir0" secondAttribute="bottom" id="Gei-jk-KPy"/>
-                            <constraint firstAttribute="trailing" secondItem="4lX-xn-RWG" secondAttribute="trailing" id="Hg0-Yb-l9X"/>
-                            <constraint firstItem="4lX-xn-RWG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Qkw-De-1vy"/>
-                            <constraint firstAttribute="trailing" secondItem="ul8-CP-Vhm" secondAttribute="trailing" id="ecf-oe-M1r"/>
-                            <constraint firstItem="ul8-CP-Vhm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="iac-7Z-qvh"/>
+                            <constraint firstItem="2SI-ED-tdv" firstAttribute="trailing" secondItem="4lX-xn-RWG" secondAttribute="trailing" id="Hg0-Yb-l9X"/>
+                            <constraint firstItem="4lX-xn-RWG" firstAttribute="top" secondItem="2SI-ED-tdv" secondAttribute="top" id="Qkw-De-1vy"/>
+                            <constraint firstItem="2SI-ED-tdv" firstAttribute="trailing" secondItem="ul8-CP-Vhm" secondAttribute="trailing" id="ecf-oe-M1r"/>
+                            <constraint firstItem="ul8-CP-Vhm" firstAttribute="leading" secondItem="2SI-ED-tdv" secondAttribute="leading" id="iac-7Z-qvh"/>
                             <constraint firstItem="4lX-xn-RWG" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="wJx-y5-6jr"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="2SI-ED-tdv"/>
                     </view>
                     <navigationItem key="navigationItem" id="Do2-20-hey"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
@@ -551,10 +533,6 @@
         <scene sceneID="K3u-Jo-yL7">
             <objects>
                 <viewController storyboardIdentifier="editProfileVC" title=" " useStoryboardIdentifierAsRestorationIdentifier="YES" id="ulM-VQ-mBf" userLabel="Edit Profile View Controller" customClass="EditProfileViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="B0z-x5-f8i"/>
-                        <viewControllerLayoutGuide type="bottom" id="Ctk-4T-mWA"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="O7N-Mr-pgb">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -698,11 +676,12 @@
                         </subviews>
                         <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="krO-Ei-IE2" secondAttribute="trailing" id="G2k-Lc-YDA"/>
-                            <constraint firstItem="krO-Ei-IE2" firstAttribute="top" secondItem="B0z-x5-f8i" secondAttribute="bottom" id="GWA-bL-Vi9"/>
+                            <constraint firstItem="1Ig-7g-sBP" firstAttribute="trailing" secondItem="krO-Ei-IE2" secondAttribute="trailing" id="G2k-Lc-YDA"/>
+                            <constraint firstItem="krO-Ei-IE2" firstAttribute="top" secondItem="1Ig-7g-sBP" secondAttribute="top" id="GWA-bL-Vi9"/>
                             <constraint firstAttribute="bottom" secondItem="krO-Ei-IE2" secondAttribute="bottom" id="VYk-RG-KHr"/>
                             <constraint firstItem="krO-Ei-IE2" firstAttribute="width" secondItem="O7N-Mr-pgb" secondAttribute="width" id="mKv-ig-YxG"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="1Ig-7g-sBP"/>
                     </view>
                     <navigationItem key="navigationItem" id="olX-zc-Gd4"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
@@ -724,10 +703,6 @@
         <scene sceneID="qd5-NF-8I0">
             <objects>
                 <viewController storyboardIdentifier="reviewVC" title=" " useStoryboardIdentifierAsRestorationIdentifier="YES" id="Sfn-2B-xLn" customClass="ReviewViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="9je-cQ-JuR"/>
-                        <viewControllerLayoutGuide type="bottom" id="mJp-Xx-r5B"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Eju-z0-aUe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -867,8 +842,9 @@
                         <color key="backgroundColor" red="0.3411764705882353" green="0.12941176470588237" blue="0.99607843137254903" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="v1C-Gd-pze" firstAttribute="centerY" secondItem="Eju-z0-aUe" secondAttribute="centerY" id="geJ-r2-MRI"/>
-                            <constraint firstItem="v1C-Gd-pze" firstAttribute="centerX" secondItem="Eju-z0-aUe" secondAttribute="centerX" id="rVQ-VC-V0Z"/>
+                            <constraint firstItem="v1C-Gd-pze" firstAttribute="centerX" secondItem="FVg-wY-5Ex" secondAttribute="centerX" id="rVQ-VC-V0Z"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="FVg-wY-5Ex"/>
                     </view>
                     <connections>
                         <outlet property="promptTextView" destination="LSZ-ck-HXj" id="1Os-wq-QZ8"/>
@@ -889,10 +865,6 @@
         <scene sceneID="IwK-ZP-ZD4">
             <objects>
                 <viewController storyboardIdentifier="oldVC" title=" " useStoryboardIdentifierAsRestorationIdentifier="YES" id="1fB-hf-akX" customClass="OldAgeViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="oBw-gL-f5M"/>
-                        <viewControllerLayoutGuide type="bottom" id="2rk-kS-GPK"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8Y6-Hw-SEh">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -968,11 +940,12 @@
                         </subviews>
                         <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="2rk-kS-GPK" firstAttribute="top" secondItem="qU7-N6-lIL" secondAttribute="bottom" id="3p1-tZ-jht"/>
-                            <constraint firstItem="qU7-N6-lIL" firstAttribute="leading" secondItem="8Y6-Hw-SEh" secondAttribute="leading" id="e7E-4a-SSq"/>
-                            <constraint firstAttribute="trailing" secondItem="qU7-N6-lIL" secondAttribute="trailing" id="fz3-vk-mvz"/>
+                            <constraint firstItem="nmQ-ua-Ixu" firstAttribute="bottom" secondItem="qU7-N6-lIL" secondAttribute="bottom" id="3p1-tZ-jht"/>
+                            <constraint firstItem="qU7-N6-lIL" firstAttribute="leading" secondItem="nmQ-ua-Ixu" secondAttribute="leading" id="e7E-4a-SSq"/>
+                            <constraint firstItem="nmQ-ua-Ixu" firstAttribute="trailing" secondItem="qU7-N6-lIL" secondAttribute="trailing" id="fz3-vk-mvz"/>
                             <constraint firstItem="qU7-N6-lIL" firstAttribute="top" secondItem="8Y6-Hw-SEh" secondAttribute="top" id="jKb-lg-Eja"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="nmQ-ua-Ixu"/>
                     </view>
                     <connections>
                         <outlet property="oldPersonImage" destination="Myz-aG-hiz" id="EH8-qk-881"/>
@@ -987,10 +960,6 @@
         <scene sceneID="F8G-9K-orH">
             <objects>
                 <viewController storyboardIdentifier="inviteSnapchatVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Wce-Wz-STL" customClass="SnapchatInviteViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="4JM-eI-wQJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="ERu-TV-556"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="fqz-zK-eU8">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1059,14 +1028,15 @@
                         </subviews>
                         <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="ERu-TV-556" firstAttribute="top" secondItem="Ol8-Yn-H6Y" secondAttribute="bottom" constant="16" id="0po-Sg-HYa"/>
-                            <constraint firstAttribute="trailing" secondItem="Ruc-Pe-QIf" secondAttribute="trailing" id="4Ld-Lw-kdj"/>
-                            <constraint firstItem="ERu-TV-556" firstAttribute="top" secondItem="Zgs-3f-eYZ" secondAttribute="bottom" constant="17" id="BPq-IY-bcW"/>
+                            <constraint firstItem="IX8-4R-TOk" firstAttribute="bottom" secondItem="Ol8-Yn-H6Y" secondAttribute="bottom" constant="16" id="0po-Sg-HYa"/>
+                            <constraint firstItem="IX8-4R-TOk" firstAttribute="trailing" secondItem="Ruc-Pe-QIf" secondAttribute="trailing" id="4Ld-Lw-kdj"/>
+                            <constraint firstItem="IX8-4R-TOk" firstAttribute="bottom" secondItem="Zgs-3f-eYZ" secondAttribute="bottom" constant="17" id="BPq-IY-bcW"/>
                             <constraint firstItem="Ruc-Pe-QIf" firstAttribute="centerY" secondItem="fqz-zK-eU8" secondAttribute="centerY" id="EOe-IP-l38"/>
-                            <constraint firstItem="Ruc-Pe-QIf" firstAttribute="leading" secondItem="fqz-zK-eU8" secondAttribute="leading" id="SR8-s7-kfh"/>
-                            <constraint firstItem="Ol8-Yn-H6Y" firstAttribute="centerX" secondItem="fqz-zK-eU8" secondAttribute="centerX" id="Wd1-4v-WJr"/>
-                            <constraint firstItem="Zgs-3f-eYZ" firstAttribute="centerX" secondItem="fqz-zK-eU8" secondAttribute="centerX" id="tLY-Y9-lH4"/>
+                            <constraint firstItem="Ruc-Pe-QIf" firstAttribute="leading" secondItem="IX8-4R-TOk" secondAttribute="leading" id="SR8-s7-kfh"/>
+                            <constraint firstItem="Ol8-Yn-H6Y" firstAttribute="centerX" secondItem="IX8-4R-TOk" secondAttribute="centerX" id="Wd1-4v-WJr"/>
+                            <constraint firstItem="Zgs-3f-eYZ" firstAttribute="centerX" secondItem="IX8-4R-TOk" secondAttribute="centerX" id="tLY-Y9-lH4"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="IX8-4R-TOk"/>
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="Zgs-3f-eYZ" id="UN0-LU-Oy2"/>
@@ -1083,10 +1053,6 @@
         <scene sceneID="f71-ZK-F2f">
             <objects>
                 <viewController storyboardIdentifier="bannedVC" title=" " useStoryboardIdentifierAsRestorationIdentifier="YES" id="iDY-am-8Cb" customClass="BannedViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="UHE-AO-IMS"/>
-                        <viewControllerLayoutGuide type="bottom" id="URw-sg-8pz"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="D44-cd-K9r">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1148,10 +1114,11 @@
                         </subviews>
                         <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="W9h-ah-onE" secondAttribute="trailing" id="Ide-lW-4fL"/>
-                            <constraint firstItem="W9h-ah-onE" firstAttribute="leading" secondItem="D44-cd-K9r" secondAttribute="leading" id="c6b-cr-kqm"/>
+                            <constraint firstItem="fkd-bO-OTJ" firstAttribute="trailing" secondItem="W9h-ah-onE" secondAttribute="trailing" id="Ide-lW-4fL"/>
+                            <constraint firstItem="W9h-ah-onE" firstAttribute="leading" secondItem="fkd-bO-OTJ" secondAttribute="leading" id="c6b-cr-kqm"/>
                             <constraint firstItem="W9h-ah-onE" firstAttribute="centerY" secondItem="D44-cd-K9r" secondAttribute="centerY" id="uEM-rV-ScI"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="fkd-bO-OTJ"/>
                     </view>
                     <connections>
                         <outlet property="blockedTextView" destination="c2x-Jr-8Xh" id="uQI-sM-9Ne"/>
@@ -1165,10 +1132,6 @@
         <scene sceneID="MwS-yZ-vVq">
             <objects>
                 <viewController storyboardIdentifier="inviteVC" title=" " useStoryboardIdentifierAsRestorationIdentifier="YES" id="JwF-pR-8Nx" customClass="InviteFriendsViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="zU3-v2-ORT"/>
-                        <viewControllerLayoutGuide type="bottom" id="RSA-Y7-r7Z"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="UGc-fh-GWY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1345,11 +1308,12 @@
                         </subviews>
                         <color key="backgroundColor" red="0.3411764706" green="0.12941176469999999" blue="0.99607843139999996" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="RSA-Y7-r7Z" firstAttribute="top" secondItem="t60-aP-64E" secondAttribute="bottom" id="3IP-2E-eBQ"/>
-                            <constraint firstItem="t60-aP-64E" firstAttribute="leading" secondItem="UGc-fh-GWY" secondAttribute="leading" id="N4R-SD-oqG"/>
-                            <constraint firstAttribute="trailing" secondItem="t60-aP-64E" secondAttribute="trailing" id="ao0-RA-hzS"/>
+                            <constraint firstItem="jBU-cC-qp2" firstAttribute="bottom" secondItem="t60-aP-64E" secondAttribute="bottom" id="3IP-2E-eBQ"/>
+                            <constraint firstItem="t60-aP-64E" firstAttribute="leading" secondItem="jBU-cC-qp2" secondAttribute="leading" id="N4R-SD-oqG"/>
+                            <constraint firstItem="jBU-cC-qp2" firstAttribute="trailing" secondItem="t60-aP-64E" secondAttribute="trailing" id="ao0-RA-hzS"/>
                             <constraint firstItem="t60-aP-64E" firstAttribute="top" secondItem="UGc-fh-GWY" secondAttribute="top" id="lPe-dO-9tm"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="jBU-cC-qp2"/>
                     </view>
                     <connections>
                         <outlet property="contactsTableView" destination="Pc1-N0-oF4" id="Xae-iP-NT4"/>
@@ -1368,10 +1332,6 @@
         <scene sceneID="KKK-yK-Tob">
             <objects>
                 <viewController storyboardIdentifier="mainVC" id="TT7-O9-9zR" customClass="MainViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="wpG-oz-A5T"/>
-                        <viewControllerLayoutGuide type="bottom" id="SmO-Lg-c7r"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="N5m-MM-8GO" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1720,9 +1680,10 @@ types of Monkey species in the entire world.</string>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="e3d-za-UK6" secondAttribute="bottom" id="CqA-YW-Dhm"/>
                             <constraint firstItem="e3d-za-UK6" firstAttribute="top" secondItem="N5m-MM-8GO" secondAttribute="top" id="P46-3x-6O1"/>
-                            <constraint firstAttribute="trailing" secondItem="e3d-za-UK6" secondAttribute="trailing" id="WE7-e8-YEw"/>
-                            <constraint firstItem="e3d-za-UK6" firstAttribute="leading" secondItem="N5m-MM-8GO" secondAttribute="leading" id="WK8-xG-1TJ"/>
+                            <constraint firstItem="lB6-cQ-yTL" firstAttribute="trailing" secondItem="e3d-za-UK6" secondAttribute="trailing" id="WE7-e8-YEw"/>
+                            <constraint firstItem="e3d-za-UK6" firstAttribute="leading" secondItem="lB6-cQ-yTL" secondAttribute="leading" id="WK8-xG-1TJ"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="lB6-cQ-yTL"/>
                     </view>
                     <connections>
                         <outlet property="acceptButton" destination="QMF-mv-VbF" id="jhq-gH-Wte"/>
@@ -1763,10 +1724,6 @@ types of Monkey species in the entire world.</string>
         <scene sceneID="P9s-Af-lzT">
             <objects>
                 <viewController storyboardIdentifier="callVC" title=" " useStoryboardIdentifierAsRestorationIdentifier="YES" id="zTu-EK-AVb" customClass="CallViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Fdy-MS-dEP"/>
-                        <viewControllerLayoutGuide type="bottom" id="cvu-2H-Gbf"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="uWV-k0-edZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1922,11 +1879,12 @@ types of Monkey species in the entire world.</string>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="jnj-Bx-OWp" firstAttribute="leading" secondItem="uWV-k0-edZ" secondAttribute="leading" id="cKK-Ku-NPp"/>
-                            <constraint firstItem="cvu-2H-Gbf" firstAttribute="top" secondItem="jnj-Bx-OWp" secondAttribute="bottom" id="m9A-wo-nol"/>
-                            <constraint firstAttribute="trailing" secondItem="jnj-Bx-OWp" secondAttribute="trailing" id="nno-TP-Yrf"/>
-                            <constraint firstItem="jnj-Bx-OWp" firstAttribute="top" secondItem="Fdy-MS-dEP" secondAttribute="bottom" constant="-20" id="umN-63-E3P"/>
+                            <constraint firstItem="jnj-Bx-OWp" firstAttribute="leading" secondItem="FzC-9i-qGk" secondAttribute="leading" id="cKK-Ku-NPp"/>
+                            <constraint firstItem="FzC-9i-qGk" firstAttribute="bottom" secondItem="jnj-Bx-OWp" secondAttribute="bottom" id="m9A-wo-nol"/>
+                            <constraint firstItem="FzC-9i-qGk" firstAttribute="trailing" secondItem="jnj-Bx-OWp" secondAttribute="trailing" id="nno-TP-Yrf"/>
+                            <constraint firstItem="jnj-Bx-OWp" firstAttribute="top" secondItem="FzC-9i-qGk" secondAttribute="top" constant="-20" id="umN-63-E3P"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="FzC-9i-qGk"/>
                     </view>
                     <connections>
                         <outlet property="addMinuteButton" destination="mbV-Rf-K1k" id="4cB-zj-NUy"/>
@@ -1954,10 +1912,6 @@ types of Monkey species in the entire world.</string>
         <scene sceneID="OKT-wq-mFi">
             <objects>
                 <viewController storyboardIdentifier="textModeVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="YH2-9W-ewk" customClass="TextChatViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Tsf-4p-Pib"/>
-                        <viewControllerLayoutGuide type="bottom" id="jgH-NL-Xxe"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="ueK-Pl-gBe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2042,11 +1996,21 @@ types of Monkey species in the entire world.</string>
                                         <rect key="frame" x="0.0" y="220" width="375" height="403"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <inset key="scrollIndicatorInsets" minX="0.0" minY="12" maxX="0.0" maxY="0.0"/>
                                         <connections>
                                             <outlet property="dataSource" destination="YH2-9W-ewk" id="A4H-b7-KOS"/>
                                             <outlet property="delegate" destination="YH2-9W-ewk" id="k4M-83-u9x"/>
                                         </connections>
                                     </tableView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Share your weekend vibe. Use emojis only." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wyA-Xr-l6Y">
+                                        <rect key="frame" x="42" y="411.5" width="290.5" height="20.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="224" id="O2M-rO-Xio"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="0.40483197773972601" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FeK-79-3ad">
                                         <rect key="frame" x="0.0" y="220" width="375" height="32"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2133,6 +2097,8 @@ types of Monkey species in the entire world.</string>
                                     <constraint firstAttribute="trailing" secondItem="6Ws-HS-mh5" secondAttribute="trailing" id="IfF-oe-B4h"/>
                                     <constraint firstItem="FeK-79-3ad" firstAttribute="top" secondItem="uCy-lG-wjf" secondAttribute="bottom" constant="152" id="Kh2-wd-6om"/>
                                     <constraint firstItem="GM4-mw-hAi" firstAttribute="leading" secondItem="oub-g2-pZy" secondAttribute="leading" id="MUe-V4-VoW"/>
+                                    <constraint firstItem="wyA-Xr-l6Y" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="oub-g2-pZy" secondAttribute="leading" constant="42" id="Mec-EO-bP6"/>
+                                    <constraint firstItem="wyA-Xr-l6Y" firstAttribute="centerX" secondItem="GM4-mw-hAi" secondAttribute="centerX" id="TGN-vo-9Ed"/>
                                     <constraint firstItem="FeK-79-3ad" firstAttribute="leading" secondItem="oub-g2-pZy" secondAttribute="leading" id="VUv-gQ-thF"/>
                                     <constraint firstItem="GM4-mw-hAi" firstAttribute="top" secondItem="uCy-lG-wjf" secondAttribute="bottom" constant="152" id="WLC-En-Y2M"/>
                                     <constraint firstItem="6Ws-HS-mh5" firstAttribute="leading" secondItem="oub-g2-pZy" secondAttribute="leading" id="XbA-aE-cDX"/>
@@ -2143,23 +2109,26 @@ types of Monkey species in the entire world.</string>
                                     <constraint firstItem="Meg-l7-LW0" firstAttribute="top" secondItem="oub-g2-pZy" secondAttribute="top" constant="20" id="dSd-T4-Ct6"/>
                                     <constraint firstItem="uCy-lG-wjf" firstAttribute="top" secondItem="oub-g2-pZy" secondAttribute="top" constant="28" id="fEg-2M-8KA"/>
                                     <constraint firstItem="6Ws-HS-mh5" firstAttribute="top" secondItem="GM4-mw-hAi" secondAttribute="bottom" id="hgG-dT-oma"/>
+                                    <constraint firstItem="wyA-Xr-l6Y" firstAttribute="centerY" secondItem="GM4-mw-hAi" secondAttribute="centerY" id="nrQ-Cz-jlB"/>
                                     <constraint firstAttribute="trailing" secondItem="uCy-lG-wjf" secondAttribute="trailing" constant="12" id="yYa-ez-Weh"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.058823529411764705" green="0.0" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="oub-g2-pZy" secondAttribute="trailing" id="ENV-wT-k1T"/>
-                            <constraint firstItem="oub-g2-pZy" firstAttribute="leading" secondItem="ueK-Pl-gBe" secondAttribute="leading" id="dNV-bp-fZa"/>
+                            <constraint firstItem="LZE-8H-7ao" firstAttribute="trailing" secondItem="oub-g2-pZy" secondAttribute="trailing" id="ENV-wT-k1T"/>
+                            <constraint firstItem="oub-g2-pZy" firstAttribute="leading" secondItem="LZE-8H-7ao" secondAttribute="leading" id="dNV-bp-fZa"/>
                             <constraint firstItem="oub-g2-pZy" firstAttribute="top" secondItem="ueK-Pl-gBe" secondAttribute="top" id="fm4-Qh-eLw"/>
                             <constraint firstAttribute="bottom" secondItem="oub-g2-pZy" secondAttribute="bottom" id="gxK-lH-Tbn"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="LZE-8H-7ao"/>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="GradientView" destination="FeK-79-3ad" id="sM3-S8-ZYg"/>
                         <outlet property="addFriendButtonHeightConstraint" destination="TaG-aT-NGS" id="uln-hD-k4R"/>
                         <outlet property="containerView" destination="oub-g2-pZy" id="Lgb-JC-jdk"/>
+                        <outlet property="conversationTip" destination="wyA-Xr-l6Y" id="sZP-dR-7Gy"/>
                         <outlet property="endCallButton" destination="NJk-pL-oz1" id="DNA-AV-Zn9"/>
                         <outlet property="friendButton" destination="EQc-XZ-wYk" id="USB-Fb-NBK"/>
                         <outlet property="inputContainerView" destination="6Ws-HS-mh5" id="zJE-Jw-d04"/>
@@ -2187,10 +2156,6 @@ types of Monkey species in the entire world.</string>
         <scene sceneID="qfg-d6-I7j">
             <objects>
                 <viewController storyboardIdentifier="permVC" id="T9J-Hu-dLv" customClass="PermissionViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Tan-xm-jPF"/>
-                        <viewControllerLayoutGuide type="bottom" id="EXz-rQ-Qx0"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Te3-NU-CwU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2292,11 +2257,12 @@ types of Monkey species in the entire world.</string>
                         </subviews>
                         <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="GFg-HX-vaR" firstAttribute="bottom" secondItem="EXz-rQ-Qx0" secondAttribute="top" id="A06-1E-GjB"/>
-                            <constraint firstItem="GFg-HX-vaR" firstAttribute="top" secondItem="Tan-xm-jPF" secondAttribute="bottom" constant="-20" id="P4q-Wk-Ydl"/>
-                            <constraint firstAttribute="trailing" secondItem="GFg-HX-vaR" secondAttribute="trailing" id="XUr-pD-MqO"/>
+                            <constraint firstItem="GFg-HX-vaR" firstAttribute="bottom" secondItem="1oD-Vz-doB" secondAttribute="bottom" id="A06-1E-GjB"/>
+                            <constraint firstItem="GFg-HX-vaR" firstAttribute="top" secondItem="1oD-Vz-doB" secondAttribute="top" constant="-20" id="P4q-Wk-Ydl"/>
+                            <constraint firstItem="1oD-Vz-doB" firstAttribute="trailing" secondItem="GFg-HX-vaR" secondAttribute="trailing" id="XUr-pD-MqO"/>
                             <constraint firstItem="GFg-HX-vaR" firstAttribute="width" secondItem="Te3-NU-CwU" secondAttribute="width" id="kCW-dt-cV3"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="1oD-Vz-doB"/>
                     </view>
                     <navigationItem key="navigationItem" id="b4g-N5-zuZ"/>
                     <connections>
@@ -2316,10 +2282,6 @@ types of Monkey species in the entire world.</string>
         <scene sceneID="Fwx-bq-7Mq">
             <objects>
                 <viewController storyboardIdentifier="editProfilePopup" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Gm0-UE-yog" customClass="EditProfilePopupViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="zqf-vv-M3X"/>
-                        <viewControllerLayoutGuide type="bottom" id="pNh-i2-83H"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="ss9-yU-Gzh">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2432,13 +2394,14 @@ types of Monkey species in the entire world.</string>
                         </subviews>
                         <constraints>
                             <constraint firstItem="z3H-ry-aW0" firstAttribute="top" secondItem="ss9-yU-Gzh" secondAttribute="top" constant="20" id="9Po-wL-qNV"/>
-                            <constraint firstItem="ndP-LR-piO" firstAttribute="leading" secondItem="ss9-yU-Gzh" secondAttribute="leading" constant="20" id="JaX-ee-Hd1"/>
-                            <constraint firstItem="z3H-ry-aW0" firstAttribute="leading" secondItem="ss9-yU-Gzh" secondAttribute="leading" id="YTQ-rJ-Xd4"/>
+                            <constraint firstItem="ndP-LR-piO" firstAttribute="leading" secondItem="rSy-EG-jzW" secondAttribute="leading" constant="20" id="JaX-ee-Hd1"/>
+                            <constraint firstItem="z3H-ry-aW0" firstAttribute="leading" secondItem="rSy-EG-jzW" secondAttribute="leading" id="YTQ-rJ-Xd4"/>
                             <constraint firstAttribute="bottom" secondItem="ndP-LR-piO" secondAttribute="bottom" constant="20" id="idi-Wy-dyq"/>
-                            <constraint firstAttribute="trailing" secondItem="z3H-ry-aW0" secondAttribute="trailing" id="nEm-Of-bpN"/>
+                            <constraint firstItem="rSy-EG-jzW" firstAttribute="trailing" secondItem="z3H-ry-aW0" secondAttribute="trailing" id="nEm-Of-bpN"/>
                             <constraint firstItem="ndP-LR-piO" firstAttribute="top" secondItem="z3H-ry-aW0" secondAttribute="bottom" id="s2x-X9-e4k"/>
-                            <constraint firstAttribute="trailing" secondItem="ndP-LR-piO" secondAttribute="trailing" constant="20" id="wL5-gn-9DX"/>
+                            <constraint firstItem="rSy-EG-jzW" firstAttribute="trailing" secondItem="ndP-LR-piO" secondAttribute="trailing" constant="20" id="wL5-gn-9DX"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="rSy-EG-jzW"/>
                     </view>
                     <connections>
                         <outlet property="addProfilePhotoButton" destination="SvS-ph-AB2" id="Hu2-GZ-SR6"/>
@@ -2455,10 +2418,6 @@ types of Monkey species in the entire world.</string>
         <scene sceneID="dEM-Bo-7Pj">
             <objects>
                 <viewController storyboardIdentifier="verifyBirthdayPopup" useStoryboardIdentifierAsRestorationIdentifier="YES" id="rQy-ET-ezy" customClass="VerifyBirthdayPopupViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="lAl-4v-aKE"/>
-                        <viewControllerLayoutGuide type="bottom" id="pbW-mQ-F85"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="clB-Lf-8Wp">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2558,20 +2517,21 @@ types of Monkey species in the entire world.</string>
                             </datePicker>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="Xsf-k8-rBg" firstAttribute="leading" secondItem="clB-Lf-8Wp" secondAttribute="leading" id="1zs-Qv-4Gv"/>
+                            <constraint firstItem="Xsf-k8-rBg" firstAttribute="leading" secondItem="4L0-wR-yFj" secondAttribute="leading" id="1zs-Qv-4Gv"/>
                             <constraint firstItem="fvG-Za-Myo" firstAttribute="top" secondItem="Xsf-k8-rBg" secondAttribute="bottom" id="2HX-3D-tB0"/>
-                            <constraint firstItem="fvG-Za-Myo" firstAttribute="leading" secondItem="clB-Lf-8Wp" secondAttribute="leading" id="AGh-E3-Kso"/>
+                            <constraint firstItem="fvG-Za-Myo" firstAttribute="leading" secondItem="4L0-wR-yFj" secondAttribute="leading" id="AGh-E3-Kso"/>
                             <constraint firstItem="Xsf-k8-rBg" firstAttribute="top" secondItem="Ehi-Il-ATj" secondAttribute="bottom" constant="20" id="GbP-Pd-iLu"/>
-                            <constraint firstAttribute="trailing" secondItem="UIh-LC-gru" secondAttribute="trailing" id="LUn-Xz-AkW"/>
+                            <constraint firstItem="4L0-wR-yFj" firstAttribute="trailing" secondItem="UIh-LC-gru" secondAttribute="trailing" id="LUn-Xz-AkW"/>
                             <constraint firstItem="Ehi-Il-ATj" firstAttribute="top" secondItem="UIh-LC-gru" secondAttribute="bottom" constant="-14" id="ROQ-UH-N7g"/>
                             <constraint firstItem="UIh-LC-gru" firstAttribute="top" secondItem="clB-Lf-8Wp" secondAttribute="top" constant="20" id="Uti-Ib-3xu"/>
-                            <constraint firstAttribute="trailing" secondItem="fvG-Za-Myo" secondAttribute="trailing" id="Uun-kY-uh8"/>
+                            <constraint firstItem="4L0-wR-yFj" firstAttribute="trailing" secondItem="fvG-Za-Myo" secondAttribute="trailing" id="Uun-kY-uh8"/>
                             <constraint firstAttribute="bottom" secondItem="fvG-Za-Myo" secondAttribute="bottom" id="cl4-wE-GoV"/>
-                            <constraint firstItem="UIh-LC-gru" firstAttribute="leading" secondItem="clB-Lf-8Wp" secondAttribute="leading" id="gUv-o6-9tA"/>
-                            <constraint firstAttribute="trailing" secondItem="Ehi-Il-ATj" secondAttribute="trailing" constant="20" id="ifn-6E-r9S"/>
-                            <constraint firstItem="Ehi-Il-ATj" firstAttribute="leading" secondItem="clB-Lf-8Wp" secondAttribute="leading" constant="20" id="j0A-XQ-xpr"/>
-                            <constraint firstAttribute="trailing" secondItem="Xsf-k8-rBg" secondAttribute="trailing" id="oNt-OS-4EM"/>
+                            <constraint firstItem="UIh-LC-gru" firstAttribute="leading" secondItem="4L0-wR-yFj" secondAttribute="leading" id="gUv-o6-9tA"/>
+                            <constraint firstItem="4L0-wR-yFj" firstAttribute="trailing" secondItem="Ehi-Il-ATj" secondAttribute="trailing" constant="20" id="ifn-6E-r9S"/>
+                            <constraint firstItem="Ehi-Il-ATj" firstAttribute="leading" secondItem="4L0-wR-yFj" secondAttribute="leading" constant="20" id="j0A-XQ-xpr"/>
+                            <constraint firstItem="4L0-wR-yFj" firstAttribute="trailing" secondItem="Xsf-k8-rBg" secondAttribute="trailing" id="oNt-OS-4EM"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="4L0-wR-yFj"/>
                     </view>
                     <connections>
                         <outlet property="birthDateTextField" destination="Hdq-bV-W31" id="nbi-l0-5cE"/>
@@ -2587,10 +2547,6 @@ types of Monkey species in the entire world.</string>
         <scene sceneID="c3Y-pR-hKr">
             <objects>
                 <viewController storyboardIdentifier="introducingProfilesPopup" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ke2-Gs-rOw" customClass="IntroducingProfilesPopupViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="alW-Og-6rf"/>
-                        <viewControllerLayoutGuide type="bottom" id="sJd-lh-rcJ"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="DOv-dR-Lbp">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2632,13 +2588,14 @@ types of Monkey species in the entire world.</string>
                         </subviews>
                         <constraints>
                             <constraint firstItem="HIW-kQ-hmw" firstAttribute="top" secondItem="giE-Db-pBV" secondAttribute="bottom" id="990-7B-rbD"/>
-                            <constraint firstItem="giE-Db-pBV" firstAttribute="leading" secondItem="DOv-dR-Lbp" secondAttribute="leading" id="KHr-VW-DDl"/>
-                            <constraint firstAttribute="trailing" secondItem="HIW-kQ-hmw" secondAttribute="trailing" constant="20" id="PIb-Lk-zQ9"/>
-                            <constraint firstItem="HIW-kQ-hmw" firstAttribute="leading" secondItem="DOv-dR-Lbp" secondAttribute="leading" constant="20" id="PQB-JB-Pzl"/>
-                            <constraint firstAttribute="trailing" secondItem="giE-Db-pBV" secondAttribute="trailing" id="kjZ-gd-zNf"/>
+                            <constraint firstItem="giE-Db-pBV" firstAttribute="leading" secondItem="I5c-ZA-AVd" secondAttribute="leading" id="KHr-VW-DDl"/>
+                            <constraint firstItem="I5c-ZA-AVd" firstAttribute="trailing" secondItem="HIW-kQ-hmw" secondAttribute="trailing" constant="20" id="PIb-Lk-zQ9"/>
+                            <constraint firstItem="HIW-kQ-hmw" firstAttribute="leading" secondItem="I5c-ZA-AVd" secondAttribute="leading" constant="20" id="PQB-JB-Pzl"/>
+                            <constraint firstItem="I5c-ZA-AVd" firstAttribute="trailing" secondItem="giE-Db-pBV" secondAttribute="trailing" id="kjZ-gd-zNf"/>
                             <constraint firstItem="giE-Db-pBV" firstAttribute="top" secondItem="DOv-dR-Lbp" secondAttribute="topMargin" id="sFy-qP-Qss"/>
                             <constraint firstAttribute="bottom" secondItem="HIW-kQ-hmw" secondAttribute="bottom" constant="20" id="uEj-Qc-aO4"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="I5c-ZA-AVd"/>
                     </view>
                     <connections>
                         <outlet property="textLabel" destination="RSc-jA-rQg" id="iiB-g2-bw0"/>
@@ -2652,10 +2609,6 @@ types of Monkey species in the entire world.</string>
         <scene sceneID="fJk-G3-1b7">
             <objects>
                 <viewController storyboardIdentifier="editAccountSmallVC" title=" " useStoryboardIdentifierAsRestorationIdentifier="YES" id="IXB-da-AOf" customClass="EditAccountViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="HTe-pa-ORp"/>
-                        <viewControllerLayoutGuide type="bottom" id="8ST-7Z-ZDn"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="FE7-2l-BEE">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3008,17 +2961,18 @@ types of Monkey species in the entire world.</string>
                         </subviews>
                         <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="ptC-ge-Xhz" firstAttribute="leading" secondItem="FE7-2l-BEE" secondAttribute="leading" id="3sZ-XZ-pDx"/>
-                            <constraint firstAttribute="trailing" secondItem="ptC-ge-Xhz" secondAttribute="trailing" id="Fab-GU-TAq"/>
-                            <constraint firstAttribute="trailing" secondItem="LNH-Kh-WEh" secondAttribute="trailing" constant="20" id="JDw-Do-ub3"/>
-                            <constraint firstItem="Mv5-To-bGf" firstAttribute="leading" secondItem="FE7-2l-BEE" secondAttribute="leading" id="Ns9-hG-Aq6"/>
+                            <constraint firstItem="ptC-ge-Xhz" firstAttribute="leading" secondItem="Mnq-Io-UYZ" secondAttribute="leading" id="3sZ-XZ-pDx"/>
+                            <constraint firstItem="Mnq-Io-UYZ" firstAttribute="trailing" secondItem="ptC-ge-Xhz" secondAttribute="trailing" id="Fab-GU-TAq"/>
+                            <constraint firstItem="Mnq-Io-UYZ" firstAttribute="trailing" secondItem="LNH-Kh-WEh" secondAttribute="trailing" constant="20" id="JDw-Do-ub3"/>
+                            <constraint firstItem="Mv5-To-bGf" firstAttribute="leading" secondItem="Mnq-Io-UYZ" secondAttribute="leading" id="Ns9-hG-Aq6"/>
                             <constraint firstItem="ptC-ge-Xhz" firstAttribute="top" secondItem="FE7-2l-BEE" secondAttribute="top" id="dgq-We-Q0e"/>
-                            <constraint firstItem="LNH-Kh-WEh" firstAttribute="leading" secondItem="FE7-2l-BEE" secondAttribute="leading" constant="20" id="dsS-XL-f78"/>
-                            <constraint firstAttribute="trailing" secondItem="Mv5-To-bGf" secondAttribute="trailing" id="lh6-Ps-9eJ"/>
-                            <constraint firstItem="Mv5-To-bGf" firstAttribute="bottom" secondItem="8ST-7Z-ZDn" secondAttribute="top" id="n0Q-49-oXU"/>
+                            <constraint firstItem="LNH-Kh-WEh" firstAttribute="leading" secondItem="Mnq-Io-UYZ" secondAttribute="leading" constant="20" id="dsS-XL-f78"/>
+                            <constraint firstItem="Mnq-Io-UYZ" firstAttribute="trailing" secondItem="Mv5-To-bGf" secondAttribute="trailing" id="lh6-Ps-9eJ"/>
+                            <constraint firstItem="Mv5-To-bGf" firstAttribute="bottom" secondItem="Mnq-Io-UYZ" secondAttribute="bottom" id="n0Q-49-oXU"/>
                             <constraint firstAttribute="bottom" secondItem="LNH-Kh-WEh" secondAttribute="bottom" constant="250" id="pn4-O6-zXk"/>
                             <constraint firstItem="LNH-Kh-WEh" firstAttribute="top" secondItem="ptC-ge-Xhz" secondAttribute="bottom" id="vhp-XS-0jc"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="Mnq-Io-UYZ"/>
                     </view>
                     <navigationItem key="navigationItem" id="ndN-Sa-Jhs"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>

@@ -17,9 +17,6 @@ class APIController {
     static let kNewAccountCodeVerify = "kNewAccountCodeVerify"
     static let kSignAsLogin = "kSignAsLogin"
     static let kNewAccountSignUpFinish = "kNewAccountSignUpFinish"
-    static let kNewAccountMatch1stRecieve = "kNewAccountMatch1stRecieve"
-    static let kNewAccountMatch1stAddTime = "kNewAccountMatch1stAddTime"
-    static let kNewAccountMatch1stAddFriend = "kNewAccountMatch1stAddFriend"
 
     static let shared = APIController()
     private init() {}

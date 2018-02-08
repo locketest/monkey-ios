@@ -7,21 +7,21 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>237998777005-22qsvtsaep8kofb7lbl37np0jna6ng3b.apps.googleusercontent.com</string>
+	<string>779776813322-mim0vdi9itgn9lam85ig2tiikq7en7e4.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.237998777005-22qsvtsaep8kofb7lbl37np0jna6ng3b</string>
+	<string>com.googleusercontent.apps.779776813322-mim0vdi9itgn9lam85ig2tiikq7en7e4</string>
 	<key>API_KEY</key>
-	<string>AIzaSyC8VtSjpbrG6JsuLHkvfVBLN7ec1oSjFUs</string>
+	<string>AIzaSyD2mF_iFNxAwdAKuY9ZPMUQ2_PR3-dh12g</string>
 	<key>GCM_SENDER_ID</key>
-	<string>237998777005</string>
+	<string>779776813322</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>cool.monkey.ios</string>
 	<key>PROJECT_ID</key>
-	<string>monkey-3d70e</string>
+	<string>monkey-production</string>
 	<key>STORAGE_BUCKET</key>
-	<string>monkey-3d70e.appspot.com</string>
+	<string>monkey-production.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<true></true>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -33,8 +33,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:237998777005:ios:2b037267d06df9b6</string>
+	<string>1:779776813322:ios:2b037267d06df9b6</string>
 	<key>DATABASE_URL</key>
-	<string>https://monkey-3d70e.firebaseio.com</string>
+	<string>https://monkey-production.firebaseio.com</string>
 </dict>
 </plist>

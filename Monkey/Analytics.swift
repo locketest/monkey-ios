@@ -90,6 +90,10 @@ class AnaliticsCenter {
 				return
 			}
 			
+			if (self.firstDayEvents.contains(event) && Date.init(timeIntervalSince1970: Achievements.shared.registerTime).compare(.isToday) == false) {
+				return
+			}
+			
 			// 标记为打过的点
 			self.markLogged(event: event);
 			
@@ -122,7 +126,18 @@ extension AnaliticsCenter {
 	
 	fileprivate static let oneTimeEvents: Set<AnalyticEvent> = [
 		AnalyticEvent.matchFirstRequest,
+		AnalyticEvent.matchFirstRecieve,
 		AnalyticEvent.matchFirstSuccess,
+		AnalyticEvent.matchFirstAddTime,
+		AnalyticEvent.matchFirstAddFriend,
+	]
+	
+	fileprivate static let firstDayEvents: Set<AnalyticEvent> = [
+		AnalyticEvent.matchFirstRequest,
+		AnalyticEvent.matchFirstRecieve,
+		AnalyticEvent.matchFirstSuccess,
+		AnalyticEvent.matchFirstAddTime,
+		AnalyticEvent.matchFirstAddFriend,
 	]
 	
 	fileprivate class func cachedEventsList() -> Set<String>? {
@@ -167,7 +182,7 @@ extension AnaliticsCenter {
 	]
 	
 	fileprivate class func log(forAmpitude event: AnalyticEvent, andParameter parameter: [String: Any]?) {
-		if self.exceptAmplitudeEvents.contains(event) == false {
+		if self.exceptAmplitudeEvents.contains(event) == false || Environment.environment == .sandbox {
 			if (parameter != nil) {
 				Amplitude.shared.logEvent(event.rawValue, withEventProperties: parameter!)
 			}else {

@@ -246,7 +246,6 @@ class ConfirmNumberViewController: MonkeyViewController {
                 self.clearUserInput()
                 self.displayInvalidCodeAlert(title:"Uh oh!", message: error?.message ?? "😬 Please check your code and try again", responseStatus: error?.status)
                 APIController.signCodeSended(isNewUser: false)
-                APIController.trackCodeVerifyIfNeed(result: false, isProfileComp: false)
                 return
             }
             

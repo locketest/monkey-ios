@@ -78,15 +78,9 @@ class TextModeMessageCell: UITableViewCell {
 	}
 
 	func configure(messageModel: TextMessage) {
-		if let currentMessage = self.textMessage {
-			if currentMessage.body == messageModel.body {
-				return
-			}
-		}else {
-			textMessage = messageModel
-		}
-		
 		self.clearTypingStatus()
+		textMessage = messageModel
+		
 		self.configureApperance(with: messageModel)
 	}
 	
@@ -101,18 +95,19 @@ class TextModeMessageCell: UITableViewCell {
 		
 		textContent.frame = CGRect.init(x: textContentX, y: 8, width: textContentWidth, height: self.contentView.frame.size.height - 16)
 		
-		
 		if message.type == MessageType.Typing.rawValue {
 			self.perform(#selector(makeTypingStatus), with: nil, afterDelay: 0.1)
 		}
 	}
 	
 	func makeTypingStatus() {
-		let typingSubs = ["", ".", "..", "..."]
-		let typingSub = typingSubs[typingCount % typingSubs.count]
-		self.textMessage?.body = "Typing" + typingSub
-		self.configureApperance(with: self.textMessage)
-		typingCount = typingCount + 1
+		if textMessage.type == MessageType.Typing.rawValue {
+			let typingSubs = ["", ".", "..", "..."]
+			let typingSub = typingSubs[typingCount % typingSubs.count]
+			self.textMessage?.body = "Typing" + typingSub
+			self.configureApperance(with: self.textMessage)
+			typingCount = typingCount + 1
+		}
 	}
 	
 	func clearTypingStatus() {

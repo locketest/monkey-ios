@@ -16,7 +16,6 @@ extension CallViewController: CountingLabelDelegate {
 	}
 	
     func minuteAdded(in chatSession:ChatSession) {
-        APIController.trackChatAddTimeSuccess()
         self.enableAddMinute()
         
         clockLabel.formatBlock = {

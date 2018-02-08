@@ -339,20 +339,12 @@ class Achievements {
 			return defaults.bool(forKey: "authorized_facebook_for_bonus_bananas") == true
 		}
 	}
-	var firstMatchRequest: Bool {
+	var registerTime: TimeInterval {
 		set {
-			defaults.set(newValue, forKey: "MonkeyLogEventFirstMatchRequest")
+			defaults.set(newValue, forKey: "MonkeyUserRegisterTime")
 		}
 		get {
-			return defaults.bool(forKey: "MonkeyLogEventFirstMatchRequest") == true
-		}
-	}
-	var firstMatchSuccess: Bool {
-		set {
-			defaults.set(newValue, forKey: "MonkeyLogEventFirstMatchSuccess")
-		}
-		get {
-			return defaults.bool(forKey: "MonkeyLogEventFirstMatchSuccess") == true
+			return defaults.double(forKey: "MonkeyUserRegisterTime")
 		}
 	}
 	var selectMatchMode: MatchMode? {
@@ -361,7 +353,9 @@ class Achievements {
 			defaults.synchronize()
 		}
 		get {
-			if let selectMatchMode = defaults.string(forKey: "MonkeySelectMatchMode") {
+			if RemoteConfigManager.shared.text_chat_mode == false {
+				self.selectMatchMode = .VideoMode
+			}else if let selectMatchMode = defaults.string(forKey: "MonkeySelectMatchMode") {
 				return MatchMode.init(rawValue: selectMatchMode)
 			}
 			return nil

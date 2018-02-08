@@ -336,7 +336,7 @@ extension TextChatViewController {
 	
 	func sendReport(_ url: URLConvertible, method: HTTPMethod, parameters: Parameters, encoding: ParameterEncoding, headers: HTTPHeaders, imageData: Data) {
 		
-		if let addedTime = self.chatSession?.hadAddTime , addedTime {
+		if let addedTime = self.chatSession?.hadAddTime, addedTime {
 			self.chatSession?.disconnect(.consumed)
 		}else if let friendMatch = self.chatSession?.friendMatched , friendMatch {
 			self.chatSession?.disconnect(.consumed)

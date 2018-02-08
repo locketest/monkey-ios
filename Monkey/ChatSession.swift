@@ -21,11 +21,16 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     }
     private var chatNotificationToken: NotificationToken?
 
+	var matchedTime = NSDate().timeIntervalSince1970
+	var acceptTime: TimeInterval?
+	var connectTime: TimeInterval?
+	
     var didConnect = false
     var matchUserDidAccept = false
     var isDialedCall = false
     var isReportedChat = false
 	var isReportedByOther = false
+	var isUnMuteSound = false
 	var textMode = false
 	
     var session: OTSession!
@@ -43,7 +48,14 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         }
     }
     var wasSkippable = false
-    var hadAddTime = false
+	var hadAddTime = false {
+		didSet {
+			if self.hadAddTime {
+				self.track(matchEvent: .matchFirstAddTime)
+			}
+		}
+	}
+	
     var shouldShowRating:Bool {
         // TODO: now just make shouldShowRating always false , if make sure don't need match rate anymore, you shuld delete all the logic about match rating
         return false;
@@ -57,12 +69,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     }
     var friendMatched = false {
         didSet {
-            guard oldValue != friendMatched else {
-                return
-            }
-
-            if friendMatched {
-                self.callDelegate?.friendMatched(in: self)
+            if let callDelegate = self.callDelegate, friendMatched {
+                callDelegate.friendMatched(in: self)
+				self.track(matchEvent: .matchFirstAddFriend)
                 self.chat?.update(callback: nil)
             }
         }
@@ -107,12 +116,80 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         case skipped
         case accepted
     }
+	
+	func commonParameters(for event: AnalyticEvent) -> [String: String] {
+		let currentUser = APIController.shared.currentUser
+		let is_banned = currentUser?.is_banned.value ?? false
+		var channels = ""
+		if let selectChannels = currentUser?.channels {
+			for (_ , tree) in selectChannels.enumerated() {
+				channels.append("tree \(tree.channel_id ?? ""),")
+			}
+			channels.removeLast()
+		}
+		
+		var commonParameters = [
+			"user_gender": currentUser?.show_gender ?? "",
+			"user_age": "\(currentUser?.age.value ?? 0)",
+			"user_country": currentUser?.location ?? "",
+			"user_ban": "\(is_banned)",
+			"trees": channels
+		]
+		
+		if let matchedUser = self.realmCall?.user {
+			commonParameters["match_with_gender"] = matchedUser.gender ?? ""
+			commonParameters["match_with_country"] = matchedUser.location ?? ""
+			commonParameters["match_with_age"] = "\(matchedUser.age.value ?? 0)"
+			var match_type = "video"
+			if let match_mode = Achievements.shared.selectMatchMode, match_mode == .TextMode {
+				match_type = "text"
+			}
+			commonParameters["match_type"] = match_type
+			
+			if event == .matchFirstAddFriend {
+				commonParameters["in_15s"] = "\(!self.hadAddTime)"
+			}
+			
+			if event == .matchInfo {
+				commonParameters["duration"] = matchedUser.gender ?? ""
+				let time_add = ((self.chat?.minutesAdded ?? 0) > 0)
+				commonParameters["time_add"] = "\(time_add)"
+				commonParameters["time_add_success_times"] = "\(min(self.chat?.minutesAdded ?? 0, self.chat?.theirMinutesAdded ?? 0))"
+				commonParameters["friend_add"] = "\(self.chat?.sharedSnapchat ?? false)"
+				commonParameters["firend_add_success"] = "\(self.friendMatched)"
+				commonParameters["report"] = "\(self.isReportedChat)"
+				
+				if textMode {
+					commonParameters["sound_open"] = "\(self.chat?.unMute ?? false)"
+					commonParameters["sound_open_success"] = "\(self.isUnMuteSound)"
+				}
+			}
+		}
+		
+		return commonParameters
+	}
+	
+	func track(matchEvent: AnalyticEvent) {
+		AnaliticsCenter.log(withEvent: matchEvent, andParameter: commonParameters(for: matchEvent))
+	}
+	
     required init(apiKey: String, sessionId: String, chat: Chat, token: String, loadingDelegate: ChatSessionLoadingDelegate, isDialedCall: Bool) {
         super.init()
+		
         self.sessionStatus = .connecting
         self.isDialedCall = isDialedCall
         self.chat = chat
         self.loadingDelegate = loadingDelegate
+		self.textMode = (chat.match_with_mode == .TextMode)
+		
+		let threadSafeRealm = try? Realm()
+		if let friend = threadSafeRealm?.object(ofType: RealmUser.self, forPrimaryKey: chat.user_id) {
+			self.theirSnapchatUsername = friend.snapchat_username
+			self.chat?.sharedSnapchat = true
+			self.chat?.theySharedSnapchat = true
+			self.friendMatched = true
+		}
+		
         self.chatNotificationToken = self.realmCall?.addNotificationBlock { [weak self] change in
             switch change {
             case .error(let error):
@@ -148,12 +225,20 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     }
 
     func accept() {
-        self.hadAddTime = false
         self.response = .accepted
-        guard let connection = self.subscriberConnection else {
+		self.acceptTime = NSDate().timeIntervalSince1970
+		
+		self.track(matchEvent: .matchFirstRecieve)
+		self.track(matchEvent: .matchReveived)
+
+		guard let connection = self.subscriberConnection else {
             // call will be accepted as soon as the subscriber connected
             return
         }
+		
+		if self.matchUserDidAccept {
+			self.track(matchEvent: .matchConnect)
+		}
         self.initiatorReadyChecks += 1
         self.log(.info, "Ready")
         var maybeError : OTError?
@@ -223,6 +308,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 		}
 		
 		if self.chat?.theyUnMute == true {
+			self.isUnMuteSound = true
 			self.subscriber?.subscribeToAudio = true
 			self.callDelegate?.soundUnMuted(in: self)
 		}
@@ -346,24 +432,8 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 		if textMode == false {
 			self.subscriber?.subscribeToAudio = true
 		}
-        self.updateStatusTo(.connected)
-		
-        let currentUser = APIController.shared.currentUser
-        
-        let eventParameters:[String: Any] = [
-            "user_gender": currentUser?.show_gender ?? "male",
-            "user_age": currentUser?.age.value ?? 0,
-            ]
-        
-		if UserDefaults.standard.bool(forKey: "MonkeyLogEventFirstMatchSuccess") {
-			
-			AnaliticsCenter.log(withEvent: .matchFirstSuccess, andParameter: eventParameters)
-			
-			UserDefaults.standard.set(false, forKey: "MonkeyLogEventFirstMatchSuccess")
-			UserDefaults.standard.synchronize()
-		}
-        
-        AnaliticsCenter.log(withEvent: .matchSuccess, andParameter: eventParameters)
+		self.connectTime = NSDate().timeIntervalSince1970
+		self.updateStatusTo(.connected)
     }
     /**
      Prints a message to the console.
@@ -408,6 +478,8 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         case .connected:
             self.didConnect = true
             self.loadingDelegate?.presentCallViewController(for: self)
+			self.track(matchEvent: .matchFirstSuccess)
+			self.track(matchEvent: .matchSuccess)
         case .consumed:
             self.loadingDelegate?.chatSession(self, callEndedWithError: nil)
             self.chatNotificationToken?.stop()
@@ -457,6 +529,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             return
         }
         if self.sessionStatus == .connected {
+			self.track(matchEvent: .matchInfo)
             self.disconnectStatus = status
             self.updateStatusTo(.disconnecting)
         } else {
@@ -677,6 +750,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 					self.chat?.theirMinutesAdded += 1
 					if self.chat!.minutesAdded >= self.chat!.theirMinutesAdded {
 						self.log(.info, "Adding minute")
+						self.hadAddTime = true
 						self.callDelegate?.minuteAdded(in: self)
 					}
 				}
@@ -686,17 +760,18 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				if self.chat?.sharedSnapchat == true {
 					self.log(.info, "Openning snapchat")
 					self.friendMatched = true
-					APIController.trackChatAddFriendSuccess()
 				}
 			case .Accept:
 				self.matchReady = true
 				if self.response == .accepted {
 					self.loadingDelegate?.shouldShowConnectingStatus!(in: self)
+					self.track(matchEvent: .matchConnect)
 				}
 				self.matchUserDidAccept = true
 			case .UnMute:
 				self.chat?.theyUnMute = true
 				if self.chat?.unMute == true {
+					self.isUnMuteSound = true
 					self.subscriber?.subscribeToAudio = true
 					self.callDelegate?.soundUnMuted(in: self)
 				}
@@ -808,7 +883,7 @@ enum DisconnectReason {
  */
 
 protocol ChatSessionCallDelegate: class {
-	func friendMatched(in chatSession: ChatSession)
+	func friendMatched(in chatSession: ChatSession?)
 	func minuteAdded(in chatSession: ChatSession)
 	func soundUnMuted(in chatSession: ChatSession)
 	

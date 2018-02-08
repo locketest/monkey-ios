@@ -349,18 +349,18 @@ extension CallViewController {
     
     func sendReport(_ url: URLConvertible, method: HTTPMethod, parameters: Parameters, encoding: ParameterEncoding, headers: HTTPHeaders, imageData: Data) {
         
-        if let addedTime = self.chatSession?.hadAddTime , addedTime {
+        if let addedTime = self.chatSession?.hadAddTime, addedTime {
             self.chatSession?.disconnect(.consumed)
-        }else if let friendMatch = self.chatSession?.friendMatched , friendMatch {
+        }else if let friendMatch = self.chatSession?.friendMatched, friendMatch {
             self.chatSession?.disconnect(.consumed)
         }else {
+			//  open pixel effect and cant close anymore
+			if self.effectsCoordinator.effects.count == 0 {
+				self.effectsCoordinator.effects.append(PixelationEffect(pixelationAmount: 24))
+			}
             self.chatSession?.isReportedChat = true
         }
-        
-        //  open pixel effect and cant close anymore
-        if self.effectsCoordinator.effects.count == 0 {
-            self.effectsCoordinator.effects.append(PixelationEffect(pixelationAmount: 24))
-        }
+		
         self.statusCornerView.isUserInteractionEnabled = false
         
         self.policeButton.isEnabled = false

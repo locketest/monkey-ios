@@ -198,6 +198,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var appeared = false
 	var viewsHiddenWhenShowingSettings = [UIButton]()
 	var nextFact = APIController.shared.currentExperiment?.initial_fact_discover ?? ""
+	
 	var isFindingChats = false {
 		didSet {
 			self.loadingTextLabel?.isTicking = self.isFindingChats
@@ -252,7 +253,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.pageViewIndicator.isHidden = false
 				self.inviteFriendsView.isHidden = false
 				self.bananaView.isHidden = false
-				self.matchModeSwitch.isHidden = false
+				if self.matchModeSwitch.isEnabled {
+					self.matchModeSwitch.isHidden = false
+				}
 			}
 		}
 	}
@@ -293,6 +296,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.matchModePopup.layer.cornerRadius = 12
 		self.matchModePopup.alpha = 0
 		
+		self.matchModeSwitch.isEnabled = RemoteConfigManager.shared.text_chat_mode
 		self.matchModeSwitch.isHidden = !RemoteConfigManager.shared.text_chat_mode
 		
 		NotificationManager.shared.viewManager = self
@@ -614,21 +618,19 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	
 	@IBAction func acceptButtonTapped(sender: Any) {
-		
-        MKMatchManager.shareManager.afmCount = 0
+		MKMatchManager.shareManager.afmCount = 0
 		self.chatSession?.accept()
 		self.skipButton?.isHidden = true
 		self.acceptButton?.isHidden = true
 		
-     if let chatSessionReady = self.chatSession?.matchUserDidAccept {
-          if chatSessionReady {
-               self.connectText.isHidden = false
-               AnaliticsCenter.log(event: .matchConnect)
-          }else {
-               self.waitingText.isHidden = false
-          }
-     }
-     
+		if let chatSessionReady = self.chatSession?.matchUserDidAccept {
+			if chatSessionReady {
+				self.connectText.isHidden = false
+			}else {
+				self.waitingText.isHidden = false
+			}
+		}
+		
 		UIView.animate(withDuration: 0.3, animations: {
 			self.acceptButton?.isHidden = true
 		})
@@ -705,32 +707,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var gettingNewSession = false
 	var sessionIndex = 0 // used to make sure we don't run more than one DispatchQueue.main.asyncAfter
 	
-	var shouldLogFirstMatchSuccess = false
 	
 	func getNewSession() {
 		// log first match request event
-		if shouldLogFirstMatchSuccess {
-			shouldLogFirstMatchSuccess = false
-			
-			UserDefaults.standard.set(false, forKey: "MonkeyLogEventFirstMatchSuccess")
-			UserDefaults.standard.synchronize()
-		}
-		
-		if UserDefaults.standard.bool(forKey: "MonkeyLogEventFirstMatchRequest") {
-			let currentUser = APIController.shared.currentUser
-			
-			let eventParameters:[String: Any] = [
-				"user_gender": currentUser?.show_gender ?? "male",
-				"user_age": currentUser?.age.value ?? 0,
-				]
-			AnaliticsCenter.log(withEvent: .matchFirstRequest, andParameter: eventParameters)
-			
-			UserDefaults.standard.set(false, forKey: "MonkeyLogEventFirstMatchRequest")
-			UserDefaults.standard.synchronize()
-			
-			shouldLogFirstMatchSuccess = true
-		}
-		
 		guard self.nextSessionToPresent == nil else {
 			self.chatSession = self.nextSessionToPresent
 			self.nextSessionToPresent = nil
@@ -766,6 +745,26 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.chatRequest = RealmCall.create(parameters: parameters) { (result:JSONAPIResult<[RealmCall]>) in
 			let chatRequest = self.chatRequest
 			self.chatRequest = nil
+			
+			let currentUser = APIController.shared.currentUser
+			let is_banned = currentUser?.is_banned.value ?? false
+			var channels = ""
+			if let selectChannels = currentUser?.channels {
+				for (_ , tree) in selectChannels.enumerated() {
+					channels.append("tree \(tree.channel_id ?? ""),")
+				}
+				channels.removeLast()
+			}
+			
+			let commonParameters = [
+				"user_gender": currentUser?.show_gender ?? "",
+				"user_age": "\(currentUser?.age.value ?? 0)",
+				"user_country": currentUser?.location ?? "",
+				"user_ban": "\(is_banned)",
+				"trees": channels
+			]
+			AnaliticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
+			
 			print("Chat request completed")
 			self.gettingNewSession = false
 			guard self.isFindingChats == true else {
@@ -795,16 +794,13 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 					return
 				}
 				
-				var bio = "Connecting"
 				if let includeds = jsonAPIDocument.included,
 					let included = includeds.first
 				{
 					if let attribute = included.attributes {
 						if let gender = attribute["gender"] as? String,
 							let first_name = attribute["first_name"] as? String,
-							let age = attribute["age"] as? Int,
-							let location = attribute["location"] as? String {
-							let showGender = (gender == "male") ? "He" : "She"
+							let age = attribute["age"] as? Int {
 							let attributes: [RealmUser.Attribute] = [
 								.first_name(first_name),
 								.age(age),
@@ -813,21 +809,20 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 							call.user?.update(attributes: attributes, completion: { ( _) in
 								print("update match user info error")
 							})
-							bio = "Say hi to \(first_name)! \(showGender) is \(String(describing: age)) and from \(location)."
 						}
 						
 						if let channels = attribute["channels"] as? [String] {
 							self.listTrees(trees: channels)
 						}
 					}
-				}else if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
+				}
+				
+				var bio = "Connecting"
+				if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
 					bio = convertBio
 				}
 				
-				APIController.trackMatchRecieve()
 				self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: call.user?.first_name, profile_image_url: call.user?.profile_photo_url, user_id: call.user?.user_id, match_mode: call.match_mode), token: token, loadingDelegate: self, isDialedCall: false)
-				let textMode = (self.chatSession?.chat?.match_with_mode == .TextMode)
-				self.chatSession?.textMode = textMode
 				
 				self.start(fact: bio)
 			case .error(let error):
@@ -958,6 +953,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.callsInSession += 1
 			Achievements.shared.totalChats += 1
 			viewController.present(matchViewController, animated: false, completion: nil)
+			if chatSession.friendMatched {
+				matchViewController.friendMatched(in: nil)
+			}
 		}
 	}
 	
@@ -1098,14 +1096,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
 		MonkeyPublisher.shared.view.translatesAutoresizingMaskIntoConstraints = false
 	}
-	func chatSession(_ chatSession: ChatSession, callEndedWithError error:Error?) {
+	func chatSession(_ chatSession: ChatSession, callEndedWithError error: Error?) {
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
-     if (self.connectText.isHidden == false) && (error != nil) {
-          AnaliticsCenter.log(event: .matchConnectTimeOut)
-     }
-     
-        self.waitingText.isHidden = true
-        self.connectText.isHidden = true
+		if (self.connectText.isHidden == false) && (error != nil) {
+			chatSession.track(matchEvent: .matchConnectTimeOut)
+		}
+		
+		self.waitingText.isHidden = true
+		self.connectText.isHidden = true
 		if !chatSession.didConnect {
 			self.skipped()
 		}
@@ -1160,11 +1158,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		}
 	}
      
-     func shouldShowConnectingStatus(in chatSession: ChatSession) {
-          self.waitingText.isHidden = true
-          self.connectText.isHidden = false
-          AnaliticsCenter.log(event: .matchConnect)
-     }
+	func shouldShowConnectingStatus(in chatSession: ChatSession) {
+		self.waitingText.isHidden = true
+		self.connectText.isHidden = false
+	}
+	
 	@IBAction func matchModeChanged(_ sender: MatchModeSwitch) {
 		self.stopFindingChats(andDisconnect: false, forReason: "switch match mode")
 		

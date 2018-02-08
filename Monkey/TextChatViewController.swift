@@ -32,6 +32,7 @@ class TextChatViewController: MonkeyViewController {
 	/// Height of chat text view constraint, used to lock when we go past 3 lines
 	@IBOutlet weak var inputHeightConstraint:NSLayoutConstraint!
 	
+	@IBOutlet weak var conversationTip: UILabel!
 	@IBOutlet weak var soundButtonHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var addFriendButtonHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var policeButtonTopConstraint: NSLayoutConstraint!
@@ -44,6 +45,47 @@ class TextChatViewController: MonkeyViewController {
 	weak var callDelegate: CallViewControllerDelegate?
 	var soundPlayer = SoundPlayer.shared
 	var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧"
+	
+	var tips = [
+		"Share your weekend vibe. Use emojis only.",
+		"Most monkeys have tails. If you didn’t know now you know.",
+		"Share what you’re doing right now and make it rhyme.",
+		"Flip flops or high tops? Raindrop or drop top? Choose wisely, peasants.",
+		"Yeezus or Sasha Fierce? Who are you.",
+		"If you were a fashion brand which one would you be. Explain yourself.",
+		"Do you ever ask yourself: WWYD? FYI the Y stands for Yeezy.",
+		"When is homework not homework? Answer the q.",
+		"There are secret features in the app. Find them.",
+		"Name your spirit animal. Is it furry?",
+		"Are you a New World monkey or an Old World monkey?",
+		"A baboon is an example of an Old World monkey.",
+		"A group of monkeys is called a troop. You’re welcome.",
+		"Apes don’t have tails. That’s weird.",
+		"PSA: don’t try to touch a monkey, they don’t like it.",
+		"Bananas float in water, as do apples and watermelons.",
+		"Nobody knew how to spell “bananas” before Gwen Stefani's “Hollaback Girl.\"",
+		"There is a Banana Club Museum in Mecca, CA. My temple.",
+		"You can heal a splinter with a banana peel.",
+		"Over 100 billion bananas are eaten every year around the world.",
+		"Bananas are technically berries. But strawberries are not.",
+		"There are 264 known monkey species.",
+		"The King of Hearts is the only king without a mustache...except the Monkey King.",
+		"Monkeys don't just love bananas, they love mangoes too.",
+		"Did you know mangoes can get sunburned?",
+		"Name the color shirt you're wearing and count to 5. Do it now.",
+		"The # is actually called an octothorp.",
+		"Your socks don’t match. Made you look.",
+		"95% of people reading this are staring at their phones.",
+		"Tell a knock knock joke. Make it about a monkey.",
+		"Name your favorite vlogger. What’s so great about them.",
+		"How would your friends describe you. Only use 3 words, peasant.",
+		"Describe a snapchat filter you love or hate. Do it now.",
+		"IG or snap? Pick 1 and explain.",
+		"Will Selena and JB get back together? Explain.",
+		"Share the last song you listened to. Don’t say the name of the song.",
+		"Is Post Malone a G? Give 2 reasons why/why not.",
+		"Be a good monkey and share what you did last weekend.",
+	]
 	var winEmojis = "🎉👻🌟😀💎♥️🎊🎁🐬🙉🔥"
 	var animator: UIDynamicAnimator!
 	var isAnimatingUnMuted = false
@@ -87,6 +129,10 @@ class TextChatViewController: MonkeyViewController {
 		self.soundButton.alpha = 0
 		self.friendButton.alpha = 0
 		self.endCallButton.alpha = 0
+		
+		self.conversationTip.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightMedium)
+		self.conversationTip.backgroundColor = UIColor.clear
+		self.conversationTip.text = self.tips[Int(arc4random()) % self.tips.count]
 		
 		chatSession?.add(messageHandler: self)
 		if let subView = self.chatSession?.subscriber?.view {
@@ -377,7 +423,7 @@ extension TextChatViewController: UITextViewDelegate {
 	func textViewDidChange(_ textView: UITextView) {
 		let heightOfTextInput = textView.sizeThatFits(CGSize(width: textView.bounds.width, height: CGFloat.greatestFiniteMagnitude)).height
 		let heightOfTextContainerView = ceil(heightOfTextInput) + 16
-		let textHeight = min(heightOfTextContainerView, 85) // Don't go above 3 lines lmao this number
+		let textHeight = max(44, min(heightOfTextContainerView, 85)) // Don't go above 3 lines lmao this number
 		textView.isScrollEnabled = heightOfTextContainerView > 85
 		self.inputHeightConstraint.constant = textHeight
 		self.view.setNeedsLayout()
@@ -392,29 +438,24 @@ extension TextChatViewController: UITextViewDelegate {
 		guard let messageText = self.textInputView.text, self.textInputView.text.isEmpty == false else {
 			return
 		}
-		self.chatSession?.sentTextMessage(text: messageText)
-		
-		let messageInfo = [
-			"type": MessageType.Text.rawValue,
-			"body": messageText,
-			"sender": APIController.shared.currentUser?.user_id ?? ""
+		let body = messageText.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+		if body.isEmpty == false {
+			self.chatSession?.sentTextMessage(text: messageText)
+			let messageInfo = [
+				"type": MessageType.Text.rawValue,
+				"body": messageText,
+				"sender": APIController.shared.currentUser?.user_id ?? ""
 			]
-		if let textMessage = Mapper<TextMessage>().map(JSON: messageInfo) {
-			var typingMessage: TextMessage?
-			var typingIndex: Int?
-			for (index, message) in self.messages.reversed().enumerated() {
-				if message.direction == .Received && message.type == MessageType.Typing.rawValue {
-					typingMessage = message
-					typingIndex = index
-					break
+			if let textMessage = Mapper<TextMessage>().map(JSON: messageInfo) {
+				var typingMessage: TextMessage?
+				if let lastMessage = self.messages.last, lastMessage.type == MessageType.Typing.rawValue {
+					typingMessage = lastMessage
+					self.messages.removeLast()
 				}
-			}
-			if let lastTypingIndex = typingIndex {
-				self.messages.remove(at: self.messages.count - lastTypingIndex - 1)
-			}
-			self.messages.append(textMessage)
-			if let lastTypingMessage = typingMessage {
-				self.messages.append(lastTypingMessage)
+				self.messages.append(textMessage)
+				if let lastTypingMessage = typingMessage {
+					self.messages.append(lastTypingMessage)
+				}
 			}
 		}
 		
@@ -430,7 +471,9 @@ extension TextChatViewController: UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return messages.count
+		let rowCount = messages.count
+		self.conversationTip.isHidden = rowCount > 0
+		return rowCount
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -451,22 +494,25 @@ extension TextChatViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension TextChatViewController: MatchViewControllerProtocol {
-	func friendMatched(in chatSession: ChatSession) {
-		
-		Achievements.shared.snapchatMatches += 1
-		if Achievements.shared.addedFirstSnapchat == false {
-			let chatSession = self.chatSession
-			let first_name = chatSession?.realmCall?.user?.first_name ?? ""
-			let addedFirstSnapchatAlert = UIAlertController(title: "👫 Add friends!", message: "Add friends success with \(first_name)", preferredStyle: .alert)
-			addedFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { (UIAlertAction) in
-				Achievements.shared.addedFirstSnapchat = true
-			}))
-			self.present(addedFirstSnapchatAlert, animated: true)
+	internal func friendMatched(in chatSession: ChatSession?) {
+		if let currentChatSession = chatSession {
+			Achievements.shared.snapchatMatches += 1
+			if Achievements.shared.addedFirstSnapchat == false {
+				let first_name = currentChatSession.realmCall?.user?.first_name ?? ""
+				let addedFirstSnapchatAlert = UIAlertController(title: "👫 Add friends!", message: "Add friends success with \(first_name)", preferredStyle: .alert)
+				addedFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { (UIAlertAction) in
+					Achievements.shared.addedFirstSnapchat = true
+				}))
+				self.present(addedFirstSnapchatAlert, animated: true)
+			}
+			self.celebrateAddFriend()
+		}else {
+			self.addFriendButtonHeightConstraint.constant = 0
+			self.view.setNeedsLayout()
 		}
 		
 		self.endCallButton.emoji = "👋"
 		self.endCallButton.setTitle("Pce out", for: .normal)
-		self.celebrateAddFriend()
 	}
 	
 	func soundUnMuted(in chatSession: ChatSession) {
@@ -578,7 +624,9 @@ extension TextChatViewController: MatchViewControllerProtocol {
 		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(refreshTypingStatus), object: nil)
 		self.messages.append(textMessage)
 		self.reloadData()
-		self.perform(#selector(refreshTypingStatus), with: nil, afterDelay: 10)
+		if textMessage.type == MessageType.Typing.rawValue {
+			self.perform(#selector(refreshTypingStatus), with: nil, afterDelay: 10)
+		}
 	}
 	
 	func refreshTypingStatus() {
