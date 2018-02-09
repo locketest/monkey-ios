@@ -182,9 +182,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.loadingDelegate = loadingDelegate
 		self.textMode = (chat.match_with_mode == .TextMode)
 		
-		let threadSafeRealm = try? Realm()
-		if let friend = threadSafeRealm?.object(ofType: RealmUser.self, forPrimaryKey: chat.user_id) {
-			self.theirSnapchatUsername = friend.snapchat_username
+		let realm = try? Realm()
+		if let currentMatchUser = chat.user_id, let friend = realm?.objects(RealmFriendship.self).filter("user.user_id == \"\(currentMatchUser)\"").first {
+			self.theirSnapchatUsername = friend.user?.snapchat_username
 			self.chat?.sharedSnapchat = true
 			self.chat?.theySharedSnapchat = true
 			self.friendMatched = true

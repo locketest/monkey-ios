@@ -132,7 +132,9 @@ class TextChatViewController: MonkeyViewController {
 		
 		self.conversationTip.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightMedium)
 		self.conversationTip.backgroundColor = UIColor.clear
-		self.conversationTip.text = self.tips[Int(arc4random()) % self.tips.count]
+		
+		let random: Int = Int(arc4random_uniform(UInt32(self.tips.count)))
+		self.conversationTip.text = self.tips[random]
 		
 		chatSession?.add(messageHandler: self)
 		if let subView = self.chatSession?.subscriber?.view {

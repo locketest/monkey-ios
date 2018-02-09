@@ -274,6 +274,13 @@ extension TimeInterval {
         return Date().timeIntervalSinceReferenceDate - self > since
     }
 }
+public extension ExpressibleByIntegerLiteral {
+	public static func arc4random() -> Self {
+		var r: Self = 0
+		arc4random_buf(&r, MemoryLayout<Self>.size)
+		return r
+	}
+}
 
 /**
  Wraps a function in a new function that will throttle the execution to once in every `delay` seconds.

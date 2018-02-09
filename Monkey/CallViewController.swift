@@ -290,8 +290,6 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 			// And the more it 'falls' off the screen, the longer it takes to come back into view, so when the Show Alert button
 			// is tapped again after a considerable time passes, the app seems unresponsive for a bit of time as the alert view
 			// comes back up to the screen
-			self.clockTime = -1// (6 * 1000)
-			self.disableAddMinute()
 			let when = DispatchTime.now() + (Double(4.0))
 			DispatchQueue.main.asyncAfter(deadline: when) {
 				for emojiLabel in emojiLabels {
@@ -316,6 +314,8 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 			self.snapchatButton.isHidden = true
 			self.endCallButton.isHidden = false
 		}
+		self.clockTime = -1// (6 * 1000)
+		self.disableAddMinute()
     }
 
     // MARK: - Helpers

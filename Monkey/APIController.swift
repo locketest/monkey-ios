@@ -51,6 +51,7 @@ class APIController {
         }
         set(auth) {
             UserDefaults.standard.set(auth, forKey: "authorization")
+			UserDefaults.standard.synchronize()
 			Achievements.shared.group_authorization = auth;
         }
     }

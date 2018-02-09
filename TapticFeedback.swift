@@ -18,13 +18,12 @@ class TapticFeedback {
 						let generator = UIImpactFeedbackGenerator(style: style)
 						generator.prepare()
 						generator.impactOccurred()
-						return
 					}
 				}
 			}
 		}
 		
 		// fall back on System vibration
-		AudioServicesPlayAlertSound(kSystemSoundID_Vibrate) // kSystemSoundID_Vibrate: (this is  `Peek` or a weak boom, 1520 is `Pop` or a strong boom)
+//		AudioServicesPlayAlertSound(kSystemSoundID_Vibrate) // kSystemSoundID_Vibrate: (this is  `Peek` or a weak boom, 1520 is `Pop` or a strong boom)
     }
 }
