@@ -248,7 +248,7 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
         }
         super.dismiss(animated: flag, completion: completion)
     }
-    // MARK: UIViewControllerTransitioningDelegate
+    // MARK: - UIViewControllerTransitioningDelegate
     internal func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if dismissed is MainViewController {
             return SwipeableTransitionDismissAnimator() // Replace with slide down
@@ -266,7 +266,7 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
         return self.interactor.hasStarted ? self.interactor : nil
         
     }
-    // MARK: UIGestureRecognizerDelegate
+    // MARK: - UIGestureRecognizerDelegate
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }

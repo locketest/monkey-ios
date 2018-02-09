@@ -1008,10 +1008,18 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	
 	func dismissCallViewController(for chatSession: ChatSession) {
         EffectsCoordinator().effects.removeAll()
-     if chatSession.isReportedChat , chatSession.friendMatched , let userID = chatSession.chat?.user_id {
-          if let friendShipID = FriendsViewModel().friendships?.filter("user.user_id = \(userID)").last?.friendship_id {
+     let realm = try? Realm()
+
+     if chatSession.isReportedChat , chatSession.friendMatched , let userID = self.chatSession?.chat?.user_id,chatSession.isReportedByOther==false {
+          let friendShip = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"")
+          if let friendShipID = friendShip?.last?.friendship_id {
+
                let alert = UIAlertController(title: nil, message: "Do you want to remove this user in your friend list?", preferredStyle: .actionSheet)
                let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
+                    friendShip?.last?.delete(completion: { (error) in
+                         
+                    })
+                    
                     JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/friendships/\(friendShipID)", method: .patch, parameters: [
                          "data": [
                               "id": friendShipID,
@@ -1034,7 +1042,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                alert.addAction(cancel)
                
                self.stopFindingChats(andDisconnect: false, forReason: "delete_report_friend")
-               self.present(alert, animated: true)
+               
+               let when = DispatchTime.now() + (Double(0.5))
+               DispatchQueue.main.asyncAfter(deadline: when, execute: {
+                    self.present(alert, animated: true)
+               });
           }
      }
      

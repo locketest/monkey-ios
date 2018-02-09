@@ -328,7 +328,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 		}
 		chat.reporting = true
 		var maybeError : OTError?
-		self.session.signal(withType: MessageType.Report.rawValue, string: "", connection: connection, retryAfterReconnect: true, error: &maybeError)
+		self.session.signal(withType: MessageType.Report.rawValue, string: "report", connection: connection, retryAfterReconnect: true, error: &maybeError)
+        self.isReportedChat = true
+        self.chat?.reported = true
 		if let error = maybeError {
 			self.updateStatusTo(.consumedWithError)
 			self.log(.error, "Send report error \(error)")
@@ -779,6 +781,8 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				self.disconnect(.consumed)
 			case .Report:
 				self.chat?.reported = true
+                self.isReportedChat = true
+                self.isReportedByOther = true
 			case .Typing:
 				fallthrough
 			case .Text:

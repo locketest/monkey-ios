@@ -286,6 +286,7 @@ extension CallViewController {
         UIGraphicsEndImageContext()
         screenCapture.removeFromSuperview()
         unhideAfterReportScreenshot()
+        
         return true
     }
     
@@ -348,6 +349,16 @@ extension CallViewController {
     }
     
     func sendReport(_ url: URLConvertible, method: HTTPMethod, parameters: Parameters, encoding: ParameterEncoding, headers: HTTPHeaders, imageData: Data) {
+        if let subscriberView = self.chatSession?.subscriber?.view {
+            
+            // add blur after take screen shot
+            let eff = UIBlurEffect.init(style: .light)
+            let blurV = UIVisualEffectView.init(effect: eff)
+            blurV.frame = self.view.bounds
+            subscriberView.addSubview(blurV)
+        }
+        
+        self.chatSession?.sentReport()
         
         if let addedTime = self.chatSession?.hadAddTime, addedTime {
             self.chatSession?.disconnect(.consumed)
