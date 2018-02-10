@@ -1571,7 +1571,7 @@ types of Monkey species in the entire world.</string>
                                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="rjg-Jt-8fp"/>
                                                         </constraints>
                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                        <color key="textColor" red="0.60392156862745094" green="0.60392156862745094" blue="0.60392156862745094" alpha="0.29615261130136988" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <color key="textColor" red="0.60392156862745094" green="0.60392156862745094" blue="0.60392156862745094" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                 </subviews>

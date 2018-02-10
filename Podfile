@@ -14,7 +14,9 @@ target 'Monkey' do
 	# Pods for Monkey
 	pod 'FBSDKCoreKit'
 	pod 'FBSDKLoginKit'
+	pod 'FBNotifications'
 	pod 'Firebase/RemoteConfig'
+	pod 'Firebase/Messaging'
 	pod 'Amplitude-iOS'
 	pod 'Fabric'
 	pod 'Crashlytics'

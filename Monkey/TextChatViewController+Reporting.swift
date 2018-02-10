@@ -336,17 +336,10 @@ extension TextChatViewController {
 	
 	func sendReport(_ url: URLConvertible, method: HTTPMethod, parameters: Parameters, encoding: ParameterEncoding, headers: HTTPHeaders, imageData: Data) {
 		
-		if let addedTime = self.chatSession?.hadAddTime, addedTime {
-			self.chatSession?.disconnect(.consumed)
-		}else if let friendMatch = self.chatSession?.friendMatched , friendMatch {
-			self.chatSession?.disconnect(.consumed)
-		}else {
-			self.chatSession?.isReportedChat = true
-		}
+		self.chatSession?.sentReport()
 		
 		self.policeButton.isEnabled = false
 		UIView.animate(withDuration: 0.3, animations: {
-			self.policeButton.setTitle("Reported", for: UIControlState.normal)
 			self.policeButton.emojiLabel?.text = "😳"
 			self.containerView.layoutIfNeeded()
 		}) { (Bool) in

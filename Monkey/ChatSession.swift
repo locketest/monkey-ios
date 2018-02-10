@@ -326,6 +326,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.updateStatusTo(.consumedWithError)
 			return
 		}
+		
 		chat.reporting = true
 		var maybeError : OTError?
 		self.session.signal(withType: MessageType.Report.rawValue, string: "report", connection: connection, retryAfterReconnect: true, error: &maybeError)
@@ -334,6 +335,10 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 		if let error = maybeError {
 			self.updateStatusTo(.consumedWithError)
 			self.log(.error, "Send report error \(error)")
+		}
+		
+		if (hadAddTime || friendMatched || textMode) {
+			self.disconnect(.consumed)
 		}
 	}
 	

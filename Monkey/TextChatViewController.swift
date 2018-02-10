@@ -44,7 +44,7 @@ class TextChatViewController: MonkeyViewController {
 	var reportChatId: String?
 	weak var callDelegate: CallViewControllerDelegate?
 	var soundPlayer = SoundPlayer.shared
-	var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧"
+	var eras = "👂"
 	
 	var tips = [
 		"Share your weekend vibe. Use emojis only.",
@@ -545,7 +545,7 @@ extension TextChatViewController: MatchViewControllerProtocol {
 		
 		for _ in 1...130 {
 			let emojiLabel = UILabel()
-			emojiLabel.text = String(winEmojis[clocks.index(winEmojis.startIndex, offsetBy: (Int(arc4random_uniform(UInt32(winEmojis.count)))))])
+			emojiLabel.text = String(winEmojis[winEmojis.index(winEmojis.startIndex, offsetBy: (Int(arc4random_uniform(UInt32(winEmojis.count)))))])
 			emojiLabel.font = UIFont.systemFont(ofSize: 39.0)
 			emojiLabel.frame = CGRect(x: (self.friendButton.superview?.frame.origin.x)! + 30, y: self.friendButton.frame.origin.y, width: 50, height: 50)
 			self.containerView.insertSubview(emojiLabel, belowSubview: self.friendButton)
@@ -589,7 +589,7 @@ extension TextChatViewController: MatchViewControllerProtocol {
 		soundPlayer.play(sound: .score)
 		for _ in 1...18 {
 			let emojiLabel = UILabel()
-			emojiLabel.text = String(clocks[clocks.index(clocks.startIndex, offsetBy: (Int(arc4random_uniform(UInt32(clocks.count)))))])
+			emojiLabel.text = eras
 			emojiLabel.font = UIFont.systemFont(ofSize: 39.0)
 			let xDifference:CGFloat = CGFloat(arc4random_uniform(100))
 			emojiLabel.frame = CGRect(x: (self.soundButton.superview?.frame.origin.x)! + xDifference, y: self.soundButton.frame.origin.y, width: 50, height: 50)

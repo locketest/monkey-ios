@@ -15,9 +15,11 @@ import Realm
 import Crashlytics
 import Firebase
 import FBSDKLoginKit
+import FBNotifications
+import FirebaseMessaging
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 
     var window: UIWindow?
 
@@ -36,6 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Fabric.with([Branch.self, Crashlytics.self])
         Branch.getInstance().initSession(launchOptions: launchOptions)
 		FirebaseApp.configure(options: FirebaseOptions.init(contentsOfFile: Environment.firebaseConfigurationPath)!)
+		Messaging.messaging().delegate = self
 		RemoteConfigManager.shared.fetchLatestConfig()
 		
         window?.layer.cornerRadius = 4
@@ -121,16 +124,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print(error.localizedDescription)
     }
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+		Messaging.messaging().apnsToken = deviceToken
+		FBSDKAppEvents.setPushNotificationsDeviceToken(deviceToken)
         UserDefaults.standard.set(deviceToken.base64EncodedString(), forKey: "apns_token")
         print("~~~\(deviceToken.base64EncodedString())")
         Apns.update(callback: nil)
     }
-    /*func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-     completionHandler(.noData)
-     }
-     func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], withResponseInfo responseInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
-     completionHandler()
-     }*/
+	
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+		FBSDKAppEvents.logPushNotificationOpen(userInfo)
+		FBNotificationsManager.shared().presentPushCard(forRemoteNotificationPayload: userInfo, from: nil) { (viewController, error) in
+			if error != nil {
+				completionHandler(.failed)
+			} else {
+				completionHandler(.newData)
+			}
+		}
+	}
+	
+	/*
+	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], withResponseInfo responseInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
+		FBSDKAppEvents.logPushNotificationOpen(userInfo, action: identifier)
+		completionHandler()
+	}
+	*/
 	
     // e: emoji for in app notification
     // t: text for in app emoji notifcation (optional - alert used by default)
@@ -147,6 +164,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     func handleNotification(application: UIApplication, userInfo:[AnyHashable : Any]) {
         let notificationUserInfo = NotificationUserInfo(userInfo: userInfo)
+		
         if let badgeNumber = notificationUserInfo.aps?["badge"] as? Int {
             application.applicationIconBadgeNumber = badgeNumber
         }
