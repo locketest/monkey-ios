@@ -351,7 +351,18 @@
 
     return YES;
 }
-
+- (void)setFrontCamera:(BOOL)front{
+    NSArray *result =  [self availableCameraPositions];
+    if (front) {
+        if ([result containsObject:@(AVCaptureDevicePositionFront)]) {
+            [self setCameraPosition:AVCaptureDevicePositionFront];
+        }
+    }else{
+        if ([result containsObject:@(AVCaptureDevicePositionBack)]) {
+            [self setCameraPosition:AVCaptureDevicePositionBack];
+        }
+    }
+}
 - (NSArray*)availableCameraPositions {
     NSArray* devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     NSMutableSet* result = [NSMutableSet setWithCapacity:devices.count];

@@ -1,7 +1,7 @@
 PODS:
-  - AccountKit (4.30.0)
+  - AccountKit (4.31.0)
   - Alamofire (4.3.0)
-  - Amplitude-iOS (4.0.4)
+  - Amplitude-iOS (4.1.0)
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
     - Bolts/Tasks (= 1.9.0)
@@ -11,24 +11,24 @@ PODS:
   - Branch (0.17.10):
     - Branch/Core (= 0.17.10)
   - Branch/Core (0.17.10)
-  - Crashlytics (3.10.0):
-    - Fabric (~> 1.7.3)
+  - Crashlytics (3.10.1):
+    - Fabric (~> 1.7.5)
   - DeviceKit (1.5.0)
-  - Fabric (1.7.3)
+  - Fabric (1.7.5)
   - FBNotifications (1.0.1)
-  - FBSDKCoreKit (4.30.0):
+  - FBSDKCoreKit (4.31.0):
     - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.30.0):
+  - FBSDKLoginKit (4.31.0):
     - FBSDKCoreKit
-  - Firebase/Core (4.8.2):
+  - Firebase/Core (4.9.0):
     - FirebaseAnalytics (= 4.0.9)
-    - FirebaseCore (= 4.0.14)
-  - Firebase/Messaging (4.8.2):
+    - FirebaseCore (= 4.0.15)
+  - Firebase/Messaging (4.9.0):
     - Firebase/Core
-    - FirebaseMessaging (= 2.0.8)
-  - Firebase/RemoteConfig (4.8.2):
+    - FirebaseMessaging (= 2.1.0)
+  - Firebase/RemoteConfig (4.9.0):
     - Firebase/Core
-    - FirebaseRemoteConfig (= 2.1.1)
+    - FirebaseRemoteConfig (= 2.1.2)
   - FirebaseABTesting (1.0.0):
     - FirebaseCore (~> 4.0)
     - Protobuf (~> 3.1)
@@ -37,17 +37,17 @@ PODS:
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
     - nanopb (~> 0.3)
-  - FirebaseCore (4.0.14):
+  - FirebaseCore (4.0.15):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-  - FirebaseInstanceID (2.0.8):
+  - FirebaseInstanceID (2.0.9):
     - FirebaseCore (~> 4.0)
-  - FirebaseMessaging (2.0.8):
+  - FirebaseMessaging (2.1.0):
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/Logger (~> 2.1)
     - Protobuf (~> 3.1)
-  - FirebaseRemoteConfig (2.1.1):
+  - FirebaseRemoteConfig (2.1.2):
     - FirebaseABTesting (~> 1.0)
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
@@ -76,7 +76,7 @@ PODS:
   - RealmSwift (2.10.2):
     - Realm (= 2.10.2)
   - Starscream (2.1.1)
-  - SwiftyGif (4.0.0)
+  - SwiftyGif (4.1.0)
 
 DEPENDENCIES:
   - AccountKit
@@ -99,24 +99,24 @@ DEPENDENCIES:
   - SwiftyGif
 
 SPEC CHECKSUMS:
-  AccountKit: 032051f90e727a8b7a532fddb84c3dc287f676c8
+  AccountKit: f3e48047e6fb1c433dff37c61158fd32bbc482cf
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
-  Amplitude-iOS: 2ad4d7270c99186236c1272a3a9425463b1ae1a7
+  Amplitude-iOS: c923c4a576698083c1cd05e45072c92d41e206bd
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   Branch: 29745957de17eb5973627f4c7720bd0eb390fd45
-  Crashlytics: a989ef242b66605577a425733797f810bd2725eb
+  Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
   DeviceKit: 883552d64028056216e913a88f892e7e29678e75
-  Fabric: bb495bb9a7a7677c6d03a1f8b83d95bc49b47e41
+  Fabric: ae7146a5f505ea370a1e44820b4b1dc8890e2890
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
-  FBSDKCoreKit: 7c4bba2877781a131ab5d54c0a78c405d4307b62
-  FBSDKLoginKit: fe7a7e82373dc5daad92e1623219e86224ab1fb1
-  Firebase: 7d3b8cd837ad9fcd391657734c0d56dab8e9a5a3
+  FBSDKCoreKit: 54db4c581123745d25a9f7c1608020b3aeabd118
+  FBSDKLoginKit: 95a252ddffd6919c0f132a02292f0824616d8709
+  Firebase: 632216af3ed7f31e3be34776947fdc7546cfb572
   FirebaseABTesting: d07d0ee833b842d5153549e4c7e2e2cb1c23a3f9
   FirebaseAnalytics: 388b630c15713f5dbf364071f5f3d6077fb52f4e
-  FirebaseCore: 2e0b98fb2d64ca8140136beff15772bdd14d2dd7
-  FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
-  FirebaseMessaging: dfdcd307c2382290a1e297a81d0f18370f5b1bcd
-  FirebaseRemoteConfig: 3310f264fff78b6c2e78b24dcfc4c1b3d6766209
+  FirebaseCore: 3bd047463058fa6b5d312c97502c52e45401cdfb
+  FirebaseInstanceID: d2058a35e9bebda1b6dd42486b84917bde552a9d
+  FirebaseMessaging: 2bafab2d0f3ab3dfd753101c2c32995c2051b5da
+  FirebaseRemoteConfig: df64ce784a45e9b9d4988030a59da6baede8bdb0
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
   MMSCameraViewController: 70e128c8398686e323645e032aa8d1ea2b0cb54a
   MMSProfileImagePicker: 46b3640a9d9c97ecf711e514cefdc53a2aac21e1
@@ -127,8 +127,8 @@ SPEC CHECKSUMS:
   Realm: 0ef72b837fb67e9f4b098bac771ddd72c7fdbb69
   RealmSwift: 07a9ae0505091eda6b2ee7c190c3786d6e90a7b0
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
-  SwiftyGif: 14c0e2dddb1b51da4919b68f7ad97a1c45785460
+  SwiftyGif: d36c6dfb52e2ca1e48fe349d225f50ec4123ec85
 
-PODFILE CHECKSUM: b4b36209d3aa37ea534594b6359bd8da4c609659
+PODFILE CHECKSUM: c099fa5f1945bbfdfa5ff7b9b1aeb646e14c1a5a
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.4.0

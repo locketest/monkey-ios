@@ -561,6 +561,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             return
         }
     }
+    func toggleCameraPosition(){
+        MonkeyPublisher.shared.defaultVideoCapture?.toggleCameraPosition();
+    }
+    func toggleFrontCamera(front:Bool){
+        MonkeyPublisher.shared.defaultVideoCapture?.setFrontCamera(front);
+    }
     internal func sessionDidConnect(_ session: OTSession) {
         self.log(.info, "sh-1226- \(self) sessionDidConnect")
         self.sessionStatus = .connected
@@ -570,9 +576,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
          * to the OpenTok session.
          */
         var maybeError : OTError?
-
+       // MonkeyPublisher.shared.defaultVideoCapture?.toggleCameraPosition()
         session.publish(MonkeyPublisher.shared, error: &maybeError)
-
+      
         if let error = maybeError {
             self.disconnect(.consumedWithError)
             self.log(.error, "Do publish error \(error)")
