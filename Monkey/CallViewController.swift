@@ -122,23 +122,23 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         }
         return .slide
     }
-    
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         print("sh-1226- \(self) callVC init...")
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         print("sh-1226- \(self) callVC init...")
         
        // self.cameraPositionButton.hidde
     }
-    
+
     deinit {
         print("sh-1226- \(self) callVC deinit...")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -216,7 +216,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         maskLayer.path = path.cgPath
         clockLabelBackgroundView.layer.mask = maskLayer
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         self.ticker?.invalidate()
         self.ticker = nil
@@ -246,6 +246,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     }
     
     @IBAction func cameraPositionButtonClick(_ sender: Any) {
+		self.effectsCoordinator.effectsSyncTimer?.invalidate()
         self.chatSession?.toggleCameraPosition()
     }
     // MARK: Snapchat Button
@@ -270,7 +271,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     var reportChatId: String?
 
 	func received(textMessage: TextMessage, in chatSession: ChatSession) {
-		
+
 	}
 
     internal func friendMatched(in chatSession: ChatSession?) {
@@ -284,28 +285,28 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 			animator.addBehavior(gravityBehaviour)
 			var emojiLabels = Array<UILabel>()
 			TapticFeedback.impact(style: .medium)
-			
+
 			for _ in 1...130 {
 				let emojiLabel = UILabel()
 				emojiLabel.text = String(winEmojis[clocks.index(winEmojis.startIndex, offsetBy: (Int(arc4random_uniform(UInt32(winEmojis.count)))))])
 				emojiLabel.font = UIFont.systemFont(ofSize: 39.0)
 				emojiLabel.frame = CGRect(x: self.snapchatButton.frame.origin.x + 30, y: self.snapchatButton.frame.origin.y, width: 50, height: 50)
 				self.containerView.insertSubview(emojiLabel, belowSubview: self.snapchatButton)
-				
+
 				gravityBehaviour.addItem(emojiLabel)
-				
+
 				// This behaviour is included so that the alert view tilts when it falls, otherwise it will go straight down
 				let itemBehaviour: UIDynamicItemBehavior = UIDynamicItemBehavior(items: [emojiLabel])
 				itemBehaviour.addAngularVelocity(-(CGFloat.pi / 2), for: emojiLabel)
 				animator.addBehavior(itemBehaviour)
-				
+
 				let pushBehavior: UIPushBehavior = UIPushBehavior(items: [emojiLabel], mode: .instantaneous)
 				pushBehavior.pushDirection = CGVector(dx: self.randomBetweenNumbers(firstNum: -200, secondNum: 100), dy: -self.randomBetweenNumbers(firstNum: 0, secondNum: self.containerView.frame.size.height))
 				pushBehavior.magnitude = self.randomBetweenNumbers(firstNum: 1.0, secondNum: 4.0)
 				animator.addBehavior(pushBehavior)
 				emojiLabels.append(emojiLabel)
 			}
-			
+
 			// Animate out the overlay, remove the alert view from its superview and set it to nil
 			// If you don't set it to nil, it keeps falling off the screen and when Show Alert button is
 			// tapped again, it will snap into view from below. It won't have the location settings we defined in createAlert()
@@ -319,7 +320,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 				}
 			}
 			DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
-				if self.chatSession?.status == .connected {
+                if currentChatSession.status == .connected {
 					self.endCallButton.isEnabled = true
 					self.snapchatButton.isEnabled = false
 					self.addMinuteButton.isEnabled = false

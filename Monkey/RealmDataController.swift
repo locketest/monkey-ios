@@ -10,7 +10,7 @@ import Foundation
 
 /// NOTE: All RealmDataController functions work on a background thread but call back on the main thread explicitly
 class RealmDataController: NSObject {
-    
+
     static let shared = RealmDataController()
     private override init() {}
     /// A Realm instance confined to the main thread
@@ -31,10 +31,10 @@ class RealmDataController: NSObject {
         RealmBlock.self,
         RealmMatchedUser.self,
         ]
-    
+
     /**
      Signs a user into the sync server.
-     
+
      The compiled implementation of this function is changed by a build flag "REALM_SYNC" which also causes serveral changes in the Environment.swift file.
      */
     private func logInToSyncServer(authorization: String, callback: @escaping (_ syncUser: SyncUser?) -> Void) {
@@ -63,17 +63,17 @@ class RealmDataController: NSObject {
             #endif
         }
     }
-    
+
     /**
      Called once durring app start. Continues to try and create RealmDataController.realm and calls completion after that succeeds.
      */
-    
+
     func setupRealm(presentingErrorsOnViewController viewController: UIViewController, completion: @escaping () -> Void) {
         guard let objectTypes = self.realmObjectClasses as? [Object.Type] else {
             print("Error: failed to set up Realm because could not caste as Object.type")
             return
         }
-        
+
         let config = Realm.Configuration(
             syncConfiguration: nil,
             schemaVersion: 16,
@@ -187,12 +187,12 @@ class RealmDataController: NSObject {
 					- Property 'RealmCall.match_mode' has been added
 					*/
                 }
-				if oldSchemaVersion < 15 {
+				if oldSchemaVersion < 16 {
 					migration.deleteData(forType: "RealmRelationship")
 				}
-                
+
         }, objectTypes: objectTypes)
-        
+
         Realm.Configuration.defaultConfiguration = config
         do {
             self.mainRealm = try Realm()
@@ -203,12 +203,12 @@ class RealmDataController: NSObject {
             let alertController = apiError.toAlert(onRetry: { (UIAlertAction) in
                 self.setupRealm(presentingErrorsOnViewController: viewController, completion: completion)
             })
-            
+
             viewController.present(alertController, animated: true, completion: nil)
             apiError.log()
         }
     }
-    
+
     /**
      Converts a Error object thrown by realm into an APIError with messages than can be displayed to the user.
      */
@@ -220,7 +220,7 @@ class RealmDataController: NSObject {
             return APIError(code: "-1", status: nil, message: "Unknown local data storage issue.", internalMessage: "Realm Error: \(error.localizedDescription)")
         }
     }
-    
+
     /**
      Attempts to load user information from UserDefaults and creates a new Realm user.
      */
@@ -361,12 +361,12 @@ class RealmDataController: NSObject {
         guard let resourceId = jsonAPIResource.id else {
             throw APIError(code: "-1", status: nil, message: "Resource missing an ID.")
         }
-        
+
         var value:[String:Any] = jsonAPIResource.attributes ?? [:]
-        
+
         try jsonAPIResource.relationships?.forEach { (relationshipKey, relationshipValue) in
             let properties = resourceRealmObjectClass.sharedSchema()?.properties
-            
+
             guard properties?.contains(where: { (property) -> Bool in
                 property.name == relationshipKey
             }) == true else {
@@ -397,11 +397,11 @@ class RealmDataController: NSObject {
     }
     /**
      Deletes an object from the Realm after looking it up by it's resource identifier.
-     
+
      If an object with the provided resource identifier does not exist, this will create it and then delete it all at once (essentially, doing nothing.)
-     
+
      - warning: This method may only be called during a write transaction.
-     
+
      - parameter object: The identifier of the object to be deleted.
      */
     private func deleteResourceWithResourceIdentifier(_ resourceIdentifier: JSONAPIResourceIdentifier) throws {
@@ -426,7 +426,7 @@ class RealmDataController: NSObject {
         }
         return resourceRealmObjectClass
     }
-    
+
     /// Retrieves an object from the realm based on a resource identifier (and creates the object if one does not exist).
     ///
     /// - Parameters:

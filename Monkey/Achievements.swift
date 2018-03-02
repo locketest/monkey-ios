@@ -361,6 +361,14 @@ class Achievements {
 			return nil
 		}
 	}
+	var closeAcceptButton: Bool {
+		set {
+			defaults.set(newValue, forKey: "MonkeyCloseAcceptButton")
+		}
+		get {
+			return defaults.bool(forKey: "MonkeyCloseAcceptButton")
+		}
+	}
 	
 	/// app group
 	static let identifier: String = "group.monkey.ios"

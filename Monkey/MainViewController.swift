@@ -50,27 +50,27 @@ let treeLabelWidth:CGFloat = 48.0
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
 class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, FacebookViewControllerDelegate {
-	
+
 	internal func showAlert(alert: UIAlertController) {
 		self.present(alert, animated: true, completion: nil)
 	}
-	
+
 	@IBOutlet var bonusBananasButton: BigYellowButton!
 	@IBOutlet weak public var acceptButton: BigYellowButton?
-	
+
 	@IBOutlet weak var loadingContentView: MakeUIViewGreatAgain!
-     
-     
+
+
 	@IBOutlet weak var pageViewIndicator: UIPageControl!
 	@IBOutlet weak var arrowButton: BigYellowButton!
 	@IBOutlet weak var bottomArrowPadding: NSLayoutConstraint!
-	
+
 	@IBOutlet weak public var skipButton: BigYellowButton!
-	
+
 	@IBOutlet var inviteFriendsView: UIView!
 	@IBOutlet weak public var settingsButton: BigYellowButton!
 	@IBOutlet weak var chatButton: BigYellowButton!
-	
+
 	@IBOutlet weak var matchModeContainer: UIView!
 	@IBOutlet weak var matchModeTip: UILabel!
 	@IBOutlet weak var matchModeEmojiLeft: UILabel!
@@ -80,7 +80,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	@IBOutlet var skippedText: UILabel!
 	@IBOutlet var waitingText: UILabel!
     @IBOutlet weak var connectText: UILabel!
-    
+
 	@IBOutlet weak var matchModePopup: UIView!
 	@IBOutlet weak var matchModeLabel: UILabel!
 	@IBOutlet weak var matchModeSwitch: MatchModeSwitch!
@@ -88,9 +88,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	@IBOutlet weak var bananaCountLabel: UILabel!
 	@IBOutlet weak var bananaViewWidthConstraint:NSLayoutConstraint!
 	@IBOutlet weak var colorGradientView:UIView!
-     
+
      static var currentMainVC:MainViewController?
-	
+
 	weak var matchViewController: MatchViewController?
 	var incomingCallNotificationToken:NotificationToken?
 	var callNotification:CallNotificationView?
@@ -103,7 +103,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var currentUserNotifcationToken:NotificationToken?
 	var currentExperimentNotifcationToken:NotificationToken?
 	var channels: Results<RealmChannel>?
-	
+
 	var waitingForFriendToken:NotificationToken?
 	/// After a friendship is made, if there is no snapchat name, we wait for the user id to come down from the socket and push to their chat page
 	var waitingForFriendUserId:String? {
@@ -118,13 +118,13 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.stopFindingChats(andDisconnect: false, forReason: "waiting-friend")
 			let realm = try? Realm()
 			var didFindFriend = false
-			
+
 			DispatchQueue.main.asyncAfter(deadline: .after(seconds: 5)) {
 				if !didFindFriend {
 					self.stopWaitingForFriend()
 				}
 			}
-			
+
 			self.waitingForFriendToken = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(friendUserId)\"").addNotificationBlock({ [weak self] (changes) in
 				guard let friendship = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(friendUserId)\"").first, let friendshipId = friendship.friendship_id else {
 					return
@@ -142,7 +142,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.waitingForFriendToken = nil
 		self.startFindingChats(forReason: "waiting-friend")
 	}
-	
+
 	/**
 	Required by `SettingsHashtagCellDelegate` and called when hashtag editing completes to set the preferred hashtag settings on `MainViewController`.
 	- Parameters:
@@ -153,14 +153,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		hashtagID = id
 		hashtag = tag
 	}
-	
+
 	func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith
 		result: MessageComposeResult) {
 		self.dismiss(animated: true, completion: {
-			
+
 		})
 	}
-	
+
 	internal func statusChanged(isSkip: Bool) {
 		if isSkip {
 			// If user is able to accept/skip call, do not allow them to swipe between views
@@ -170,28 +170,28 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.isSwipingEnabled = true
 		}
 	}
-	
+
 	@IBAction func settingsButtonTapped(sender: Any) {
 		self.present(self.swipableViewControllerToPresentOnRight!, animated: true, completion: nil)
 	}
-	
+
 	@IBAction func chatButtonTapped(sender: Any) {
 		self.present(self.swipableViewControllerToPresentOnLeft!, animated: true, completion: nil)
 	}
-	
+
 	@IBAction func arrowButtonTapped(sender: Any) {
 		self.present(self.swipableViewControllerToPresentOnBottom!, animated: true, completion: nil)
 	}
-	
+
 	@IBOutlet var containerView: UIView!
 	enum MatchingMode:String {
 		case discover = "discover"
 		case friends = "friends"
 	}
-	
+
 	// MARK: Variables
 	var dimView:UIView?
-	
+
 	// count of chats the user timed out before accept/declining
 	var callsInSession = 0
 	var matchingMode:MatchingMode = .discover
@@ -206,7 +206,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var appeared = false
 	var viewsHiddenWhenShowingSettings = [UIButton]()
 	var nextFact = APIController.shared.currentExperiment?.initial_fact_discover ?? ""
-	
+
 	var isFindingChats = false {
 		didSet {
 			self.loadingTextLabel?.isTicking = self.isFindingChats
@@ -217,13 +217,13 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}
 		}
 	}
-	
+
 	fileprivate var friendships:Results<RealmFriendship>?
 	var pendingFactText:String?
 	var isSkip:Bool = false {
 		didSet {
 			self.statusChanged(isSkip: isSkip)
-			
+
 			if isSkip {
 				self.skipButton?.isHidden = false
 				self.acceptButton?.isHidden = false
@@ -236,13 +236,13 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.bananaView.isHidden = true
 				self.matchModeSwitch.isHidden = true
 				self.matchModePopup.isHidden = true
-				
+
 				let textMode = self.chatSession?.textMode ?? false
 				self.acceptButton?.backgroundColor = textMode ? UIColor.init(red: 150.0 / 255.0, green: 14.0 / 255.0, blue: 1.0, alpha: 1.0) : UIColor.init(red: 76.0 / 255.0, green: 71.0 / 255.0, blue: 1.0, alpha: 1.0)
 				self.matchModeEmojiLeft.text = textMode ? "💬" : "🐵"
 				self.matchModeEmojiRight.text = textMode ? "💬" : "🐵"
 				self.matchModeTip.text = textMode ? "Text Chat" : "Video Chat"
-				
+
 				// dismiss if showing
 				if let messageNotificationView = NotificationManager.shared.showingNotification {
 					if messageNotificationView is RatingNotificationView {
@@ -267,7 +267,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}
 		}
 	}
-	
+
 	/// True if the call was just skipped and the UI elements have adjusted but there may still be background work to complete the chat consumption.
 	var didSkip = false
 	var isLoading = false
@@ -276,44 +276,44 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.loadingTextLabel?.isTicking = self.isTicking
 		}
 	}
-	
+
 	@IBOutlet var factTextView: MakeTextViewGreatAgain!
 	fileprivate let numberFormatter = NumberFormatter()
 	fileprivate var currentTick = 0
 	fileprivate var timer:Timer?
 	fileprivate var bananaNotificationToken:NotificationToken?
 	fileprivate var unreadMessageNotificationToken:NotificationToken?
-	
+
 	var hideSkipScreenWhen = DispatchTime.now() + (Double(4.0))
-	
+
 	let locationManager = CLLocationManager()
-	
+
 	func cancelSwipeWithTargetOpacity(opacity : CGFloat) {
 		UIView.animate(withDuration: 0.3, animations: {
 			self.view.layoutIfNeeded()
 			self.containerView.alpha = opacity
 		})
 	}
-     
+
      class func getCurMainVC() -> MainViewController?{
           return currentMainVC
      }
-	
+
 	// MARK: UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
-     
-     MainViewController.currentMainVC = self
-     Configs.signAsLogin()
-		
+
+		MainViewController.currentMainVC = self
+		Configs.signAsLogin()
+
 		self.view.backgroundColor = Colors.purple
 		self.matchModePopup.isHidden = true
 		self.matchModePopup.layer.cornerRadius = 12
 		self.matchModePopup.alpha = 0
-		
+
 		self.matchModeSwitch.isEnabled = RemoteConfigManager.shared.text_chat_mode
 		self.matchModeSwitch.isHidden = !RemoteConfigManager.shared.text_chat_mode
-		
+
 		NotificationManager.shared.viewManager = self
 		NotificationManager.shared.chatSessionLoadingDelegate = self
 		IncomingCallManager.shared.delegate = self
@@ -322,7 +322,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.swipableViewControllerToPresentOnBottom = UIStoryboard(name: "Settings", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
 		dimView = UIView(frame: self.containerView.frame)
 		dimView?.backgroundColor = UIColor(white: 0.0, alpha: 0.5)
-		
+
 		NotificationCenter.default.addObserver(
 			self,
 			selector: #selector(appMovedToBackground),
@@ -333,24 +333,24 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			selector: #selector(appMovedToForeground),
 			name: Notification.Name.UIApplicationWillEnterForeground,
 			object: nil)
-		
+
 		self.pageViewIndicator.numberOfPages = 3
 		self.pageViewIndicator.currentPage = 1
-		
+
 		self.startUpdatingLocation()
-		
+
 		self.resetFact()
-		
+
 		self.addPublisherToView()
-		
+
 		guard let channelsVC = self.swipableViewControllerToPresentOnRight as? ChannelsViewController
 			else {
 				return
 		}
-     
+
      let realm = try? Realm()
      self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true")).sorted(byKeyPath: "channel_id")
-     
+
      if self.channels?.count == 0 {
           RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>) in
                switch result {
@@ -362,11 +362,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                }
           }
      }
-		
+
 		guard let selectedChannels = APIController.shared.currentUser?.channels else {
 			return
 		}
-		
+
 		if selectedChannels.isEmpty {
 			RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>) in
 				switch result {
@@ -377,42 +377,42 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 							print("Error: could not get general channel from Realm.")
 							return
 					}
-					
+
 					let list = List<RealmChannel>()
 					list.append(channel)
-					
+
 					channelsVC.updateChannels(selectedChannels: list)
 				case .error(let error):
 					error.log()
 				}
-				
+
 			}
 		}
-		
-		
+
+
 		// from loadingView
 		self.skipButton?.setTitle(APIController.shared.currentExperiment?.skip_text, for: .normal)
-		
+
 		self.setupBananas()
 		self.updateBananas()
 		self.setupFriendships()
-		
+
 		self.factTextView.textContainerInset = .zero
 		self.skippedText.layer.opacity = 0.0
 		Socket.shared.isEnabled = true
 	}
-	
+
 	func incomingCallManager(_ incomingCallManager: IncomingCallManager, didDismissNotificatationFor chatSession: ChatSession) {
 		self.startFindingChats(forReason: "incoming-call")
 	}
-	
+
 	func incomingCallManager(_ incomingCallManager: IncomingCallManager, shouldShowNotificationFor chatSession: ChatSession) -> Bool {
 		if self.presentedViewController == nil {
 			self.stopFindingChats(andDisconnect: false, forReason: "incoming-call")
 		}
 		return true
 	}
-	
+
 	var stopFindingReasons = [String]()
 	func startFindingChats(forReason: String) {
 		let reason = self.stopFindingReasons.removeObject(object: forReason)
@@ -425,7 +425,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		if self.chatSession == nil {
 			self.getNewSession()
 		}
-		
+
 		// ticker = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(tick), userInfo: nil, repeats: true)
 	}
 	func stopFindingChats(andDisconnect: Bool, forReason: String) {
@@ -439,21 +439,21 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.chatSession?.disconnect(.consumed)
 		}
 	}
-	
+
 	var movingToBackground = false
-	
+
 	func appMovedToBackground() {
 		self.hashtag = ""
 		self.stopFindingChats(andDisconnect: false, forReason: "application-status")
 		Socket.shared.isEnabled = false
 	}
-	
+
 	func appMovedToForeground() {
 		Socket.shared.isEnabled = true
 		self.checkCamAccess()
 		self.startFindingChats(forReason: "application-status")
 	}
-	
+
 	func incomingCallManager(_ incomingCallManager: IncomingCallManager, transitionToChatSession chatSession: ChatSession) {
 		chatSession.loadingDelegate = self
 		guard self.chatSession == nil else {
@@ -471,7 +471,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-     
+
      APIController.trackSignUpFinish()
      if !self.hadRegiNoti {
           if Achievements.shared.promptedNotifications {
@@ -481,38 +481,38 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                self.checkNotifiPermission()
           }
      }
-     
+
      if APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.birth_date == nil {
           self.present(self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0 ? "editAccountSmallVC" : "editAccountVC"), animated: true, completion: nil)
      }
-		
+
 		// Tell bonus bananas button to hide if we have unlocked the achievement
 		self.updateInvitationButton()
 	}
-	
+
 	override func viewWillAppear(_ animated: Bool) {
 		// Step 2: As the view comes into the foreground, begin the connection process.
 		if !appeared {
 			appeared = true
 		}
-		
+
 		print("Start finding chats")
 		self.stopFindingChats(andDisconnect: true, forReason: "location-services")
 		self.requestLocationPermissionIfUnavailable() // This will cause the thred to hang so we still need to toggle chat finding to cancel any existing requests.
 		self.startFindingChats(forReason: "location-services")
 		self.checkCamAccess()
-		
+
 		self.view.layoutIfNeeded()
-		
+
 		self.currentUserNotifcationToken = APIController.shared.currentUser?.addNotificationBlock({ (change) in
 			self.updateInvitationButton()
 		})
-		
+
 		self.currentExperimentNotifcationToken = APIController.shared.currentExperiment?.addNotificationBlock({ (change) in
 			self.updateInvitationButton()
 		})
 	}
-	
+
 	func updateInvitationButton() {
 		guard Achievements.shared.authorizedFacebookForBonusBananas == false else {
 			self.bonusBananasButton.isHidden = true
@@ -522,15 +522,15 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.bonusBananasButton.isHidden = true
 			return
 		}
-		
+
 		guard APIController.shared.currentUser?.facebook_friends_invited.value == nil else {
 			self.bonusBananasButton.isHidden = true
 			return
 		}
-		
+
 		self.bonusBananasButton.isHidden = false
 	}
-	
+
 	func checkCamAccess() {
 		if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeAudio) != AVAuthorizationStatus.authorized {
 			AVAudioSession.sharedInstance().requestRecordPermission({ (granted) in
@@ -541,7 +541,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 						guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
 							return
 						}
-						
+
 						if UIApplication.shared.canOpenURL(settingsUrl) {
 							UIApplication.shared.openURL(settingsUrl)
 						}
@@ -560,7 +560,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 						guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
 							return
 						}
-						
+
 						if UIApplication.shared.canOpenURL(settingsUrl) {
 							UIApplication.shared.openURL(settingsUrl)
 						}
@@ -571,13 +571,13 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			})
 		}
 	}
-	
+
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 ///		self.stopFindingChats(andDisconnect: true, forReason: "view-appearance")
 	}
-	
-	
+
+
 	/// Displays invite friends messaging dialog.
 	///
 	/// - Parameter sender: the instance of `BigYellowButton` that triggered the action
@@ -585,60 +585,60 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		let smsVC = MFMessageComposeViewController()
 		smsVC.body = APIController.shared.currentExperiment?.sms_invite_friends
 		smsVC.messageComposeDelegate = self
-		
+
 		self.present(smsVC, animated: true, completion: nil)
 	}
-	
-	
+
+
 	/// Displays an alert showing the users the current ways of getting bonus bananas.
 	///
 	/// - Parameter sender: the instance of `BigYellowButton` that triggered the action
 	@IBAction func showBonusBananasAlert(sender:BigYellowButton) {
 		let bonusBananasAlert = UIAlertController(title: "🎉 Get bonus bananas", message: "Get bonus bananas by sharing Monkey with friends by doing the tasks below.", preferredStyle: .alert)
-		
+
 		bonusBananasAlert.addAction(UIAlertAction(title: "Link Facebook = 🍌1000", style: .default, handler: {
 			(UIAlertAction) in
 			self.inviteFacebookFriends()
 			bonusBananasAlert.dismiss(animated: true, completion: nil)
 		}))
-		
+
 		bonusBananasAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {
 			(UIAlertAction) in
 			bonusBananasAlert.dismiss(animated: true, completion: nil)
 		}))
-		
+
 		self.present(bonusBananasAlert, animated: true, completion: nil)
 	}
-	
-	
+
+
 	/// Opens FacebookViewController -- called from the 'Bonus Bananas Popup'
 	func inviteFacebookFriends() {
 		self.inviteFriendsViewController = FacebookViewController()
 		self.inviteFriendsViewController?.delegate = self
-		
+
 		guard let inviteFriendsViewController = self.inviteFriendsViewController else {
 			return
 		}
 		inviteFriendsViewController.login(controller: self)
 	}
-	
+
 	/**
 	Completion delegate method for FacebookViewController, simply releases the reference to FacebookViewController, releasing it from memory.
 	*/
 	func loginCompleted(facebookViewController: FacebookViewController) {
-		
+
 	}
-	
+
 	func invitesCompleted(facebookViewController: FacebookViewController) {
 		self.inviteFriendsViewController = nil
 	}
-	
+
 	@IBAction func acceptButtonTapped(sender: Any) {
 		MKMatchManager.shareManager.afmCount = 0
 		self.chatSession?.accept()
 		self.skipButton?.isHidden = true
 		self.acceptButton?.isHidden = true
-		
+
 		if let chatSessionReady = self.chatSession?.matchUserDidAccept {
 			if chatSessionReady {
 				self.connectText.isHidden = false
@@ -646,19 +646,19 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.waitingText.isHidden = false
 			}
 		}
-		
+
 		UIView.animate(withDuration: 0.3, animations: {
 			self.acceptButton?.isHidden = true
 		})
 	}
-	
+
 	private func resetFact() {
 		if self.matchingMode == .discover {
 			self.setFactText(self.nextFact)
 		}
 	}
-     
-     
+
+
      func checkNotifiPermission(){
           if #available(iOS 10.0, *) {
                let center = UNUserNotificationCenter.current()
@@ -679,7 +679,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                }
           }
      }
-	
+
 	@IBAction func skipButtonTapped(sender: Any) {
         MKMatchManager.shareManager.afmCount = 0
      self.mySkip = true
@@ -691,14 +691,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 //          self.chatSession?.disconnect(.consumed)
 		self.start()
 	}
-	
+
 	internal func factTextTapped() {
 		self.present(self.storyboard!.instantiateViewController(withIdentifier: "onboardingVideoVC"), animated: true) { (Bool) in
 			self.startFindingChats(forReason: "onboarding-video")
 		}
 		self.stopFindingChats(andDisconnect: true, forReason: "onboarding-video")
 	}
-	
+
 	private func selectedMode(_ newMatchingMode: MatchingMode) {
 		guard self.matchingMode != newMatchingMode else {
 			self.startFindingChats(forReason: "mode-selection")
@@ -710,20 +710,20 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.chatSession?.disconnect(.consumed)
 		self.startFindingChats(forReason: "mode-selection")
 	}
-	
+
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		textField.resignFirstResponder()
 		return false
 	}
-	
+
 	func requestPresentation(of alertController: UIAlertController, from view: UIView) {
 		self.present(alertController, animated: true, completion: nil)
 	}
 	var chatRequest: JSONAPIRequest?
 	var gettingNewSession = false
 	var sessionIndex = 0 // used to make sure we don't run more than one DispatchQueue.main.asyncAfter
-	
-	
+
+
 	func getNewSession() {
 		// log first match request event
 		guard self.nextSessionToPresent == nil else {
@@ -747,7 +747,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.gettingNewSession = false
 			return
 		}
-		
+
 		let parameters:[String:Any] = [
 			"data": [
 				"type": "chats",
@@ -757,13 +757,18 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				]
 			]
 		]
-		
+
 		self.chatRequest = RealmCall.create(parameters: parameters) { (result:JSONAPIResult<[RealmCall]>) in
 			let chatRequest = self.chatRequest
 			self.chatRequest = nil
-			
+
 			let currentUser = APIController.shared.currentUser
 			let is_banned = currentUser?.is_banned.value ?? false
+			var match_type = "video"
+			if let match_mode = Achievements.shared.selectMatchMode, match_mode == .TextMode {
+				match_type = "text"
+			}
+
 			var channels = ""
 			if let selectChannels = currentUser?.channels {
 				for (_ , tree) in selectChannels.enumerated() {
@@ -771,16 +776,17 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				}
 				channels.removeLast()
 			}
-			
+
 			let commonParameters = [
 				"user_gender": currentUser?.show_gender ?? "",
 				"user_age": "\(currentUser?.age.value ?? 0)",
 				"user_country": currentUser?.location ?? "",
 				"user_ban": "\(is_banned)",
+				"match_type": match_type,
 				"trees": channels
 			]
 			AnaliticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
-			
+
 			print("Chat request completed")
 			self.gettingNewSession = false
 			guard self.isFindingChats == true else {
@@ -799,48 +805,44 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 					self.getNewSession()
 					return
 				}
-				
+
 				if let meta = jsonAPIDocument.meta, let nextFact = meta["next_fact"] as? String {
 					self.nextFact = nextFact
 				}
-				
+
 				guard let sessionId = call.session_id, let chatId = call.chat_id, let token = call.token else {
 					print("Error: RealmCall object did not return with sufficient data to create a chatSession")
 					self.getNewSession()
 					return
 				}
-				
+
 				if let includeds = jsonAPIDocument.included,
 					let included = includeds.first
 				{
 					if let attribute = included.attributes {
-						if let gender = attribute["gender"] as? String,
-							let first_name = attribute["first_name"] as? String,
-							let age = attribute["age"] as? Int {
-							let attributes: [RealmUser.Attribute] = [
-								.first_name(first_name),
-								.age(age),
-								.gender(gender),
-								]
-							call.user?.update(attributes: attributes, completion: { ( _) in
-								print("update match user info error")
-							})
-						}
+//						call.user?.setValue(attribute["first_name"], forKey: "first_name")
+//						call.user?.setValue(attribute["location"], forKey: "location")
+//						call.user?.setValue(attribute["snapchat_username"], forKey: "snapchat_username")
 						
 						if let channels = attribute["channels"] as? [String] {
 							self.listTrees(trees: channels)
 						}
 					}
 				}
-				
+
 				var bio = "Connecting"
 				if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
 					bio = convertBio
 				}
-				
+
 				self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: call.user?.first_name, profile_image_url: call.user?.profile_photo_url, user_id: call.user?.user_id, match_mode: call.match_mode), token: token, loadingDelegate: self, isDialedCall: false)
-				
+
 				self.start(fact: bio)
+				
+				if Achievements.shared.closeAcceptButton {
+					self.acceptButtonTapped(sender: self)
+				}
+				
 			case .error(let error):
 				error.log(context:"Create (POST) a matched call")
 				let statusCode = error.status
@@ -867,7 +869,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 					self.nextFact = fact
 					self.resetFact()
 				}
-				
+
 				if let errorMessage = (meta?["alert_message_text"] as? String) {
 					let alert = UIAlertController(title: (meta?["alert_title_text"] as? String) ?? "Status Error", message: errorMessage, preferredStyle: .alert)
 					if (meta?["alert_disable_retry"] as? Bool) != true {
@@ -894,14 +896,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}
 		}
 	}
-	
+
 	func signOut() {
 		guard self.signedOut == false else {
 			return
 		}
-		
+
 		self.signedOut = true
-		
+
 		RealmDataController.shared.deleteAllData() { (error) in
 			guard error == nil else {
 				error?.log()
@@ -910,11 +912,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			APIController.authorization = nil
 			UserDefaults.standard.removeObject(forKey: "user_id")
 			Apns.update(callback: nil)
-			
+
 			self.dismiss(animated: true, completion: nil)
 		}
 	}
-	
+
 	func presentCallViewController(for chatSession:ChatSession) {
 		// This will do nothing if the current chat
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
@@ -933,7 +935,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.presentCallViewControllerOn(vcToPresentOn, for: chatSession)
 		}
 	}
-	
+
 	func presentCallViewControllerOn(_ viewController: UIViewController, for chatSession: ChatSession) {
 		print("sh-1226- presentCallViewControllerOn")
 		guard self.chatSession == chatSession || self.chatSession == nil else {
@@ -946,7 +948,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.callNotification?.dismiss()
 			self.callNotification = nil
 		}
-		
+
 		UIView.animate(withDuration: 0.3, animations: {
 			if !(viewController is MainViewController) {
 				viewController.view.alpha = 0.0
@@ -960,12 +962,12 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}else {
 				print("Get videoModeVC")
 			}
-			
+
 			let matchViewController = self.storyboard?.instantiateViewController(withIdentifier: matchModeId) as! MatchViewController
 			self.matchViewController = matchViewController
 			matchViewController.chatSession = chatSession
 			chatSession.callDelegate = matchViewController
-			
+
 			self.callsInSession += 1
 			Achievements.shared.totalChats += 1
 			viewController.present(matchViewController, animated: false, completion: nil)
@@ -974,7 +976,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}
 		}
 	}
-	
+
 	func consumeFromConnected() {
 		let showMonkeyChatConsumeCount = UserDefaults.standard.integer(forKey: "MKShowMonkeyChatCountConsumeChat")
 		let lastShowTime = UserDefaults.standard.double(forKey: "MKShowMonkeyChatTimeConsumeChat")
@@ -986,22 +988,22 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	    if monkeychatUrl != nil && showMonkeyChatConsumeCount < 3 && lastShowDate.compare(.isToday) == false && UIApplication.shared.canOpenURL(monkeychatScheme!) == false {
 			 UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "MKShowMonkeyChatTimeConsumeChat")
 			 UserDefaults.standard.set(showMonkeyChatConsumeCount + 1, forKey: "MKShowMonkeyChatCountConsumeChat")
-		
+
 			let controller = UIAlertController(title: nil, message: monkeychatDes, preferredStyle: .alert)
 			let monkeychat = UIAlertAction(title: monkeychatConfirm, style: .default) { (action) in
 				UIApplication.shared.openURL(URL.init(string: monkeychatUrl!)!)
 			}
 			controller.addAction(monkeychat)
-			
+
 			let cancel = UIAlertAction(title: "No trust", style: .cancel, handler: nil)
 			controller.addAction(cancel)
-		
+
 			 DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.5)) {
 				 self.present(controller, animated: true, completion: nil)
 			 }
 	  	}
 	}
-	
+
 	/// Animateable property to show and hide navigation elements
 	var elementsShouldHide:Bool? {
 		didSet {
@@ -1021,7 +1023,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.matchModeContainer.alpha = alpha
 		}
 	}
-	
+
 	func dismissCallViewController(for chatSession: ChatSession) {
         EffectsCoordinator().effects.removeAll()
      let realm = try? Realm()
@@ -1033,9 +1035,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                let alert = UIAlertController(title: nil, message: "Do you want to remove this user from your friend list?", preferredStyle: .alert)
                let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
                     friendShip?.last?.delete(completion: { (error) in
-                         
+
                     })
-                    
+
                     JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/friendships/\(friendShipID)", method: .patch, parameters: [
                          "data": [
                               "id": friendShipID,
@@ -1044,41 +1046,41 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                          ], options: [
                               .header("Authorization", APIController.authorization),
                               ]).addCompletionHandler { (response) in
-                                   
+
                               }
                     self.startFindingChats(forReason: "delete_report_friend")
                })
-               
-               
+
+
                let cancel = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
                     self.startFindingChats(forReason: "delete_report_friend")
                })
-               
+
                alert.addAction(remove)
                alert.addAction(cancel)
-               
+
                self.stopFindingChats(andDisconnect: false, forReason: "delete_report_friend")
-               
+
                let when = DispatchTime.now() + (Double(0.5))
                DispatchQueue.main.asyncAfter(deadline: when, execute: {
                     self.present(alert, animated: true)
                });
           }
      }
-     
+
 		guard self.matchViewController != nil else {
 			self.skipped()
 			return
 		}
-     
+
         self.waitingText.isHidden = true
         self.connectText.isHidden = true
 		//
 		print("Disconnecting event fired")
 		self.start()
-		
+
 		chatSession.chat?.update(callback: nil)
-		
+
 		if chatSession.wasSkippable {
 			self.resetFact()
 		}
@@ -1105,14 +1107,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				}) { (Bool) in
 					self.containerView.setNeedsLayout()
 					self.matchViewController = nil
-					
+
 					if chatSession.shouldShowRating == true {
 						self.stopFindingChats(andDisconnect:false, forReason:"rating-notification")
 						NotificationManager.shared.showRatingNotification(chatSession) { [weak self] in
 							self?.startFindingChats(forReason: "rating-notification")
 						}
 					}
-                    
+
                     if chatSession.justAddFriend == true ,
                          UserDefaults.standard.bool(forKey: showRateAlertReason.addFriendJust.rawValue) == false{
                          UserDefaults.standard.set(true, forKey: showRateAlertReason.addFriendJust.rawValue)
@@ -1139,7 +1141,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		if (self.connectText.isHidden == false) && (error != nil) {
 			chatSession.track(matchEvent: .matchConnectTimeOut)
 		}
-		
+
 		self.waitingText.isHidden = true
 		self.connectText.isHidden = true
 		if !chatSession.didConnect {
@@ -1150,7 +1152,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			print("Error: It's strange for a session to be ending that we don't own.")
 		}
 		self.chatSession = nil
-		
+
 		if error != nil {
 			print("Error: Uh, oh! Unknown error occurred.")
 			self.getNewSession()
@@ -1195,21 +1197,21 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}
 		}
 	}
-     
+
 	func shouldShowConnectingStatus(in chatSession: ChatSession) {
 		self.waitingText.isHidden = true
 		self.connectText.isHidden = false
 	}
-	
+
 	@IBAction func matchModeChanged(_ sender: MatchModeSwitch) {
 		self.stopFindingChats(andDisconnect: false, forReason: "switch match mode")
-		
+
 		var currentMatchMode = MatchMode.TextMode
 		if let prevMatchMode = Achievements.shared.selectMatchMode {
 			currentMatchMode = (prevMatchMode == .VideoMode) ? .TextMode : .VideoMode
 		}else {
 			// 第一次选择 match mode
-			
+
 		}
 		Achievements.shared.selectMatchMode = currentMatchMode
 		sender.switchToMode(matchMode: currentMatchMode)
@@ -1217,14 +1219,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		showPopup(popup: matchModePopup)
 		self.startFindingChats(forReason: "switch match mode")
 	}
-	
+
 	@IBAction func bananaButtonTapped(sender: Any) {
 		let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
-		
+
 		let paragraph = NSMutableParagraphStyle()
 		paragraph.lineSpacing = 9
 		paragraph.alignment = .center
-		
+
 		let attributedString = NSAttributedString(
 			string: "🕑 Time added = 🍌2 \n 🎉 Friend added = 🍌5",
 			attributes: [
@@ -1232,17 +1234,17 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
 			]
 		)
-		
+
 		alert.setValue(attributedString, forKey: "attributedMessage")
-		
+
 		alert.addAction(UIAlertAction(title: "Cool", style: .cancel, handler: {
 			(UIAlertAction) in
 			alert.dismiss(animated: true, completion: nil)
 		}))
-		
+
 		self.present(alert, animated: true, completion: nil)
 	}
-	
+
 	func warnConnectionTimeout(in chatSession:ChatSession) {
 		self.stopFindingChats(andDisconnect: false, forReason: "ignoring")
 		let alert = UIAlertController(title: "👮‍♀️ Don't ignore people", message: "Make sure to skip or accept chats.", preferredStyle: UIAlertControllerStyle.alert)
@@ -1253,13 +1255,13 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		}))
 		self.present(alert, animated: true, completion: nil)
 	}
-     
+	
      func showRateAlert(){
           let rated = UserDefaults.standard.bool(forKey: "kHadRateBefore")
           if rated {return}
           UserDefaults.standard.set(true,forKey: "kHadRateBefore")
           if Configs.hadShowRateAlertToday() {return}
-          
+
           self.stopFindingChats(andDisconnect: false, forReason: "rateapp")
           let alert = UIAlertController(title: "Having fun with Monkey?", message: "🐒🐒🐒\nIf you like Monkey, plz give us a good review!", preferredStyle: UIAlertControllerStyle.alert)
           alert.addAction(UIAlertAction(title: "I hate it", style: .cancel, handler: {
@@ -1278,7 +1280,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
           }))
           self.present(alert, animated: true, completion: nil)
      }
-	
+
 	deinit {
 		NotificationCenter.default.removeObserver(self)
 		self.bananaNotificationToken?.stop()
@@ -1297,15 +1299,15 @@ extension MainViewController {
 		UIView.animate(withDuration: 0.2) {
 			popup.alpha = 1
 		}
-		
+
 		self.perform(#selector(hidePopup(popup:)), with: popup, afterDelay: 5)
 	}
-	
+
 	func hidePopup(popup: UIView) {
 		guard !popup.isHidden else {
 			return
 		}
-		
+
 		UIView.animate(withDuration: 0.2, animations: {
 			popup.alpha = 0
 		}) { ( _) in
@@ -1316,9 +1318,9 @@ extension MainViewController {
 
 // MARK: - loading view logic
 extension MainViewController {
-	
+
 	func setupBananas() {
-		
+
 		self.numberFormatter.numberStyle = .decimal
 		self.bananaNotificationToken = APIController.shared.currentUser?.addNotificationBlock { [weak self] (changes) in
 			DispatchQueue.main.async {
@@ -1326,7 +1328,7 @@ extension MainViewController {
 			}
 		}
 	}
-	
+
 	func setupFriendships() {
 		// Predicates restricting which users come back (we don't want friendships as a result from blocks)
 		let userId = APIController.shared.currentUser?.user_id ?? ""
@@ -1335,7 +1337,7 @@ extension MainViewController {
 		let isNotBlocker = NSPredicate(format: "is_blocker == NO")
 		let isNotBlocking = NSPredicate(format: "is_blocking == NO")
 		let isUnreadConversation = NSPredicate(format: "last_message_read_at < last_message_received_at")
-		
+
      let realm = try? Realm()
 		self.friendships = realm?.objects(RealmFriendship.self).filter(NSCompoundPredicate(andPredicateWithSubpredicates: [
 			isNotBlocker,
@@ -1345,45 +1347,45 @@ extension MainViewController {
 			isUnreadConversation
 			]))
 		self.updateFriendshipCount()
-		
+
 		self.unreadMessageNotificationToken = self.friendships?.addNotificationBlock { [weak self] (changes) in
 			DispatchQueue.main.async {
 				self?.updateFriendshipCount()
 			}
 		}
 	}
-	
+
 	func updateFriendshipCount() {
 		guard let unreadFriendships = self.friendships else {
 			return
 		}
-		
+
 		if unreadFriendships.count > 0 {
 			self.chatButton.imageView?.image = #imageLiteral(resourceName: "FriendsButtonNotification")
 		} else {
 			self.chatButton.imageView?.image = #imageLiteral(resourceName: "FriendsButton")
 		}
 	}
-	
+
 	func updateBananas() {
-		
+
 		let bananaCount = APIController.shared.currentUser?.bananas.value ?? 0
 		let formattedNumber = numberFormatter.string(from: NSNumber(value:bananaCount))
 		self.bananaCountLabel.text = formattedNumber
-		
+
 		let bananaRect = formattedNumber?.boundingRect(forFont: self.bananaCountLabel.font, constrainedTo: CGSize(width: CGFloat.greatestFiniteMagnitude, height: self.bananaCountLabel.frame.size.height))
 		let bananaViewWidth = (bananaRect?.size.width)! + 64 // padding
-		
+
 		self.bananaViewWidthConstraint.constant = bananaViewWidth
 		self.view.setNeedsLayout()
 	}
-	
+
 	func setFactText(_ text: String) {
 		self.factTextView.isSelectable = true
 		self.factTextView.text = text
 		self.factTextView.isSelectable = false
 	}
-	
+
 	func start(fact: String) {
 		pendingFactText = fact
 		if let fact = pendingFactText {
@@ -1395,17 +1397,17 @@ extension MainViewController {
 			self.isLoading = true
 		}
 	}
-     
+
      func listTrees(trees:Array<String>){
           if trees.count == 0 {
                return
           }
-          
+
           guard let allTree = self.channels else {
                print("no tree info now")
                return
           }
-          
+
           guard let curTrees = APIController.shared.currentUser?.channels else { return  }
           var commonTrees = Array<String>.init()
           for tree in curTrees {
@@ -1415,27 +1417,35 @@ extension MainViewController {
                     }
                }
           }
-          
+
           commonTrees = commonTrees.sorted { (string1, string2) -> Bool in
                return string1 > string2
           }
-          
+		  if commonTrees.count > 0 {
+			   var common_trees_str = ""
+			   for tree in commonTrees {
+					common_trees_str.append("tree \(tree),")
+			   }
+			   common_trees_str.removeLast()
+			   self.chatSession?.common_trees = common_trees_str
+		  }
+
           var count = 0
           var org_emoji_str = "🍌🍌🍌🍌"
           var emojiArr:[String] = []
 
           for treeInfo in allTree{
                if count >= 3 {break}
-               
+
                if let channelID = treeInfo.channel_id , commonTrees.contains(channelID) ,
                     let emojiStr = treeInfo.emoji {
                     org_emoji_str.remove(at: org_emoji_str.startIndex)
                     org_emoji_str.append(emojiStr)
-                    
+
                     count += 1
                }
           }
-          
+
           for i in 0...3 {
                if i == 0 {
                     emojiArr.append(org_emoji_str)
@@ -1447,16 +1457,16 @@ extension MainViewController {
                     emojiArr[i-1].remove(at: emojiArr[i-1].startIndex)
                }
           }
-          
+
           emojiArr[3].remove(at: emojiArr[3].startIndex)
-          
+
           self.loadingTextLabel.setTicksWithArray(ticks: emojiArr)
      }
-     
+
      func hideTreeLabels(){
           self.loadingTextLabel.setDefaultTicks()
      }
-     
+
 	func skipped() {
 		DispatchQueue.main.async {
 			self.start()
@@ -1476,28 +1486,28 @@ extension MainViewController {
 		if let onboardingFactText = APIController.shared.currentExperiment?.onboarding_fact_text, Achievements.shared.minuteMatches == 0, APIController.shared.currentExperiment?.onboarding_video.value == true {
 			self.setFactText(onboardingFactText)
 		}
-		
+
 		pendingFactText = nil
-		
+
 		if self.isSkip {
 			self.isSkip = false
 			self.didSkip = true
 		}
-		
+
 		if self.isLoading {
 			return
 		}
-		
+
 		isLoading = true
 	}
-	
+
 	func stop(withFade: Bool, completion: (() -> Void)?) {
-		
+
 		if !self.isLoading {
 			completion?()
 			return
 		}
-		
+
 		isLoading = false
 		timer?.invalidate()
 		timer = nil
@@ -1516,10 +1526,8 @@ extension MainViewController:SlideViewManager {
 	func shouldShowNotification() -> Bool {
 		return (self.presentedViewController?.presentedViewController as? ChatViewController) == nil
 	}
-	
+
 	func shouldExecuteNotification() -> Bool {
 		return self.chatSession?.status != .connected
 	}
 }
-
-

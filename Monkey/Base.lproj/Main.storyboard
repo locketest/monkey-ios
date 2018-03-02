@@ -94,7 +94,7 @@
                                             <action selector="nextVC:" destination="Yof-0h-XrG" eventType="touchUpInside" id="twB-Dy-2ia"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Monkey" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xzg-Tm-YZ7" customClass="UICountingLabel">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Monkey" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xzg-Tm-YZ7">
                                         <rect key="frame" x="113" y="288.5" width="150" height="51"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="42"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

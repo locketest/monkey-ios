@@ -33,14 +33,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 		// Reset achievements for bonus bananas on launch, uses `facebook_friends_invited` and whether or not its enabled by the server upon reset
 		Achievements.shared.authorizedFacebookForBonusBananas = false
 
+		FirebaseApp.configure(options: FirebaseOptions.init(contentsOfFile: Environment.firebaseConfigurationPath)!)
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 		AnaliticsCenter.logLaunchApp()
         Fabric.with([Branch.self, Crashlytics.self])
         Branch.getInstance().initSession(launchOptions: launchOptions)
-		FirebaseApp.configure(options: FirebaseOptions.init(contentsOfFile: Environment.firebaseConfigurationPath)!)
 		Messaging.messaging().delegate = self
 		RemoteConfigManager.shared.fetchLatestConfig()
-		
+
         window?.layer.cornerRadius = 4
         window?.layer.masksToBounds = true
         OTAudioDeviceManager.setAudioDevice(OTDefaultAudioDevice.shared())
@@ -54,13 +54,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as? [AnyHashable : Any] {
 			handleNotification(application: application, userInfo: userInfo)
 		}
-		
+
 		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? [AnyHashable : Any] {
 			handleNotification(application: application, userInfo: userInfo)
 		}
-        
+
         self.checkIfAppUpdated()
-		
+
         return true
     }
 
@@ -101,7 +101,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 		FBSDKAppEvents.activateApp()
-		
+
         userEnteredAt = Date()
         APIController.shared.currentUser?.reload(completion: { (error: APIError?) in
              guard error == nil else {
@@ -132,7 +132,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         print("~~~\(deviceToken.base64EncodedString())")
         Apns.update(callback: nil)
     }
-	
+
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		FBSDKAppEvents.logPushNotificationOpen(userInfo)
 		FBNotificationsManager.shared().presentPushCard(forRemoteNotificationPayload: userInfo, from: nil) { (viewController, error) in
@@ -143,14 +143,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 			}
 		}
 	}
-	
+
+	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+
+	}
+
+	func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
+
+	}
+
 	/*
 	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], withResponseInfo responseInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
 		FBSDKAppEvents.logPushNotificationOpen(userInfo, action: identifier)
 		completionHandler()
 	}
 	*/
-	
+
     // e: emoji for in app notification
     // t: text for in app emoji notifcation (optional - alert used by default)
     // a: weather the url provided should be opened even if the app is already open
@@ -166,7 +174,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     }
     func handleNotification(application: UIApplication, userInfo:[AnyHashable : Any]) {
         let notificationUserInfo = NotificationUserInfo(userInfo: userInfo)
-		
+
         if let badgeNumber = notificationUserInfo.aps?["badge"] as? Int {
             application.applicationIconBadgeNumber = badgeNumber
         }
@@ -175,7 +183,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
             NotificationManager.shared.handleNotification(userInfo)
             return
         }
-		
+
         if let text = userInfo["t"] as? String ?? notificationUserInfo.aps?["alert"] as? String, let emoji = notificationUserInfo.emoji {
             var emojiNotificationUserInfo:[String:Any] = [
                 "text": text,
@@ -194,7 +202,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 
             NotificationCenter.default.post(name: .emojiNotification, object: nil, userInfo: emojiNotificationUserInfo)
         }
-		
+
         if (notificationUserInfo.alwaysOpenURL == 1 || application.applicationState != UIApplicationState.active), let urls = notificationUserInfo.urls {
             self.openNotificationURLs(urls: urls)
         }
@@ -326,7 +334,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 
         mainVC.present(toPresent, animated: true)
     }
-    
+
     func checkIfAppUpdated(){
         let lasVer = UserDefaults.standard.string(forKey: "kLastAppVersion")
         let newVer = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"

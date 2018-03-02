@@ -353,7 +353,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         case .aboutUS:
             let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            alertController.addAction(UIAlertAction(title: "💖 Rate Us", style: .default, handler: { (UIAlertAction) in
+            alertController.addAction(UIAlertAction(title: "💖 Rate us", style: .default, handler: { (UIAlertAction) in
                 self.openURL("https://itunes.apple.com/us/app/id1165924249?action=write-review", inVC: true)
             }))
             alertController.addAction(UIAlertAction(title: "📲 Support", style: .default, handler: { (UIAlertAction) in
@@ -477,7 +477,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     let talkToData = SettingsTableViewCellData(for: .talkTo, title: "💬 Talk to", style: .talkToCell) //SettingsTableViewCellData(for: .talkTo, title: "💖 Talk to")
     let acceptButtonData = SettingsTableViewCellData(for: .acceptButton, title: "😊 Accept control", style: .accetpBtnCell)
     
-    let aboutUSData = SettingsTableViewCellData(for: .aboutUS, title: "🐒 About Us")
+    let aboutUSData = SettingsTableViewCellData(for: .aboutUS, title: "🐒 About us")
     let signOutData = SettingsTableViewCellData(for: .signOut, title: "🙈  Sign out")
     var cells: [SettingsTableViewCellData] {
         return [
@@ -521,6 +521,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             let cell = tableView.dequeueReusableCell(withIdentifier: "AcceptBtnCell", for: indexPath) as! SettingAcceptButtonCell
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             cell.titleLabel?.text = data.title
+			cell.acceptSwitch.open = !Achievements.shared.closeAcceptButton
+			cell.acceptSwitch.switchValueChanged = {
+				Achievements.shared.closeAcceptButton = !$0
+			}
             return cell;
         case .booleanButtons:
             let cell = tableView.dequeueReusableCell(withIdentifier: "booleanCell", for: indexPath) as! SettingsBooleanTableViewCell
@@ -616,6 +620,7 @@ struct SettingsTableViewCellData {
         self.secondOption?.isSelected = isSelected
     }
 }
+
 class SettingsTableViewCellOption {
     let emoji: String
     let title: String
@@ -626,8 +631,8 @@ class SettingsTableViewCellOption {
         self.isSelected = isSelected
     }
 }
+
 enum SettingsTableViewCellType {
-   
     case signOut
     case editProfile
     case inviteFriends
@@ -642,11 +647,13 @@ class SettingsTableViewCell: UITableViewCell {
 }
 
 class SettingsBasicTableViewCell: SettingsTableViewCell {
+	
 }
+
 class  SettingAcceptButtonCell: UITableViewCell {
     var data: SettingsTableViewCellData?
     var titleLabel : UILabel!
-    var genderButton : UIButton!
+    var acceptSwitch : MonkeySwitch!
     required init?(coder aDecoder:NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -659,20 +666,19 @@ class  SettingAcceptButtonCell: UITableViewCell {
     func setUpUI() {
         self.backgroundColor = UIColor.clear
         self.titleLabel = UILabel.init()
-        self.titleLabel?.backgroundColor = UIColor.clear;
-        self.titleLabel?.frame = CGRect(x:16, y:0, width:150, height:64)
-        self.titleLabel?.text = ""
-        self.titleLabel?.textColor = UIColor.white
-        self.titleLabel?.font = UIFont.systemFont(ofSize: 17)
-        self.titleLabel?.textAlignment = NSTextAlignment.left
-        self.addSubview(self.titleLabel!)
-        
-        self.genderButton = UIButton.init(type: .custom)
-        self.genderButton?.frame = CGRect(x:UIScreen.main.bounds.size.width-48-12, y:7, width:48, height:48)
-        self.genderButton?.backgroundColor = UIColor.clear
-        self.addSubview(self.genderButton!)
+        self.titleLabel.backgroundColor = UIColor.clear;
+        self.titleLabel.frame = CGRect(x: 16, y: 0, width: 150, height: 64)
+        self.titleLabel.text = ""
+        self.titleLabel.textColor = UIColor.white
+        self.titleLabel.font = UIFont.systemFont(ofSize: 17)
+        self.titleLabel.textAlignment = NSTextAlignment.left
+        self.contentView.addSubview(self.titleLabel)
+		
+		self.acceptSwitch = MonkeySwitch.init(frame: CGRect(x: UIScreen.main.bounds.size.width - 40 - 20, y: 17, width: 40, height: 30))
+        self.contentView.addSubview(self.acceptSwitch)
     }
 }
+
 class SettingTalkToCell: UITableViewCell {
     var data: SettingsTableViewCellData?
     var titleLabel : UILabel!
@@ -695,13 +701,16 @@ class SettingTalkToCell: UITableViewCell {
         self.titleLabel?.textColor = UIColor.white
         self.titleLabel?.font = UIFont.systemFont(ofSize: 17)
         self.titleLabel?.textAlignment = NSTextAlignment.left
-        self.addSubview(self.titleLabel!)
+        self.contentView.addSubview(self.titleLabel!)
         
         self.genderButton = UIButton.init(type: .custom)
         self.genderButton?.frame = CGRect(x:UIScreen.main.bounds.size.width-48-12-5, y:7, width:48, height:48)
         self.genderButton?.backgroundColor = UIColor.clear
-        self.addSubview(self.genderButton!)
-        self.genderButton.addTarget(self, action:#selector(genderPerferenceBtnClick), for: .touchUpInside)
+        self.contentView.addSubview(self.genderButton!)
+		
+		let fullButton = UIButton.init(type: .custom)
+		self.contentView.addSubview(fullButton)
+        fullButton.addTarget(self, action:#selector(genderPerferenceBtnClick), for: .touchUpInside)
     }
     func genderPerferenceBtnClick(){
         let alertController = UIAlertController(title: "Talk to", message: APIController.shared.currentExperiment?.talk_to_alert_message, preferredStyle: .actionSheet)

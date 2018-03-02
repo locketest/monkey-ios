@@ -24,7 +24,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 	var matchedTime = NSDate().timeIntervalSince1970
 	var acceptTime: TimeInterval?
 	var connectTime: TimeInterval?
-	
+
     var didConnect = false
     var matchUserDidAccept = false
     var isDialedCall = false
@@ -33,7 +33,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 	var isUnMuteSound = false
 	var textMode = false
     var justAddFriend = false
-	
+
+    var message_send = false
+    var message_receive = false
+    var common_trees: String?
+
     var session: OTSession!
     var connections = [OTConnection]()
     weak var subscriber: MonkeySubscriber?
@@ -56,7 +60,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			}
 		}
 	}
-	
+
     var shouldShowRating:Bool {
         // TODO: now just make shouldShowRating always false , if make sure don't need match rate anymore, you shuld delete all the logic about match rating
         return false;
@@ -100,7 +104,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             }
         }
     }
-    
+
     private enum SessionStatus {
         case connecting
         case connected
@@ -117,40 +121,39 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         case skipped
         case accepted
     }
-	
+
 	func commonParameters(for event: AnalyticEvent) -> [String: String] {
 		let currentUser = APIController.shared.currentUser
 		let is_banned = currentUser?.is_banned.value ?? false
-		var channels = ""
-		if let selectChannels = currentUser?.channels {
-			for (_ , tree) in selectChannels.enumerated() {
-				channels.append("tree \(tree.channel_id ?? ""),")
-			}
-			channels.removeLast()
+        var match_type = "video"
+		if let match_mode = Achievements.shared.selectMatchMode, match_mode == .TextMode {
+			match_type = "text"
 		}
-		
+
 		var commonParameters = [
 			"user_gender": currentUser?.show_gender ?? "",
 			"user_age": "\(currentUser?.age.value ?? 0)",
 			"user_country": currentUser?.location ?? "",
 			"user_ban": "\(is_banned)",
-			"trees": channels
+            "match_type": match_type,
+            "trees": common_trees ?? "",
 		]
-		
-		if let matchedUser = self.realmCall?.user {
+
+        if let videoCall = self.realmCall, let matchedUser = videoCall.user {
 			commonParameters["match_with_gender"] = matchedUser.gender ?? ""
 			commonParameters["match_with_country"] = matchedUser.location ?? ""
 			commonParameters["match_with_age"] = "\(matchedUser.age.value ?? 0)"
-			var match_type = "video"
-			if let match_mode = Achievements.shared.selectMatchMode, match_mode == .TextMode {
-				match_type = "text"
+            var match_with_type = "video"
+			if let match_with_mode = videoCall.match_mode, match_with_mode == MatchMode.TextMode.rawValue {
+				match_with_type = "text"
 			}
-			commonParameters["match_type"] = match_type
-			
+            commonParameters["match_with_type"] = match_with_type
+			commonParameters["match_room_type"] = textMode ? "text" : "video"
+
 			if event == .matchFirstAddFriend {
 				commonParameters["in_15s"] = "\(!self.hadAddTime)"
 			}
-			
+
 			if event == .matchInfo {
 				commonParameters["duration"] = matchedUser.gender ?? ""
 				let time_add = ((self.chat?.minutesAdded ?? 0) > 0)
@@ -159,30 +162,32 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				commonParameters["friend_add"] = "\(self.chat?.sharedSnapchat ?? false)"
 				commonParameters["firend_add_success"] = "\(self.friendMatched)"
 				commonParameters["report"] = "\(self.isReportedChat)"
-				
+
 				if textMode {
 					commonParameters["sound_open"] = "\(self.chat?.unMute ?? false)"
 					commonParameters["sound_open_success"] = "\(self.isUnMuteSound)"
+                    commonParameters["message_send"] = "\(self.message_send)"
+                    commonParameters["message_receive"] = "\(self.message_receive)"
 				}
 			}
 		}
-		
+
 		return commonParameters
 	}
-	
+
 	func track(matchEvent: AnalyticEvent) {
 		AnaliticsCenter.log(withEvent: matchEvent, andParameter: commonParameters(for: matchEvent))
 	}
-	
+
     required init(apiKey: String, sessionId: String, chat: Chat, token: String, loadingDelegate: ChatSessionLoadingDelegate, isDialedCall: Bool) {
         super.init()
-		
+
         self.sessionStatus = .connecting
         self.isDialedCall = isDialedCall
         self.chat = chat
         self.loadingDelegate = loadingDelegate
 		self.textMode = (chat.match_with_mode == .TextMode)
-		
+
 		let realm = try? Realm()
 		if let currentMatchUser = chat.user_id, let friend = realm?.objects(RealmFriendship.self).filter("user.user_id == \"\(currentMatchUser)\"").first {
 			self.theirSnapchatUsername = friend.user?.snapchat_username
@@ -190,7 +195,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.chat?.theySharedSnapchat = true
 			self.friendMatched = true
 		}
-		
+
         self.chatNotificationToken = self.realmCall?.addNotificationBlock { [weak self] change in
             switch change {
             case .error(let error):
@@ -220,7 +225,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             return
         }
     }
-    
+
     deinit {
         print("sh-1226 \(self) deinit")
     }
@@ -228,7 +233,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     func accept() {
         self.response = .accepted
 		self.acceptTime = NSDate().timeIntervalSince1970
-		
+
 		self.track(matchEvent: .matchFirstRecieve)
 		self.track(matchEvent: .matchReveived)
 
@@ -236,7 +241,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             // call will be accepted as soon as the subscriber connected
             return
         }
-		
+
 		if self.matchUserDidAccept {
 			self.track(matchEvent: .matchConnect)
 		}
@@ -261,7 +266,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         if isReportedChat {
             return false
         }
-        
+
         guard let chat = self.chat else {
             self.log(.error, "Missing chat")
             return false
@@ -280,7 +285,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             self.log(.error, "Send minute error \(error)")
         }
         self.friendMatched = chat.theySharedSnapchat
-		
+
         return !self.friendMatched
     }
 
@@ -288,12 +293,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 		if isReportedChat {
 			return
 		}
-		
+
 		guard let chat = self.chat else {
 			self.log(.error, "Missing chat")
 			return
 		}
-		
+
 		guard let connection = self.subscriberConnection else {
 			self.log(.error, "Could not add a unmute")
 			self.sessionStatus = .disconnected
@@ -307,27 +312,27 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.updateStatusTo(.consumedWithError)
 			self.log(.error, "Send minute error \(error)")
 		}
-		
+
 		if self.chat?.theyUnMute == true {
 			self.isUnMuteSound = true
 			self.subscriber?.subscribeToAudio = true
 			self.callDelegate?.soundUnMuted(in: self)
 		}
 	}
-	
+
 	func sentReport() {
 		guard let chat = self.chat else {
 			self.log(.error, "Missing chat")
 			return
 		}
-		
+
 		guard let connection = self.subscriberConnection else {
 			self.log(.error, "Could not send a report")
 			self.sessionStatus = .disconnected
 			self.updateStatusTo(.consumedWithError)
 			return
 		}
-		
+
 		chat.reporting = true
 		var maybeError : OTError?
 		self.session.signal(withType: MessageType.Report.rawValue, string: "report", connection: connection, retryAfterReconnect: true, error: &maybeError)
@@ -337,12 +342,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.updateStatusTo(.consumedWithError)
 			self.log(.error, "Send report error \(error)")
 		}
-		
+
 		if (hadAddTime || friendMatched || textMode) {
 			self.disconnect(.consumed)
 		}
 	}
-	
+
 	func sentTypeStatus() {
 		guard let connection = self.subscriberConnection else {
 			self.log(.error, "Could not send a typing")
@@ -350,7 +355,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.updateStatusTo(.consumedWithError)
 			return
 		}
-		
+
 		var maybeError : OTError?
 		self.session.signal(withType: MessageType.Typing.rawValue, string: "Typing", connection: connection, retryAfterReconnect: true, error: &maybeError)
 		if let error = maybeError {
@@ -358,7 +363,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.log(.error, "Send typing error \(error)")
 		}
 	}
-	
+
 	func sentTextMessage(text: String) {
 		guard let connection = self.subscriberConnection else {
 			self.log(.error, "Could not send a message")
@@ -366,13 +371,14 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.updateStatusTo(.consumedWithError)
 			return
 		}
-		
+
 		var maybeError : OTError?
 		self.session.signal(withType: MessageType.Text.rawValue, string: text, connection: connection, retryAfterReconnect: true, error: &maybeError)
 		if let error = maybeError {
 			self.updateStatusTo(.consumedWithError)
 			self.log(.error, "Send text message error \(error)")
 		}
+        self.message_send = true
 	}
 
     func addFriend() -> Bool {
@@ -390,7 +396,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         if self.isReportedChat {
             return false
         }
-        
+
         guard let chat = self.chat else {
             self.log(.error, "Missing chat")
             return false
@@ -469,11 +475,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             self.log(.warning, "Chat is already consumed as \(self.status) and can not be updated to \(newStatus)")
             return
         }
-		
+
 		if self.status == .connected && newStatus == .disconnecting {
 			self.loadingDelegate?.consumeFromConnected?()
 		}
-		
+
         guard self.status != newStatus else {
             self.log(.warning, "Status is already \(newStatus)")
             return
@@ -579,7 +585,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         var maybeError : OTError?
        // MonkeyPublisher.shared.defaultVideoCapture?.toggleCameraPosition()
         session.publish(MonkeyPublisher.shared, error: &maybeError)
-      
+
         if let error = maybeError {
             self.disconnect(.consumedWithError)
             self.log(.error, "Do publish error \(error)")
@@ -625,7 +631,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.subscriber = subscriber
         // Don't subscribe to audio until loading completed
         subscriber.subscribeToAudio = false
-        
+
         print("sh-1226- streamCreated")
 
         var maybeError : OTError?
@@ -699,7 +705,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             }else {
                 self.disconnect(.consumed)
             }
-        
+
         }
         self.wasSkippable = true
         self.updateStatusTo(.skippable)
@@ -755,9 +761,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
                 return
             }
         }
-		
+
 		if let messageType = MessageType.init(type: type) {
-			
+
 			switch messageType {
 			case .AddTime:
 				if (message == "minute") {
@@ -799,6 +805,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			case .Typing:
 				fallthrough
 			case .Text:
+                self.message_receive = true
 				let messageInfo = [
 					"type": messageType.rawValue,
 					"body": message,
@@ -903,7 +910,7 @@ protocol ChatSessionCallDelegate: class {
 	func friendMatched(in chatSession: ChatSession?)
 	func minuteAdded(in chatSession: ChatSession)
 	func soundUnMuted(in chatSession: ChatSession)
-	
+
 	func received(textMessage: TextMessage, in chatSession: ChatSession)
 }
 

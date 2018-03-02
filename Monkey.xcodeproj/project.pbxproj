@@ -145,6 +145,7 @@
 		D192A3E7202AD1CE00791002 /* MatchViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E6202AD1CE00791002 /* MatchViewControllerProtocol.swift */; };
 		D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E8202ADF1000791002 /* SmallYellowButton.swift */; };
 		D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D192A3EB202B015A00791002 /* KeyboardManager.m */; };
+		D1A7DC2B2049506800B061F9 /* MonkeySwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */; };
 		D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
 		D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */; };
 		D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D433C1501F44D35500C9F704 /* IncomingCallManager.swift */; };
@@ -329,6 +330,7 @@
 		D192A3E8202ADF1000791002 /* SmallYellowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallYellowButton.swift; sourceTree = "<group>"; };
 		D192A3EA202B015A00791002 /* KeyboardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardManager.h; sourceTree = "<group>"; };
 		D192A3EB202B015A00791002 /* KeyboardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardManager.m; sourceTree = "<group>"; };
+		D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeySwitch.swift; sourceTree = "<group>"; };
 		D40E59331F3A81510091A7B2 /* CallNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallNotificationView.swift; sourceTree = "<group>"; };
 		D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CallNotificationView.xib; sourceTree = "<group>"; };
 		D433C1501F44D35500C9F704 /* IncomingCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallManager.swift; sourceTree = "<group>"; tabWidth = 5; };
@@ -653,6 +655,7 @@
 				D192A3DA20286E0600791002 /* TextChatViewController.swift */,
 				D192A3DE2029AD8300791002 /* TextModeMessageCell.swift */,
 				D192A3E0202A0E1A00791002 /* MatchModeSwitch.swift */,
+				D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */,
 			);
 			name = Game;
 			sourceTree = "<group>";
@@ -1145,6 +1148,7 @@
 				84DAB7CB1E8F3E6400E36D59 /* Async.swift in Sources */,
 				D43AD40B1F12B52600DE6BBD /* CallViewController+Clock.swift in Sources */,
 				1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */,
+				D1A7DC2B2049506800B061F9 /* MonkeySwitch.swift in Sources */,
 				8B7DC7481EF5C9E000A3F966 /* RealmChannel.swift in Sources */,
 				C0197E371F60A435005F121A /* RealmBlock.swift in Sources */,
 				8435C2E81F13DBBC00C80AC6 /* ChatViewModel.swift in Sources */,
