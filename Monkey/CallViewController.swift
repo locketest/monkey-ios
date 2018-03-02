@@ -8,6 +8,7 @@
 
 import UIKit
 import AudioToolbox
+import RealmSwift
 
 protocol CallViewControllerDelegate:class {
     func stopFindingChats(andDisconnect:Bool, forReason:String)
@@ -25,6 +26,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     @IBOutlet weak var publisherContainerViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var addMinuteButton: BigYellowButton!
     @IBOutlet weak var clockLabel: CountingLabel!
+    @IBOutlet weak var clockTimeIcon: UILabel!
     @IBOutlet weak var policeButtonWidth: NSLayoutConstraint!
     @IBOutlet weak var policeButton: BigYellowButton!
     @IBOutlet weak var snapchatButton: BigYellowButton!
@@ -35,6 +37,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     /// The orange view behind the clock label, animated on addMinute
     @IBOutlet var clockLabelBackgroundView: UIView!
 
+    @IBOutlet weak var cameraPositionButton: UIButton!
     static var lastScreenShotTime:TimeInterval = 0
     var currentMatchPastTime:TimeInterval = 0
     var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧"
@@ -57,6 +60,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 
             chatSession?.add(messageHandler: self.truthOrDareView)
             chatSession?.add(messageHandler: self.effectsCoordinator)
+            chatSession?.toggleFrontCamera(front: true)
             if chatSession?.isDialedCall == true {
                 self.clockTime = 0
             }
@@ -127,6 +131,8 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         print("sh-1226- \(self) callVC init...")
+        
+       // self.cameraPositionButton.hidde
     }
     
     deinit {
@@ -175,6 +181,19 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 
         publisherContainerViewHeightConstraint.constant = self.topLayoutGuide.length + self.containerView.frame.size.height + 43 + 22
         publisherContainerViewWidthConstraint.constant = self.containerView.frame.size.width
+        
+        let realm = try? Realm()
+        self.cameraPositionButton.isHidden = true
+        self.cameraPositionButton.backgroundColor = UIColor.clear
+        if let userID = self.chatSession?.chat?.user_id {
+            let friendShip = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"")
+            if (friendShip?.last?.friendship_id) != nil {
+                self.cameraPositionButton.isHidden = false
+                self.clockLabel.isHidden = true
+                self.clockTimeIcon.isHidden = true
+            }
+        }
+        
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -225,7 +244,10 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     func requestPresentation(of alertController: UIAlertController, from view: UIView) {
         self.present(alertController, animated: true, completion: nil)
     }
-
+    
+    @IBAction func cameraPositionButtonClick(_ sender: Any) {
+        self.chatSession?.toggleCameraPosition()
+    }
     // MARK: Snapchat Button
     @IBAction func addSnapchat(_ sender: BigYellowButton) {
 		// add friend
@@ -314,6 +336,9 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 			self.snapchatButton.isHidden = true
 			self.endCallButton.isHidden = false
 		}
+        self.cameraPositionButton.isHidden = false
+        self.clockLabel.isHidden = true
+        self.clockTimeIcon.isHidden = true
 		self.clockTime = -1// (6 * 1000)
 		self.disableAddMinute()
     }

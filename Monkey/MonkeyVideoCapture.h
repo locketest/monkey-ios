@@ -31,5 +31,5 @@
 @property (nonatomic, assign) AVCaptureDevicePosition cameraPosition;
 @property (readonly) NSArray* availableCameraPositions;
 - (BOOL)toggleCameraPosition;
-
+- (void)setFrontCamera:(BOOL)front;
 @end
