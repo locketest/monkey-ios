@@ -330,7 +330,7 @@
                                                     </connections>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Harrison" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ipg-ZY-ZMF">
-                                                    <rect key="frame" x="74" y="52.5" width="161" height="21"/>
+                                                    <rect key="frame" x="74" y="52.5" width="65.5" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -352,17 +352,6 @@
                                                         <action selector="editProfileTapped:" destination="YDh-DF-csn" eventType="touchUpInside" id="4vS-N3-qfP"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="07b-My-ru0">
-                                                    <rect key="frame" x="237" y="47.5" width="48" height="48"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="48" id="mNl-aI-mLY"/>
-                                                        <constraint firstAttribute="width" constant="48" id="wPe-Lk-N7l"/>
-                                                    </constraints>
-                                                    <state key="normal" image="GenderPreferenceButton"/>
-                                                    <connections>
-                                                        <action selector="genderPreferenceTapped:" destination="YDh-DF-csn" eventType="touchUpInside" id="oUZ-lg-nIE"/>
-                                                    </connections>
-                                                </button>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Be-z4-zua" customClass="ProfilePhotoButtonView" customModule="Monkey" customModuleProvider="target">
                                                     <rect key="frame" x="14" y="47" width="48" height="48"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -376,13 +365,10 @@
                                                 <constraint firstItem="3Be-z4-zua" firstAttribute="leading" secondItem="ixS-fc-UHc" secondAttribute="leading" constant="14" id="DSZ-Qs-zJB"/>
                                                 <constraint firstItem="tap-IA-2pm" firstAttribute="leading" secondItem="ixS-fc-UHc" secondAttribute="leading" id="GCx-Ia-vZQ"/>
                                                 <constraint firstItem="3Be-z4-zua" firstAttribute="centerY" secondItem="tap-IA-2pm" secondAttribute="centerY" id="Knm-P0-Mb4"/>
-                                                <constraint firstItem="07b-My-ru0" firstAttribute="baseline" secondItem="WHn-tT-9g8" secondAttribute="baseline" id="Uuc-4O-bgy"/>
                                                 <constraint firstItem="ipg-ZY-ZMF" firstAttribute="leading" secondItem="3Be-z4-zua" secondAttribute="trailing" constant="12" id="Wic-ij-cSE"/>
                                                 <constraint firstItem="ipg-ZY-ZMF" firstAttribute="top" secondItem="ixS-fc-UHc" secondAttribute="top" constant="52.5" id="YOT-qe-jCb"/>
                                                 <constraint firstItem="rxj-5S-ruE" firstAttribute="top" secondItem="ipg-ZY-ZMF" secondAttribute="bottom" constant="1" id="a5Z-Wt-VJk"/>
                                                 <constraint firstItem="WHn-tT-9g8" firstAttribute="centerY" secondItem="tap-IA-2pm" secondAttribute="centerY" id="agL-vV-kGf"/>
-                                                <constraint firstItem="WHn-tT-9g8" firstAttribute="leading" secondItem="07b-My-ru0" secondAttribute="trailing" constant="16" id="b4H-Mc-vF3"/>
-                                                <constraint firstItem="07b-My-ru0" firstAttribute="leading" secondItem="ipg-ZY-ZMF" secondAttribute="trailing" constant="2" id="dbk-2r-16q"/>
                                                 <constraint firstAttribute="trailing" secondItem="tap-IA-2pm" secondAttribute="trailing" id="gpR-Ti-ndP"/>
                                                 <constraint firstAttribute="bottom" secondItem="tap-IA-2pm" secondAttribute="bottom" id="otR-BR-lbn"/>
                                                 <constraint firstAttribute="trailing" secondItem="WHn-tT-9g8" secondAttribute="trailing" constant="16" id="rE2-xC-mCt"/>
@@ -468,7 +454,6 @@
                         <outlet property="containerView" destination="R2F-EW-BP4" id="IIZ-ee-2b6"/>
                         <outlet property="dismissTapGestureRecognizer" destination="0hu-th-0tz" id="QPs-SR-qFa"/>
                         <outlet property="firstName" destination="ipg-ZY-ZMF" id="8QV-bb-rfX"/>
-                        <outlet property="genderPreferenceButton" destination="07b-My-ru0" id="jd3-OV-Bcy"/>
                         <outlet property="longPressGestureRecognizer" destination="u1N-mx-ysq" id="5nD-lK-gom"/>
                         <outlet property="profilePhoto" destination="3Be-z4-zua" id="DMd-xi-RQq"/>
                         <outlet property="profileView" destination="gyy-0x-vkc" id="o9c-Yl-mL4"/>
@@ -494,7 +479,6 @@
     </scenes>
     <resources>
         <image name="EditProfileButtton" width="48" height="48"/>
-        <image name="GenderPreferenceButton" width="48" height="48"/>
         <image name="imageView:snj-iX-dRw:image" width="10" height="18"/>
     </resources>
 </document>
