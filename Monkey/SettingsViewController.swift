@@ -51,6 +51,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.tableView.dataSource = self
         self.tableView.delegate = self
         self.tableView.bounces = true
+        self.tableView.register(SettingTalkToCell.self, forCellReuseIdentifier: "SettingTalkToCell")
+        self.tableView.register(SettingAcceptButtonCell.self, forCellReuseIdentifier: "AcceptBtnCell")
         self.setupInviteFriendsViewController()
 
         self.profilePhoto.delegate = self
@@ -77,21 +79,14 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             timeOnMonkey.text = localizedTime + " on Monkey"
         }
 
-        switch Gender(rawValue: APIController.shared.currentUser?.show_gender ?? "") {
-        case .male?:
-            self.genderPreferenceButton.setImage(#imageLiteral(resourceName: "Guys"), for: .normal)
-        case .female?:
-            self.genderPreferenceButton.setImage(#imageLiteral(resourceName: "Girls"), for: .normal)
-        default:
-            self.genderPreferenceButton.setImage(#imageLiteral(resourceName: "GenderPreferenceButton"), for: .normal)
-        }
+
     }
 
     internal func showAlert(alert: UIAlertController) {
         self.present(alert, animated: true, completion: nil)
     }
 
-    @IBOutlet weak var genderPreferenceButton: UIButton!
+    
     func selectedHashtag(id: String, tag: String) {
         fatalError("Not implemented")
     }
@@ -153,31 +148,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         }
     }
 
-    @IBAction func genderPreferenceTapped(_ sender: Any) {
-
-        let alertController = UIAlertController(title: "Talk to", message: APIController.shared.currentExperiment?.talk_to_alert_message, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-
-        alertController.addAction(UIAlertAction(title: "👫 Both", style: .default, handler: { (UIAlertAction) in
-            APIController.shared.currentUser?.update(attributes: [.show_gender(nil)], completion: { $0?.log() })
-
-            self.genderPreferenceButton.setImage(#imageLiteral(resourceName: "GenderPreferenceButton"), for: .normal)
-        }))
-
-        alertController.addAction(UIAlertAction(title: "👱 Guys", style: .default, handler: { (UIAlertAction) in
-            APIController.shared.currentUser?.update(attributes: [.show_gender("male")], completion: { $0?.log() })
-
-            self.genderPreferenceButton.setImage(#imageLiteral(resourceName: "Guys"), for: .normal)
-        }))
-
-        alertController.addAction(UIAlertAction(title: "👱‍♀️ Girls", style: .default, handler: { (UIAlertAction) in
-            APIController.shared.currentUser?.update(attributes: [.show_gender("female")], completion: { $0?.log() })
-
-            self.genderPreferenceButton.setImage(#imageLiteral(resourceName: "Girls"), for: .normal)
-        }))
-
-        self.present(alertController, animated: true, completion: nil)
-    }
+    
 
     func saveGenderPreference(gender : String?) {
 
@@ -357,55 +328,56 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             return
         }
         switch data.type {
-        case .followUs:
+        
+        case .aboutUS:
             let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            alertController.addAction(UIAlertAction(title: "👻 Snapchat", style: .default, handler: { (UIAlertAction) in
+            alertController.addAction(UIAlertAction(title: "💖 Rate Us", style: .default, handler: { (UIAlertAction) in
+                self.openURL("https://itunes.apple.com/us/app/id1165924249?action=write-review", inVC: true)
+            }))
+            alertController.addAction(UIAlertAction(title: "📲 Support", style: .default, handler: { (UIAlertAction) in
+                self.openURL("https://monkey.canny.io/requests", inVC: true)
+            }))
+            alertController.addAction(UIAlertAction(title: "👻 Follow Monkey Snapchat", style: .default, handler: { (UIAlertAction) in
                 if (UIApplication.shared.canOpenURL(URL(string:"snapchat://")!)) {
                     UIApplication.shared.openURL(URL(string: "snapchat://add/monkeyapp")!)
                 } else {
                     UIApplication.shared.openURL(URL(string: "http://snapchat.com/add/monkeyapp")!)
                 }
             }))
-            alertController.addAction(UIAlertAction(title: "🐦 Twitter", style: .default, handler: { (UIAlertAction) in
-                if (UIApplication.shared.canOpenURL(URL(string:"twitter://")!)) {
-                    UIApplication.shared.openURL(URL(string: "twitter://user?screen_name=monkey")!)
-                } else {
-                    self.openURL("http://twitter.com/monkey", inVC: true)
-                }
-            }))
-            alertController.addAction(UIAlertAction(title: "📸 Instagram", style: .default, handler: { (UIAlertAction) in
+            alertController.addAction(UIAlertAction(title: "📸 Follow Monkey Instagram", style: .default, handler: { (UIAlertAction) in
                 if (UIApplication.shared.canOpenURL(URL(string:"instagram://")!)) {
                     UIApplication.shared.openURL(URL(string: "instagram://user?username=chatonmonkey")!)
                 } else {
                     self.openURL("http://instagram/chatonmonkey", inVC: true)
                 }
             }))
-            self.present(alertController, animated: true, completion: nil)
-        case .safety:
-            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-            }))
-            alertController.addAction(UIAlertAction(title: "😐 Terms of Use", style: .default, handler: { (UIAlertAction) in
-                self.openURL("http://monkey.cool/terms", inVC: true)
-            }))
-            alertController.addAction(UIAlertAction(title: "☹️ Privacy Policy", style: .default, handler: { (UIAlertAction) in
-                self.openURL("http://monkey.cool/privacy", inVC: true)
-            }))
-            alertController.addAction(UIAlertAction(title: "😇 Safety Center", style: .default, handler: { (UIAlertAction) in
-                self.openURL("http://monkey.cool/safety", inVC: true)
-            }))
-            alertController.addAction(UIAlertAction(title: "😁 Community Guidelines", style: .default, handler: { (UIAlertAction) in
-                self.openURL("http://monkey.cool/community", inVC: true)
-            }))
-            if let creditsURL = APIController.shared.currentExperiment?.credits_url {
-                alertController.addAction(UIAlertAction(title: "Credits", style: .default, handler: { (UIAlertAction) in
-                    self.openURL(creditsURL, inVC: true)
+            alertController.addAction(UIAlertAction(title: "🚑 Safety", style: .default, handler: { (UIAlertAction) in
+                
+                let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                alertController.addAction(UIKit.UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
                 }))
-			}
+                alertController.addAction(UIKit.UIAlertAction(title: "😐 Terms of Use", style: .default, handler: { (UIAlertAction) in
+                    self.openURL("http://monkey.cool/terms", inVC: true)
+                }))
+                alertController.addAction(UIKit.UIAlertAction(title: "☹️ Privacy Policy", style: .default, handler: { (UIAlertAction) in
+                    self.openURL("http://monkey.cool/privacy", inVC: true)
+                }))
+                alertController.addAction(UIKit.UIAlertAction(title: "😇 Safety Center", style: .default, handler: { (UIAlertAction) in
+                    self.openURL("http://monkey.cool/safety", inVC: true)
+                }))
+                alertController.addAction(UIKit.UIAlertAction(title: "😁 Community Guidelines", style: .default, handler: { (UIAlertAction) in
+                    self.openURL("http://monkey.cool/community", inVC: true)
+                }))
+                if let creditsURL = APIController.shared.currentExperiment?.credits_url {
+                    alertController.addAction(UIKit.UIAlertAction(title: "Credits", style: .default, handler: { (UIAlertAction) in
+                        self.openURL(creditsURL, inVC: true)
+                    }))
+                }
+                self.present(alertController, animated: true, completion: nil)
+                
+            }))
             self.present(alertController, animated: true, completion: nil)
-        case .rateUs:
-            self.openURL("https://itunes.apple.com/us/app/id1165924249?action=write-review", inVC: false)
         case .signOut:
             RealmDataController.shared.deleteAllData() { (error) in
                 guard error == nil else {
@@ -433,6 +405,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 return
             }
             self.present(inviteFriendsViewController, animated: true, completion: nil)
+        case .talkTo:
+            break;
+        case .acceptButton:
+            break;
         }
     }
 
@@ -477,16 +453,20 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     }
 
     let inviteFriendsData = SettingsTableViewCellData(for: .inviteFriends, title: "🎉  Invite friends")
-    let rateOnAppStoreData = SettingsTableViewCellData(for: .rateUs, title: "💖  Rate us")
-    let addOnSnapchatData = SettingsTableViewCellData(for: .followUs, title: "📲  Follow us")
-    let legalStuffData = SettingsTableViewCellData(for: .safety, title: "🚑  Safety")
+    let talkToData = SettingsTableViewCellData(for: .talkTo, title: "💬 Talk to", style: .talkToCell) //SettingsTableViewCellData(for: .talkTo, title: "💖 Talk to")
+    let acceptButtonData = SettingsTableViewCellData(for: .acceptButton, title: "😊 Accept control", style: .accetpBtnCell)
+    
+    let aboutUSData = SettingsTableViewCellData(for: .aboutUS, title: "🐒 About Us")
     let signOutData = SettingsTableViewCellData(for: .signOut, title: "🙈  Sign out")
     var cells: [SettingsTableViewCellData] {
         return [
+            talkToData,
+            acceptButtonData,
             inviteFriendsData,
-            rateOnAppStoreData,
-            addOnSnapchatData,
-            legalStuffData,
+//            rateOnAppStoreData,
+//            addOnSnapchatData,
+//            legalStuffData,
+            aboutUSData,
             signOutData]
     }
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -503,6 +483,24 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             cell.titleLabel?.text = data.title
             cell.data = data
             return cell
+        case .talkToCell:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTalkToCell", for: indexPath) as! SettingTalkToCell
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
+            cell.titleLabel?.text = data.title
+            switch Gender(rawValue: APIController.shared.currentUser?.show_gender ?? "") {
+            case .male?:
+                cell.genderButton.setImage(#imageLiteral(resourceName: "Guys"), for: .normal)
+            case .female?:
+                cell.genderButton.setImage(#imageLiteral(resourceName: "Girls"), for: .normal)
+            default:
+                cell.genderButton.setImage(#imageLiteral(resourceName: "GenderPreferenceButton"), for: .normal)
+            }
+            return cell;
+        case .accetpBtnCell:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AcceptBtnCell", for: indexPath) as! SettingAcceptButtonCell
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
+            cell.titleLabel?.text = data.title
+            return cell;
         case .booleanButtons:
             let cell = tableView.dequeueReusableCell(withIdentifier: "booleanCell", for: indexPath) as! SettingsBooleanTableViewCell
             cell.titleLabel?.text = data.title
@@ -548,6 +546,8 @@ enum SettingsTableViewCellStyle {
     case basic
     case booleanButtons
     case textField
+    case talkToCell
+    case accetpBtnCell
 }
 struct SettingsTableViewCellData {
     var title: String
@@ -563,6 +563,11 @@ struct SettingsTableViewCellData {
         self.type = type
         self.title = title
         self.style = .basic
+    }
+    init(for type: SettingsTableViewCellType, title: String ,style:SettingsTableViewCellStyle) {
+        self.type = type
+        self.title = title
+        self.style = style
     }
 
     init(for type: SettingsTableViewCellType, title: String, text: String, placeholderText: String) {
@@ -601,12 +606,13 @@ class SettingsTableViewCellOption {
     }
 }
 enum SettingsTableViewCellType {
-    case rateUs
-    case followUs
-    case safety
+   
     case signOut
     case editProfile
     case inviteFriends
+    case aboutUS
+    case talkTo
+    case acceptButton
 }
 
 class SettingsTableViewCell: UITableViewCell {
@@ -616,7 +622,99 @@ class SettingsTableViewCell: UITableViewCell {
 
 class SettingsBasicTableViewCell: SettingsTableViewCell {
 }
-
+class  SettingAcceptButtonCell: UITableViewCell {
+    var data: SettingsTableViewCellData?
+    var titleLabel : UILabel!
+    var genderButton : UIButton!
+    required init?(coder aDecoder:NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override init(style:UITableViewCellStyle, reuseIdentifier:String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.setUpUI();
+    }
+    
+    func setUpUI() {
+        self.backgroundColor = UIColor.clear
+        self.titleLabel = UILabel.init()
+        self.titleLabel?.backgroundColor = UIColor.clear;
+        self.titleLabel?.frame = CGRect(x:16, y:0, width:150, height:64)
+        self.titleLabel?.text = ""
+        self.titleLabel?.textColor = UIColor.white
+        self.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+        self.titleLabel?.textAlignment = NSTextAlignment.left
+        self.addSubview(self.titleLabel!)
+        
+        self.genderButton = UIButton.init(type: .custom)
+        self.genderButton?.frame = CGRect(x:UIScreen.main.bounds.size.width-48-12, y:7, width:48, height:48)
+        self.genderButton?.backgroundColor = UIColor.clear
+        self.addSubview(self.genderButton!)
+    }
+}
+class SettingTalkToCell: UITableViewCell {
+    var data: SettingsTableViewCellData?
+    var titleLabel : UILabel!
+    var genderButton : UIButton!
+    required init?(coder aDecoder:NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override init(style:UITableViewCellStyle, reuseIdentifier:String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.setUpUI();
+    }
+    
+    func setUpUI() {
+        self.backgroundColor = UIColor.clear
+        self.titleLabel = UILabel.init()
+        self.titleLabel?.backgroundColor = UIColor.clear;
+        self.titleLabel?.frame = CGRect(x:16, y:0, width:150, height:64)
+        self.titleLabel?.text = ""
+        self.titleLabel?.textColor = UIColor.white
+        self.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+        self.titleLabel?.textAlignment = NSTextAlignment.left
+        self.addSubview(self.titleLabel!)
+        
+        self.genderButton = UIButton.init(type: .custom)
+        self.genderButton?.frame = CGRect(x:UIScreen.main.bounds.size.width-48-12-5, y:7, width:48, height:48)
+        self.genderButton?.backgroundColor = UIColor.clear
+        self.addSubview(self.genderButton!)
+        self.genderButton.addTarget(self, action:#selector(genderPerferenceBtnClick), for: .touchUpInside)
+    }
+    func genderPerferenceBtnClick(){
+        let alertController = UIAlertController(title: "Talk to", message: APIController.shared.currentExperiment?.talk_to_alert_message, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        alertController.addAction(UIAlertAction(title: "👫 Both", style: .default, handler: { (UIAlertAction) in
+            APIController.shared.currentUser?.update(attributes: [.show_gender(nil)], completion: { $0?.log() })
+            
+            self.genderButton.setImage(#imageLiteral(resourceName: "GenderPreferenceButton"), for: .normal)
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "👱 Guys", style: .default, handler: { (UIAlertAction) in
+            APIController.shared.currentUser?.update(attributes: [.show_gender("male")], completion: { $0?.log() })
+            
+            self.genderButton.setImage(#imageLiteral(resourceName: "Guys"), for: .normal)
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "👱‍♀️ Girls", style: .default, handler: { (UIAlertAction) in
+            APIController.shared.currentUser?.update(attributes: [.show_gender("female")], completion: { $0?.log() })
+            
+            self.genderButton.setImage(#imageLiteral(resourceName: "Girls"), for: .normal)
+        }))
+        let alertWindow = UIWindow(frame: UIScreen.main.bounds)
+        alertWindow.rootViewController = AlertViewController()
+        alertWindow.windowLevel = UIWindowLevelAlert ;
+        alertWindow.makeKeyAndVisible()
+        alertWindow.rootViewController?.present(alertController, animated: true, completion: nil)
+    }
+}
+class AlertViewController: UIViewController {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+}
 class BooleanButton: BigYellowButton {
     override var isSelected: Bool {
         didSet {
