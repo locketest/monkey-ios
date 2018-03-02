@@ -103,6 +103,7 @@ struct Environment {
 	}
 	
 	static let MonkeyAppStoreUrl = "itms-apps://itunes.apple.com/app/id1165924249"
+    static let MonkeyAppRateURL = "https://itunes.apple.com/us/app/id1165924249?action=write-review"
 	static let MonkeyChatAppStoreUrl = "itms-apps://itunes.apple.com/app/id1330119861"
 	static let MonkeyChatScheme = "monkeychat://"
 }

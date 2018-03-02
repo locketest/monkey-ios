@@ -58,6 +58,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? [AnyHashable : Any] {
 			handleNotification(application: application, userInfo: userInfo)
 		}
+        
+        self.checkIfAppUpdated()
 		
         return true
     }
@@ -323,6 +325,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         }
 
         mainVC.present(toPresent, animated: true)
+    }
+    
+    func checkIfAppUpdated(){
+        let lasVer = UserDefaults.standard.string(forKey: "kLastAppVersion")
+        let newVer = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
+        if lasVer != newVer {
+            UserDefaults.standard.set(false, forKey: showRateAlertReason.addFriendJust.rawValue)
+            UserDefaults.standard.set(false,forKey: showRateAlertReason.contiLoginThreeDay.rawValue)
+            UserDefaults.standard.set(false,forKey: "kHadRateBefore")
+        }
     }
  }
 

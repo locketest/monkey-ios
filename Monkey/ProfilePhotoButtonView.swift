@@ -95,7 +95,7 @@ import Alamofire
     var presentingViewController : UIViewController?
 
     /// Selected profile image, or previously set profile image if available from server.
-    var profileImage : UIImage?
+    var profileImage : UIImage? 
 
     /// The picker class that manages photo selection and cropping
     var profilePicker : MMSProfileImagePicker!

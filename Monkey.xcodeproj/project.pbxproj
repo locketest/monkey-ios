@@ -11,6 +11,7 @@
 		1B42FBFD201EF96800268A42 /* RealmMatchUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B42FBFC201EF96800268A42 /* RealmMatchUser.swift */; };
 		1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76554620132B0600FAB045 /* MKMatchManager.swift */; };
 		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
+		1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD655482046B2A900CAA2D5 /* Configs.swift */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
 		5D419F63CE951F23C4C7D274 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */; };
 		8435C2E11F12EE6600C80AC6 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2E01F12EE6600C80AC6 /* ChatViewController.swift */; };
@@ -181,6 +182,7 @@
 		1B42FBFC201EF96800268A42 /* RealmMatchUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmMatchUser.swift; sourceTree = "<group>"; };
 		1B76554620132B0600FAB045 /* MKMatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMatchManager.swift; sourceTree = "<group>"; };
 		1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKNetworkHelper.swift; sourceTree = "<group>"; };
+		1BD655482046B2A900CAA2D5 /* Configs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE97C1F3FCD83F9563287C4 /* Pods-Monkey.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.production.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.production.xcconfig"; sourceTree = "<group>"; };
 		36BDAAEC1AB6615D506ADC62 /* Pods-Monkey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.release.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.release.xcconfig"; sourceTree = "<group>"; };
@@ -541,6 +543,7 @@
 				8BE35E2A1DB9D58D002049B5 /* Game */,
 				1BCCDE551FE284E50081CFD2 /* Manager */,
 				8B8B2D731EC52B910086547C /* CachedImageView.swift */,
+				1BD655482046B2A900CAA2D5 /* Configs.swift */,
 			);
 			path = Monkey;
 			sourceTree = "<group>";
@@ -1076,6 +1079,7 @@
 				C06FBB521F3A559B00659489 /* RealmCall.swift in Sources */,
 				8B19B6741EBD3D3D00493A3A /* IntroducingProfilesPopupViewController.swift in Sources */,
 				8BE35E251DB9BF97002049B5 /* Achievements.swift in Sources */,
+				1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */,
 				BF5258B01E95D1F4002EA03F /* RealmUser.swift in Sources */,
 				C0CF020B1F58CA45009D7B33 /* PresentPopupTransitionAnimator.swift in Sources */,
 				84AA03DE1EBFAC1E00779C54 /* BirthdatePicker.swift in Sources */,

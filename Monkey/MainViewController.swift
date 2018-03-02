@@ -39,6 +39,12 @@ enum AutoScreenShotType: String {
 	case match_disconnec = "match_disconnec"
 }
 
+enum showRateAlertReason: String {
+     case addFriendJust = "addFriendJust"
+     case finishFriendCall = "finishFriendCall"
+     case contiLoginThreeDay = "contiLogin"
+}
+
 let treeLabelWidth:CGFloat = 48.0
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
@@ -82,6 +88,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	@IBOutlet weak var bananaCountLabel: UILabel!
 	@IBOutlet weak var bananaViewWidthConstraint:NSLayoutConstraint!
 	@IBOutlet weak var colorGradientView:UIView!
+     
+     static var currentMainVC:MainViewController?
 	
 	weak var matchViewController: MatchViewController?
 	var incomingCallNotificationToken:NotificationToken?
@@ -286,10 +294,17 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.containerView.alpha = opacity
 		})
 	}
+     
+     class func getCurMainVC() -> MainViewController?{
+          return currentMainVC
+     }
 	
 	// MARK: UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
+     
+     MainViewController.currentMainVC = self
+     Configs.signAsLogin()
 		
 		self.view.backgroundColor = Colors.purple
 		self.matchModePopup.isHidden = true
@@ -456,6 +471,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
+     
      APIController.trackSignUpFinish()
      if !self.hadRegiNoti {
           if Achievements.shared.promptedNotifications {
@@ -1014,7 +1030,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
           let friendShip = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"")
           if let friendShipID = friendShip?.last?.friendship_id {
 
-               let alert = UIAlertController(title: nil, message: "Do you want to remove this user in your friend list?", preferredStyle: .actionSheet)
+               let alert = UIAlertController(title: nil, message: "Do you want to remove this user from your friend list?", preferredStyle: .alert)
                let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
                     friendShip?.last?.delete(completion: { (error) in
                          
@@ -1096,6 +1112,16 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 							self?.startFindingChats(forReason: "rating-notification")
 						}
 					}
+                    
+                    if chatSession.justAddFriend == true ,
+                         UserDefaults.standard.bool(forKey: showRateAlertReason.addFriendJust.rawValue) == false{
+                         UserDefaults.standard.set(true, forKey: showRateAlertReason.addFriendJust.rawValue)
+                         self.showRateAlert()
+                    }else if Configs.contiLogTimes() == 3,
+                         UserDefaults.standard.bool(forKey: showRateAlertReason.contiLoginThreeDay.rawValue) == false {
+                         UserDefaults.standard.set(true,forKey: showRateAlertReason.contiLoginThreeDay.rawValue)
+                         self.showRateAlert()
+                    }
 				}
 			}
 		}
@@ -1227,6 +1253,31 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		}))
 		self.present(alert, animated: true, completion: nil)
 	}
+     
+     func showRateAlert(){
+          let rated = UserDefaults.standard.bool(forKey: "kHadRateBefore")
+          if rated {return}
+          UserDefaults.standard.set(true,forKey: "kHadRateBefore")
+          if Configs.hadShowRateAlertToday() {return}
+          
+          self.stopFindingChats(andDisconnect: false, forReason: "rateapp")
+          let alert = UIAlertController(title: "Having fun with Monkey?", message: "🐒🐒🐒\nIf you like Monkey, plz give us a good review!", preferredStyle: UIAlertControllerStyle.alert)
+          alert.addAction(UIAlertAction(title: "I hate it", style: .cancel, handler: {
+               (UIAlertAction) in
+               alert.dismiss(animated: true, completion: nil)
+               self.startFindingChats(forReason: "rateapp")
+          }))
+          alert.addAction(UIAlertAction(title: "Aight", style: .default, handler: {
+               (UIAlertAction) in
+               UserDefaults.standard.set(true, forKey: "kHadRateBefore")
+               alert.dismiss(animated: true, completion: nil)
+               self.startFindingChats(forReason: "rateapp")
+               if UIApplication.shared.canOpenURL(NSURL.init(string: Environment.MonkeyAppRateURL)! as URL) {
+                    UIApplication.shared.openURL(NSURL.init(string: Environment.MonkeyAppRateURL)! as URL)
+               }
+          }))
+          self.present(alert, animated: true, completion: nil)
+     }
 	
 	deinit {
 		NotificationCenter.default.removeObserver(self)

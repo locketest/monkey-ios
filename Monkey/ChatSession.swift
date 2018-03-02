@@ -32,6 +32,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 	var isReportedByOther = false
 	var isUnMuteSound = false
 	var textMode = false
+    var justAddFriend = false
 	
     var session: OTSession!
     var connections = [OTConnection]()
@@ -773,6 +774,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				if self.chat?.sharedSnapchat == true {
 					self.log(.info, "Openning snapchat")
 					self.friendMatched = true
+                    self.justAddFriend = true
 				}
 			case .Accept:
 				self.matchReady = true
