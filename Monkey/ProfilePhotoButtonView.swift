@@ -20,6 +20,8 @@ import Alamofire
 
     /// When tapped, launches action sheet for Camera or Photo Library
     var addPhotoButton: UIButton!
+    
+    var curImageV: UIImageView?
 
     var cachedImageView: CachedImageView?
 
@@ -156,6 +158,12 @@ import Alamofire
         imageView.frame.origin.x = (self.frame.size.width - imageView.frame.size.width) / 2 // center x
 
         imageView.layer.cornerRadius = imageView.frame.size.height / 2
+        
+        if let curImgV = self.curImageV {
+            curImgV.removeFromSuperview()
+        }
+        
+        self.curImageV = imageView
 
         self.addPhotoButton.setImage(nil, for: .normal)
 

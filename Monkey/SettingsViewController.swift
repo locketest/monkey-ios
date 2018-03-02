@@ -43,6 +43,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     override var contentHeight:CGFloat {
         return 500
     }
+    
+    var headImageInited = false
 
     var lastY: CGFloat = 0.0
 
@@ -84,17 +86,20 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if let photoURL = APIController.shared.currentUser?.profile_photo_upload_url {
-            _ = ImageCache.shared.load(url: photoURL, callback: {[weak self] (result) in
-                switch result {
-                case .error(let error):
-                    print("Get user profile photo error : \(error)")
-                case .success(let cacheImage):
-                    if let image = cacheImage.image {
-                        self?.profilePhoto.setProfile(image: image)
+        if !headImageInited {
+            headImageInited = true
+            if let photoURL = APIController.shared.currentUser?.profile_photo_upload_url {
+                _ = ImageCache.shared.load(url: photoURL, callback: {[weak self] (result) in
+                    switch result {
+                    case .error(let error):
+                        print("Get user profile photo error : \(error)")
+                    case .success(let cacheImage):
+                        if let image = cacheImage.image {
+                            self?.profilePhoto.setProfile(image: image)
+                        }
                     }
-                }
-            })
+                })
+            }
         }
     }
 
