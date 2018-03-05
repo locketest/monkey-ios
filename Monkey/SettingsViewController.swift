@@ -709,6 +709,10 @@ class SettingTalkToCell: UITableViewCell {
         self.contentView.addSubview(self.genderButton!)
 		
 		let fullButton = UIButton.init(type: .custom)
+		fullButton.adjustsImageWhenHighlighted = false
+		fullButton.backgroundColor = UIColor.clear
+		fullButton.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+		fullButton.frame = self.contentView.bounds
 		self.contentView.addSubview(fullButton)
         fullButton.addTarget(self, action:#selector(genderPerferenceBtnClick), for: .touchUpInside)
     }

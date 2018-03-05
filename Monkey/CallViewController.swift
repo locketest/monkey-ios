@@ -246,7 +246,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     }
     
     @IBAction func cameraPositionButtonClick(_ sender: Any) {
-		self.effectsCoordinator.effectsSyncTimer?.invalidate()
+		self.effectsCoordinator.effects.removeAll()
         self.chatSession?.toggleCameraPosition()
     }
     // MARK: Snapchat Button
