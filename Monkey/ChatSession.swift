@@ -34,8 +34,8 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 	var textMode = false
     var justAddFriend = false
 
-    var message_send = false
-    var message_receive = false
+    var message_send = 0
+    var message_receive = 0
     var common_trees: String?
 
     var session: OTSession!
@@ -378,7 +378,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.updateStatusTo(.consumedWithError)
 			self.log(.error, "Send text message error \(error)")
 		}
-        self.message_send = true
+        self.message_send = self.message_send + 1
 	}
 
     func addFriend() -> Bool {
@@ -803,9 +803,16 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
                 self.isReportedChat = true
                 self.isReportedByOther = true
 			case .Typing:
-				fallthrough
+				let messageInfo = [
+					"type": messageType.rawValue,
+					"body": message,
+					"sender": chat?.user_id ?? ""
+				]
+				if let textMessage = Mapper<TextMessage>().map(JSON: messageInfo) {
+					self.callDelegate?.received(textMessage: textMessage, in: self)
+				}
 			case .Text:
-                self.message_receive = true
+                self.message_receive = self.message_receive + 1
 				let messageInfo = [
 					"type": messageType.rawValue,
 					"body": message,

@@ -15,8 +15,8 @@ class VerifyBirthdayPopupViewController: PopupViewController {
     let dateFormatter = DateFormatter()
     @IBOutlet var datePicker: BirthdatePicker!
     override func viewDidLoad() {
-        dateFormatter.dateFormat = "MM/dd/yy"
-        datePicker.setDate(NSCalendar.current.date(byAdding: .year, value: -16, to: Date())!, animated: false)
+        dateFormatter.dateFormat = "MM/dd/yyyy"
+        datePicker.setDate(NSCalendar.current.date(byAdding: .year, value: RemoteConfigManager.shared.app_in_review ? -20 : -16, to: Date())!, animated: false)
         self.birthDateTextField.text = dateFormatter.string(from: datePicker.date)
     }
     @IBAction func changeBirthday(_ sender: UIDatePicker) {

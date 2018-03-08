@@ -93,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-
+		application.applicationIconBadgeNumber = 0
     }
     /// The `Date` at which the user began their current session, used to later caculate their session length
     var userEnteredAt : Date?

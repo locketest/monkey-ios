@@ -100,7 +100,7 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
         let pickerConstraints = self.datePicker.constraints
         self.datePicker.removeFromSuperview()
         self.datePicker.addConstraints(pickerConstraints)
-        self.datePicker.setDate(NSCalendar.current.date(byAdding: .year, value: -16, to: Date()) ?? Date(), animated: false)
+        self.datePicker.setDate(NSCalendar.current.date(byAdding: .year, value: RemoteConfigManager.shared.app_in_review ? -20 : -16, to: Date()) ?? Date(), animated: false)
         self.birthDateTextField.inputView = self.datePicker
         
         self.snapchatTextField.addTarget(self, action: #selector(snapchatDidChange), for: .editingChanged)

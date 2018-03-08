@@ -21,15 +21,15 @@ class BirthdatePicker: UIDatePicker {
     
     var formattedDate : String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM/dd/yy"
+        dateFormatter.dateFormat = "MM/dd/yyyy"
         return dateFormatter.string(from: self.date)
     }
     
     private func afterInit() {
-        self.maximumDate = NSCalendar.current.date(byAdding: .year, value: -13, to: Date())
+		self.maximumDate = NSCalendar.current.date(byAdding: .year, value: RemoteConfigManager.shared.app_in_review ? -18 : -13, to: Date())
         self.minimumDate = NSCalendar.current.date(byAdding: .year, value: -169, to: Date())
         // this date does not stay by the time viewdidload happens, unsure why, so manually setting this date on each VC that uses the class for now
-        self.setDate(NSCalendar.current.date(byAdding: .year, value: -16, to: Date())!, animated: false)
+		self.setDate(NSCalendar.current.date(byAdding: .year, value: RemoteConfigManager.shared.app_in_review ? -20 : -16, to: Date())!, animated: false)
         
         self.backgroundColor = .white
     }

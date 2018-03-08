@@ -64,4 +64,11 @@ class RemoteConfigManager {
 			return 6; // default value
 		}
 	}
+	var app_in_review: Bool {
+		if let app_review_version = remoteConfig.configValue(forKey: "app_review_version").stringValue {
+			return app_review_version.compare(APIController.shared.appVersion) == ComparisonResult.orderedSame
+		}else {
+			return false
+		}
+	}
 }
