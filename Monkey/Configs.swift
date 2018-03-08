@@ -14,15 +14,12 @@ class Configs {
     
     class func signAsLogin(){
         let lastLoginDay = UserDefaults.standard.integer(forKey: kLastLoginTime)
-        let curcom = Date.components(Date.init())
-        if let day = curcom.day {
-            UserDefaults.standard.set(day, forKey: kLastLoginTime)
-            
-            if day - lastLoginDay == 1 {
-                UserDefaults.standard.set(UserDefaults.standard.integer(forKey:kContiLoginTimes) + 1, forKey: kContiLoginTimes)
-            }else {
-                UserDefaults.standard.set(0, forKey: kContiLoginTimes)
-            }
+        let curDay = Date.init().timeIntervalSince1970
+        UserDefaults.standard.set(curDay, forKey: kLastLoginTime)
+        
+//            if day - lastLoginDay == 1 {
+        if Date.init(timeIntervalSince1970: TimeInterval(lastLoginDay)).compare(.isYesterday) {
+            UserDefaults.standard.set(UserDefaults.standard.integer(forKey:kContiLoginTimes) + 1, forKey: kContiLoginTimes)
         }else {
             UserDefaults.standard.set(0, forKey: kContiLoginTimes)
         }

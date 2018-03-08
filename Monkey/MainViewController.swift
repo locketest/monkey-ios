@@ -1412,15 +1412,12 @@ extension MainViewController {
           var commonTrees = Array<String>.init()
           for tree in curTrees {
                if let treeID = tree.channel_id {
-                    if trees.contains(treeID) {
+                    if trees.contains(treeID) , treeID != "1" {
                          commonTrees.append(treeID)
                     }
                }
           }
 
-          commonTrees = commonTrees.sorted { (string1, string2) -> Bool in
-               return string1 > string2
-          }
 		  if commonTrees.count > 0 {
 			   var common_trees_str = ""
 			   for tree in commonTrees {
@@ -1428,7 +1425,13 @@ extension MainViewController {
 			   }
 			   common_trees_str.removeLast()
 			   self.chatSession?.common_trees = common_trees_str
-		  }
+          }else {
+               return
+          }
+          
+          commonTrees = commonTrees.sorted { (string1, string2) -> Bool in
+               return string1 > string2
+          }
 
           var count = 0
           var org_emoji_str = "🍌🍌🍌🍌"
