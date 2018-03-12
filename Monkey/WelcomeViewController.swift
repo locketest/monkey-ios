@@ -19,6 +19,7 @@ class WelcomeViewController: MonkeyViewController {
     @IBOutlet var nextButton: BigYellowButton!
     @IBOutlet var confettiView: ConfettiView!
     @IBOutlet var containerView: UIView!
+	@IBOutlet weak var termsTextView: UITextView!
 	@IBOutlet weak var indicator: UIActivityIndicatorView!
 	
 	var accountKitAuthSuccess = false
@@ -51,6 +52,8 @@ class WelcomeViewController: MonkeyViewController {
         theme.inputBackgroundColor = UIColor.init(white: 0, alpha: 0.1);
         theme.textColor = UIColor.white.withAlphaComponent(0.25)
         loginViewController?.setTheme(theme)
+		
+		configTermsView()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -154,6 +157,76 @@ extension WelcomeViewController: AKFViewControllerDelegate {
 	
 	func viewControllerDidCancel(_ viewController: UIViewController!) {
 		print("The user cancel the login")
+	}
+}
+
+extension WelcomeViewController: UITextViewDelegate {
+	func configTermsView() {
+		let termsString = "By logging in, you are agreeing to our Terms of Service and Privacy Policy."
+		let termsAttributeString = NSMutableAttributedString.init(string: termsString)
+		let termsNSString = NSString.init(string: termsString)
+		
+		let termsRange = termsNSString.range(of: "Terms of Service")
+		let privacyRange = termsNSString.range(of: "Privacy Policy")
+		
+		let paragraphStyle = NSMutableParagraphStyle.init()
+		paragraphStyle.alignment = NSTextAlignment.center
+		termsAttributeString.addAttributes([
+			NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue,
+			NSLinkAttributeName: "monkey://terms",
+			], range: termsRange)
+		termsAttributeString.addAttributes([
+			NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue,
+			NSLinkAttributeName: "monkey://privacy",
+			], range: privacyRange)
+		termsAttributeString.addAttributes([
+			NSForegroundColorAttributeName: UIColor.init(white: 1, alpha: 0.25),
+			NSFontAttributeName: UIFont.systemFont(ofSize: 13),
+			NSParagraphStyleAttributeName: paragraphStyle,
+			], range: NSMakeRange(0, termsNSString.length))
+		termsTextView.attributedText = termsAttributeString;
+		
+		let linkAttributes = [
+			NSForegroundColorAttributeName: UIColor.init(white: 1, alpha: 0.25),
+			NSUnderlineColorAttributeName: UIColor.init(white: 1, alpha: 0.25),
+			] as [String : Any]
+		termsTextView.linkTextAttributes = linkAttributes;
+	}
+	
+	@available(iOS, deprecated: 10.0)
+	func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange) -> Bool {
+		self.openTextViewURL(url)
+		return false
+	}
+	
+	/// For iOS 10
+	@available(iOS 10.0, *)
+	func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+		self.openTextViewURL(url)
+		return false
+	}
+	
+	func openTextViewURL(_ URL: URL) {
+		let host = URL.host
+		if host?.compare("terms") == ComparisonResult.orderedSame {
+			openURL("http://monkey.cool/terms", inVC: true)
+		}else if host?.compare("privacy") == ComparisonResult.orderedSame {
+			openURL("http://monkey.cool/privacy", inVC: true)
+		}
+	}
+	
+	func openURL(_ urlString: String, inVC: Bool) {
+		guard let url = URL(string: urlString) else {
+			return
+		}
+		if !inVC {
+			UIApplication.shared.openURL(url)
+			return
+		}
+		let vc = SFSafariViewController(url: url, entersReaderIfAvailable: false)
+		vc.modalPresentationCapturesStatusBarAppearance = true
+		vc.modalPresentationStyle = .overFullScreen
+		present(vc, animated: true, completion: nil)
 	}
 }
 

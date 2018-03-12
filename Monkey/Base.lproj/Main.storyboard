@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -75,7 +75,7 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yNH-Yi-tg9" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="591" width="335" height="56"/>
+                                        <rect key="frame" x="20" y="531" width="335" height="56"/>
                                         <color key="backgroundColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="56" id="uRW-Hj-84r"/>
@@ -94,6 +94,16 @@
                                             <action selector="nextVC:" destination="Yof-0h-XrG" eventType="touchUpInside" id="twB-Dy-2ia"/>
                                         </connections>
                                     </button>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="335" placeholderIntrinsicHeight="50" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" editable="NO" text="By logging in, you are agreeing to our Terms of Service and Privacy Policy." textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="qpl-V1-YUz">
+                                        <rect key="frame" x="20" y="597" width="335" height="50"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="0.25" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="Yof-0h-XrG" id="V1j-yG-UFM"/>
+                                        </connections>
+                                    </textView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Monkey" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xzg-Tm-YZ7">
                                         <rect key="frame" x="113" y="288.5" width="150" height="51"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="42"/>
@@ -103,10 +113,13 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="yNH-Yi-tg9" secondAttribute="bottom" constant="20" id="BCV-R6-iGv"/>
+                                    <constraint firstItem="qpl-V1-YUz" firstAttribute="top" secondItem="yNH-Yi-tg9" secondAttribute="bottom" constant="10" id="AHu-XS-m3p"/>
                                     <constraint firstItem="Xzg-Tm-YZ7" firstAttribute="centerX" secondItem="wHu-jB-PwC" secondAttribute="centerX" id="HEW-lj-L1S"/>
                                     <constraint firstItem="yNH-Yi-tg9" firstAttribute="leading" secondItem="wHu-jB-PwC" secondAttribute="leading" constant="20" id="Qe6-r8-dPZ"/>
+                                    <constraint firstAttribute="trailing" secondItem="qpl-V1-YUz" secondAttribute="trailing" constant="20" id="Rr9-DJ-m6a"/>
+                                    <constraint firstItem="qpl-V1-YUz" firstAttribute="centerX" secondItem="wHu-jB-PwC" secondAttribute="centerX" id="U9f-ym-BJK"/>
                                     <constraint firstAttribute="trailing" secondItem="yNH-Yi-tg9" secondAttribute="trailing" constant="20" id="Zc0-kE-6b0"/>
+                                    <constraint firstAttribute="bottom" secondItem="qpl-V1-YUz" secondAttribute="bottom" constant="20" id="mST-DI-qNu"/>
                                     <constraint firstItem="Xzg-Tm-YZ7" firstAttribute="centerY" secondItem="wHu-jB-PwC" secondAttribute="centerY" constant="-20" id="mjL-32-f8Z"/>
                                 </constraints>
                             </view>
@@ -130,6 +143,7 @@
                         <outlet property="containerView" destination="wHu-jB-PwC" id="71L-Kp-jYF"/>
                         <outlet property="indicator" destination="9T9-cg-jN0" id="wIC-K4-PC9"/>
                         <outlet property="nextButton" destination="yNH-Yi-tg9" id="hHb-ge-JUX"/>
+                        <outlet property="termsTextView" destination="qpl-V1-YUz" id="g7w-Ry-cvF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kOm-ys-3vB" userLabel="First Responder" sceneMemberID="firstResponder"/>
