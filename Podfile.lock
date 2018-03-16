@@ -16,17 +16,17 @@ PODS:
   - DeviceKit (1.5.0)
   - Fabric (1.7.5)
   - FBNotifications (1.0.1)
-  - FBSDKCoreKit (4.31.0):
+  - FBSDKCoreKit (4.31.1):
     - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.31.0):
+  - FBSDKLoginKit (4.31.1):
     - FBSDKCoreKit
-  - Firebase/Core (4.10.0):
+  - Firebase/Core (4.10.1):
     - FirebaseAnalytics (= 4.1.0)
-    - FirebaseCore (= 4.0.16)
-  - Firebase/Messaging (4.10.0):
+    - FirebaseCore (= 4.0.17)
+  - Firebase/Messaging (4.10.1):
     - Firebase/Core
     - FirebaseMessaging (= 2.1.1)
-  - Firebase/RemoteConfig (4.10.0):
+  - Firebase/RemoteConfig (4.10.1):
     - Firebase/Core
     - FirebaseRemoteConfig (= 2.1.2)
   - FirebaseABTesting (1.0.0):
@@ -37,7 +37,7 @@ PODS:
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
     - nanopb (~> 0.3)
-  - FirebaseCore (4.0.16):
+  - FirebaseCore (4.0.17):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
   - FirebaseInstanceID (2.0.9):
     - FirebaseCore (~> 4.0)
@@ -108,12 +108,12 @@ SPEC CHECKSUMS:
   DeviceKit: 883552d64028056216e913a88f892e7e29678e75
   Fabric: ae7146a5f505ea370a1e44820b4b1dc8890e2890
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
-  FBSDKCoreKit: 54db4c581123745d25a9f7c1608020b3aeabd118
-  FBSDKLoginKit: 95a252ddffd6919c0f132a02292f0824616d8709
-  Firebase: c98c8b1fbcbdccd82539a36c2b17a9b1bb0ee798
+  FBSDKCoreKit: e08ccfcefa7bc1347a07c276dac9bf6c7fe57024
+  FBSDKLoginKit: 99797ac39252fef6f72600b886f6ee60b4b29cab
+  Firebase: 92c6ba593e32db0defde464a9adc981d5cb49f97
   FirebaseABTesting: d07d0ee833b842d5153549e4c7e2e2cb1c23a3f9
   FirebaseAnalytics: 3dfae28d4a5e06f86c4fae830efc2ad3fadb19bc
-  FirebaseCore: eb9e1a56733ff1094ecf3e28af9069c344b25239
+  FirebaseCore: 872307b001bbefda1dfa0dbfffa50a6919023d4a
   FirebaseInstanceID: d2058a35e9bebda1b6dd42486b84917bde552a9d
   FirebaseMessaging: db0e01c52ef7e1f42846431273558107d084ede4
   FirebaseRemoteConfig: df64ce784a45e9b9d4988030a59da6baede8bdb0

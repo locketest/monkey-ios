@@ -323,13 +323,13 @@ struct PermissionContent {
             self.emojiString = "🎤"
             break
         case .location:
-            self.titleText = "Kim can't find Kanye"
+            self.titleText = "Kim can’t find Kanye"
             self.buttonText = "Share your location"
             self.gifName = "onboarding-3"
             self.emojiString = "🌍"
             break
         case .notifications:
-            self.titleText = "Ok we're out of Kanye jokes"
+            self.titleText = "OK we’re out of Kanye jokes"
             self.buttonText = "Enable notifications anyway"
             self.gifName = "onboarding-4"
             self.emojiString = "🔔"

@@ -453,10 +453,13 @@
                     <connections>
                         <outlet property="containerView" destination="R2F-EW-BP4" id="IIZ-ee-2b6"/>
                         <outlet property="dismissTapGestureRecognizer" destination="0hu-th-0tz" id="QPs-SR-qFa"/>
+                        <outlet property="editButtons" destination="WHn-tT-9g8" id="0uP-lS-GoA"/>
                         <outlet property="firstName" destination="ipg-ZY-ZMF" id="8QV-bb-rfX"/>
+                        <outlet property="leftMargin" destination="cxa-6D-ew8" id="3Ub-2O-rrT"/>
                         <outlet property="longPressGestureRecognizer" destination="u1N-mx-ysq" id="5nD-lK-gom"/>
                         <outlet property="profilePhoto" destination="3Be-z4-zua" id="DMd-xi-RQq"/>
                         <outlet property="profileView" destination="gyy-0x-vkc" id="o9c-Yl-mL4"/>
+                        <outlet property="rightMargin" destination="XvG-cJ-UzY" id="Lxh-Yn-8R8"/>
                         <outlet property="tableView" destination="quo-Qf-nxF" id="x1v-xJ-WCa"/>
                         <outlet property="timeOnMonkey" destination="rxj-5S-ruE" id="exf-pt-Cl2"/>
                         <outlet property="titleButton" destination="J9Z-tZ-X6w" id="XcC-X4-jyf"/>
