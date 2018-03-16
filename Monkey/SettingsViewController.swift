@@ -60,7 +60,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 
     /// Returns the content size of the view, is a getter because TODO: replace with actual calculation of content within view
     override var contentHeight:CGFloat {
-        return 500
+        if self.editStatus{
+            return UIScreen.main.bounds.size.height
+        }else{
+            return 500
+        }
     }
     
     var headImageInited = false
@@ -110,7 +114,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         let editProfileTitleLab:UILabel = UILabel.init(frame: CGRect(x:0,y:0,width:editProfileView.frame.size.width,height:30))
         //foregroundColor
         editProfileTitleLab.backgroundColor = UIColor.init(white: 0, alpha: 0.56)
-        let attributedString = NSMutableAttributedString(string: " ✏️ PROFILE EDITING", attributes: [
+        let attributedString = NSMutableAttributedString(string: " ✏️ Edit Profile", attributes: [
             NSFontAttributeName: UIFont.systemFont(ofSize: 15.0, weight: UIFontWeightMedium),
             NSForegroundColorAttributeName: UIColor(white: 154.0 / 255.0, alpha: 1.0)
             ])
@@ -669,15 +673,18 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     
     func crateEditProfileUI(){
         let firstNameLab:UILabel = UILabel.init(frame:CGRect(x:16,y:16,width:119,height:27))
-        firstNameLab.text = "😊 First Name:"
+        firstNameLab.text = "😊 Name :"
         firstNameLab.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         firstNameLab.textColor = UIColor.white
         self.editProfileContentView.addSubview(firstNameLab)
         
         
-        self.firstNameTipLab = UILabel.init(frame: CGRect(x:45,y:16+28,width:UIScreen.main.bounds.size.width-90,height:14))
+        self.firstNameTipLab = UILabel.init(frame: CGRect(x:45,y:16+28,width:UIScreen.main.bounds.size.width-60,height:14))
         self.firstNameTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.firstNameTipLab)
+        
+        self.firstNameTipLab.text = "You can change your name once every 2 months"
+        self.firstNameTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
         
         let textFieldWidth:CGFloat = UIScreen.main.bounds.size.width-205-20
         
@@ -690,12 +697,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.editProfileContentView.addSubview(self.firstNameField)
         
         let birthdayLab:UILabel = UILabel.init(frame:CGRect(x:16,y:59,width:119,height:27))
-        birthdayLab.text = "🎂 Birthday:"
+        birthdayLab.text = "🎂 Birthday :"
         birthdayLab.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         birthdayLab.textColor = UIColor.white
         self.editProfileContentView.addSubview(birthdayLab)
         
-        self.birthdayTipLab = UILabel.init(frame: CGRect(x:45,y:59+28,width:UIScreen.main.bounds.size.width-90,height:14))
+        self.birthdayTipLab = UILabel.init(frame: CGRect(x:45,y:59+28,width:UIScreen.main.bounds.size.width-60,height:14))
         self.birthdayTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.birthdayTipLab)
         
@@ -708,12 +715,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.editProfileContentView.addSubview(self.birthdayField)
         
         let snapchatLab:UILabel = UILabel.init(frame:CGRect(x:16,y:59*2,width:200,height:27))
-        snapchatLab.text = "👻 Snapchat Username: "
+        snapchatLab.text = "👻 Snapchat :"
         snapchatLab.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         snapchatLab.textColor = UIColor.white
         self.editProfileContentView.addSubview(snapchatLab)
         
-        self.snchatTipLab = UILabel.init(frame: CGRect(x:45,y:59*2+28,width:UIScreen.main.bounds.size.width-90,height:14))
+        self.snchatTipLab = UILabel.init(frame: CGRect(x:45,y:59*2+28,width:UIScreen.main.bounds.size.width-60,height:14))
         self.snchatTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.snchatTipLab)
         
@@ -807,13 +814,13 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.cancelBtn.isHidden = false
         self.saveBtn.isHidden = false
         if textField == self.firstNameField{
-            self.firstNameTipLab.text = "Can be changed every 60 days"
+            self.firstNameTipLab.text = "You can change your name once every 2 months"
             self.firstNameTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
         }
         if textField == self.birthdayField{
             self.editBirthdayStatus = true
             self.firstNameTipLab.text = ""
-            self.birthdayTipLab.text = "Only can change your birthday once"
+            self.birthdayTipLab.text = "Better make sure yo, you can only change this once"
             self.birthdayTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
             self.view.endEditing(true)
             UIView.animate(
@@ -871,7 +878,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 self.firstNameTipLab.text = "Invalid format"
                 self.firstNameTipLab.textColor = UIColor.init(red: 244.0/255.0, green: 67.0/255.0, blue: 54.0/255.0, alpha: 1.0)
             }else{
-                self.firstNameTipLab.text = "Can be changed every 60 days"
+                self.firstNameTipLab.text = "You can change your name once every 2 months"
                 self.firstNameTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
             }
         }
