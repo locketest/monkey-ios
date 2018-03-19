@@ -145,6 +145,9 @@
 		D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D192A3EB202B015A00791002 /* KeyboardManager.m */; };
 		D1A7DC2B2049506800B061F9 /* MonkeySwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */; };
 		D1B79CF4205FA80800F209B4 /* UserOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CF3205FA80800F209B4 /* UserOptions.swift */; };
+		D1B79CF7205FDD0500F209B4 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CF6205FDD0500F209B4 /* FilterViewController.swift */; };
+		D1B79CF9205FE39A00F209B4 /* RealmPhoneAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CF8205FE39A00F209B4 /* RealmPhoneAuth.swift */; };
+		D1B79CFB205FE3BF00F209B4 /* RealmMatchUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CFA205FE3BF00F209B4 /* RealmMatchUser.swift */; };
 		D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
 		D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */; };
 		D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D433C1501F44D35500C9F704 /* IncomingCallManager.swift */; };
@@ -351,6 +354,9 @@
 		D192A3EB202B015A00791002 /* KeyboardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardManager.m; sourceTree = "<group>"; };
 		D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeySwitch.swift; sourceTree = "<group>"; };
 		D1B79CF3205FA80800F209B4 /* UserOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserOptions.swift; sourceTree = "<group>"; };
+		D1B79CF6205FDD0500F209B4 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		D1B79CF8205FE39A00F209B4 /* RealmPhoneAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmPhoneAuth.swift; sourceTree = "<group>"; };
+		D1B79CFA205FE3BF00F209B4 /* RealmMatchUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmMatchUser.swift; sourceTree = "<group>"; };
 		D40E59331F3A81510091A7B2 /* CallNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallNotificationView.swift; sourceTree = "<group>"; };
 		D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CallNotificationView.xib; sourceTree = "<group>"; };
 		D433C1501F44D35500C9F704 /* IncomingCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallManager.swift; sourceTree = "<group>"; tabWidth = 5; };
@@ -512,6 +518,8 @@
 				C0AD96B91F6721A9007932AF /* RealmFriendship.swift */,
 				D192A3DC2029966E00791002 /* Message.swift */,
 				D1B79CF3205FA80800F209B4 /* UserOptions.swift */,
+				D1B79CF8205FE39A00F209B4 /* RealmPhoneAuth.swift */,
+				D1B79CFA205FE3BF00F209B4 /* RealmMatchUser.swift */,
 			);
 			name = "Modern API Wrapper";
 			sourceTree = "<group>";
@@ -540,6 +548,7 @@
 		8B6EB50C1DB0817F0051C8D2 /* Monkey */ = {
 			isa = PBXGroup;
 			children = (
+				D1B79CF5205FDCAC00F209B4 /* Filter */,
 				8B6EB5191DB0817F0051C8D2 /* Info.plist */,
 				D17CE9842009C2E4002F4F9D /* GoogleService-Info.plist */,
 				D17CE9862009E47A002F4F9D /* GoogleService-Info-Dev.plist */,
@@ -747,6 +756,14 @@
 				D14478682058C5A400485D68 /* Info.plist */,
 			);
 			path = PushService;
+			sourceTree = "<group>";
+		};
+		D1B79CF5205FDCAC00F209B4 /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				D1B79CF6205FDD0500F209B4 /* FilterViewController.swift */,
+			);
+			path = Filter;
 			sourceTree = "<group>";
 		};
 		D40E59371F3A82C20091A7B2 /* Message */ = {
@@ -1103,6 +1120,7 @@
 			files = (
 				8BA4D6DF1E2362240066776A /* SettingsViewController.swift in Sources */,
 				8B24D4C61E3197FB006EFCFA /* TruthOrDare.swift in Sources */,
+				D1B79CF9205FE39A00F209B4 /* RealmPhoneAuth.swift in Sources */,
 				8435C2EE1F1443F200C80AC6 /* FriendsViewController.swift in Sources */,
 				D47833E21F2BF276007F37DB /* NotificationManager.swift in Sources */,
 				8B6A57A21EAEBF3E00136311 /* JSONAPI.swift in Sources */,
@@ -1165,6 +1183,7 @@
 				8464868D1F1D65240092E89E /* JigglyButton.swift in Sources */,
 				1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */,
 				8B46EAEC1E8770360069C7D7 /* Colors.swift in Sources */,
+				D1B79CF7205FDD0500F209B4 /* FilterViewController.swift in Sources */,
 				C01873711F4F2B92008C8790 /* InstagramPopupViewController.swift in Sources */,
 				8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */,
 				8BA5D3561F57263900F732BF /* InputLabel.swift in Sources */,
@@ -1191,6 +1210,7 @@
 				D1A7DC2B2049506800B061F9 /* MonkeySwitch.swift in Sources */,
 				8B7DC7481EF5C9E000A3F966 /* RealmChannel.swift in Sources */,
 				C0197E371F60A435005F121A /* RealmBlock.swift in Sources */,
+				D1B79CFB205FE3BF00F209B4 /* RealmMatchUser.swift in Sources */,
 				8435C2E81F13DBBC00C80AC6 /* ChatViewModel.swift in Sources */,
 				8BC95FFA1DF626DD00710628 /* WelcomeViewController.swift in Sources */,
 				C0BDAF5B1F4F51D500FA2F38 /* KeypadButton.swift in Sources */,

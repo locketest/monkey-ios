@@ -392,7 +392,7 @@ class NotificationUserInfo {
 		return userInfo["s"] as? Int
 	}
 	var source: String {
-		return attachData?["source"] as? String ?? "other"
+		return userInfo["src"] as? String ?? attachData?["source"] as? String ?? "other"
 	}
 }
 

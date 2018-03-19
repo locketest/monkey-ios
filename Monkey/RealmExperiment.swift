@@ -12,6 +12,7 @@ import Alamofire
 
 class RealmExperiment: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "experiments"
+	static let requst_subfix = RealmExperiment.type
 	static let api_version = APIController.shared.apiVersion
     
     /// The user_id that authenticated the request for this Experiment.

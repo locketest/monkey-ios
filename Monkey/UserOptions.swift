@@ -10,8 +10,9 @@ import Foundation
 import ObjectMapper
 
 class UserOptions: Mappable {
-	static let type = "me/options"
+	static let type = "UserOption"
 	static let api_version = "v1.3"
+	static let requst_subfix = "me/options"
 	
 	lazy var update_birth_date = false
 	lazy var update_username = Date.init()

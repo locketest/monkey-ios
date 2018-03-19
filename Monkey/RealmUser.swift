@@ -11,6 +11,7 @@ import Alamofire
 
 class RealmUser: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "users"
+	static let requst_subfix = RealmUser.type
 	static let api_version = APIController.shared.apiVersion
     
     let friendships = LinkingObjects(fromType: RealmFriendship.self, property: "user")
@@ -123,11 +124,11 @@ class RealmUser: JSONAPIObject, JSONAPIObjectProtocol {
             }
             
         }
-        let type = type(of: self).type
-        JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)/\(user_id)", method: .patch, parameters: [
+		
+        JSONAPIRequest(url: "\(Environment.baseURL)/api/\(RealmUser.api_version)/\(RealmUser.requst_subfix)/\(user_id)", method: .patch, parameters: [
             "data": [
                 "id": user_id,
-                "type": type,
+                "type": RealmUser.type,
                 "attributes": attributesJSON,
                 "relationships": relationshipsJSON,
             ],

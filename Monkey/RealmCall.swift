@@ -10,7 +10,8 @@ import UIKit
 
 class RealmCall: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "chats"
-	static let api_version = APIController.shared.apiVersion
+	static let requst_subfix = "match_request"
+	static let api_version = "v1.3"
     
     dynamic var chat_id: String?
     

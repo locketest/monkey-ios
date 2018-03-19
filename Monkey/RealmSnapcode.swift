@@ -11,6 +11,7 @@ import Alamofire
 
 class RealmSnapcode: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "snapcodes"
+	static let requst_subfix = RealmSnapcode.type
 	static let api_version = APIController.shared.apiVersion
 	
     dynamic var snapcode_id:String?

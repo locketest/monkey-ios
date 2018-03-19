@@ -10,6 +10,7 @@ import RealmSwift
 
 class RealmMessage: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "messages"
+	static let requst_subfix = RealmMessage.type
 	static let api_version = APIController.shared.apiVersion
     
     dynamic var friendship: RealmFriendship?

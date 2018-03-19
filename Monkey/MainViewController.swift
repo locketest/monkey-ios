@@ -49,7 +49,15 @@ let treeLabelWidth:CGFloat = 48.0
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
-class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate {
+class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate {
+	
+	func webSocketDidRecieveMatch(match: Any, data: [String : Any]) {
+		if isFindingChats , let realmCall = match as? RealmCall {
+			self.progressMatch(call: realmCall,data: data)
+		}else {
+			self.getNewSession()
+		}
+	}
 
 	internal func showAlert(alert: UIAlertController) {
 		self.present(alert, animated: true, completion: nil)
@@ -68,7 +76,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 
 	@IBOutlet weak public var settingsButton: BigYellowButton!
 	@IBOutlet weak var chatButton: BigYellowButton!
-
+	@IBOutlet weak var filterButton: BigYellowButton!
+	
+	
 	@IBOutlet weak var matchModeContainer: UIView!
 	@IBOutlet weak var matchModeTip: UILabel!
 	@IBOutlet weak var matchModeEmojiLeft: UILabel!
@@ -176,7 +186,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	@IBAction func chatButtonTapped(sender: Any) {
 		self.present(self.swipableViewControllerToPresentOnLeft!, animated: true, completion: nil)
 	}
-
+	
+	@IBAction func filterButtonTapped(_ sender: Any) {
+		
+	}
+	
 	@IBAction func arrowButtonTapped(sender: Any) {
 		self.present(self.swipableViewControllerToPresentOnBottom!, animated: true, completion: nil)
 	}
@@ -305,6 +319,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.matchModePopup.isHidden = true
 		self.matchModePopup.layer.cornerRadius = 12
 		self.matchModePopup.alpha = 0
+		
+		self.filterButton.layer.cornerRadius = 20
+		self.filterButton.layer.masksToBounds = true
 
 		self.matchModeSwitch.isEnabled = RemoteConfigManager.shared.text_chat_mode
 		self.matchModeSwitch.isHidden = !RemoteConfigManager.shared.text_chat_mode
@@ -315,6 +332,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.swipableViewControllerToPresentOnRight = UIStoryboard(name: "Channels", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
 		self.swipableViewControllerToPresentOnLeft = UIStoryboard(name: "Chat", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
 		self.swipableViewControllerToPresentOnBottom = UIStoryboard(name: "Settings", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
+		self.swipableViewControllerToPresentOnTop = FilterViewController.init()
+		
 		dimView = UIView(frame: self.containerView.frame)
 		dimView?.backgroundColor = UIColor(white: 0.0, alpha: 0.5)
 
@@ -331,6 +350,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 
 		self.pageViewIndicator.numberOfPages = 3
 		self.pageViewIndicator.currentPage = 1
+		self.pageViewIndicator.isUserInteractionEnabled = false
 
 		self.startUpdatingLocation()
 
@@ -395,6 +415,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.factTextView.textContainerInset = .zero
 		self.skippedText.layer.opacity = 0.0
 		Socket.shared.isEnabled = true
+		Socket.shared.delegate = self
 	}
 
 	func incomingCallManager(_ incomingCallManager: IncomingCallManager, didDismissNotificatationFor chatSession: ChatSession) {
@@ -680,16 +701,15 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		]
 
 		self.chatRequest = RealmCall.create(parameters: parameters) { (result:JSONAPIResult<[RealmCall]>) in
-			let chatRequest = self.chatRequest
 			self.chatRequest = nil
-
+			
 			let currentUser = APIController.shared.currentUser
 			let is_banned = currentUser?.is_banned.value ?? false
 			var match_type = "video"
 			if let match_mode = Achievements.shared.selectMatchMode, match_mode == .TextMode {
 				match_type = "text"
 			}
-
+			
 			var channels = ""
 			if let selectChannels = currentUser?.channels {
 				for (_ , tree) in selectChannels.enumerated() {
@@ -697,7 +717,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				}
 				channels.removeLast()
 			}
-
+			
 			let commonParameters = [
 				"user_gender": currentUser?.show_gender ?? "",
 				"user_age": "\(currentUser?.age.value ?? 0)",
@@ -707,7 +727,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				"trees": channels
 			]
 			AnaliticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
-
+			
 			print("Chat request completed")
 			self.gettingNewSession = false
 			guard self.isFindingChats == true else {
@@ -715,63 +735,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				return // stopped finding chats before request finished
 			}
 			switch result {
-			case .success(let calls):
-				guard let call = calls.first else {
-					print("Error: RealmCall.create succeeded but no calls were returned")
-					self.getNewSession()
-					return
-				}
-				guard let jsonAPIDocument = chatRequest?.responseJSONAPIDocument else {
-					print("Error: did not get a responseJSONAPIDocument from RealmCall.create")
-					self.getNewSession()
-					return
-				}
-
-				if let meta = jsonAPIDocument.meta, let nextFact = meta["next_fact"] as? String {
-					self.nextFact = nextFact
-				}
-
-				guard let sessionId = call.session_id, let chatId = call.chat_id, let token = call.token else {
-					print("Error: RealmCall object did not return with sufficient data to create a chatSession")
-					self.getNewSession()
-					return
-				}
-
-				if let includeds = jsonAPIDocument.included,
-					let included = includeds.first
-				{
-					if let attribute = included.attributes {
-//						call.user?.setValue(attribute["first_name"], forKey: "first_name")
-//						call.user?.setValue(attribute["location"], forKey: "location")
-//						call.user?.setValue(attribute["snapchat_username"], forKey: "snapchat_username")
-						
-						if let channels = attribute["channels"] as? [String] {
-							self.listTrees(trees: channels)
-						}
-					}
-				}
-
-				var bio = "Connecting"
-				if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
-					
-					bio = convertBio
-					if RemoteConfigManager.shared.app_in_review == true {
-						let user_age_str = convertBio.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "")
-						print("match a user with age \(user_age_str)")
-						if let age_range = convertBio.range(of: user_age_str), let user_age = Int(user_age_str), user_age < 19, user_age > 0 {
-							let new_age = abs(Int.arc4random() % 5) + 19
-							bio = convertBio.replacingCharacters(in: age_range, with: "\(new_age)")
-						}
-					}
-				}
-
-				self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: call.user?.first_name, profile_image_url: call.user?.profile_photo_url, user_id: call.user?.user_id, match_mode: call.match_mode), token: token, loadingDelegate: self, isDialedCall: false)
-
-				self.start(fact: bio)
-				
-				if Achievements.shared.closeAcceptButton {
-					self.acceptButtonTapped(sender: self)
-				}
+			case .success( _):
+				break
 				
 			case .error(let error):
 				error.log(context:"Create (POST) a matched call")
@@ -799,7 +764,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 					self.nextFact = fact
 					self.resetFact()
 				}
-
+				
 				if let errorMessage = (meta?["alert_message_text"] as? String) {
 					let alert = UIAlertController(title: (meta?["alert_title_text"] as? String) ?? "Status Error", message: errorMessage, preferredStyle: .alert)
 					if (meta?["alert_disable_retry"] as? Bool) != true {
@@ -824,6 +789,43 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				}
 				self.getNewSession()
 			}
+		}
+	}
+	
+	func progressMatch(call: RealmCall, data: [String: Any]) {
+		let jsonAPIDocument = JSONAPIDocument.init(json: data)
+		
+		if let meta = jsonAPIDocument.meta, let nextFact = meta["next_fact"] as? String {
+			self.nextFact = nextFact
+		}
+		
+		guard let sessionId = call.session_id, let chatId = call.chat_id, let token = call.token else {
+			print("Error: RealmCall object did not return with sufficient data to create a chatSession")
+			self.getNewSession()
+			return
+		}
+		
+		if let includeds = jsonAPIDocument.included,
+			let included = includeds.first
+		{
+			if let attribute = included.attributes {
+				if let channels = attribute["channels"] as? [String] {
+					self.listTrees(trees: channels)
+				}
+			}
+		}
+		
+		var bio = "Connecting"
+		if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
+			bio = convertBio
+		}
+		
+		self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: call.user?.first_name, profile_image_url: call.user?.profile_photo_url, user_id: call.user?.user_id, match_mode: call.match_mode), token: token, loadingDelegate: self, isDialedCall: false)
+		
+		self.start(fact: bio)
+		
+		if Achievements.shared.closeAcceptButton {
+			self.acceptButtonTapped(sender: self)
 		}
 	}
 

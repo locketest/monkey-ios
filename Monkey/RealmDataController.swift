@@ -25,9 +25,11 @@ class RealmDataController: NSObject {
         RealmTag.self,
         RealmChannel.self,
         RealmCall.self,
+		RealmPhoneAuth.self,
         RealmInstagramAccount.self,
         RealmInstagramPhoto.self,
         RealmBlock.self,
+		RealmMatchedUser.self,
         ]
 
     /**

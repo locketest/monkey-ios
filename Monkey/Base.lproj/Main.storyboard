@@ -1453,6 +1453,19 @@ types of Monkey species in the entire world.</string>
                                                     <action selector="chatButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="3S4-15-MOK"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0hd-FL-4Jc" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="20" y="40" width="40" height="40"/>
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.30102204623287671" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="g1I-ph-30f"/>
+                                                    <constraint firstAttribute="width" constant="40" id="p5i-aR-GaM"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                                <state key="normal" title="✨"/>
+                                                <connections>
+                                                    <action selector="filterButtonTapped:" destination="TT7-O9-9zR" eventType="touchUpInside" id="GCW-iI-N4h"/>
+                                                </connections>
+                                            </button>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="Ulj-5R-07I">
                                                 <rect key="frame" x="40" y="647" width="295" height="0.0"/>
                                                 <subviews>
@@ -1528,7 +1541,7 @@ types of Monkey species in the entire world.</string>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5GL-k1-GiO" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                                <rect key="frame" x="20" y="34" width="74" height="40"/>
+                                                <rect key="frame" x="281" y="34" width="74" height="40"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J2Q-bn-iTj" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="14" y="5" width="28" height="30"/>
@@ -1566,19 +1579,22 @@ types of Monkey species in the entire world.</string>
                                                     <action selector="bananaButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="24G-rR-Iih"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W2d-kQ-BTg" customClass="MatchModeSwitch" customModule="Monkey" customModuleProvider="target">
-                                                <rect key="frame" x="20" y="80" width="106" height="40"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W2d-kQ-BTg" customClass="MatchModeSwitch" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="249" y="80" width="106" height="40"/>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="calibratedRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="4cq-Sb-akm"/>
+                                                    <constraint firstAttribute="width" constant="106" id="T1o-WF-dG0"/>
+                                                </constraints>
                                                 <connections>
                                                     <action selector="matchModeChanged:" destination="TT7-O9-9zR" eventType="touchUpInside" id="3wY-Fp-jL3"/>
                                                 </connections>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="otb-Kx-f1J">
-                                                <rect key="frame" x="20" y="122" width="49" height="36"/>
+                                                <rect key="frame" x="306" y="122" width="49" height="32"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ccn-n0-m1O">
-                                                        <rect key="frame" x="8" y="8" width="33" height="20"/>
+                                                        <rect key="frame" x="8" y="8" width="33" height="16"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="rjg-Jt-8fp"/>
                                                         </constraints>
@@ -1593,7 +1609,7 @@ types of Monkey species in the entire world.</string>
                                                     <constraint firstAttribute="trailing" secondItem="Ccn-n0-m1O" secondAttribute="trailing" constant="8" id="I7P-Yy-5LM"/>
                                                     <constraint firstAttribute="bottom" secondItem="Ccn-n0-m1O" secondAttribute="bottom" constant="8" id="Ri5-bN-FpY"/>
                                                     <constraint firstItem="Ccn-n0-m1O" firstAttribute="top" secondItem="otb-Kx-f1J" secondAttribute="top" constant="8" id="gw1-rh-NE1"/>
-                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="36" id="hKw-oR-xdV"/>
+                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="100" id="ydD-35-g5b"/>
                                                 </constraints>
                                             </view>
                                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="Uh6-Lu-Kac">
@@ -1625,31 +1641,35 @@ types of Monkey species in the entire world.</string>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="Ulj-5R-07I" firstAttribute="leading" relation="lessThanOrEqual" secondItem="ZLF-OB-nU9" secondAttribute="leading" priority="995" constant="40" id="4Md-d2-2G7"/>
+                                            <constraint firstItem="0hd-FL-4Jc" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="4tI-rq-KbN"/>
                                             <constraint firstItem="Era-aI-5mW" firstAttribute="centerY" secondItem="4OG-VV-HHr" secondAttribute="centerY" id="8Fv-Kx-pTV"/>
                                             <constraint firstAttribute="bottom" secondItem="2CN-Mj-9Gg" secondAttribute="bottom" constant="30" id="DUk-aP-Ab3"/>
                                             <constraint firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Ulj-5R-07I" secondAttribute="trailing" priority="995" constant="40" id="EOV-E3-60V"/>
                                             <constraint firstAttribute="bottom" secondItem="psw-iu-AsM" secondAttribute="bottom" constant="20" id="FCf-TC-v4E"/>
                                             <constraint firstAttribute="trailing" secondItem="psw-iu-AsM" secondAttribute="trailing" constant="20" id="Hfz-gV-8Ij"/>
-                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="otb-Kx-f1J" secondAttribute="trailing" constant="20" id="OYe-46-inO"/>
+                                            <constraint firstAttribute="trailing" secondItem="W2d-kQ-BTg" secondAttribute="trailing" constant="20" id="N48-kN-mgm"/>
+                                            <constraint firstAttribute="trailing" secondItem="otb-Kx-f1J" secondAttribute="trailing" constant="20" id="OYe-46-inO"/>
                                             <constraint firstAttribute="bottom" secondItem="Ulj-5R-07I" secondAttribute="bottom" constant="20" id="PX1-cf-hXB"/>
+                                            <constraint firstAttribute="trailing" secondItem="5GL-k1-GiO" secondAttribute="trailing" constant="20" id="PnS-M6-wpr"/>
                                             <constraint firstItem="4OG-VV-HHr" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="SLG-59-Plb"/>
                                             <constraint firstAttribute="bottom" secondItem="Ulj-5R-07I" secondAttribute="bottom" constant="20" id="U4G-Le-GSm"/>
-                                            <constraint firstItem="otb-Kx-f1J" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="UAa-DR-yQ9"/>
+                                            <constraint firstItem="otb-Kx-f1J" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="Usm-YH-qfK"/>
                                             <constraint firstItem="kBC-65-2jJ" firstAttribute="centerY" secondItem="ZLF-OB-nU9" secondAttribute="centerY" constant="4" id="WtG-oh-Hee"/>
                                             <constraint firstItem="Ulj-5R-07I" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="Yxw-6h-JqM"/>
                                             <constraint firstAttribute="bottom" secondItem="IDy-13-zRY" secondAttribute="bottom" constant="20" id="eAX-wX-J8M"/>
+                                            <constraint firstItem="otb-Kx-f1J" firstAttribute="top" secondItem="W2d-kQ-BTg" secondAttribute="bottom" constant="2" id="fdE-1B-NG9"/>
                                             <constraint firstItem="IDy-13-zRY" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="guH-Zs-FDt"/>
                                             <constraint firstItem="kBC-65-2jJ" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="hFH-m1-lsm"/>
+                                            <constraint firstItem="W2d-kQ-BTg" firstAttribute="top" secondItem="5GL-k1-GiO" secondAttribute="bottom" constant="6" id="had-iN-n8z"/>
                                             <constraint firstAttribute="bottom" secondItem="Uh6-Lu-Kac" secondAttribute="bottom" constant="-6" id="hjg-0g-L2G"/>
                                             <constraint firstItem="DYS-hp-fSP" firstAttribute="centerY" secondItem="4OG-VV-HHr" secondAttribute="centerY" id="iic-q9-24W"/>
                                             <constraint firstItem="DYS-hp-fSP" firstAttribute="centerX" secondItem="4OG-VV-HHr" secondAttribute="centerX" id="mIz-vt-epe"/>
                                             <constraint firstItem="5GL-k1-GiO" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="34" id="mfa-BL-9Bs"/>
                                             <constraint firstItem="Era-aI-5mW" firstAttribute="centerX" secondItem="4OG-VV-HHr" secondAttribute="centerX" id="mnQ-SR-lVU"/>
+                                            <constraint firstItem="0hd-FL-4Jc" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="40" id="o3C-WD-Tsn"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="r3c-Jx-4VP"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="top" secondItem="4OG-VV-HHr" secondAttribute="bottom" constant="10" id="ucC-27-WkF"/>
-                                            <constraint firstItem="otb-Kx-f1J" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="122" id="vFr-ub-nfV"/>
                                             <constraint firstItem="Uh6-Lu-Kac" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="vmf-wM-sUo"/>
-                                            <constraint firstItem="5GL-k1-GiO" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="xZ3-Oy-2W1"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -1682,6 +1702,7 @@ types of Monkey species in the entire world.</string>
                         <outlet property="connectText" destination="Era-aI-5mW" id="qi7-BD-a4C"/>
                         <outlet property="containerView" destination="N5m-MM-8GO" id="bW5-GI-0Xk"/>
                         <outlet property="factTextView" destination="v9E-7V-2CY" id="k9n-mv-dwN"/>
+                        <outlet property="filterButton" destination="0hd-FL-4Jc" id="M5A-yy-Mpw"/>
                         <outlet property="loadingContentView" destination="kBC-65-2jJ" id="a0G-6t-FNc"/>
                         <outlet property="loadingTextLabel" destination="wQB-BV-u1O" id="8gH-r0-Hip"/>
                         <outlet property="matchModeContainer" destination="wqO-t4-SQR" id="vHk-7K-Zej"/>

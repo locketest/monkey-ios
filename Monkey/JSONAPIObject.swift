@@ -27,11 +27,17 @@ class JSONAPIObject: Object {
             return nil
         }
 
-        guard let type = (type(of: self) as? JSONAPIObjectProtocol.Type)?.type else {
+        guard let subfix = (type(of: self) as? JSONAPIObjectProtocol.Type)?.requst_subfix else {
             completion(.notJSONAPIObjectProtocol)
             return nil
         }
-        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)/\(id)", options: [
+		
+		guard let api_version = (type(of: self) as? JSONAPIObjectProtocol.Type)?.api_version else {
+			completion(.notJSONAPIObjectProtocol)
+			return nil
+		}
+		
+        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(api_version)/\(subfix)/\(id)", options: [
             .header("Authorization", APIController.authorization),
             ]).addCompletionHandler { (response) in
                 switch response {
@@ -61,11 +67,17 @@ class JSONAPIObject: Object {
      - returns: The DataRequest if a request was started. Use this to cancel the in-flight HTTP request.
      */
     @discardableResult class func fetch<T: JSONAPIObjectProtocol>(id: String, parameters: [String:Any] = [:], completion: @escaping (_ error: APIError?, _ item: T?) -> Void) -> JSONAPIRequest? {
-        guard let type = (self as? JSONAPIObjectProtocol.Type)?.type else {
+        guard let subfix = (self as? JSONAPIObjectProtocol.Type)?.requst_subfix else {
             completion(.notJSONAPIObjectProtocol, nil)
             return nil
         }
-        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)/\(id)", parameters: parameters as Parameters, options: [
+		
+		guard let api_version = (self as? JSONAPIObjectProtocol.Type)?.api_version else {
+			completion(.notJSONAPIObjectProtocol, nil)
+			return nil
+		}
+		
+        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(api_version)/\(subfix)/\(id)", parameters: parameters as Parameters, options: [
             .header("Authorization", APIController.authorization),
             ]).addCompletionHandler { (response) in
                 switch response {
@@ -94,18 +106,23 @@ class JSONAPIObject: Object {
      - returns: The DataRequest if a request was started. Use this to cancel the in-flight HTTP request.
      */
     @discardableResult class func fetchAll<T: JSONAPIObjectProtocol>(parameters: [String:Any] = [:], completion operationCompletionHandler: @escaping JSONAPIOperationCompletionHandler<T>) -> JSONAPIRequest? {
-        guard let type = (self as? JSONAPIObjectProtocol.Type)?.type else {
+        guard let subfix = (self as? JSONAPIObjectProtocol.Type)?.requst_subfix else {
             operationCompletionHandler(.error(.notJSONAPIObjectProtocol))
             return nil
         }
-        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)", parameters: parameters as Parameters, options: [
+		
+		guard let api_version = (self as? JSONAPIObjectProtocol.Type)?.api_version else {
+			operationCompletionHandler(.error(.notJSONAPIObjectProtocol))
+			return nil
+		}
+		
+        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(api_version)/\(subfix)", parameters: parameters as Parameters, options: [
             .header("Authorization", APIController.authorization),
             ]).addCompletionHandler({ result in
                 switch result {
                 case .error(let error):
                     return operationCompletionHandler(.error(error))
                 case .success(let jsonAPIDocument):
-                    print(jsonAPIDocument.json)
                     RealmDataController.shared.apply(jsonAPIDocument) { result in
                         switch result {
                         case .error(let error):
@@ -128,46 +145,17 @@ class JSONAPIObject: Object {
      - returns: The DataRequest if a request was started. Use this to cancel the in-flight HTTP request.
      */
     @discardableResult class func create<T: JSONAPIObjectProtocol>(parameters: [String:Any] = [:], completion operationCompletionHandler: @escaping JSONAPIOperationCompletionHandler<T>) -> JSONAPIRequest? {
-        guard let type = (self as? JSONAPIObjectProtocol.Type)?.type else {
+        guard let subfix = (self as? JSONAPIObjectProtocol.Type)?.requst_subfix else {
             operationCompletionHandler(.error(.notJSONAPIObjectProtocol))
             return nil
         }
-        
-        // FIXME: del it
-        var url = "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)"
-        if type == "chats" {
-            url = "\(Environment.baseURL)/api/v1.3/match_request"
-        }
-        return JSONAPIRequest(url: url, method:.post, parameters: parameters as Parameters, options: [
-            .header("Authorization", APIController.authorization),
-            ]).addCompletionHandler({ result in
-                switch result {
-                case .error(let error):
-                    return operationCompletionHandler(.error(error))
-                case .success(let jsonAPIDocument):
-                    RealmDataController.shared.apply(jsonAPIDocument) { result in
-                        switch result {
-                        case .error(let error):
-                            return operationCompletionHandler(.error(error))
-                        case .success(let documentObjects):
-                            operationCompletionHandler(.success(documentObjects as? [T] ?? [T]()))
-                        }
-                    }
-                }
-            })
-    }
-    
-    @discardableResult class func create<T: JSONAPIObjectProtocol>(parameters: [String:Any] = [:],subpath:String, completion operationCompletionHandler: @escaping JSONAPIOperationCompletionHandler<T>) -> JSONAPIRequest? {
-        guard let type = (self as? JSONAPIObjectProtocol.Type)?.type else {
-            operationCompletionHandler(.error(.notJSONAPIObjectProtocol))
-            return nil
-        }
-        // FIXME: del it
-        var url = "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)"
-//        if type == "chats" {
-//            url = "\(Environment.baseURL)/api/v1.3/match_request/\(subpath)"
-//        }
-        return JSONAPIRequest(url: url, method:.post, parameters: parameters as Parameters, options: [
+		
+		guard let api_version = (self as? JSONAPIObjectProtocol.Type)?.api_version else {
+			operationCompletionHandler(.error(.notJSONAPIObjectProtocol))
+			return nil
+		}
+		
+        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(api_version)/\(subfix)", method:.post, parameters: parameters as Parameters, options: [
             .header("Authorization", APIController.authorization),
             ]).addCompletionHandler({ result in
                 switch result {
@@ -198,17 +186,23 @@ class JSONAPIObject: Object {
             completion(APIError(code: "-1", status: nil, message: "Cannot reload an item without a primary key."))
             return nil
         }
+		
         guard let id = self[primaryKeyProperty.name] else {
             completion(APIError(code: "-1", status: nil, message: "To refresh, an item must have an ID"))
             return nil
         }
 
-        guard let type = (type(of: self) as? JSONAPIObjectProtocol.Type)?.type else {
+        guard let subfix = (type(of: self) as? JSONAPIObjectProtocol.Type)?.requst_subfix else {
             completion(.notJSONAPIObjectProtocol)
             return nil
         }
+		
+		guard let api_version = (type(of: self) as? JSONAPIObjectProtocol.Type)?.api_version else {
+			completion(.notJSONAPIObjectProtocol)
+			return nil
+		}
 
-        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)/\(id)/relationships/\(relationshipKey)", method: .patch, parameters: JSONAPIDocument(data: resourceIdentifier).json, options: [
+        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(api_version)/\(subfix)/\(id)/relationships/\(relationshipKey)", method: .patch, parameters: JSONAPIDocument(data: resourceIdentifier).json, options: [
                 .header("Authorization", APIController.authorization),
                 ]).addCompletionHandler { (response) in
                     switch response {
@@ -236,16 +230,23 @@ class JSONAPIObject: Object {
             completion(APIError(code: "-1", status: nil, message: "Cannot reload an item without a primary key."))
             return nil
         }
+		
         guard let id = self[primaryKeyProperty.name] else {
             completion(APIError(code: "-1", status: nil, message: "To refresh, an item must have an ID"))
             return nil
         }
 
-        guard let type = (type(of: self) as? JSONAPIObjectProtocol.Type)?.type else {
+        guard let subfix = (type(of: self) as? JSONAPIObjectProtocol.Type)?.requst_subfix else {
             completion(.notJSONAPIObjectProtocol)
             return nil
         }
-        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)/\(id)", method: .delete, options: [
+		
+		guard let api_version = (type(of: self) as? JSONAPIObjectProtocol.Type)?.api_version else {
+			completion(.notJSONAPIObjectProtocol)
+			return nil
+		}
+		
+        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(api_version)/\(subfix)/\(id)", method: .delete, options: [
             .header("Authorization", APIController.authorization),
             ]).addCompletionHandler { (response) in
                 switch response {
@@ -278,6 +279,8 @@ class JSONAPIObject: Object {
 protocol JSONAPIObjectProtocol {
     // Class property (equal to instance type)
     static var type: String { get }
+	// request subfix
+	static var requst_subfix: String { get }
     // Based on Realm
     static func primaryKey() -> String
 	// the special api version

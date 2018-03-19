@@ -218,7 +218,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
             case .error(let error):
                 error.log()
             case .success(let objects):
-                if(channel == "matched_user") , let delegate = self.delegate{
+                if(channel == "matched_user") , let delegate = self.delegate {
                     delegate.webSocketDidRecieveMatch(match: objects.first as Any,data: data)
                 }
                 print("Received \(objects.count) more objects from the socket.")

@@ -10,6 +10,7 @@ import RealmSwift
 
 class RealmFriendship: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "friendships"
+	static let requst_subfix = RealmFriendship.type
 	static let api_version = APIController.shared.apiVersion
     
     dynamic var friendship_id: String?
@@ -63,12 +64,11 @@ class RealmFriendship: JSONAPIObject, JSONAPIObjectProtocol {
                 attributesJSON["last_message_read_at"] = lastMessageReadAt?.iso8601 ?? NSNull()
             }
         }
-        
-        let type = type(of: self).type
-        JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)/\(friendshipId)", method: .patch, parameters: [
+		
+        JSONAPIRequest(url: "\(Environment.baseURL)/api/\(RealmFriendship.api_version)/\(RealmFriendship.requst_subfix)/\(friendshipId)", method: .patch, parameters: [
             "data": [
                 "id": friendshipId,
-                "type": type,
+                "type": RealmFriendship.type,
                 "attributes": attributesJSON,
             ],
             ], options: [
