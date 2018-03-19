@@ -12,23 +12,27 @@ target 'Monkey' do
 	# Comment this line if you're not using Swift and don't want to use dynamic frameworks
 	use_frameworks!
 	# Pods for Monkey
+	pod 'AccountKit'
 	pod 'FBSDKCoreKit'
-	pod 'FBSDKLoginKit'
 	pod 'FBNotifications'
+	
 	pod 'Firebase/RemoteConfig'
 	pod 'Firebase/Messaging'
+	
 	pod 'Amplitude-iOS'
 	pod 'Fabric'
 	pod 'Crashlytics'
+	
 	pod 'SwiftyGif'
 	pod 'Alamofire', '~> 4.3.0'
 	pod 'Starscream', '~> 2.1.1'
 	pod 'Branch', '~> 0.17.10'
-	pod 'OpenTok'
 	pod 'RealmSwift', '~> 2.10.0'
 	pod 'ObjectMapper', '~> 3.1'
+	
 	pod 'MMSProfileImagePicker'
-	pod 'AccountKit'
+	
+	pod 'OpenTok'
 	pod 'DeviceKit', '~> 1.0'
 	post_install do |installer|
 		installer.pods_project.targets.each do |target|

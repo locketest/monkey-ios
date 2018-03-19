@@ -331,14 +331,14 @@ class Achievements {
 			return defaults.bool(forKey: "is_onboarding_explain_they_add_time_popup_completed") == true
 		}
 	}
-	var authorizedFacebookForBonusBananas: Bool {
-		set {
-			defaults.set(newValue, forKey: "authorized_facebook_for_bonus_bananas")
-		}
-		get {
-			return defaults.bool(forKey: "authorized_facebook_for_bonus_bananas") == true
-		}
-	}
+//	var authorizedFacebookForBonusBananas: Bool {
+//		set {
+//			defaults.set(newValue, forKey: "authorized_facebook_for_bonus_bananas")
+//		}
+//		get {
+//			return defaults.bool(forKey: "authorized_facebook_for_bonus_bananas") == true
+//		}
+//	}
 	var registerTime: TimeInterval {
 		set {
 			defaults.set(newValue, forKey: "MonkeyUserRegisterTime")

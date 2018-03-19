@@ -16,6 +16,9 @@ public enum AnalyticEvent: String {
     //  ----------------------------  login  ------------------------------
     case codeVerify = "CODE_VERIFY"
     case signUpFinish = "SIGNUP_FINISH"
+	
+	//  ----------------------------  launch  ------------------------------
+	case notifyClick = "NOTIFY_CLICK"
     
     //  ----------------------------  Match  ------------------------------
     case matchFirstRequest = "MATCH_1ST_REQUEST"

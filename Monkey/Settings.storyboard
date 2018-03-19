@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YDh-DF-csn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YDh-DF-csn">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -342,7 +342,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WHn-tT-9g8">
-                                                    <rect key="frame" x="301" y="47.5" width="48" height="48"/>
+                                                    <rect key="frame" x="303" y="47.5" width="48" height="48"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="48" id="AiR-RW-jKu"/>
                                                         <constraint firstAttribute="height" constant="48" id="Apb-JR-MoE"/>
@@ -371,7 +371,7 @@
                                                 <constraint firstItem="WHn-tT-9g8" firstAttribute="centerY" secondItem="tap-IA-2pm" secondAttribute="centerY" id="agL-vV-kGf"/>
                                                 <constraint firstAttribute="trailing" secondItem="tap-IA-2pm" secondAttribute="trailing" id="gpR-Ti-ndP"/>
                                                 <constraint firstAttribute="bottom" secondItem="tap-IA-2pm" secondAttribute="bottom" id="otR-BR-lbn"/>
-                                                <constraint firstAttribute="trailing" secondItem="WHn-tT-9g8" secondAttribute="trailing" constant="16" id="rE2-xC-mCt"/>
+                                                <constraint firstAttribute="trailing" secondItem="WHn-tT-9g8" secondAttribute="trailing" constant="14" id="rE2-xC-mCt"/>
                                                 <constraint firstItem="rxj-5S-ruE" firstAttribute="leading" secondItem="3Be-z4-zua" secondAttribute="trailing" constant="12" id="v26-aV-lUO"/>
                                                 <constraint firstItem="tap-IA-2pm" firstAttribute="top" secondItem="ixS-fc-UHc" secondAttribute="top" constant="30" id="w7V-eR-Bcb"/>
                                                 <constraint firstAttribute="bottom" secondItem="rxj-5S-ruE" secondAttribute="bottom" constant="24" id="z44-6n-Sje"/>

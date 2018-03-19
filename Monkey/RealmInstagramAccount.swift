@@ -11,6 +11,8 @@ import RealmSwift
 
 class RealmInstagramAccount: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "instagram_accounts"
+	static let api_version = APIController.shared.apiVersion
+	
     let instagram_photos = List<RealmInstagramPhoto>()
 
     dynamic var instagram_account_id: String?

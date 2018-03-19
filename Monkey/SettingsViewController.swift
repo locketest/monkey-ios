@@ -11,6 +11,8 @@ import Alamofire
 import SafariServices
 import MessageUI
 import SafariServices
+import ObjectMapper
+import RealmSwift
 
 class SettingsViewController: SwipeableViewController, UITableViewDelegate, SettingsBooleanTableViewCellDelegate, SettingsHashtagCellDelegate, MFMessageComposeViewControllerDelegate, UITableViewDataSource, ProfilePhotoButtonViewDelegate,UITextFieldDelegate {
 
@@ -45,8 +47,9 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     var pickerContainerView:UIView! //年龄选择
     var editBirthdayStatus:Bool!
     var cancelBtn:UIButton!
-    var saveBtn:UIButton!
+    var saveBtn: BigYellowButton!
     var datePicker:BirthdatePicker!
+	var userOption: UserOptions?
     ///end edit Profile UI
     
     /// A reference to the presented instagramVC. Currently used to forward longPressGestureRecognizer updates
@@ -59,10 +62,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     var previousLongPressLocation: CGPoint?
 
     /// Returns the content size of the view, is a getter because TODO: replace with actual calculation of content within view
-    override var contentHeight:CGFloat {
-        if self.editStatus{
+    override var contentHeight: CGFloat {
+        if self.editStatus {
             return UIScreen.main.bounds.size.height
-        }else{
+        }else {
             return 500
         }
     }
@@ -103,9 +106,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             timeOnMonkey.text = localizedTime + " on Monkey"
         }
 
-       
-        
-        self.editProfileView = UIView.init(frame: CGRect(x:10+self.containerView.frame.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height))
+        self.editProfileView = UIView.init(frame: CGRect(x: 10 + self.containerView.frame.size.width, y: self.containerView.frame.origin.y, width: self.containerView.frame.size.width, height: self.containerView.frame.size.height))
         self.editProfileView.backgroundColor = UIColor.clear
         self.view.addSubview(self.editProfileView)
         self.editProfileView.layer.cornerRadius = self.containerView.layer.cornerRadius
@@ -122,20 +123,23 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         editProfileTitleLab.attributedText = attributedString
         self.editProfileView.addSubview(editProfileTitleLab)
         
-        editProfileContentView =  UIView.init(frame: CGRect(x:0,y:30,width:self.editProfileView.frame.size.width,height:self.editProfileView.frame.size.height-30))
+        editProfileContentView =  UIView.init(frame: CGRect(x: 0, y: 30, width: self.editProfileView.frame.size.width, height: self.editProfileView.frame.size.height - 30))
         editProfileContentView.backgroundColor = UIColor.black
         self.editProfileView.addSubview(editProfileContentView)
-        self.crateEditProfileUI()
-        
+		self.crateEditProfileUI()
     }
+	
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.pickerContainerView.frame = CGRect(x:0,y:UIScreen.main.bounds.size.height,width:UIScreen.main.bounds.size.width,height:220);
+		self.refreshEditStatus()
+		
+        self.pickerContainerView.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220);
         self.editProfileView.frame = CGRect(x:UIScreen.main.bounds.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height)
         self.editButtons.setImage(UIImage(named:"EditProfileButtton"), for: .normal)
         self.editButtons.isSelected = false
         self.containerView.isHidden = false
     }
+	
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -154,8 +158,44 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 })
             }
         }
-        
+		
+		NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
     }
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		
+		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+	}
+	
+	func refreshEditStatus() {
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/\(UserOptions.api_version)/\(UserOptions.type)", options: [
+			.header("Authorization", APIController.authorization),
+			]).addCompletionHandler {[weak self] (response) in
+			switch response {
+				case .error( _): break
+				case .success(let jsonAPIDocument):
+					do {
+					self?.userOption = Mapper<UserOptions>().map(JSON: jsonAPIDocument.json)
+					
+					let time = self?.userOption?.update_username.timeIntervalSince1970 ?? 0
+					let now = Date().timeIntervalSince1970
+					let isPast = now - time > 0
+					
+					let sec:Double = abs(now - time)
+					let min:Double = round(sec/60)
+					let hr:Double = round(min/60)
+					let d:Double = round(hr/24)
+					
+					if isPast == true && d >= 60 {
+						
+					}
+				}
+			}
+		}
+	}
 
     internal func showAlert(alert: UIAlertController) {
         self.present(alert, animated: true, completion: nil)
@@ -228,11 +268,68 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         }
     }
 
-    
-
     func saveGenderPreference(gender : String?) {
 
     }
+	
+	func savePreferenceClick() {
+		guard let currentUser = APIController.shared.currentUser else {
+			return
+		}
+		
+		var attributes: [RealmUser.Attribute] = []
+		
+		if let newFirstName = self.firstNameField.text, newFirstName != currentUser.first_name {
+			attributes.append(.first_name(newFirstName))
+		}
+		
+		if let newBirthdayStr = self.birthdayField.text {
+			if let oldBirthday = currentUser.birth_date {
+				let dateFormatter = DateFormatter()
+				dateFormatter.dateFormat = "MM/dd/yyyy"
+				let oldBirthdayDate = Date.init(timeIntervalSince1970: oldBirthday.timeIntervalSince1970)
+				let oldBirthdayStr = dateFormatter.string(from: oldBirthdayDate)
+				if (newBirthdayStr != oldBirthdayStr) {
+					attributes.append(.birth_date(self.datePicker.date as NSDate))
+				}
+			}
+		}
+		
+		if let newSnapchatName = self.snapChatUserName.text, newSnapchatName != currentUser.snapchat_username {
+			attributes.append(.snapchat_username(newSnapchatName))
+		}
+		
+		if attributes.count > 0 {
+			saveBtn.isLoading = true
+			
+			currentUser.update(attributes: attributes) { (error) in
+				self.saveBtn.isLoading = false
+				// 保存请求返回结果
+				
+				guard error == nil else {
+					// 保存失败
+					
+					return
+				}
+				var userProperty = [String: Any]()
+				
+				currentUser.first_name.then {
+					userProperty["first_name"] = $0
+				}
+				
+				currentUser.snapchat_username.then {
+					userProperty["snapchat_username"] = $0
+				}
+				
+				currentUser.birth_date.then {
+					userProperty["birth_date"] = $0
+				}
+				
+				AnaliticsCenter.update(userProperty: userProperty)
+				// 保存成功
+			}
+		}
+	}
 
     @IBAction func presentInstagramController(_ longPressGestureRecognizer: UILongPressGestureRecognizer) {
         let locationPoint = longPressGestureRecognizer.location(in: self.longPressGestureRecognizer.view)
@@ -301,7 +398,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     }
 
     @IBAction func editProfileTapped(_ sender: Any) {
-        
         let  settingRect:CGRect = CGRect(x:-self.view.frame.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height);
         
         let  editprofileRect:CGRect = CGRect(x:5,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:containerView.frame.size.height)
@@ -329,7 +425,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 self.snapChatUserName.text = currentUser.snapchat_username;
                 
                 if let birthday = currentUser.birth_date {
-                    self.datePicker.date = Date(timeIntervalSinceNow: birthday.timeIntervalSinceNow)
+                    self.datePicker.date = Date.init(timeIntervalSince1970: birthday.timeIntervalSince1970)
                     self.birthdayField.text = self.datePicker.formattedDate
                 }
             }
@@ -350,35 +446,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 self.view.layoutIfNeeded()
             }
         }
-
-        return;
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alertController.addAction(UIAlertAction(title: "🐵 Change profile picture", style: .default, handler: { [weak self] (UIAlertAction) in
-            self?.profilePhoto.setProfilePhoto()
-        }))        
-
-        if APIController.shared.currentUser?.instagram_account != nil { // remove instagram account
-            alertController.addAction(UIAlertAction(title: "🌅 Unlink Instagram", style: .destructive, handler: { [weak self] (UIAlertAction) in
-                self?.unlinkInstagram()
-            }))
-        } else { // add instagram account
-            alertController.addAction(UIAlertAction(title: "🌅 Link Instagram", style: .default, handler: { [weak self] (UIAlertAction) in
-                self?.linkInstagram()
-            }))
-        }
-
-
-
-        if let urlToOpen = APIController.shared.currentExperiment?.edit_account_request_url {
-            alertController.addAction(UIAlertAction(title: "🤷‍♀️ Change something else", style: .default, handler: { (UIAlertAction) in
-                let vc = SFSafariViewController(url: URL(string: urlToOpen)!, entersReaderIfAvailable: false)
-                vc.modalPresentationStyle = .overFullScreen
-                self.present(vc, animated: true, completion: nil)
-            }))
-        }
-
-        self.present(alertController, animated: true, completion: nil)
     }
 
     func linkInstagram() {
@@ -462,20 +529,20 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         case .aboutUS:
             let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            alertController.addAction(UIAlertAction(title: "💖 Rate us", style: .default, handler: { (UIAlertAction) in
+            alertController.addAction(UIAlertAction(title: "💖 Rate Us", style: .default, handler: { (UIAlertAction) in
                 self.openURL("https://itunes.apple.com/us/app/id1165924249?action=write-review", inVC: true)
             }))
             alertController.addAction(UIAlertAction(title: "📲 Support", style: .default, handler: { (UIAlertAction) in
                 self.openURL("https://monkey.canny.io/requests", inVC: true)
             }))
-            alertController.addAction(UIAlertAction(title: "👻 Follow Monkey Snapchat", style: .default, handler: { (UIAlertAction) in
+            alertController.addAction(UIAlertAction(title: "👻 Follow Us Snapchat", style: .default, handler: { (UIAlertAction) in
                 if (UIApplication.shared.canOpenURL(URL(string:"snapchat://")!)) {
                     UIApplication.shared.openURL(URL(string: "snapchat://add/monkeyapp")!)
                 } else {
                     UIApplication.shared.openURL(URL(string: "http://snapchat.com/add/monkeyapp")!)
                 }
             }))
-            alertController.addAction(UIAlertAction(title: "📸 Follow Monkey Instagram", style: .default, handler: { (UIAlertAction) in
+            alertController.addAction(UIAlertAction(title: "📸 Follow Us Instgram", style: .default, handler: { (UIAlertAction) in
                 if (UIApplication.shared.canOpenURL(URL(string:"instagram://")!)) {
                     UIApplication.shared.openURL(URL(string: "instagram://user?username=chatonmonkey")!)
                 } else {
@@ -582,12 +649,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.secretButtonTimer?.invalidate()
     }
 
-    let inviteFriendsData = SettingsTableViewCellData(for: .inviteFriends, title: "🎉  Invite friends")
+    let inviteFriendsData = SettingsTableViewCellData(for: .inviteFriends, title: "🎉 Invite friends")
     let talkToData = SettingsTableViewCellData(for: .talkTo, title: "💬 Talk to", style: .talkToCell) //SettingsTableViewCellData(for: .talkTo, title: "💖 Talk to")
     let acceptButtonData = SettingsTableViewCellData(for: .acceptButton, title: "😊 Accept control", style: .accetpBtnCell)
     
     let aboutUSData = SettingsTableViewCellData(for: .aboutUS, title: "🐒 About us")
-    let signOutData = SettingsTableViewCellData(for: .signOut, title: "🙈  Sign out")
+    let signOutData = SettingsTableViewCellData(for: .signOut, title: "🙈 Sign out")
     var cells: [SettingsTableViewCellData] {
         return [
             talkToData,
@@ -672,7 +739,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     }
     
     func crateEditProfileUI(){
-        let firstNameLab:UILabel = UILabel.init(frame:CGRect(x:16,y:16,width:119,height:27))
+        let firstNameLab:UILabel = UILabel.init(frame:CGRect(x: 16, y: 16, width: 119, height: 27))
         firstNameLab.text = "😊 Name :"
         firstNameLab.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         firstNameLab.textColor = UIColor.white
@@ -744,8 +811,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.editProfileContentView.addSubview(self.cancelBtn)
         self.cancelBtn.addTarget(self, action:#selector(editCancelButtonClick), for: .touchUpInside)
         
-        self.saveBtn = UIButton.init(type: .custom)
-        self.saveBtn.frame = CGRect(x:195,y:59*2+88,width:140,height:49)
+        self.saveBtn = BigYellowButton.init(frame: CGRect.zero)
+        self.saveBtn.frame = CGRect(x: 195,y: 59 * 2 + 88, width: 140, height: 49)
         self.saveBtn.setTitle("Save", for: .normal)
         self.saveBtn.setTitleColor(UIColor.black, for: .normal)
         self.saveBtn.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight:UIFontWeightMedium)
@@ -753,12 +820,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.saveBtn.backgroundColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
         self.saveBtn.layer.masksToBounds = true
         self.editProfileContentView.addSubview(self.saveBtn)
-        NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
-       self.editStatus = false
+		self.editStatus = false
         self.saveBtn.alpha = 0.25
         self.saveBtn.isUserInteractionEnabled = false
-        
+		self.saveBtn.addTarget(self, action: #selector(savePreferenceClick), for: UIControlEvents.touchUpInside)
         
         self.pickerContainerView = UIView.init(frame: CGRect(x:0,y:UIScreen.main.bounds.size.height,width:UIScreen.main.bounds.size.width,height:220))
         self.pickerContainerView.backgroundColor = UIColor.white
@@ -852,7 +917,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                     if self.firstNameField.text != currentUser.first_name || self.snapChatUserName.text != currentUser.snapchat_username || self.datePicker.formattedDate != dateFormatter.string(from: birthday as Date) {
                         self.saveBtn.isUserInteractionEnabled = true
                         self.saveBtn.alpha = 1.0
-                        if !self.isValid{
+                        if !self.isValid {
                             self.saveBtn.isUserInteractionEnabled = false
                             self.saveBtn.alpha = 0.25
                         }
@@ -1038,7 +1103,8 @@ class  SettingAcceptButtonCell: UITableViewCell {
         self.titleLabel.textAlignment = NSTextAlignment.left
         self.contentView.addSubview(self.titleLabel)
 		
-		self.acceptSwitch = MonkeySwitch.init(frame: CGRect(x: UIScreen.main.bounds.size.width - 40 - 20, y: 17, width: 40, height: 30))
+		self.acceptSwitch = MonkeySwitch.init(frame: CGRect(x: self.contentView.frame.size.width - 40 - 18, y: 17, width: 40, height: 30))
+		self.acceptSwitch.autoresizingMask = [.flexibleLeftMargin]
         self.contentView.addSubview(self.acceptSwitch)
     }
 }
@@ -1068,7 +1134,8 @@ class SettingTalkToCell: UITableViewCell {
         self.contentView.addSubview(self.titleLabel!)
         
         self.genderButton = UIButton.init(type: .custom)
-        self.genderButton?.frame = CGRect(x:UIScreen.main.bounds.size.width-48-12-5, y:7, width:48, height:48)
+        self.genderButton?.frame = CGRect(x: self.contentView.frame.size.width - 14 - 48, y: 7, width: 48, height: 48)
+		self.genderButton.autoresizingMask = [.flexibleLeftMargin]
         self.genderButton?.backgroundColor = UIColor.clear
         self.contentView.addSubview(self.genderButton!)
 		

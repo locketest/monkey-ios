@@ -10,6 +10,7 @@ import RealmSwift
 
 class RealmChannel: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "channels"
+	static let api_version = APIController.shared.apiVersion
     
     dynamic var channel_id: String?
     /// The channel title.

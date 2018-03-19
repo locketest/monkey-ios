@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -174,7 +174,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mwW-8I-OXK" userLabel="Content View">
-                                                <rect key="frame" x="0.0" y="85" width="375" height="235"/>
+                                                <rect key="frame" x="0.0" y="93.5" width="375" height="235"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QBt-uU-brn" userLabel="Text Field Container View">
                                                         <rect key="frame" x="20" y="0.0" width="335" height="235"/>
@@ -411,23 +411,20 @@
                                                     <action selector="nextVC:" destination="BYZ-38-t0r" eventType="touchUpInside" id="409-eZ-w4F"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You can not change gender later" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KyQ-xs-C5L">
-                                                <rect key="frame" x="76.5" y="34" width="222.5" height="19"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="19" id="css-kb-ef9"/>
-                                                </constraints>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Yo you can’t change this later so make sure its all good 💁" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KyQ-xs-C5L">
+                                                <rect key="frame" x="20" y="34" width="335.5" height="36"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="0.25" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3en-DM-Fzu" userLabel="Top Buffer View">
-                                                <rect key="frame" x="0.0" y="53" width="375" height="32"/>
+                                                <rect key="frame" x="0.0" y="70" width="375" height="23.5"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="31" id="E43-ur-ZfL"/>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="10" id="E43-ur-ZfL"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l9X-CK-wOC" userLabel="Bottom Buffer View">
-                                                <rect key="frame" x="0.0" y="320" width="375" height="32"/>
+                                                <rect key="frame" x="0.0" y="328.5" width="375" height="23.5"/>
                                             </view>
                                         </subviews>
                                         <constraints>
@@ -436,6 +433,7 @@
                                             <constraint firstAttribute="trailing" secondItem="l9X-CK-wOC" secondAttribute="trailing" id="7DF-C0-Sm6"/>
                                             <constraint firstItem="3en-DM-Fzu" firstAttribute="leading" secondItem="9hf-Vu-Ir0" secondAttribute="leading" id="DLG-rV-Evl"/>
                                             <constraint firstAttribute="trailing" secondItem="Q1h-Fg-Gfa" secondAttribute="trailing" constant="20" id="IQE-Xq-HW0"/>
+                                            <constraint firstItem="KyQ-xs-C5L" firstAttribute="leading" secondItem="9hf-Vu-Ir0" secondAttribute="leading" constant="20" id="JgW-cU-nj4"/>
                                             <constraint firstItem="KyQ-xs-C5L" firstAttribute="centerX" secondItem="mwW-8I-OXK" secondAttribute="centerX" id="KJC-k4-z9j"/>
                                             <constraint firstItem="uLE-iv-Ytl" firstAttribute="leading" secondItem="ggW-0T-4x1" secondAttribute="leading" id="LaW-rp-Ret"/>
                                             <constraint firstItem="l9X-CK-wOC" firstAttribute="top" secondItem="mwW-8I-OXK" secondAttribute="bottom" id="Pbu-Uj-HPL"/>
@@ -1605,31 +1603,6 @@ types of Monkey species in the entire world.</string>
                                                     <constraint firstAttribute="width" constant="39" id="g0W-QS-NiE"/>
                                                 </constraints>
                                             </pageControl>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lzF-W2-0kz">
-                                                <rect key="frame" x="147" y="0.0" width="228" height="128"/>
-                                                <subviews>
-                                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="snx-yM-lJ2" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="50" y="28" width="162" height="72"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="72" id="E6t-Rh-IXU"/>
-                                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="162" id="THx-JU-F6D"/>
-                                                            <constraint firstAttribute="height" constant="72" id="WXD-VD-yWB"/>
-                                                            <constraint firstAttribute="width" constant="162" id="xn3-ik-qSu"/>
-                                                        </constraints>
-                                                        <state key="normal" image="BonusBananas"/>
-                                                        <connections>
-                                                            <action selector="showBonusBananasAlertWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="8Hf-sc-Yw6"/>
-                                                        </connections>
-                                                    </button>
-                                                </subviews>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="trailing" secondItem="snx-yM-lJ2" secondAttribute="trailing" constant="16" id="11g-ID-iqH"/>
-                                                    <constraint firstAttribute="width" constant="228" id="bFH-3N-oFk"/>
-                                                    <constraint firstItem="snx-yM-lJ2" firstAttribute="top" secondItem="lzF-W2-0kz" secondAttribute="top" constant="28" id="jZp-IS-MeI"/>
-                                                    <constraint firstAttribute="height" constant="128" id="kKL-2D-a4v"/>
-                                                </constraints>
-                                            </view>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Waiting..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DYS-hp-fSP">
                                                 <rect key="frame" x="146" y="576" width="83" height="21"/>
                                                 <constraints>
@@ -1673,10 +1646,8 @@ types of Monkey species in the entire world.</string>
                                             <constraint firstItem="5GL-k1-GiO" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="34" id="mfa-BL-9Bs"/>
                                             <constraint firstItem="Era-aI-5mW" firstAttribute="centerX" secondItem="4OG-VV-HHr" secondAttribute="centerX" id="mnQ-SR-lVU"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="r3c-Jx-4VP"/>
-                                            <constraint firstAttribute="trailing" secondItem="lzF-W2-0kz" secondAttribute="trailing" id="spX-Eu-ksQ"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="top" secondItem="4OG-VV-HHr" secondAttribute="bottom" constant="10" id="ucC-27-WkF"/>
                                             <constraint firstItem="otb-Kx-f1J" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="122" id="vFr-ub-nfV"/>
-                                            <constraint firstItem="lzF-W2-0kz" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" id="vby-o5-bIW"/>
                                             <constraint firstItem="Uh6-Lu-Kac" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="vmf-wM-sUo"/>
                                             <constraint firstItem="5GL-k1-GiO" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="xZ3-Oy-2W1"/>
                                         </constraints>
@@ -1705,14 +1676,12 @@ types of Monkey species in the entire world.</string>
                         <outlet property="bananaCountLabel" destination="nFO-HT-MIK" id="TjY-1t-Tai"/>
                         <outlet property="bananaView" destination="5GL-k1-GiO" id="bFT-kp-Cc9"/>
                         <outlet property="bananaViewWidthConstraint" destination="Jwt-fI-cTD" id="rmB-5F-m4O"/>
-                        <outlet property="bonusBananasButton" destination="snx-yM-lJ2" id="1vH-x2-hRa"/>
                         <outlet property="bottomArrowPadding" destination="DUk-aP-Ab3" id="0cJ-Qg-8YH"/>
                         <outlet property="chatButton" destination="IDy-13-zRY" id="Xtq-9E-v9s"/>
                         <outlet property="colorGradientView" destination="e3d-za-UK6" id="4Yv-Zd-oTA"/>
                         <outlet property="connectText" destination="Era-aI-5mW" id="qi7-BD-a4C"/>
                         <outlet property="containerView" destination="N5m-MM-8GO" id="bW5-GI-0Xk"/>
                         <outlet property="factTextView" destination="v9E-7V-2CY" id="k9n-mv-dwN"/>
-                        <outlet property="inviteFriendsView" destination="lzF-W2-0kz" id="KzI-0g-tH6"/>
                         <outlet property="loadingContentView" destination="kBC-65-2jJ" id="a0G-6t-FNc"/>
                         <outlet property="loadingTextLabel" destination="wQB-BV-u1O" id="8gH-r0-Hip"/>
                         <outlet property="matchModeContainer" destination="wqO-t4-SQR" id="vHk-7K-Zej"/>
@@ -2656,17 +2625,17 @@ types of Monkey species in the entire world.</string>
                                                                 <color key="textColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You can not change this info later" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="etf-4a-esh">
-                                                                <rect key="frame" x="20" y="53" width="280" height="18"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Yo you can’t change this later so make sure its all good 💁" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="etf-4a-esh">
+                                                                <rect key="frame" x="20" y="53" width="280" height="36"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="0.25" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Ng-4h-WY3" userLabel="Another Container">
-                                                                <rect key="frame" x="0.0" y="71" width="320" height="192"/>
+                                                                <rect key="frame" x="0.0" y="89" width="320" height="174"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cy7-v3-cBD" userLabel="Text Field Container View">
-                                                                        <rect key="frame" x="20" y="40" width="280" height="113"/>
+                                                                        <rect key="frame" x="20" y="31" width="280" height="113"/>
                                                                         <subviews>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8xZ-W5-ijU" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="280" height="48"/>
@@ -2792,7 +2761,7 @@ types of Monkey species in the entire world.</string>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dLO-op-U2g" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
-                                                                <rect key="frame" x="20" y="111" width="280" height="48"/>
+                                                                <rect key="frame" x="20" y="120" width="280" height="48"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.34999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🎂" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pH2-nc-4gy">
                                                                         <rect key="frame" x="14" y="14" width="23" height="21"/>
@@ -2830,7 +2799,7 @@ types of Monkey species in the entire world.</string>
                                                                 </userDefinedRuntimeAttributes>
                                                             </view>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pj1-bA-vwH">
-                                                                <rect key="frame" x="20" y="174" width="280" height="48"/>
+                                                                <rect key="frame" x="20" y="183" width="280" height="48"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2j6-3h-IAn" customClass="SelectableButton" customModule="Monkey" customModuleProvider="target">
                                                                         <rect key="frame" x="0.0" y="0.0" width="135" height="48"/>
@@ -3030,7 +2999,6 @@ types of Monkey species in the entire world.</string>
         <image name="3.gif" width="239" height="239"/>
         <image name="AddContact" width="29" height="28"/>
         <image name="ArrowButton" width="47" height="30"/>
-        <image name="BonusBananas" width="162" height="72"/>
         <image name="FriendsButton" width="40" height="40"/>
         <image name="Grandpa" width="106" height="107"/>
         <image name="Party" width="107" height="106"/>

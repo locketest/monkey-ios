@@ -10,6 +10,7 @@ import RealmSwift
 
 class RealmRelationship: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "relationships"
+	static let api_version = APIController.shared.apiVersion
     
     dynamic var relationship_id: String?
     /// The other user

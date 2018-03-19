@@ -154,9 +154,9 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
             self.selectedGender = Gender(rawValue: gender)
         }
         
-        self.snapchatEmoji.alpha = snapchatTextField.text?.characters.count == 0 ? 0.35 : 1.0
-        self.nameEmoji.alpha = nameTextField.text?.characters.count == 0 ? 0.35 : 1.0
-        self.birthdayEmoji.alpha = birthDateTextField.text?.characters.count == 0 ? 0.35 : 1.0
+        self.snapchatEmoji.alpha = snapchatTextField.text?.count == 0 ? 0.35 : 1.0
+        self.nameEmoji.alpha = nameTextField.text?.count == 0 ? 0.35 : 1.0
+        self.birthdayEmoji.alpha = birthDateTextField.text?.count == 0 ? 0.35 : 1.0
     }
     
     func keyboardWillShow(_ notification: Notification) {
@@ -183,7 +183,7 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
     }
     
     func snapchatDidChange(textField: UITextField) {
-        self.snapchatEmoji.alpha = textField.text?.characters.count == 0 ? 0.35 : 1.0
+        self.snapchatEmoji.alpha = textField.text?.count == 0 ? 0.35 : 1.0
         self.nextButton.isEnabled = self.isValid
     }
     
@@ -354,13 +354,12 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
         let text = (textField.text ?? "") as NSString
         let newTextCharacters = text
             .replacingCharacters(in: range, with: string)
-            .characters
             .filter { String($0).rangeOfCharacter(from: CharacterSet.letters) != nil }
         let newText = String(newTextCharacters)
         
         textField.text = newText
         
-        self.nameEmoji.alpha = newText.characters.count == 0 ? 0.35 : 1.0
+        self.nameEmoji.alpha = newText.count == 0 ? 0.35 : 1.0
         self.nextButton.isEnabled = self.isValid
 
         return false

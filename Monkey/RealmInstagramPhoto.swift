@@ -9,8 +9,8 @@
 import UIKit
 
 class RealmInstagramPhoto: JSONAPIObject, JSONAPIObjectProtocol {
-
     static let type = "instagram_photos"
+	static let api_version = APIController.shared.apiVersion
     
     dynamic var instagram_photo_id: String?
     dynamic var standard_resolution_image_url: String?

@@ -23,10 +23,6 @@
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v) \
 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
-@class OTDeviceInfo;
-#define RUNTIME_IPHONE_4S [@"iPhone4,1" isEqualToString:[[OTDeviceInfo class] performSelector:@selector(machineName)]]
-
-
 @implementation MonkeyVideoCapture {
     id<OTVideoCaptureConsumer> _videoCaptureConsumer;
     OTVideoFrame* _videoFrame;
@@ -55,11 +51,7 @@
 -(id)init {
     self = [super init];
     if (self) {
-        if (RUNTIME_IPHONE_4S) {
-            _capturePreset = AVCaptureSessionPresetMedium;
-        } else {
-            _capturePreset = AVCaptureSessionPreset640x480;
-        }
+		_capturePreset = AVCaptureSessionPreset640x480;
         [[self class] dimensionsForCapturePreset:_capturePreset
                                            width:&_captureWidth
                                           height:&_captureHeight];

@@ -18,8 +18,6 @@ PODS:
   - FBNotifications (1.0.1)
   - FBSDKCoreKit (4.31.1):
     - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.31.1):
-    - FBSDKCoreKit
   - Firebase/Core (4.10.1):
     - FirebaseAnalytics (= 4.1.0)
     - FirebaseCore (= 4.0.17)
@@ -88,7 +86,6 @@ DEPENDENCIES:
   - Fabric
   - FBNotifications
   - FBSDKCoreKit
-  - FBSDKLoginKit
   - Firebase/Messaging
   - Firebase/RemoteConfig
   - MMSProfileImagePicker
@@ -109,7 +106,6 @@ SPEC CHECKSUMS:
   Fabric: ae7146a5f505ea370a1e44820b4b1dc8890e2890
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
   FBSDKCoreKit: e08ccfcefa7bc1347a07c276dac9bf6c7fe57024
-  FBSDKLoginKit: 99797ac39252fef6f72600b886f6ee60b4b29cab
   Firebase: 92c6ba593e32db0defde464a9adc981d5cb49f97
   FirebaseABTesting: d07d0ee833b842d5153549e4c7e2e2cb1c23a3f9
   FirebaseAnalytics: 3dfae28d4a5e06f86c4fae830efc2ad3fadb19bc
@@ -129,6 +125,6 @@ SPEC CHECKSUMS:
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftyGif: d36c6dfb52e2ca1e48fe349d225f50ec4123ec85
 
-PODFILE CHECKSUM: c099fa5f1945bbfdfa5ff7b9b1aeb646e14c1a5a
+PODFILE CHECKSUM: e4e76a9a6d6613ec208a8feea2523138ba749f5f
 
 COCOAPODS: 1.4.0

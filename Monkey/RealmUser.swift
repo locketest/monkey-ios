@@ -11,6 +11,7 @@ import Alamofire
 
 class RealmUser: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "users"
+	static let api_version = APIController.shared.apiVersion
     
     let friendships = LinkingObjects(fromType: RealmFriendship.self, property: "user")
     

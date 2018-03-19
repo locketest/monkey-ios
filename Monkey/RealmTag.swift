@@ -12,7 +12,7 @@ import Alamofire
 
 class RealmTag: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "tags"
-
+	static let api_version = APIController.shared.apiVersion
     
     // MARK: Experiment strings
     

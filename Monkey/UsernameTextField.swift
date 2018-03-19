@@ -24,7 +24,7 @@ import UIKit
 
     /// Returns true when the username is in snapchat username format.
     var isValid: Bool {
-        return self.username.characters.count >= 3
+        return self.username.count >= 3
     }
 
     var keyboardHeight: CGFloat = 0 {
@@ -72,7 +72,6 @@ import UIKit
         let text = self.username as NSString
         let newTextCharacters = text
             .replacingCharacters(in: range, with: string)
-            .characters
             .filter { String($0).rangeOfCharacter(from: .snapchat) != nil }
         let newText = String(newTextCharacters)
 

@@ -49,13 +49,12 @@ let treeLabelWidth:CGFloat = 48.0
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
-class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, FacebookViewControllerDelegate {
+class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate {
 
 	internal func showAlert(alert: UIAlertController) {
 		self.present(alert, animated: true, completion: nil)
 	}
 
-	@IBOutlet var bonusBananasButton: BigYellowButton!
 	@IBOutlet weak public var acceptButton: BigYellowButton?
 
 	@IBOutlet weak var loadingContentView: MakeUIViewGreatAgain!
@@ -67,7 +66,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 
 	@IBOutlet weak public var skipButton: BigYellowButton!
 
-	@IBOutlet var inviteFriendsView: UIView!
 	@IBOutlet weak public var settingsButton: BigYellowButton!
 	@IBOutlet weak var chatButton: BigYellowButton!
 
@@ -202,7 +200,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var hashtagID : String?
 	/// Channels that the user has in common with the current skippable call
 	var mutualChannels = Array<RealmChannel>()
-	var inviteFriendsViewController: FacebookViewController?
 	var appeared = false
 	var viewsHiddenWhenShowingSettings = [UIButton]()
 	var nextFact = APIController.shared.currentExperiment?.initial_fact_discover ?? ""
@@ -232,7 +229,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.settingsButton.isHidden = true
 				self.chatButton.isHidden = true
 				self.pageViewIndicator.isHidden = true
-				self.inviteFriendsView.isHidden = true
 				self.bananaView.isHidden = true
 				self.matchModeSwitch.isHidden = true
 				self.matchModePopup.isHidden = true
@@ -259,7 +255,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.settingsButton.isHidden = false
 				self.chatButton.isHidden = false
 				self.pageViewIndicator.isHidden = false
-				self.inviteFriendsView.isHidden = false
 				self.bananaView.isHidden = false
 				if self.matchModeSwitch.isEnabled {
 					self.matchModeSwitch.isHidden = false
@@ -485,9 +480,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      if APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.birth_date == nil {
           self.present(self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0 ? "editAccountSmallVC" : "editAccountVC"), animated: true, completion: nil)
      }
-
-		// Tell bonus bananas button to hide if we have unlocked the achievement
-		self.updateInvitationButton()
+		
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -501,34 +494,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.requestLocationPermissionIfUnavailable() // This will cause the thred to hang so we still need to toggle chat finding to cancel any existing requests.
 		self.startFindingChats(forReason: "location-services")
 		self.checkCamAccess()
-
-		self.view.layoutIfNeeded()
-
-		self.currentUserNotifcationToken = APIController.shared.currentUser?.addNotificationBlock({ (change) in
-			self.updateInvitationButton()
-		})
-
-		self.currentExperimentNotifcationToken = APIController.shared.currentExperiment?.addNotificationBlock({ (change) in
-			self.updateInvitationButton()
-		})
-	}
-
-	func updateInvitationButton() {
-		guard Achievements.shared.authorizedFacebookForBonusBananas == false else {
-			self.bonusBananasButton.isHidden = true
-			return
-		}
-		guard APIController.shared.currentExperiment?.facebook_app_id != nil else {
-			self.bonusBananasButton.isHidden = true
-			return
-		}
-
-		guard APIController.shared.currentUser?.facebook_friends_invited.value == nil else {
-			self.bonusBananasButton.isHidden = true
-			return
-		}
-
-		self.bonusBananasButton.isHidden = false
 	}
 
 	func checkCamAccess() {
@@ -587,50 +552,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		smsVC.messageComposeDelegate = self
 
 		self.present(smsVC, animated: true, completion: nil)
-	}
-
-
-	/// Displays an alert showing the users the current ways of getting bonus bananas.
-	///
-	/// - Parameter sender: the instance of `BigYellowButton` that triggered the action
-	@IBAction func showBonusBananasAlert(sender:BigYellowButton) {
-		let bonusBananasAlert = UIAlertController(title: "🎉 Get bonus bananas", message: "Get bonus bananas by sharing Monkey with friends by doing the tasks below.", preferredStyle: .alert)
-
-		bonusBananasAlert.addAction(UIAlertAction(title: "Link Facebook = 🍌1000", style: .default, handler: {
-			(UIAlertAction) in
-			self.inviteFacebookFriends()
-			bonusBananasAlert.dismiss(animated: true, completion: nil)
-		}))
-
-		bonusBananasAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {
-			(UIAlertAction) in
-			bonusBananasAlert.dismiss(animated: true, completion: nil)
-		}))
-
-		self.present(bonusBananasAlert, animated: true, completion: nil)
-	}
-
-
-	/// Opens FacebookViewController -- called from the 'Bonus Bananas Popup'
-	func inviteFacebookFriends() {
-		self.inviteFriendsViewController = FacebookViewController()
-		self.inviteFriendsViewController?.delegate = self
-
-		guard let inviteFriendsViewController = self.inviteFriendsViewController else {
-			return
-		}
-		inviteFriendsViewController.login(controller: self)
-	}
-
-	/**
-	Completion delegate method for FacebookViewController, simply releases the reference to FacebookViewController, releasing it from memory.
-	*/
-	func loginCompleted(facebookViewController: FacebookViewController) {
-
-	}
-
-	func invitesCompleted(facebookViewController: FacebookViewController) {
-		self.inviteFriendsViewController = nil
 	}
 
 	@IBAction func acceptButtonTapped(sender: Any) {
@@ -1022,7 +943,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			let alpha:CGFloat = shouldHide ? 0 : 1
 			self.chatButton.alpha = alpha
 			self.settingsButton.alpha = alpha
-			self.inviteFriendsView.alpha = alpha
 			self.bananaView.alpha = alpha
 			self.arrowButton.alpha = alpha
 			self.loadingTextLabel.alpha = alpha

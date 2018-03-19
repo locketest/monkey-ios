@@ -76,8 +76,9 @@ class AsyncCarouselImageView: UIImageView, AsyncImageDelegate {
             // image is loading indicator for the user
             return
         }
-        
-        guard let nextImage = self.asyncImages[currentIndex+1] as? AsyncImage, let loadedImage = nextImage.image else {
+		
+		let nextImage = self.asyncImages[currentIndex + 1]
+        guard let loadedImage = nextImage.image else {
             waitingForNextImage = true
             return
         }

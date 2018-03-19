@@ -10,6 +10,7 @@ import UIKit
 
 class RealmBlock: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "blocks"
+	static let api_version = APIController.shared.apiVersion
     
     dynamic var block_id:String?
     dynamic var blocked_user:RealmUser?

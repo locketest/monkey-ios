@@ -25,7 +25,7 @@ class PresentPopupTransitionAnimator: NSObject, UIViewControllerAnimatedTransiti
             print("Error: Attempting to use PresentPopupTransitionAnimator but to view is missing.")
             return
         }
-        guard let fromViewController = transitionContext.viewController(forKey: .from) else {
+		guard (transitionContext.viewController(forKey: .from)) != nil else {
             print("Error: Attempting to use PresentPopupTransitionAnimator from a presentingVC that doesn't exist.")
             return
         }

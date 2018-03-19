@@ -246,4 +246,6 @@ protocol JSONAPIObjectProtocol {
     static var type: String { get }
     // Based on Realm
     static func primaryKey() -> String
+	// the special api version
+	static var api_version: String { get }
 }
