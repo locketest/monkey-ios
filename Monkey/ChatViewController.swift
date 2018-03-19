@@ -147,7 +147,41 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
         let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name:self.profileNameLabel.text, profile_image_url:self.profileImageView.url, user_id:realmCall.initiator?.user_id), token: token, loadingDelegate: self, isDialedCall: true)
         chatSession.accept() // we accept before setting it because didSet checks to see if it's been accepted to differientiate bw initiated and incoming calls
+        
         self.chatSession = chatSession
+        
+        guard let userID = self.viewModel.friendship?.user?.user_id else {
+            print("Missed user id when make a friend call");
+            return
+        }
+        
+        let parameters:[String:Any] = [
+            "sessionId":chatSession.session.sessionId,
+            "event":"connectionCreated",
+            "timestamp": NSNumber.init(value: Date.init().timeIntervalSince1970 * 1000),
+            "connection":[
+                "data":"c=\(String(describing: chatSession.chat?.chatId)),user_id=\(userID)"
+            ]
+        ]
+        
+        JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/opentok_callbacks", method:.post, parameters: parameters as Parameters, options: [
+            .header("Authorization", APIController.authorization),
+            ]).addCompletionHandler({ result in
+                switch result {
+                case .error(let error):
+                    print("make friend call notifi failed .. \(error)")
+                case .success(let jsonAPIDocument):
+                    RealmDataController.shared.apply(jsonAPIDocument) { result in
+                        switch result {
+                        case .error(let error):
+                            print("make friend call notifi failed .. \(error)")
+                            break
+                        case .success(let documentObjects): break
+                            //  do nothing
+                        }
+                    }
+                }
+            })
     }
 
     override func viewDidLoad() {        
@@ -348,10 +382,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.viewModel.markRead()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     func keyboardWillChangeFrame(notification: NSNotification) {
 
         guard let userInfo = notification.userInfo else {

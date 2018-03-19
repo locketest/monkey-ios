@@ -293,7 +293,6 @@ class RealmDataController: NSObject {
                     // If the above failed, parse the response as an array of resources
                     try jsonAPIDocument.dataResourceCollection?.forEach { newObjects.append(try self.parseJSONAPIResource($0)) }
                     // If some items were included, lets parse those too.
-                    // TODO: Will cause match error
                     try jsonAPIDocument.included?.forEach {
                         try self.parseJSONAPIResource($0)
                     }

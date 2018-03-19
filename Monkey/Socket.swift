@@ -25,6 +25,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
     static let shared = Socket()
     weak var currentFriendshipsJSONAPIRequest: JSONAPIRequest?
     weak var currentMessagesJSONAPIRequest: JSONAPIRequest?
+    public weak var delegate: MonkeySocketDelegate?
     var isEnabled = false {
         didSet {
             if self.isEnabled {
@@ -161,7 +162,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
         self.didReceive(error: error)
     }
     internal func websocketDidReceiveMessage(socket webSocket: WebSocket, text: String) {
-         print("websocketDidReceiveMessage \(text)")
+        print("websocketDidReceiveMessage \(text)")
         guard let result = text.asJSON as? Array<Any> else {
             print("Result must be an array")
             return
@@ -191,7 +192,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
                     return
                 }
                 if messageId == -1 {
-                    self.parseJSONAPIData(data: data["data"] as! [String:Any])
+                    self.parseJSONAPIData(data: data["data"] as! [String:Any],channel: channel)
                 }
                 for (callbackId, callback) in callbacks {
                     if callbackId == messageId {
@@ -201,29 +202,35 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
                 }
             }
         case "chat":
-            self.parseJSONAPIData(data: data)
+            self.parseJSONAPIData(data: data,channel: channel)
         case "json_api_data":
-            self.parseJSONAPIData(data: data)
+            self.parseJSONAPIData(data: data,channel: channel)
+        case "matched_user":
+            self.parseJSONAPIData(data: data,channel: channel)
         default:
             break
         }
     }
 
-    internal func parseJSONAPIData(data: [String:Any]) {
+    internal func parseJSONAPIData(data: [String:Any],channel:String) {
         RealmDataController.shared.apply(JSONAPIDocument(json: data)) { result in
             switch result {
             case .error(let error):
                 error.log()
             case .success(let objects):
+                if(channel == "matched_user") , let delegate = self.delegate{
+                    delegate.webSocketDidRecieveMatch(match: objects.first as Any,data: data)
+                }
                 print("Received \(objects.count) more objects from the socket.")
             }
             // Nothing really needs to happen here. The data goes into realm and the notification blocks update the UI.
         }
     }
-
+    
     internal func websocketDidReceiveData(socket webSocket: WebSocket, data: Data) {
         print("websocketDidReceiveData \(data)")
     }
+
     internal func websocketDidReceivePong(socket webSocket: WebSocket, data: Data?) {
         print("websocketDidReceivePong \(String(describing: data)))")
     }
@@ -250,6 +257,10 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
             }
         }
     }
+}
+
+public protocol MonkeySocketDelegate: class {
+    func webSocketDidRecieveMatch(match: Any,data: [String:Any])
 }
 
 extension Array {

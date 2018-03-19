@@ -105,7 +105,6 @@ class JSONAPIObject: Object {
                 case .error(let error):
                     return operationCompletionHandler(.error(error))
                 case .success(let jsonAPIDocument):
-                    print("----------------------------->>>>>>>>>>>>>>>>>>>>>")
                     print(jsonAPIDocument.json)
                     RealmDataController.shared.apply(jsonAPIDocument) { result in
                         switch result {
@@ -133,7 +132,42 @@ class JSONAPIObject: Object {
             operationCompletionHandler(.error(.notJSONAPIObjectProtocol))
             return nil
         }
-        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)", method:.post, parameters: parameters as Parameters, options: [
+        
+        // FIXME: del it
+        var url = "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)"
+        if type == "chats" {
+            url = "\(Environment.baseURL)/api/v1.3/match_request"
+        }
+        return JSONAPIRequest(url: url, method:.post, parameters: parameters as Parameters, options: [
+            .header("Authorization", APIController.authorization),
+            ]).addCompletionHandler({ result in
+                switch result {
+                case .error(let error):
+                    return operationCompletionHandler(.error(error))
+                case .success(let jsonAPIDocument):
+                    RealmDataController.shared.apply(jsonAPIDocument) { result in
+                        switch result {
+                        case .error(let error):
+                            return operationCompletionHandler(.error(error))
+                        case .success(let documentObjects):
+                            operationCompletionHandler(.success(documentObjects as? [T] ?? [T]()))
+                        }
+                    }
+                }
+            })
+    }
+    
+    @discardableResult class func create<T: JSONAPIObjectProtocol>(parameters: [String:Any] = [:],subpath:String, completion operationCompletionHandler: @escaping JSONAPIOperationCompletionHandler<T>) -> JSONAPIRequest? {
+        guard let type = (self as? JSONAPIObjectProtocol.Type)?.type else {
+            operationCompletionHandler(.error(.notJSONAPIObjectProtocol))
+            return nil
+        }
+        // FIXME: del it
+        var url = "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/\(type)"
+//        if type == "chats" {
+//            url = "\(Environment.baseURL)/api/v1.3/match_request/\(subpath)"
+//        }
+        return JSONAPIRequest(url: url, method:.post, parameters: parameters as Parameters, options: [
             .header("Authorization", APIController.authorization),
             ]).addCompletionHandler({ result in
                 switch result {

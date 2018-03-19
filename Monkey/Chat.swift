@@ -94,6 +94,7 @@ class Chat {
         ]
         
         Alamofire.request("\(Environment.baseURL)/api/v1.0/chats/\(self.chatId)", method: .patch, parameters: paramaters, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
+//        Alamofire.request("\(Environment.baseURL)/api/v1.3/match_request", method: .patch, parameters: paramaters, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
             if let error = response.result.error {
                 callback?(error.localizedDescription)
                 return
