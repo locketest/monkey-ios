@@ -186,21 +186,27 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                     }else{
                         self?.birthdayField.isUserInteractionEnabled = false
                     }
-                        
+                    //服务器返回的时间是 未来能修改的那一天的日期,不是返回的修改日期
 					let time = self?.userOption?.update_username.timeIntervalSince1970 ?? 0
 					let now = Date().timeIntervalSince1970*1000
-					let isPast = now - time > 0
+                     
+                   
+					let canEdit = time - now  < 0
                     let sec:Double = abs(now - time)/1000
 					let min:Double = round(sec/60)
 					let hr:Double = round(min/60)
 					let d:Int = Int(round(hr/24))
 					
-					if isPast == true && d >= 60 {
+					if canEdit == true {
                         self?.firstNameField.isUserInteractionEnabled = true
                         self?.firstNameTipLab.text = ""
                     }else{
                         self?.firstNameField.isUserInteractionEnabled = false
-                        self?.firstNameTipLab.text = "You can change your name after \(d) days"
+                        if d==60{
+                            self?.firstNameTipLab.text = "You can change your name once every 2 months"
+                        }else{
+                            self?.firstNameTipLab.text = "You can change your name after \(d) days"
+                        }
                     }
 				}
 			}
