@@ -112,7 +112,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.editProfileView.layer.cornerRadius = self.containerView.layer.cornerRadius
         self.editProfileView.layer.masksToBounds = true
         
-        let editProfileTitleLab:UILabel = UILabel.init(frame: CGRect(x:0,y:0,width:editProfileView.frame.size.width,height:30))
+        let editProfileTitleLab:UILabel = UILabel.init(frame: CGRect(x:0,y:0,width:UIScreen.main.bounds.size.width,height:30))
         //foregroundColor
         editProfileTitleLab.backgroundColor = UIColor.init(white: 0, alpha: 0.56)
         let attributedString = NSMutableAttributedString(string: " ✏️ Edit Profile", attributes: [
@@ -123,7 +123,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         editProfileTitleLab.attributedText = attributedString
         self.editProfileView.addSubview(editProfileTitleLab)
         
-        editProfileContentView =  UIView.init(frame: CGRect(x: 0, y: 30, width: self.editProfileView.frame.size.width, height: self.editProfileView.frame.size.height - 30))
+        editProfileContentView =  UIView.init(frame: CGRect(x: 0, y: 30, width: UIScreen.main.bounds.size.width, height: self.editProfileView.frame.size.height - 30))
         editProfileContentView.backgroundColor = UIColor.black
         self.editProfileView.addSubview(editProfileContentView)
 		self.crateEditProfileUI()
@@ -134,7 +134,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 		self.refreshEditStatus()
 		
         self.pickerContainerView.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220);
-        self.editProfileView.frame = CGRect(x:UIScreen.main.bounds.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height)
+        self.editProfileView.frame = CGRect(x:UIScreen.main.bounds.size.width,y:self.containerView.frame.origin.y,width:UIScreen.main.bounds.size.width-10,height:self.containerView.frame.size.height)
         self.editButtons.setImage(UIImage(named:"EditProfileButtton"), for: .normal)
         self.editButtons.isSelected = false
         self.containerView.isHidden = false
@@ -171,7 +171,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 	}
 	
 	func refreshEditStatus() {
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/\(UserOptions.api_version)/\(UserOptions.type)", options: [
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/\(UserOptions.api_version)/\(UserOptions.requst_subfix)", options: [
 			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler {[weak self] (response) in
 			switch response {
@@ -179,19 +179,29 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 				case .success(let jsonAPIDocument):
 					do {
 					self?.userOption = Mapper<UserOptions>().map(JSON: jsonAPIDocument.json)
-					
+                    let canEditUserBirthday = (self?.userOption?.update_birth_date)!
+                     
+                    if canEditUserBirthday{
+                        self?.birthdayField.isUserInteractionEnabled = true
+                    }else{
+                        self?.birthdayField.isUserInteractionEnabled = false
+                    }
+                        
 					let time = self?.userOption?.update_username.timeIntervalSince1970 ?? 0
-					let now = Date().timeIntervalSince1970
+					let now = Date().timeIntervalSince1970*1000
 					let isPast = now - time > 0
-					
-					let sec:Double = abs(now - time)
+                    let sec:Double = abs(now - time)/1000
 					let min:Double = round(sec/60)
 					let hr:Double = round(min/60)
-					let d:Double = round(hr/24)
+					let d:Int = Int(round(hr/24))
 					
 					if isPast == true && d >= 60 {
-						
-					}
+                        self?.firstNameField.isUserInteractionEnabled = true
+                        self?.firstNameTipLab.text = ""
+                    }else{
+                        self?.firstNameField.isUserInteractionEnabled = false
+                        self?.firstNameTipLab.text = "You can change your name after \(d) days"
+                    }
 				}
 			}
 		}
@@ -278,9 +288,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 		}
 		
 		var attributes: [RealmUser.Attribute] = []
-		
+        var editFirstName :Bool = false
+        var editBirthDay :Bool = false
 		if let newFirstName = self.firstNameField.text, newFirstName != currentUser.first_name {
 			attributes.append(.first_name(newFirstName))
+            editFirstName = true
 		}
 		
 		if let newBirthdayStr = self.birthdayField.text {
@@ -291,6 +303,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 				let oldBirthdayStr = dateFormatter.string(from: oldBirthdayDate)
 				if (newBirthdayStr != oldBirthdayStr) {
 					attributes.append(.birth_date(self.datePicker.date as NSDate))
+                    editBirthDay = true
 				}
 			}
 		}
@@ -308,9 +321,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 				
 				guard error == nil else {
 					// 保存失败
-					
+
 					return
 				}
+                
 				var userProperty = [String: Any]()
 				
 				currentUser.first_name.then {
@@ -324,7 +338,18 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 				currentUser.birth_date.then {
 					userProperty["birth_date"] = $0
 				}
-				
+                DispatchQueue.main.async {
+                    if editBirthDay{
+                        self.birthdayField.isUserInteractionEnabled = false
+                    }
+                    if editFirstName{
+                        self.firstNameField.isUserInteractionEnabled = false
+                        self.firstNameTipLab.text = "You can change your name once every 2 months"
+                    }
+                    self.view.endEditing(true)
+                    self.saveBtn.alpha = 0.25
+                    self.saveBtn.isUserInteractionEnabled = false
+                }
 				AnaliticsCenter.update(userProperty: userProperty)
 				// 保存成功
 			}
@@ -397,10 +422,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         }
     }
 
-    @IBAction func editProfileTapped(_ sender: Any) {
+    @IBAction func editProfileTapped(_ sender: UIButton) {
         let  settingRect:CGRect = CGRect(x:-self.view.frame.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height);
-        
-        let  editprofileRect:CGRect = CGRect(x:5,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:containerView.frame.size.height)
+        sender.isUserInteractionEnabled = false
+        let  editprofileRect:CGRect = CGRect(x:5,y:self.containerView.frame.origin.y,width:UIScreen.main.bounds.size.width-10,height:containerView.frame.size.height)
         
         self.editProfileView.frame = CGRect(x:self.editProfileView.frame.origin.x,y:self.containerView.frame.origin.y,width:self.editProfileView.frame.size.width,height:self.editProfileView.frame.size.height)
         self.editProfileView.setNeedsLayout()
@@ -414,6 +439,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 self.view.layoutIfNeeded()
 //                self.containerView.frame = CGRect(x:5,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height)
             }) { (completed) in
+                sender.isUserInteractionEnabled = true
             }
         }else{
             self.editStatus = true
@@ -441,7 +467,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                     self.leftMargin.constant = 5
                     self.containerView.isHidden = true
                 }, completion: { done in
-                    
+                    sender.isUserInteractionEnabled = true
                 })
                 self.view.layoutIfNeeded()
             }
@@ -760,6 +786,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.firstNameField.text = ""
         self.firstNameField.delegate = self
         self.firstNameField.textAlignment = .right
+        self.firstNameField.isUserInteractionEnabled = false
         self.firstNameField.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.firstNameField)
         
@@ -776,6 +803,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.birthdayField = UITextField.init(frame: CGRect(x:205,y:63,width:textFieldWidth,height:20))
         self.birthdayField.textColor = UIColor.init(white: 1, alpha: 0.7)
         self.birthdayField.text = ""
+        self.birthdayField.isUserInteractionEnabled = false
         self.birthdayField.delegate = self
         self.birthdayField.textAlignment = .right
         self.birthdayField.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
@@ -831,7 +859,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         
         self.datePicker = BirthdatePicker(frame: CGRect(x:0, y:0, width:self.pickerContainerView.frame.size.width, height:216))
         self.datePicker.addTarget(self, action: #selector(dateChanged),
-                             for: .valueChanged)
+                             for:UIControlEvents.valueChanged)
         self.datePicker.datePickerMode = UIDatePickerMode.date
         self.pickerContainerView.addSubview(self.datePicker)
         
@@ -857,24 +885,24 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         }
         self.cancelBtn.isHidden = true
         self.saveBtn.isHidden = true
-        self.firstNameTipLab.text = ""
-        self.birthdayTipLab.text = ""
+//        self.firstNameTipLab.text = ""
+//        self.birthdayTipLab.text = ""
     }
     func dateChanged(datePicker : BirthdatePicker){
         self.birthdayField.text = datePicker.formattedDate
-    }
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        if textField == self.firstNameField{
-            self.firstNameTipLab.text = ""
+        self.birthdayTipLab.text = "Better make sure yo, you can only change this once"
+        self.birthdayTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
+        
+        self.saveBtn.isUserInteractionEnabled = true
+        self.saveBtn.alpha = 1.0
+        if !self.isValid {
+            self.saveBtn.isUserInteractionEnabled = false
+            self.saveBtn.alpha = 0.25
         }
-        if textField == self.birthdayField{
-            self.birthdayTipLab.text = ""
-        }
-        return true
     }
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        self.firstNameTipLab.text = ""
-        self.birthdayTipLab.text = ""
+//        self.firstNameTipLab.text = ""
+//        self.birthdayTipLab.text = ""
         self.editBirthdayStatus = false
         self.cancelBtn.isHidden = false
         self.saveBtn.isHidden = false
@@ -884,9 +912,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         }
         if textField == self.birthdayField{
             self.editBirthdayStatus = true
-            self.firstNameTipLab.text = ""
-            self.birthdayTipLab.text = "Better make sure yo, you can only change this once"
-            self.birthdayTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
             self.view.endEditing(true)
             UIView.animate(
                 withDuration: 0.25,
