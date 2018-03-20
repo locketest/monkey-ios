@@ -202,11 +202,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                         self?.firstNameTipLab.text = ""
                     }else{
                         self?.firstNameField.isUserInteractionEnabled = false
-                        if d==60{
-                            self?.firstNameTipLab.text = "You can change your name once every 2 months"
-                        }else{
+//                        if d==60{
+//                            self?.firstNameTipLab.text = "You can change your name once every 2 months"
+//                        }else{
                             self?.firstNameTipLab.text = "You can change your name after \(d) days"
-                        }
+//                        }
                     }
 				}
 			}
