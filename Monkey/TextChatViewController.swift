@@ -496,6 +496,10 @@ extension TextChatViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension TextChatViewController: MatchViewControllerProtocol {
+    func opponentDidTurnToBackground(in chatSession: ChatSession) {
+        self.autoScreenShotUpload(source: .opponent_background)
+    }
+    
 	internal func friendMatched(in chatSession: ChatSession?) {
 		if let currentChatSession = chatSession {
 			Achievements.shared.snapchatMatches += 1
