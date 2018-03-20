@@ -37,6 +37,7 @@ enum ReportType: Int {
 enum AutoScreenShotType: String {
 	case match_5s = "match_5s"
 	case match_disconnec = "match_disconnec"
+     case opponent_background = "opponent_background"
 }
 
 enum showRateAlertReason: String {
@@ -436,12 +437,10 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		print("Started finding \(forReason):  \(reason)")
 		if self.stopFindingReasons.count == 0 {
 			isFindingChats = true
+          self.matchRequestTimer?.fire()
+          self.matchRequestTimer?.fireDate = Date()
 		} else {
 			print("Still not finding because: \(stopFindingReasons.split(separator: ","))")
-		}
-		if self.chatSession == nil {
-			self.matchRequestTimer?.fire()
-          self.matchRequestTimer?.fireDate = Date()
 		}
 
 		// ticker = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(tick), userInfo: nil, repeats: true)
