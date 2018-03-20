@@ -52,7 +52,7 @@ typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate {
 	
 	func webSocketDidRecieveMatch(match: Any, data: [String : Any]) {
-		if isFindingChats , let realmCall = match as? RealmCall {
+		if isFindingChats , let realmCall = match as? RealmCall , self.chatSession == nil{
 			self.progressMatch(call: realmCall,data: data)
 		}
 	}
@@ -466,6 +466,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.hashtag = ""
 		self.stopFindingChats(andDisconnect: false, forReason: "application-status")
 		Socket.shared.isEnabled = false
+        self.chatSession?.userTurnIntoBackground()
 	}
 
 	func appMovedToForeground() {

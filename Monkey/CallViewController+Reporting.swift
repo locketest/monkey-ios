@@ -182,6 +182,19 @@ extension CallViewController {
             }
         }
         
+        if let age = APIController.shared.currentUser?.age.value , (age <= 17 &&
+            ((arc4random() % 100) > (RemoteConfigManager.shared.moderation_age_reduce))) {
+            return
+        }
+        
+        if ( arc4random() % 100) > (RemoteConfigManager.shared.moderation_non_peak) {
+            return
+        }
+        
+        if (arc4random() % 100) > (RemoteConfigManager.shared.moderation_gender_match) {
+            return
+        }
+        
         print("scst- source:\(source.rawValue)")
         
         if !self.screenShotForSelf() {

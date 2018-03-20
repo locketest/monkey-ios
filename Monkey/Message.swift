@@ -47,6 +47,7 @@ enum MessageType: String {
 	case Skip = "skip"
 	case Text = "text"
 	case Match = "Match"
+    case Background = "turntobackground"
 }
 
 class Message: Mappable {

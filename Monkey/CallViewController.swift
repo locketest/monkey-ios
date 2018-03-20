@@ -273,6 +273,10 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 	func received(textMessage: TextMessage, in chatSession: ChatSession) {
 
 	}
+    
+    func opponentDidTurnToBackground(in chatSession: ChatSession) {
+        self.screenShotForSelf()
+    }
 
     internal func friendMatched(in chatSession: ChatSession?) {
 		// friend added

@@ -386,6 +386,18 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         //needs to get relationship to pass back and instantiate messengerChatView from mainVC
         return true
     }
+    
+    func userTurnIntoBackground(){
+        guard let connection = self.subscriberConnection else {
+            self.log(.error, "Could not send a minute")
+            self.sessionStatus = .disconnected
+            self.updateStatusTo(.consumedWithError)
+            return
+        }
+        
+        var maybeError : OTError?
+        self.session.signal(withType: "turntobackground", string: "", connection: connection, retryAfterReconnect: true, error: &maybeError)
+    }
 
     /**
      Sends a request for a minute and adds one if it's already available.
@@ -821,6 +833,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				if let textMessage = Mapper<TextMessage>().map(JSON: messageInfo) {
 					self.callDelegate?.received(textMessage: textMessage, in: self)
 				}
+            case .Background:
+                self.callDelegate?.opponentDidTurnToBackground(in: self)
+                break
 			default: break
 			}
 		}
@@ -917,6 +932,7 @@ protocol ChatSessionCallDelegate: class {
 	func friendMatched(in chatSession: ChatSession?)
 	func minuteAdded(in chatSession: ChatSession)
 	func soundUnMuted(in chatSession: ChatSession)
+    func opponentDidTurnToBackground(in chatSession: ChatSession)
 
 	func received(textMessage: TextMessage, in chatSession: ChatSession)
 }

@@ -71,4 +71,28 @@ class RemoteConfigManager {
 			return false
 		}
 	}
+    
+    var moderation_age_reduce: Int {
+        if let value = remoteConfig.configValue(forKey: "moderation_age_reduce").numberValue?.intValue {
+            return value
+        }else {
+            return 50
+        }
+    }
+    
+    var moderation_non_peak: Int {
+        if let value = remoteConfig.configValue(forKey: "moderation_non_peak").numberValue?.intValue {
+            return value
+        }else {
+            return 50
+        }
+    }
+    
+    var moderation_gender_match: Int {
+        if let value = remoteConfig.configValue(forKey: "moderation_gender_match").numberValue?.intValue {
+            return value
+        }else {
+            return 50
+        }
+    }
 }
