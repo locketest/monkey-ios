@@ -346,6 +346,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                         self.firstNameField.isUserInteractionEnabled = false
                         self.firstNameTipLab.text = "You can change your name once every 2 months"
                     }
+                    self.editBirthdayStatus = false
                     self.view.endEditing(true)
                     self.saveBtn.alpha = 0.25
                     self.saveBtn.isUserInteractionEnabled = false
