@@ -7,5 +7,7 @@
 #import "MonkeyVideoRender.h"
 #import "MonkeyVideoCapture.h"
 #import "KeyboardManager.h"
+#import "HWCameraManager.h"
 
+#import <GPUImage/GPUImage.h>
 #import <CommonCrypto/CommonCrypto.h>

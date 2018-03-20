@@ -580,11 +580,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             return
         }
     }
-    func toggleCameraPosition(){
-        MonkeyPublisher.shared.defaultVideoCapture?.toggleCameraPosition();
+    func toggleCameraPosition() {
+		HWCameraManager.shared().rotateCameraPosition()
     }
-    func toggleFrontCamera(front:Bool){
-        MonkeyPublisher.shared.defaultVideoCapture?.setFrontCamera(front);
+    func toggleFrontCamera(front:Bool) {
+		HWCameraManager.shared().changeCameraPosition(to: .front)
     }
     internal func sessionDidConnect(_ session: OTSession) {
         self.log(.info, "sh-1226- \(self) sessionDidConnect")

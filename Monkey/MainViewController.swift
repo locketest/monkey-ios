@@ -188,7 +188,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	
 	@IBAction func filterButtonTapped(_ sender: Any) {
-		
+		self.present(self.swipableViewControllerToPresentOnTop!, animated: true, completion: nil)
 	}
 	
 	@IBAction func arrowButtonTapped(sender: Any) {
@@ -242,6 +242,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.arrowButton.isHidden = true
 				self.settingsButton.isHidden = true
 				self.chatButton.isHidden = true
+				self.filterButton.isHidden = true
 				self.pageViewIndicator.isHidden = true
 				self.bananaView.isHidden = true
 				self.matchModeSwitch.isHidden = true
@@ -268,6 +269,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.arrowButton.isHidden = false
 				self.settingsButton.isHidden = false
 				self.chatButton.isHidden = false
+				self.filterButton.isHidden = false
 				self.pageViewIndicator.isHidden = false
 				self.bananaView.isHidden = false
 				if self.matchModeSwitch.isEnabled {
@@ -417,7 +419,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		Socket.shared.isEnabled = true
 		Socket.shared.delegate = self
      
-     self.matchRequestTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(MainViewController.getNewSession), userInfo: nil, repeats: true)
+		  self.matchRequestTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(MainViewController.getNewSession), userInfo: nil, repeats: true)
 	}
 
 	func incomingCallManager(_ incomingCallManager: IncomingCallManager, didDismissNotificatationFor chatSession: ChatSession) {
@@ -437,13 +439,13 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		print("Started finding \(forReason):  \(reason)")
 		if self.stopFindingReasons.count == 0 {
 			isFindingChats = true
-          self.matchRequestTimer?.fire()
-          self.matchRequestTimer?.fireDate = Date()
+			if self.chatSession == nil {
+				self.matchRequestTimer?.fire()
+				self.matchRequestTimer?.fireDate = Date()
+			}
 		} else {
 			print("Still not finding because: \(stopFindingReasons.split(separator: ","))")
 		}
-
-		// ticker = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(tick), userInfo: nil, repeats: true)
 	}
 	func stopFindingChats(andDisconnect: Bool, forReason: String) {
 		print("Stopped finding: \(forReason)")
@@ -941,13 +943,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 
 	/// Animateable property to show and hide navigation elements
-	var elementsShouldHide:Bool? {
+	var elementsShouldHide: Bool? {
 		didSet {
 			guard let shouldHide = self.elementsShouldHide else {
 				return
 			}
-			let alpha:CGFloat = shouldHide ? 0 : 1
+			let alpha: CGFloat = shouldHide ? 0 : 1
 			self.chatButton.alpha = alpha
+			self.filterButton.alpha = alpha
 			self.settingsButton.alpha = alpha
 			self.bananaView.alpha = alpha
 			self.arrowButton.alpha = alpha
@@ -956,6 +959,12 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.matchModeSwitch.alpha = alpha
 			self.matchModePopup.alpha = alpha
 			self.matchModeContainer.alpha = alpha
+			
+			if (self.presentedViewController == self.swipableViewControllerToPresentOnTop) {
+				self.colorGradientView.alpha = alpha
+			}else {
+				self.colorGradientView.alpha = 1
+			}
 		}
 	}
 

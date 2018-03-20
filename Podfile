@@ -31,6 +31,7 @@ target 'Monkey' do
 	pod 'ObjectMapper', '~> 3.1'
 	
 	pod 'MMSProfileImagePicker'
+	pod 'GPUImage', :git => 'https://github.com/holla-world/GPUImage.git', :branch => 'master'
 	
 	pod 'OpenTok'
 	pod 'DeviceKit', '~> 1.0'

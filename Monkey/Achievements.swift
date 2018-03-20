@@ -369,6 +369,14 @@ class Achievements {
 			return defaults.bool(forKey: "MonkeyCloseAcceptButton")
 		}
 	}
+	var selectMonkeyFilter: String {
+		set {
+			defaults.set(newValue, forKey: "MonkeySelectFilter")
+		}
+		get {
+			return defaults.string(forKey: "MonkeySelectFilter") ?? "Normal"
+		}
+	}
 	
 	/// app group
 	static let identifier: String = "group.monkey.ios"

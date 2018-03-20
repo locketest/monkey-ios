@@ -104,7 +104,6 @@
 		8BFD6D561EF98B9F002C9F9C /* MonkeyVideoRender.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D551EF98B9E002C9F9C /* MonkeyVideoRender.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8BFD6D5C1EF99422002C9F9C /* MonkeyVideoCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D5B1EF99422002C9F9C /* MonkeyVideoCapture.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8BFD6D621EFAEA87002C9F9C /* MonkeyPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D611EFAEA87002C9F9C /* MonkeyPublisher.swift */; };
-		8BFD6D641EFAF8FC002C9F9C /* MonkeyVideoRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D631EFAF8FC002C9F9C /* MonkeyVideoRender.swift */; };
 		8BFD6D681EFB280D002C9F9C /* EffectsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */; };
 		8BFD6D6D1EFB2DF0002C9F9C /* MonkeySubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */; };
 		926434F6647F6A00FB3D858C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C07119D48848FAD5F3C2D15D /* QuartzCore.framework */; };
@@ -148,6 +147,34 @@
 		D1B79CF7205FDD0500F209B4 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CF6205FDD0500F209B4 /* FilterViewController.swift */; };
 		D1B79CF9205FE39A00F209B4 /* RealmPhoneAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CF8205FE39A00F209B4 /* RealmPhoneAuth.swift */; };
 		D1B79CFB205FE3BF00F209B4 /* RealmMatchUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CFA205FE3BF00F209B4 /* RealmMatchUser.swift */; };
+		D1B79CFD2060243700F209B4 /* FilterCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CFC2060243700F209B4 /* FilterCollectionView.swift */; };
+		D1B79CFF2060B52500F209B4 /* MonkeyFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CFE2060B52500F209B4 /* MonkeyFilter.swift */; };
+		D1B79D022060C94800F209B4 /* MonkeyFilterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D002060C94800F209B4 /* MonkeyFilterCell.swift */; };
+		D1B79D032060C94800F209B4 /* MonkeyFilterCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D1B79D012060C94800F209B4 /* MonkeyFilterCell.xib */; };
+		D1B79D2D2060DACB00F209B4 /* IFBrannanFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D052060DACB00F209B4 /* IFBrannanFilter.m */; };
+		D1B79D2E2060DACB00F209B4 /* IF1977Filter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D082060DACB00F209B4 /* IF1977Filter.m */; };
+		D1B79D2F2060DACB00F209B4 /* IFWaldenFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D0C2060DACB00F209B4 /* IFWaldenFilter.m */; };
+		D1B79D302060DACB00F209B4 /* IFSierraFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D0D2060DACB00F209B4 /* IFSierraFilter.m */; };
+		D1B79D312060DACB00F209B4 /* IFEarlybirdFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D0E2060DACB00F209B4 /* IFEarlybirdFilter.m */; };
+		D1B79D322060DACB00F209B4 /* IFRiseFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D0F2060DACB00F209B4 /* IFRiseFilter.m */; };
+		D1B79D332060DACB00F209B4 /* GPUImage.InstagramFilter.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D1B79D112060DACB00F209B4 /* GPUImage.InstagramFilter.bundle */; };
+		D1B79D342060DACB00F209B4 /* IFImageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D122060DACB00F209B4 /* IFImageFilter.m */; };
+		D1B79D352060DACB00F209B4 /* IFHudsonFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D132060DACB00F209B4 /* IFHudsonFilter.m */; };
+		D1B79D362060DACB00F209B4 /* IFValenciaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D152060DACB00F209B4 /* IFValenciaFilter.m */; };
+		D1B79D372060DACB00F209B4 /* IFToasterFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D162060DACB00F209B4 /* IFToasterFilter.m */; };
+		D1B79D382060DACB00F209B4 /* IFInkwellFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D182060DACB00F209B4 /* IFInkwellFilter.m */; };
+		D1B79D392060DACB00F209B4 /* IFAmaroFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D1B2060DACB00F209B4 /* IFAmaroFilter.m */; };
+		D1B79D3A2060DACB00F209B4 /* IFXproIIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D1C2060DACB00F209B4 /* IFXproIIFilter.m */; };
+		D1B79D3B2060DACB00F209B4 /* IFLordKelvinFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D222060DACB00F209B4 /* IFLordKelvinFilter.m */; };
+		D1B79D3C2060DACB00F209B4 /* IFLomofiFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D232060DACB00F209B4 /* IFLomofiFilter.m */; };
+		D1B79D3D2060DACB00F209B4 /* IFSutroFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D252060DACB00F209B4 /* IFSutroFilter.m */; };
+		D1B79D3E2060DACB00F209B4 /* IFHefeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D282060DACB00F209B4 /* IFHefeFilter.m */; };
+		D1B79D3F2060DACB00F209B4 /* IFNormalFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D2A2060DACB00F209B4 /* IFNormalFilter.m */; };
+		D1B79D402060DACB00F209B4 /* IFNashvilleFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D2B2060DACB00F209B4 /* IFNashvilleFilter.m */; };
+		D1B79D4C2060E1E600F209B4 /* GPUImageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D4B2060E1E500F209B4 /* GPUImageHelper.m */; };
+		D1B79D5520611C5500F209B4 /* HWCameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D5420611C5400F209B4 /* HWCameraManager.m */; };
+		D1B79D5A20614F8200F209B4 /* GPUImageSixInputFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D5620614F7E00F209B4 /* GPUImageSixInputFilter.m */; };
+		D1B79D5B20614F8200F209B4 /* GPUImageFiveInputFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D5920614F8000F209B4 /* GPUImageFiveInputFilter.m */; };
 		D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
 		D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */; };
 		D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D433C1501F44D35500C9F704 /* IncomingCallManager.swift */; };
@@ -307,7 +334,6 @@
 		8BFD6D5B1EF99422002C9F9C /* MonkeyVideoCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonkeyVideoCapture.m; sourceTree = "<group>"; };
 		8BFD6D5D1EF9943D002C9F9C /* MonkeyVideoCapture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonkeyVideoCapture.h; sourceTree = "<group>"; };
 		8BFD6D611EFAEA87002C9F9C /* MonkeyPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyPublisher.swift; sourceTree = "<group>"; };
-		8BFD6D631EFAF8FC002C9F9C /* MonkeyVideoRender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyVideoRender.swift; sourceTree = "<group>"; };
 		8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EffectsCoordinator.swift; sourceTree = "<group>"; };
 		8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeySubscriber.swift; sourceTree = "<group>"; };
 		AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -357,6 +383,58 @@
 		D1B79CF6205FDD0500F209B4 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		D1B79CF8205FE39A00F209B4 /* RealmPhoneAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmPhoneAuth.swift; sourceTree = "<group>"; };
 		D1B79CFA205FE3BF00F209B4 /* RealmMatchUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmMatchUser.swift; sourceTree = "<group>"; };
+		D1B79CFC2060243700F209B4 /* FilterCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionView.swift; sourceTree = "<group>"; };
+		D1B79CFE2060B52500F209B4 /* MonkeyFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeyFilter.swift; sourceTree = "<group>"; };
+		D1B79D002060C94800F209B4 /* MonkeyFilterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeyFilterCell.swift; sourceTree = "<group>"; };
+		D1B79D012060C94800F209B4 /* MonkeyFilterCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MonkeyFilterCell.xib; sourceTree = "<group>"; };
+		D1B79D052060DACB00F209B4 /* IFBrannanFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBrannanFilter.m; sourceTree = "<group>"; };
+		D1B79D062060DACB00F209B4 /* IFXproIIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFXproIIFilter.h; sourceTree = "<group>"; };
+		D1B79D072060DACB00F209B4 /* IFAmaroFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFAmaroFilter.h; sourceTree = "<group>"; };
+		D1B79D082060DACB00F209B4 /* IF1977Filter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IF1977Filter.m; sourceTree = "<group>"; };
+		D1B79D092060DACB00F209B4 /* InstaFilters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstaFilters.h; sourceTree = "<group>"; };
+		D1B79D0A2060DACB00F209B4 /* IFLomofiFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLomofiFilter.h; sourceTree = "<group>"; };
+		D1B79D0B2060DACB00F209B4 /* IFLordKelvinFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLordKelvinFilter.h; sourceTree = "<group>"; };
+		D1B79D0C2060DACB00F209B4 /* IFWaldenFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFWaldenFilter.m; sourceTree = "<group>"; };
+		D1B79D0D2060DACB00F209B4 /* IFSierraFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSierraFilter.m; sourceTree = "<group>"; };
+		D1B79D0E2060DACB00F209B4 /* IFEarlybirdFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFEarlybirdFilter.m; sourceTree = "<group>"; };
+		D1B79D0F2060DACB00F209B4 /* IFRiseFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRiseFilter.m; sourceTree = "<group>"; };
+		D1B79D102060DACB00F209B4 /* IFHefeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHefeFilter.h; sourceTree = "<group>"; };
+		D1B79D112060DACB00F209B4 /* GPUImage.InstagramFilter.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GPUImage.InstagramFilter.bundle; sourceTree = "<group>"; };
+		D1B79D122060DACB00F209B4 /* IFImageFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageFilter.m; sourceTree = "<group>"; };
+		D1B79D132060DACB00F209B4 /* IFHudsonFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHudsonFilter.m; sourceTree = "<group>"; };
+		D1B79D142060DACB00F209B4 /* IFSutroFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSutroFilter.h; sourceTree = "<group>"; };
+		D1B79D152060DACB00F209B4 /* IFValenciaFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFValenciaFilter.m; sourceTree = "<group>"; };
+		D1B79D162060DACB00F209B4 /* IFToasterFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFToasterFilter.m; sourceTree = "<group>"; };
+		D1B79D172060DACB00F209B4 /* IFNashvilleFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFNashvilleFilter.h; sourceTree = "<group>"; };
+		D1B79D182060DACB00F209B4 /* IFInkwellFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFInkwellFilter.m; sourceTree = "<group>"; };
+		D1B79D192060DACB00F209B4 /* IFNormalFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFNormalFilter.h; sourceTree = "<group>"; };
+		D1B79D1A2060DACB00F209B4 /* IF1977Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IF1977Filter.h; sourceTree = "<group>"; };
+		D1B79D1B2060DACB00F209B4 /* IFAmaroFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAmaroFilter.m; sourceTree = "<group>"; };
+		D1B79D1C2060DACB00F209B4 /* IFXproIIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFXproIIFilter.m; sourceTree = "<group>"; };
+		D1B79D1D2060DACB00F209B4 /* IFBrannanFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFBrannanFilter.h; sourceTree = "<group>"; };
+		D1B79D1E2060DACB00F209B4 /* IFEarlybirdFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFEarlybirdFilter.h; sourceTree = "<group>"; };
+		D1B79D1F2060DACB00F209B4 /* IFRiseFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFRiseFilter.h; sourceTree = "<group>"; };
+		D1B79D202060DACB00F209B4 /* IFSierraFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSierraFilter.h; sourceTree = "<group>"; };
+		D1B79D212060DACB00F209B4 /* IFWaldenFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFWaldenFilter.h; sourceTree = "<group>"; };
+		D1B79D222060DACB00F209B4 /* IFLordKelvinFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLordKelvinFilter.m; sourceTree = "<group>"; };
+		D1B79D232060DACB00F209B4 /* IFLomofiFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLomofiFilter.m; sourceTree = "<group>"; };
+		D1B79D242060DACB00F209B4 /* IFValenciaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFValenciaFilter.h; sourceTree = "<group>"; };
+		D1B79D252060DACB00F209B4 /* IFSutroFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSutroFilter.m; sourceTree = "<group>"; };
+		D1B79D262060DACB00F209B4 /* IFHudsonFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHudsonFilter.h; sourceTree = "<group>"; };
+		D1B79D272060DACB00F209B4 /* IFImageFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageFilter.h; sourceTree = "<group>"; };
+		D1B79D282060DACB00F209B4 /* IFHefeFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHefeFilter.m; sourceTree = "<group>"; };
+		D1B79D292060DACB00F209B4 /* IFInkwellFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFInkwellFilter.h; sourceTree = "<group>"; };
+		D1B79D2A2060DACB00F209B4 /* IFNormalFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFNormalFilter.m; sourceTree = "<group>"; };
+		D1B79D2B2060DACB00F209B4 /* IFNashvilleFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFNashvilleFilter.m; sourceTree = "<group>"; };
+		D1B79D2C2060DACB00F209B4 /* IFToasterFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFToasterFilter.h; sourceTree = "<group>"; };
+		D1B79D4A2060E1E500F209B4 /* GPUImageHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageHelper.h; sourceTree = "<group>"; };
+		D1B79D4B2060E1E500F209B4 /* GPUImageHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageHelper.m; sourceTree = "<group>"; };
+		D1B79D5320611C5400F209B4 /* HWCameraManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HWCameraManager.h; sourceTree = "<group>"; };
+		D1B79D5420611C5400F209B4 /* HWCameraManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HWCameraManager.m; sourceTree = "<group>"; };
+		D1B79D5620614F7E00F209B4 /* GPUImageSixInputFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageSixInputFilter.m; sourceTree = "<group>"; };
+		D1B79D5720614F7F00F209B4 /* GPUImageSixInputFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageSixInputFilter.h; sourceTree = "<group>"; };
+		D1B79D5820614F7F00F209B4 /* GPUImageFiveInputFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageFiveInputFilter.h; sourceTree = "<group>"; };
+		D1B79D5920614F8000F209B4 /* GPUImageFiveInputFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageFiveInputFilter.m; sourceTree = "<group>"; };
 		D40E59331F3A81510091A7B2 /* CallNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallNotificationView.swift; sourceTree = "<group>"; };
 		D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CallNotificationView.xib; sourceTree = "<group>"; };
 		D433C1501F44D35500C9F704 /* IncomingCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallManager.swift; sourceTree = "<group>"; tabWidth = 5; };
@@ -516,10 +594,12 @@
 				C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */,
 				C0197E361F60A435005F121A /* RealmBlock.swift */,
 				C0AD96B91F6721A9007932AF /* RealmFriendship.swift */,
-				D192A3DC2029966E00791002 /* Message.swift */,
-				D1B79CF3205FA80800F209B4 /* UserOptions.swift */,
+				D4C767A41F689C6E002606C6 /* RealmSnapcode.swift */,
 				D1B79CF8205FE39A00F209B4 /* RealmPhoneAuth.swift */,
 				D1B79CFA205FE3BF00F209B4 /* RealmMatchUser.swift */,
+				D192A3DC2029966E00791002 /* Message.swift */,
+				D1B79CF3205FA80800F209B4 /* UserOptions.swift */,
+				D1B79CFE2060B52500F209B4 /* MonkeyFilter.swift */,
 			);
 			name = "Modern API Wrapper";
 			sourceTree = "<group>";
@@ -665,7 +745,6 @@
 			children = (
 				8BC260121E54122000B9CC16 /* Socket.swift */,
 				D4F35BCB1F5AF564003D3902 /* AsyncCarouselImageView.swift */,
-				D4C767A41F689C6E002606C6 /* RealmSnapcode.swift */,
 				D433C1501F44D35500C9F704 /* IncomingCallManager.swift */,
 				8BE02A491EEA4187004CF000 /* SwipeableViewController.swift */,
 				8BE02A4D1EEA4B62004CF000 /* SwipeableInteractiveTransition.swift */,
@@ -712,13 +791,14 @@
 				8BE9FE7E1DDF698400B55280 /* ChatSession.swift */,
 				8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */,
 				8BFD6D611EFAEA87002C9F9C /* MonkeyPublisher.swift */,
-				8BFD6D631EFAF8FC002C9F9C /* MonkeyVideoRender.swift */,
 				8BFD6D5D1EF9943D002C9F9C /* MonkeyVideoCapture.h */,
 				8BFD6D5B1EF99422002C9F9C /* MonkeyVideoCapture.m */,
 				8BFD6D571EF98BB1002C9F9C /* MonkeyVideoRender.h */,
 				8BFD6D551EF98B9E002C9F9C /* MonkeyVideoRender.m */,
 				8BE04A081DE518020016A593 /* OTDefaultAudioDevice.h */,
 				8BE04A091DE518020016A593 /* OTDefaultAudioDevice.m */,
+				D1B79D5320611C5400F209B4 /* HWCameraManager.h */,
+				D1B79D5420611C5400F209B4 /* HWCameraManager.m */,
 			);
 			name = "OpenTok Stuff";
 			sourceTree = "<group>";
@@ -761,9 +841,66 @@
 		D1B79CF5205FDCAC00F209B4 /* Filter */ = {
 			isa = PBXGroup;
 			children = (
+				D1B79D042060DACB00F209B4 /* Instagram */,
 				D1B79CF6205FDD0500F209B4 /* FilterViewController.swift */,
+				D1B79CFC2060243700F209B4 /* FilterCollectionView.swift */,
+				D1B79D002060C94800F209B4 /* MonkeyFilterCell.swift */,
+				D1B79D012060C94800F209B4 /* MonkeyFilterCell.xib */,
 			);
 			path = Filter;
+			sourceTree = "<group>";
+		};
+		D1B79D042060DACB00F209B4 /* Instagram */ = {
+			isa = PBXGroup;
+			children = (
+				D1B79D112060DACB00F209B4 /* GPUImage.InstagramFilter.bundle */,
+				D1B79D4A2060E1E500F209B4 /* GPUImageHelper.h */,
+				D1B79D4B2060E1E500F209B4 /* GPUImageHelper.m */,
+				D1B79D5820614F7F00F209B4 /* GPUImageFiveInputFilter.h */,
+				D1B79D5920614F8000F209B4 /* GPUImageFiveInputFilter.m */,
+				D1B79D5720614F7F00F209B4 /* GPUImageSixInputFilter.h */,
+				D1B79D5620614F7E00F209B4 /* GPUImageSixInputFilter.m */,
+				D1B79D092060DACB00F209B4 /* InstaFilters.h */,
+				D1B79D1A2060DACB00F209B4 /* IF1977Filter.h */,
+				D1B79D082060DACB00F209B4 /* IF1977Filter.m */,
+				D1B79D072060DACB00F209B4 /* IFAmaroFilter.h */,
+				D1B79D1B2060DACB00F209B4 /* IFAmaroFilter.m */,
+				D1B79D1D2060DACB00F209B4 /* IFBrannanFilter.h */,
+				D1B79D052060DACB00F209B4 /* IFBrannanFilter.m */,
+				D1B79D1E2060DACB00F209B4 /* IFEarlybirdFilter.h */,
+				D1B79D0E2060DACB00F209B4 /* IFEarlybirdFilter.m */,
+				D1B79D102060DACB00F209B4 /* IFHefeFilter.h */,
+				D1B79D282060DACB00F209B4 /* IFHefeFilter.m */,
+				D1B79D262060DACB00F209B4 /* IFHudsonFilter.h */,
+				D1B79D132060DACB00F209B4 /* IFHudsonFilter.m */,
+				D1B79D272060DACB00F209B4 /* IFImageFilter.h */,
+				D1B79D122060DACB00F209B4 /* IFImageFilter.m */,
+				D1B79D292060DACB00F209B4 /* IFInkwellFilter.h */,
+				D1B79D182060DACB00F209B4 /* IFInkwellFilter.m */,
+				D1B79D0A2060DACB00F209B4 /* IFLomofiFilter.h */,
+				D1B79D232060DACB00F209B4 /* IFLomofiFilter.m */,
+				D1B79D0B2060DACB00F209B4 /* IFLordKelvinFilter.h */,
+				D1B79D222060DACB00F209B4 /* IFLordKelvinFilter.m */,
+				D1B79D172060DACB00F209B4 /* IFNashvilleFilter.h */,
+				D1B79D2B2060DACB00F209B4 /* IFNashvilleFilter.m */,
+				D1B79D192060DACB00F209B4 /* IFNormalFilter.h */,
+				D1B79D2A2060DACB00F209B4 /* IFNormalFilter.m */,
+				D1B79D1F2060DACB00F209B4 /* IFRiseFilter.h */,
+				D1B79D0F2060DACB00F209B4 /* IFRiseFilter.m */,
+				D1B79D202060DACB00F209B4 /* IFSierraFilter.h */,
+				D1B79D0D2060DACB00F209B4 /* IFSierraFilter.m */,
+				D1B79D142060DACB00F209B4 /* IFSutroFilter.h */,
+				D1B79D252060DACB00F209B4 /* IFSutroFilter.m */,
+				D1B79D2C2060DACB00F209B4 /* IFToasterFilter.h */,
+				D1B79D162060DACB00F209B4 /* IFToasterFilter.m */,
+				D1B79D242060DACB00F209B4 /* IFValenciaFilter.h */,
+				D1B79D152060DACB00F209B4 /* IFValenciaFilter.m */,
+				D1B79D212060DACB00F209B4 /* IFWaldenFilter.h */,
+				D1B79D0C2060DACB00F209B4 /* IFWaldenFilter.m */,
+				D1B79D062060DACB00F209B4 /* IFXproIIFilter.h */,
+				D1B79D1C2060DACB00F209B4 /* IFXproIIFilter.m */,
+			);
+			path = Instagram;
 			sourceTree = "<group>";
 		};
 		D40E59371F3A82C20091A7B2 /* Message */ = {
@@ -954,10 +1091,12 @@
 				8B6EB5181DB0817F0051C8D2 /* LaunchScreen.storyboard in Resources */,
 				8B6EB5151DB0817F0051C8D2 /* Assets.xcassets in Resources */,
 				8B756CA71DFB323400BA7503 /* magic.m4a in Resources */,
+				D1B79D032060C94800F209B4 /* MonkeyFilterCell.xib in Resources */,
 				8B465FC51E3C191F0023CD74 /* click.mp3 in Resources */,
 				8B3A78741DB2F87C00FA68A7 /* clock.mp3 in Resources */,
 				D17CE9852009C2E4002F4F9D /* GoogleService-Info.plist in Resources */,
 				D4656C621F4B961800966C6D /* onboarding-1.gif in Resources */,
+				D1B79D332060DACB00F209B4 /* GPUImage.InstagramFilter.bundle in Resources */,
 				8B3A78751DB2F87C00FA68A7 /* win.mp3 in Resources */,
 				D17CE9872009E47A002F4F9D /* GoogleService-Info-Dev.plist in Resources */,
 				C01873741F4F2DDF008C8790 /* Instagram.storyboard in Resources */,
@@ -1075,6 +1214,7 @@
 				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBNotifications/FBNotifications.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/GPUImage/GPUImage.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/MMSCameraViewController/MMSCameraViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/MMSProfileImagePicker/MMSProfileImagePicker.framework",
@@ -1095,6 +1235,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBNotifications.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GPUImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSCameraViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSProfileImagePicker.framework",
@@ -1125,19 +1266,26 @@
 				D47833E21F2BF276007F37DB /* NotificationManager.swift in Sources */,
 				8B6A57A21EAEBF3E00136311 /* JSONAPI.swift in Sources */,
 				D192A3E5202ACE5E00791002 /* TextChatViewController+Reporting.swift in Sources */,
+				D1B79D382060DACB00F209B4 /* IFInkwellFilter.m in Sources */,
 				8BFD6D681EFB280D002C9F9C /* EffectsCoordinator.swift in Sources */,
 				8BE02A4C1EEA42A2004CF000 /* SwipeableTransitionSlideAnimator.swift in Sources */,
 				8435C2EA1F14018100C80AC6 /* FriendsViewModel.swift in Sources */,
 				8B8B2D741EC52B910086547C /* CachedImageView.swift in Sources */,
+				D1B79D5A20614F8200F209B4 /* GPUImageSixInputFilter.m in Sources */,
 				C0DAAB121F53816000739F42 /* RealmInstagramAccount.swift in Sources */,
 				8435C2E61F13D0FD00C80AC6 /* MessageTableViewCell.swift in Sources */,
+				D1B79D2F2060DACB00F209B4 /* IFWaldenFilter.m in Sources */,
 				8B1769461ED16B98005EF8D4 /* RealmMessage.swift in Sources */,
 				8BEB20041EFC6067001AAC3C /* BackgroundColorGradientLayer.swift in Sources */,
+				D1B79D352060DACB00F209B4 /* IFHudsonFilter.m in Sources */,
 				C07D32061F57687B0087BEA1 /* DataController.swift in Sources */,
 				8BC903271EBE6DE6004B46D8 /* PopupTransitionDismissAnimator.swift in Sources */,
+				D1B79D5520611C5500F209B4 /* HWCameraManager.m in Sources */,
 				8BE04A0A1DE518020016A593 /* OTDefaultAudioDevice.m in Sources */,
+				D1B79CFF2060B52500F209B4 /* MonkeyFilter.swift in Sources */,
 				D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */,
 				8B19B6781EBD5F3D00493A3A /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */,
+				D1B79D372060DACB00F209B4 /* IFToasterFilter.m in Sources */,
 				C0FC9E301F63106A00A813C5 /* ChannelLabelView.swift in Sources */,
 				C06FBB521F3A559B00659489 /* RealmCall.swift in Sources */,
 				8B19B6741EBD3D3D00493A3A /* IntroducingProfilesPopupViewController.swift in Sources */,
@@ -1147,14 +1295,18 @@
 				C0CF020B1F58CA45009D7B33 /* PresentPopupTransitionAnimator.swift in Sources */,
 				84AA03DE1EBFAC1E00779C54 /* BirthdatePicker.swift in Sources */,
 				D43AD40F1F12B5A700DE6BBD /* CallViewController+Reporting.swift in Sources */,
+				D1B79D3E2060DACB00F209B4 /* IFHefeFilter.m in Sources */,
 				8BE9FE7F1DDF698400B55280 /* ChatSession.swift in Sources */,
+				D1B79D2E2060DACB00F209B4 /* IF1977Filter.m in Sources */,
 				C0CF020D1F58CA66009D7B33 /* DismissPopupTransitionAnimator.swift in Sources */,
 				D43415521F33812C00A481CC /* RatingNotificationView.swift in Sources */,
 				8BFD6D621EFAEA87002C9F9C /* MonkeyPublisher.swift in Sources */,
 				D12E22942010747200703F9B /* RemoteConfig.swift in Sources */,
 				8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */,
 				847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */,
+				D1B79CFD2060243700F209B4 /* FilterCollectionView.swift in Sources */,
 				8B2ED8BE1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift in Sources */,
+				D1B79D402060DACB00F209B4 /* IFNashvilleFilter.m in Sources */,
 				D192A3DB20286E0600791002 /* TextChatViewController.swift in Sources */,
 				C047D7C71F6C36160048286F /* CountingLabel.swift in Sources */,
 				D192A3E7202AD1CE00791002 /* MatchViewControllerProtocol.swift in Sources */,
@@ -1162,6 +1314,7 @@
 				C0AD96BA1F6721A9007932AF /* RealmFriendship.swift in Sources */,
 				8B3A787D1DB32CB000FA68A7 /* SoundPlayer.swift in Sources */,
 				D4C767A51F689C6E002606C6 /* RealmSnapcode.swift in Sources */,
+				D1B79D3A2060DACB00F209B4 /* IFXproIIFilter.m in Sources */,
 				8B19B6761EBD5D9000493A3A /* EditProfilePopupViewController.swift in Sources */,
 				D4656C4D1F49F98700966C6D /* PermissionViewController.swift in Sources */,
 				1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */,
@@ -1179,7 +1332,9 @@
 				D4F35BCC1F5AF564003D3902 /* AsyncCarouselImageView.swift in Sources */,
 				8B7DC74C1EF5CF9000A3F966 /* ChannelsTableViewCell.swift in Sources */,
 				8B8460D61EB3338800D54DF3 /* SettingsTextFieldTableViewCell.swift in Sources */,
+				D1B79D312060DACB00F209B4 /* IFEarlybirdFilter.m in Sources */,
 				8B46EAEA1E8767C00069C7D7 /* UsernameTextField.swift in Sources */,
+				D1B79D392060DACB00F209B4 /* IFAmaroFilter.m in Sources */,
 				8464868D1F1D65240092E89E /* JigglyButton.swift in Sources */,
 				1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */,
 				8B46EAEC1E8770360069C7D7 /* Colors.swift in Sources */,
@@ -1191,8 +1346,10 @@
 				8435C2F01F144DA800C80AC6 /* FriendTableViewCell.swift in Sources */,
 				848727B11E86B1AD00F13501 /* ConfettiView.swift in Sources */,
 				BF8C38B51E9A0B620089B313 /* MainViewController+Location.swift in Sources */,
+				D1B79D022060C94800F209B4 /* MonkeyFilterCell.swift in Sources */,
 				8BFD6D5C1EF99422002C9F9C /* MonkeyVideoCapture.m in Sources */,
 				8BE02A4A1EEA4187004CF000 /* SwipeableViewController.swift in Sources */,
+				D1B79D3C2060DACB00F209B4 /* IFLomofiFilter.m in Sources */,
 				8B7DC74A1EF5CADB00A3F966 /* ChannelsViewController.swift in Sources */,
 				D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */,
 				8B6A57A01EAE9E6100136311 /* APIError.swift in Sources */,
@@ -1208,30 +1365,39 @@
 				1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */,
 				D1B79CF4205FA80800F209B4 /* UserOptions.swift in Sources */,
 				D1A7DC2B2049506800B061F9 /* MonkeySwitch.swift in Sources */,
+				D1B79D3F2060DACB00F209B4 /* IFNormalFilter.m in Sources */,
+				D1B79D3D2060DACB00F209B4 /* IFSutroFilter.m in Sources */,
+				D1B79D362060DACB00F209B4 /* IFValenciaFilter.m in Sources */,
 				8B7DC7481EF5C9E000A3F966 /* RealmChannel.swift in Sources */,
 				C0197E371F60A435005F121A /* RealmBlock.swift in Sources */,
+				D1B79D322060DACB00F209B4 /* IFRiseFilter.m in Sources */,
 				D1B79CFB205FE3BF00F209B4 /* RealmMatchUser.swift in Sources */,
 				8435C2E81F13DBBC00C80AC6 /* ChatViewModel.swift in Sources */,
 				8BC95FFA1DF626DD00710628 /* WelcomeViewController.swift in Sources */,
 				C0BDAF5B1F4F51D500FA2F38 /* KeypadButton.swift in Sources */,
 				8B7C19361DB15A6F002FA6C9 /* AuthViewController.swift in Sources */,
 				8B52F1721EBF6726008BD779 /* VerifyBirthdayPopupViewController.swift in Sources */,
-				8BFD6D641EFAF8FC002C9F9C /* MonkeyVideoRender.swift in Sources */,
 				8BE35E2C1DB9DD93002049B5 /* BannedViewController.swift in Sources */,
+				D1B79D3B2060DACB00F209B4 /* IFLordKelvinFilter.m in Sources */,
 				D192A3E1202A0E1A00791002 /* MatchModeSwitch.swift in Sources */,
+				D1B79D4C2060E1E600F209B4 /* GPUImageHelper.m in Sources */,
 				8BFD6D6D1EFB2DF0002C9F9C /* MonkeySubscriber.swift in Sources */,
 				8B8664BD1F04AB9700E5AC12 /* PixelationEffect.swift in Sources */,
 				8B6FC3E31EADAB6E00429964 /* RealmExperiment.swift in Sources */,
 				8B8460D41EB324F900D54DF3 /* RealmTag.swift in Sources */,
+				D1B79D342060DACB00F209B4 /* IFImageFilter.m in Sources */,
 				D192A3DF2029AD8300791002 /* TextModeMessageCell.swift in Sources */,
+				D1B79D5B20614F8200F209B4 /* GPUImageFiveInputFilter.m in Sources */,
 				8BE02A4E1EEA4B62004CF000 /* SwipeableInteractiveTransition.swift in Sources */,
 				BF8C38B71E9A188E0089B313 /* RealmDataController.swift in Sources */,
 				8B7C193A1DB17967002FA6C9 /* MainViewController.swift in Sources */,
 				8B6DC3351DB4978A004F787E /* Environment.swift in Sources */,
+				D1B79D2D2060DACB00F209B4 /* IFBrannanFilter.m in Sources */,
 				8BE491321E875E3B002E9D78 /* AgePickerView.swift in Sources */,
 				8499A58C1E86DED80088D0D2 /* TapticFeedback.swift in Sources */,
 				C0DAAB141F538C5300739F42 /* RealmInstagramPhoto.swift in Sources */,
 				8B1769441ED1634E005EF8D4 /* RealmRelationship.swift in Sources */,
+				D1B79D302060DACB00F209B4 /* IFSierraFilter.m in Sources */,
 				8B6EB50E1DB0817F0051C8D2 /* AppDelegate.swift in Sources */,
 				D47833DE1F2BD3F7007F37DB /* MessageNotificationView.swift in Sources */,
 				8B8664BB1F04902D00E5AC12 /* Effect.swift in Sources */,
@@ -1358,6 +1524,7 @@
 				INFOPLIST_FILE = Monkey/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -1561,6 +1728,7 @@
 				INFOPLIST_FILE = Monkey/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1650,6 +1818,7 @@
 				INFOPLIST_FILE = Monkey/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1795,6 +1964,7 @@
 				INFOPLIST_FILE = Monkey/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -1943,6 +2113,7 @@
 				INFOPLIST_FILE = Monkey/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (

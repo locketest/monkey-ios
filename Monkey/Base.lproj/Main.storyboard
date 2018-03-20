@@ -1824,13 +1824,27 @@ types of Monkey species in the entire world.</string>
                                                 <rect key="frame" x="0.0" y="0.0" width="103" height="136"/>
                                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             </view>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6HH-kE-4eE" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="40" id="7dt-5C-Njs"/>
+                                                    <constraint firstAttribute="height" constant="40" id="F3a-wq-ueW"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                <state key="normal" title="✨" backgroundImage="filter_icon_inchat_bg"/>
+                                                <connections>
+                                                    <action selector="filterButtonClick:" destination="zTu-EK-AVb" eventType="touchUpInside" id="t5G-Ik-s5d"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.99607843137254903" green="0.61568627450980395" blue="0.30196078431372547" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="275-Qy-Cfr" firstAttribute="leading" secondItem="aa2-H7-j91" secondAttribute="leading" id="22B-eQ-3Fk"/>
                                             <constraint firstAttribute="width" constant="103" id="PNV-y2-HDQ"/>
                                             <constraint firstItem="275-Qy-Cfr" firstAttribute="top" secondItem="aa2-H7-j91" secondAttribute="top" id="Pax-cU-acJ"/>
+                                            <constraint firstItem="6HH-kE-4eE" firstAttribute="leading" secondItem="aa2-H7-j91" secondAttribute="leading" id="QFc-TT-7mV"/>
                                             <constraint firstAttribute="height" constant="179" id="bun-Fq-5Hu"/>
+                                            <constraint firstItem="6HH-kE-4eE" firstAttribute="top" secondItem="aa2-H7-j91" secondAttribute="top" id="sdd-bp-NEB"/>
                                             <constraint firstAttribute="trailing" secondItem="275-Qy-Cfr" secondAttribute="trailing" id="uFc-rI-6E9"/>
                                         </constraints>
                                     </view>
@@ -1908,6 +1922,7 @@ types of Monkey species in the entire world.</string>
                         <outlet property="clockTimeIcon" destination="cPn-Fz-DTH" id="ReI-nT-HR7"/>
                         <outlet property="containerView" destination="jnj-Bx-OWp" id="Gcr-Kh-Pde"/>
                         <outlet property="endCallButton" destination="GZI-MZ-WGI" id="PHw-qb-3cC"/>
+                        <outlet property="filterButton" destination="6HH-kE-4eE" id="bWf-zj-3qV"/>
                         <outlet property="policeButton" destination="9JE-LS-ZES" id="vWP-cb-HM4"/>
                         <outlet property="policeButtonWidth" destination="QvL-sR-8bT" id="hkO-7h-KOn"/>
                         <outlet property="publisherContainerView" destination="275-Qy-Cfr" id="hNw-dT-aRv"/>
@@ -3028,5 +3043,6 @@ types of Monkey species in the entire world.</string>
         <image name="StarBlue" width="48" height="46"/>
         <image name="TreesButton" width="40" height="40"/>
         <image name="YellowPolice" width="106" height="106"/>
+        <image name="filter_icon_inchat_bg" width="40" height="40"/>
     </resources>
 </document>

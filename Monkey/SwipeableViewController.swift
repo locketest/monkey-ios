@@ -24,12 +24,12 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
     var swipableViewControllerToPresentOnTop: SwipeableViewController?
     
     // Default value is 10 to keep the arrow in the correct position while animating
-    var contentHeight:CGFloat {
+    var contentHeight: CGFloat {
         return 10
     }
     
     // Logic is different if we are vertically rather than horizontally
-    var isPanningHorizontally:Bool {
+    var isPanningHorizontally: Bool {
         return self.panningTowardsSide != .bottom && self.panningTowardsSide != .top
     }
     
@@ -90,7 +90,7 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
                         return // don't present view controller onto the stack when its already presented
                     }
                     self.present(newVC, animated: true, completion: nil)
-                } else if (self.presentingViewController as? SwipeableViewController)?.swipableViewControllerToPresentOnBottom == self {
+                } else if (self.presentingViewController as? SwipeableViewController)?.swipableViewControllerToPresentOnTop == self {
                     self.dismiss(animated: true, completion: nil)
                 } else {
                     return // Overscrolling
@@ -134,8 +134,7 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
             if abs(translation.x) < abs(translation.y) {
                 if translation.y > 0 {
                     return .top
-                }
-                else {
+                } else {
                     return .bottom
                 }
             } else if translation.x < 0 {
@@ -178,12 +177,18 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
                 if panningTowardsSide == .bottom {
                     if (self.swipableViewControllerToPresentOnBottom != nil) {
                         let controller = self.swipableViewControllerToPresentOnBottom!
-                        progress = fabs(translation.y / (self.view.frame.size.height - (self.view.frame.height - controller.contentHeight)))
-                    }
+                        progress = fabs(translation.y / controller.contentHeight)
+					}else {
+						progress = fabs(translation.y) / self.contentHeight
+					}
                 } else if panningTowardsSide == .top {
-                    progress = fabs(translation.y) / self.contentHeight
+					if (self.swipableViewControllerToPresentOnTop != nil) {
+						let controller = self.swipableViewControllerToPresentOnTop!
+						progress = fabs(translation.y / controller.contentHeight)
+					}else {
+						progress = fabs(translation.y) / self.contentHeight
+					}
                 }
-                
                 // Fix snapping issue, never send > 100% progress
                 progress = min(progress, 1.0)
                 

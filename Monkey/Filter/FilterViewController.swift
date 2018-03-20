@@ -9,12 +9,58 @@
 import UIKit
 
 class FilterViewController: SwipeableViewController {
+	
+	override var contentHeight: CGFloat {
+		return UIScreen.main.bounds.size.height - 50
+	}
+	
+	var arrowButton: BigYellowButton = BigYellowButton.init(frame: CGRect.zero)
+	var filterCollection: FilterCollectionView = FilterCollectionView.init(frame: CGRect.zero)
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+		self.configureApperance()
     }
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		self.filterCollection.resetSpotedFilter()
+	}
+	
+	func configureApperance() {
+		self.arrowButton.setImage(#imageLiteral(resourceName: "ArrowButtonDown"), for: .normal)
+		self.arrowButton.frame = CGRect.init(x: (self.view.frame.size.width - 47) / 2, y: self.view.frame.size.height - 50 - 30, width: 47, height: 30)
+		self.arrowButton.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin]
+		self.view.addSubview(self.arrowButton)
+		
+		self.filterCollection.frame = CGRect.init(x: 6, y: self.view.frame.size.height - 100 - 107, width: self.view.frame.size.width - 12, height: 107)
+		self.filterCollection.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
+		self.view.addSubview(self.filterCollection)
+		
+		let tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(closeFilterCollection))
+		self.view.addGestureRecognizer(tapGesture)
+		tapGesture.delegate = self
+	}
+	
+	override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+		if gestureRecognizer is UITapGestureRecognizer {
+			var touchView: UIView? = touch.view
+			while touchView != nil {
+				if (touchView is FilterCollectionView) {
+					return false
+				}
+				touchView = touchView?.superview
+			}
+		}
+		return true
+	}
+	
+	func closeFilterCollection() {
+		self.panningTowardsSide = .top
+		self.dismiss(animated: true, completion: nil)
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -33,3 +79,4 @@ class FilterViewController: SwipeableViewController {
     */
 
 }
+

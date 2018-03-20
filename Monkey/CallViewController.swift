@@ -9,6 +9,7 @@
 import UIKit
 import AudioToolbox
 import RealmSwift
+import DeviceKit
 
 protocol CallViewControllerDelegate:class {
     func stopFindingChats(andDisconnect:Bool, forReason:String)
@@ -30,10 +31,12 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     @IBOutlet weak var policeButtonWidth: NSLayoutConstraint!
     @IBOutlet weak var policeButton: BigYellowButton!
     @IBOutlet weak var snapchatButton: BigYellowButton!
-    @IBOutlet var endCallButton: BigYellowButton!
+	@IBOutlet weak var filterButton: BigYellowButton!
+	@IBOutlet var endCallButton: BigYellowButton!
     @IBOutlet weak var statusCornerView: UIView!
     @IBOutlet weak var publisherContainerView: UIView!
     @IBOutlet weak var containerView: UIView!
+	weak var filterBackground: UIView?
     /// The orange view behind the clock label, animated on addMinute
     @IBOutlet var clockLabelBackgroundView: UIView!
 
@@ -244,8 +247,52 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     func requestPresentation(of alertController: UIAlertController, from view: UIView) {
         self.present(alertController, animated: true, completion: nil)
     }
+	
+	func showFilterCollection() {
+		let backView = UIView.init(frame: CGRect.init(x: 0, y: 100 - self.view.frame.size.height, width: self.view.frame.size.width, height: self.view.frame.size.height))
+		backView.backgroundColor = UIColor.init(white: 0, alpha: 0)
+		backView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+		self.view.addSubview(backView)
+		let iPhoneBottomEdge: CGFloat = (Device() == Device.iPhoneX) ? 38 : 0
+		
+		let filterCollection = FilterCollectionView.init(frame: CGRect.init(x: 5, y: backView.frame.size.height - 100 - 107 - iPhoneBottomEdge, width: backView.frame.size.width - 10, height: 107))
+		filterCollection.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
+		backView.addSubview(filterCollection)
+		self.filterBackground = backView
+		
+		let tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(closeFilterCollection))
+		backView.addGestureRecognizer(tapGesture)
+		tapGesture.delegate = self
+		
+		let swipeUp = UISwipeGestureRecognizer.init(target: self, action: #selector(closeFilterCollection))
+		swipeUp.direction = .up
+		swipeUp.delegate = self;
+		backView.addGestureRecognizer(swipeUp)
+		
+		UIView.animate(withDuration: 0.2, animations: {
+			backView.frame = self.view.bounds
+		}, completion: nil)
+	}
+	
+	func closeFilterCollection() {
+		if let filterBackground = self.filterBackground {
+			var frame = filterBackground.frame
+			frame.origin.y = 100 - self.view.frame.size.height
+			UIView.animate(withDuration: 0.2, animations: {
+				filterBackground.frame = frame
+			}, completion: { (_) in
+				filterBackground.removeFromSuperview()
+			})
+		}
+	}
     
-    @IBAction func cameraPositionButtonClick(_ sender: Any) {
+	@IBAction func filterButtonClick(_ sender: Any) {
+		if self.filterBackground == nil {
+			self.showFilterCollection()
+		}
+	}
+	
+	@IBAction func cameraPositionButtonClick(_ sender: Any) {
 		self.effectsCoordinator.effects.removeAll()
         self.chatSession?.toggleCameraPosition()
     }
@@ -357,3 +404,19 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         return CGFloat(arc4random()) / CGFloat(UINT32_MAX) * abs(firstNum - secondNum) + min(firstNum, secondNum)
     }
 }
+
+extension CallViewController: UIGestureRecognizerDelegate {
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+		
+		var touchView: UIView? = touch.view
+		while touchView != nil {
+			if (touchView is FilterCollectionView) {
+				return false
+			}
+			touchView = touchView?.superview
+		}
+		
+		return true
+	}
+}
+

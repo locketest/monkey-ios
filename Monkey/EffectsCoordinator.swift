@@ -12,7 +12,7 @@ class EffectsCoordinator: NSObject, MessageHandler {
     /// Append/Remove/Set to modify the publisher effects. This value will be synced with all other clients.
     var effects = [Effect]() {
         didSet {
-            MonkeyPublisher.shared.view.effects = self.effects
+//            MonkeyPublisher.shared.view.effects = self.effects
             self.sendEffectsMessage()
         }
     }
