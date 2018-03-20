@@ -54,8 +54,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	func webSocketDidRecieveMatch(match: Any, data: [String : Any]) {
 		if isFindingChats , let realmCall = match as? RealmCall {
 			self.progressMatch(call: realmCall,data: data)
-		}else {
-			self.getNewSession()
 		}
 	}
 
@@ -111,6 +109,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var currentUserNotifcationToken:NotificationToken?
 	var currentExperimentNotifcationToken:NotificationToken?
 	var channels: Results<RealmChannel>?
+     var matchRequestTimer:Timer?
 
 	var waitingForFriendToken:NotificationToken?
 	/// After a friendship is made, if there is no snapchat name, we wait for the user id to come down from the socket and push to their chat page
@@ -416,6 +415,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.skippedText.layer.opacity = 0.0
 		Socket.shared.isEnabled = true
 		Socket.shared.delegate = self
+     
+     self.matchRequestTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(MainViewController.getNewSession), userInfo: nil, repeats: true)
 	}
 
 	func incomingCallManager(_ incomingCallManager: IncomingCallManager, didDismissNotificatationFor chatSession: ChatSession) {
@@ -439,7 +440,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			print("Still not finding because: \(stopFindingReasons.split(separator: ","))")
 		}
 		if self.chatSession == nil {
-			self.getNewSession()
+			self.matchRequestTimer?.fire()
+          self.matchRequestTimer?.fireDate = Date()
 		}
 
 		// ticker = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(tick), userInfo: nil, repeats: true)
@@ -454,6 +456,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		if andDisconnect {
 			self.chatSession?.disconnect(.consumed)
 		}
+     
+        self.matchRequestTimer?.fireDate = Date.distantFuture
 	}
 
 	var movingToBackground = false
@@ -771,13 +775,13 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 						alert.addAction(UIAlertAction(title: (meta?["alert_retry_text"] as? String) ?? "Retry", style: .cancel, handler: {
 							(UIAlertAction) in
 							alert.dismiss(animated: true, completion: nil)
-							self.getNewSession()
+//                                   self.getNewSession()
 						}))
 					}
 					self.present(alert, animated: true, completion: nil)
 				} else if (meta?["should_retry"] as? Bool) == true {
 					print("Retrying")
-					self.getNewSession()
+//                         self.getNewSession()
 					return
 				}
 				if error.code.rawValue == "-999" {
@@ -787,7 +791,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 					print("Cancelled finding chat.")
 					return
 				}
-				self.getNewSession()
+//                    self.getNewSession()
 			}
 		}
 	}
@@ -1220,6 +1224,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.currentUserNotifcationToken?.stop()
 		self.currentExperimentNotifcationToken?.stop()
 		Socket.shared.isEnabled = false
+     self.timer?.invalidate()
 	}
 }
 
