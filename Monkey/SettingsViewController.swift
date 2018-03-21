@@ -1225,6 +1225,7 @@ class SettingTalkToCell: UITableViewCell {
         self.genderButton?.frame = CGRect(x: self.contentView.frame.size.width - 14 - 48, y: 7, width: 48, height: 48)
 		self.genderButton.autoresizingMask = [.flexibleLeftMargin]
         self.genderButton?.backgroundColor = UIColor.clear
+        
         self.contentView.addSubview(self.genderButton!)
 		
 		let fullButton = UIButton.init(type: .custom)
