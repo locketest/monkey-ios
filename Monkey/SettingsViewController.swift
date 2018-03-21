@@ -211,7 +211,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                         self?.firstNameField.isUserInteractionEnabled = false
                         self?.firstNameTipLab.text = "You can change your name after \(d) days"
                     }
-                     
 				}
 			}
 		}
@@ -936,8 +935,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     }
     func dateChanged(datePicker : BirthdatePicker){
         self.birthdayField.text = datePicker.formattedDate
-        self.birthdayTipLab.text = "Better make sure yo, you can only change this once"
-        self.birthdayTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
         
         self.saveBtn.isUserInteractionEnabled = true
         self.saveBtn.alpha = 1.0
@@ -963,6 +960,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             if self.firstNameField.isUserInteractionEnabled{
                 self.firstNameTipLab.text = ""
             }
+            self.birthdayTipLab.text = "Better make sure yo, you can only change this once"
+            self.birthdayTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
             self.view.endEditing(true)
             UIView.animate(
                 withDuration: 0.25,
