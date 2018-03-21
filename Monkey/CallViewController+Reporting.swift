@@ -376,10 +376,9 @@ extension CallViewController {
 		
 		if let addedTime = self.chatSession?.hadAddTime, let friendMatch = self.chatSession?.friendMatched, addedTime == false, friendMatch == false {
 			//  open pixel effect and cant close anymore
-			if self.effectsCoordinator.effects.count == 0 {
-				self.effectsCoordinator.effects.append(PixelationEffect(pixelationAmount: 24))
-			}
+			HWCameraManager.shared().addPixellate()
 		}
+		
         self.statusCornerView.isUserInteractionEnabled = false
         self.policeButton.isEnabled = false
         self.policeButtonWidth.constant = 150

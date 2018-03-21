@@ -23,6 +23,11 @@
  */
 @property (nonatomic, strong) UIView *localPreviewView;
 
+// 添加 pixel
+- (void)addPixellate;
+// 移除 pixel
+- (void)removePixellate;
+
 /**
  *  切换前后相机
  */

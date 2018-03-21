@@ -20,7 +20,7 @@
 	return groupFilter;
 }
 
-+ (GPUImageFilterGroup*)filterGroupWithType:(NSString*)filterType {
++ (GPUImageFilterGroup *)filterGroupWithType:(NSString*)filterType {
     NSArray<NSString*>* filterClasses = @[
         @"IFBrannanFilter",
         @"IFNashvilleFilter",
@@ -39,7 +39,6 @@
         @"IFLordKelvinFilter",
         @"IFWaldenFilter",
         @"IFLomofiFilter",
-		@"IFNashvilleFilter",
     ];
     NSArray<NSString*>* filterNames = @[
         @"Brannan",
@@ -47,7 +46,7 @@
         @"Sierra",
         @"Hudson",
         @"Rise",
-        @"Early Brid",
+        @"Earlybird",
         @"Amaro",
         @"1977",
         @"Inkwell",
@@ -55,11 +54,10 @@
         @"Toaster",
         @"Hefe",
         @"Valencia",
-        @"XproII",
-        @"LoardKelvin",
+        @"X-Pro II",
+        @"Lord Kelvin",
         @"Walden",
-        @"Lo-fi",
-		@"Naville",
+        @"Lo-Fi",
     ];
 	NSUInteger filterIndex = [filterNames indexOfObject:filterType];
 	if (filterIndex != NSNotFound) {

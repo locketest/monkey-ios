@@ -14,6 +14,7 @@
 
 // 滤镜以及预览
 @property (nonatomic, strong) GPUImageView *gpuImageView;
+@property (nonatomic, strong) GPUImagePixellateFilter *pixellateFilter;
 @property (nonatomic, strong) GPUImageFilterGroup *gpuImagefilter;
 @property (nonatomic, strong) GPUImageVideoCamera *gpuImageCamera;
 @property (nonatomic, strong) GPUImageRawDataOutput *rawOut;
@@ -84,6 +85,23 @@
 	[_gpuImageCamera stopCameraCapture];
 }
 
+#pragma mark - pixel
+- (void)addPixellate {
+	[self clearFilter];
+	
+	_gpuImagefilter = [[GPUImageFilterGroup alloc] init];
+	[_gpuImagefilter addFilter:self.pixellateFilter];
+	[_gpuImagefilter setInitialFilters:@[self.pixellateFilter]];
+	[_gpuImagefilter setTerminalFilter:self.pixellateFilter];
+	
+	[self addFilter];
+}
+
+- (void)removePixellate {
+	[self clearFilter];
+	self.filterType = self.filterType;
+	[self addFilter];
+}
 
 #pragma mark - 切换摄像头
 - (AVCaptureDevicePosition)currentCameraPosition {
@@ -127,6 +145,13 @@
 	return _videoFrame;
 }
 
+- (GPUImagePixellateFilter *)pixellateFilter {
+	if (!_pixellateFilter) {
+		_pixellateFilter = [[GPUImagePixellateFilter alloc] init];
+	}
+	return _pixellateFilter;
+}
+
 - (GPUImageView *)gpuImageView {
 	if (!_gpuImageView) {
 		_gpuImageView = [[GPUImageView alloc] init];
@@ -164,19 +189,13 @@
 	if ([[self filterType] isEqualToString:filterType] && _gpuImagefilter) {
 		return;
 	}
+	_filterType = filterType;
 	
-	// 释放旧的滤镜
-	if (_gpuImagefilter) {
-		[_gpuImagefilter removeTarget:_gpuImageView];
-		[_gpuImagefilter removeTarget:_rawOut];
-		[self.gpuImageCamera removeTarget:_gpuImagefilter];
-	}
+	[self clearFilter];
 	
 	_gpuImagefilter = [GPUImageHelper filterGroupWithType:filterType];
-	[self.gpuImageCamera addTarget:_gpuImagefilter];
-	[_gpuImagefilter addTarget:self.gpuImageView];
-	[_gpuImagefilter addTarget:self.rawOut];
-	[self.gpuImageView setInputRotation:kGPUImageFlipHorizonal atIndex:0];
+	
+	[self addFilter];
 	
 	__weak typeof(self) weakSelf = self;
 	_gpuImagefilter.frameProcessingCompletionBlock = ^(GPUImageOutput *frameBufferOutput, CMTime timeShot) {
@@ -185,6 +204,23 @@
 }
 
 #pragma mark - life cycle
+- (void)clearFilter {
+	// 释放旧的滤镜
+	if (_gpuImagefilter) {
+		[_gpuImagefilter removeTarget:_gpuImageView];
+		[_gpuImagefilter removeTarget:_rawOut];
+		[self.gpuImageCamera removeTarget:_gpuImagefilter];
+		_gpuImagefilter = nil;
+	}
+}
+
+- (void)addFilter {
+	[self.gpuImageCamera addTarget:_gpuImagefilter];
+	[_gpuImagefilter addTarget:self.gpuImageView];
+	[_gpuImagefilter addTarget:self.rawOut];
+	[self.gpuImageView setInputRotation:kGPUImageFlipHorizonal atIndex:0];
+}
+
 - (void)prepareManager {
 	_imageWidth = 480;
 	_imageHeight = 640;

@@ -14,7 +14,7 @@ class FilterViewController: SwipeableViewController {
 		return UIScreen.main.bounds.size.height - 50
 	}
 	
-	var arrowButton: BigYellowButton = BigYellowButton.init(frame: CGRect.zero)
+//	var arrowButton: BigYellowButton = BigYellowButton.init(frame: CGRect.zero)
 	var filterCollection: FilterCollectionView = FilterCollectionView.init(frame: CGRect.zero)
 
     override func viewDidLoad() {
@@ -30,10 +30,11 @@ class FilterViewController: SwipeableViewController {
 	}
 	
 	func configureApperance() {
-		self.arrowButton.setImage(#imageLiteral(resourceName: "ArrowButtonDown"), for: .normal)
-		self.arrowButton.frame = CGRect.init(x: (self.view.frame.size.width - 47) / 2, y: self.view.frame.size.height - 50 - 30, width: 47, height: 30)
-		self.arrowButton.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin]
-		self.view.addSubview(self.arrowButton)
+//		self.arrowButton.setImage(#imageLiteral(resourceName: "ArrowButtonDown"), for: .normal)
+//		self.arrowButton.frame = CGRect.init(x: (self.view.frame.size.width - 47) / 2, y: self.view.frame.size.height - 50 - 30, width: 47, height: 30)
+//		self.arrowButton.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin]
+//		self.view.addSubview(self.arrowButton)
+//		self.arrowButton.isUserInteractionEnabled = false
 		
 		self.filterCollection.frame = CGRect.init(x: 6, y: self.view.frame.size.height - 100 - 107, width: self.view.frame.size.width - 12, height: 107)
 		self.filterCollection.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
@@ -45,14 +46,12 @@ class FilterViewController: SwipeableViewController {
 	}
 	
 	override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-		if gestureRecognizer is UITapGestureRecognizer {
-			var touchView: UIView? = touch.view
-			while touchView != nil {
-				if (touchView is FilterCollectionView) {
-					return false
-				}
-				touchView = touchView?.superview
+		var touchView: UIView? = touch.view
+		while touchView != nil {
+			if (touchView is FilterCollectionView) {
+				return false
 			}
+			touchView = touchView?.superview
 		}
 		return true
 	}

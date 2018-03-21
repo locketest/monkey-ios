@@ -26,7 +26,8 @@ public enum AnalyticEvent: String {
     case matchFirstSuccess = "MATCH_1ST_SUCCESS" /// First match success
     case matchFirstAddTime = "MATCH_1ST_ADDTIME"
     case matchFirstAddFriend = "MATCH_1ST_ADDFRIEND"
-    
+	
+	case matchRequest = "MATCH_REQUEST"
     case matchReveived = "MATCH_RECEIVED"
     case matchConnect = "MATCH_CONNECT"
     case matchConnectTimeOut = "MATCH_CONNECT_TIME_OUT"
@@ -57,12 +58,18 @@ class AnaliticsCenter {
 	
 	fileprivate class func setUserID() {
 		let isAuth = (APIController.authorization != nil)
-		let currentUser = APIController.shared.currentUser
-		let userID = currentUser?.user_id
-		if (isAuth && userID != nil) {
+		
+		if isAuth == true, let currentUser = APIController.shared.currentUser, let userID = currentUser.user_id {
 			runAsynchronouslyOnEventProcessingQueue {
 				Amplitude.shared.setUserId(userID)
 				Crashlytics.sharedInstance().setUserIdentifier(userID)
+				
+				let userInfo: [String: Any] = [
+					"Monkey_gender": currentUser.gender ?? "male",
+					"Monkey_age": currentUser.age.value ?? 0,
+					"Monkey_ban": currentUser.is_banned.value ?? false,
+					]
+				AnaliticsCenter.update(userProperty: userInfo)
 			}
 		}
 	}
@@ -114,12 +121,15 @@ extension AnaliticsCenter {
 		AnalyticEvent.codeVerify,
 		AnalyticEvent.signUpFinish,
 		
+		AnalyticEvent.notifyClick,
+		
 		AnalyticEvent.matchFirstRequest,
 		AnalyticEvent.matchFirstRecieve,
 		AnalyticEvent.matchFirstSuccess,
 		AnalyticEvent.matchFirstAddTime,
 		AnalyticEvent.matchFirstAddFriend,
 		
+		AnalyticEvent.matchRequest,
 		AnalyticEvent.matchReveived,
 		AnalyticEvent.matchConnect,
 		AnalyticEvent.matchConnectTimeOut,
@@ -177,6 +187,9 @@ Amplitude 操作
 */
 extension AnaliticsCenter {
 	fileprivate static let exceptAmplitudeEvents: Set<AnalyticEvent> = [
+		AnalyticEvent.notifyClick,
+		
+		AnalyticEvent.matchRequest,
 		AnalyticEvent.matchReveived,
 		AnalyticEvent.matchConnect,
 		AnalyticEvent.matchConnectTimeOut,
@@ -218,6 +231,48 @@ extension AnaliticsCenter {
 	
 	class func set(amplitudeUserProperty userProperties: [String: Any]) {
 		set(amplitudeUserProperty: userProperties, increse: false, update: false)
+	}
+	
+	fileprivate class func update(firstdayAmplitudeUserProperty userProperties: [String: Any]) {
+		let create_at = Date.init(timeIntervalSince1970: APIController.shared.currentUser?.created_at?.timeIntervalSince1970 ?? 0)
+		guard create_at.compare(.isToday) == true else {
+			return
+		}
+		
+		var firstdayProperty = [String: Any]()
+		for (property, value) in userProperties {
+			firstdayProperty["day1_\(property)"] = value
+		}
+		
+		set(amplitudeUserProperty: firstdayProperty, increse: false, update: true)
+	}
+	
+	class func add(firstdayAmplitudeUserProperty userProperties: [String: Any]) {
+		let create_at = Date.init(timeIntervalSince1970: APIController.shared.currentUser?.created_at?.timeIntervalSince1970 ?? 0)
+		guard create_at.compare(.isToday) == true else {
+			return
+		}
+		
+		var firstdayProperty = [String: Any]()
+		for (property, value) in userProperties {
+			firstdayProperty["day1_\(property)"] = value
+		}
+		
+		set(amplitudeUserProperty: firstdayProperty, increse: true, update: false)
+	}
+	
+	class func set(firstdayAmplitudeUserProperty userProperties: [String: Any]) {
+		let create_at = Date.init(timeIntervalSince1970: APIController.shared.currentUser?.created_at?.timeIntervalSince1970 ?? 0)
+		guard create_at.compare(.isToday) == true else {
+			return
+		}
+		
+		var firstdayProperty = [String: Any]()
+		for (property, value) in userProperties {
+			firstdayProperty["day1_\(property)"] = value
+		}
+		
+		set(amplitudeUserProperty: firstdayProperty, increse: false, update: false)
 	}
 }
 

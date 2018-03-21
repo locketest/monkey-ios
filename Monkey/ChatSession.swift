@@ -56,6 +56,15 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 	var hadAddTime = false {
 		didSet {
 			if self.hadAddTime {
+				
+				var toAddInfo = ["match_success_add_time": 1]
+				if self.friendMatched == true {
+					toAddInfo["match_success_time&friend"] = 1
+				}
+				
+				AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
+				AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
+				
 				self.track(matchEvent: .matchFirstAddTime)
 			}
 		}
@@ -76,8 +85,17 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         didSet {
             if let callDelegate = self.callDelegate, friendMatched {
                 callDelegate.friendMatched(in: self)
+				
+				var toAddInfo = ["match_success_add_friend": 1]
+				if self.hadAddTime == true {
+					toAddInfo["match_success_time&friend"] = 1
+				}
+				
+				AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
+				AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
+				
 				self.track(matchEvent: .matchFirstAddFriend)
-                self.chat?.update(callback: nil)
+				self.chat?.update(callback: nil)
             }
         }
     }
@@ -131,7 +149,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 		}
 
 		var commonParameters = [
-			"user_gender": currentUser?.show_gender ?? "",
+			"user_gender": currentUser?.gender ?? "",
 			"user_age": "\(currentUser?.age.value ?? 0)",
 			"user_country": currentUser?.location ?? "",
 			"user_ban": "\(is_banned)",
@@ -168,6 +186,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 					commonParameters["sound_open_success"] = "\(self.isUnMuteSound)"
                     commonParameters["message_send"] = "\(self.message_send)"
                     commonParameters["message_receive"] = "\(self.message_receive)"
+				}
+				
+				let filter_title = Achievements.shared.selectMonkeyFilter
+				if filter_title != "Normal" {
+					commonParameters["filter"] = filter_title
 				}
 			}
 		}
@@ -233,6 +256,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     func accept() {
         self.response = .accepted
 		self.acceptTime = NSDate().timeIntervalSince1970
+		
+		AnaliticsCenter.add(amplitudeUserProperty: ["match_receive": 1])
+		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_receive": 1])
 
 		self.track(matchEvent: .matchFirstRecieve)
 		self.track(matchEvent: .matchReveived)
@@ -243,8 +269,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         }
 
 		if self.matchUserDidAccept {
+			AnaliticsCenter.add(amplitudeUserProperty: ["match_connect": 1])
+			AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_connect": 1])
 			self.track(matchEvent: .matchConnect)
 		}
+		
         self.initiatorReadyChecks += 1
         self.log(.info, "Ready")
         var maybeError : OTError?
@@ -504,8 +533,26 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         case .connected:
             self.didConnect = true
             self.loadingDelegate?.presentCallViewController(for: self)
+			
+			var toAddInfo = ["match_success": 1]
+			if self.realmCall?.user?.gender == Gender.female.rawValue {
+				toAddInfo["match_success_f"] = 1
+			}else {
+				toAddInfo["match_success"] = 1
+			}
+			
+			if self.textMode == true {
+				toAddInfo["match_success_text"] = 1
+			}else {
+				toAddInfo["match_success_video"] = 1
+			}
+			
+			AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
+			AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
+			
 			self.track(matchEvent: .matchFirstSuccess)
 			self.track(matchEvent: .matchSuccess)
+			
         case .consumed:
             self.loadingDelegate?.chatSession(self, callEndedWithError: nil)
             self.chatNotificationToken?.stop()
@@ -555,6 +602,21 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             return
         }
         if self.sessionStatus == .connected {
+			
+			var match_duration = 0
+			if let connectTime = connectTime {
+				match_duration = Int(Date().timeIntervalSince1970 - connectTime)
+			}
+			var toAddInfo = ["match_duration_total": match_duration]
+			AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
+			
+			if self.textMode == true {
+				toAddInfo["match_duration_total_text"] = match_duration
+			}else {
+				toAddInfo["match_duration_total_video"] = match_duration
+			}
+			AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
+			
 			self.track(matchEvent: .matchInfo)
             self.disconnectStatus = status
             self.updateStatusTo(.disconnecting)
@@ -595,7 +657,6 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
          * to the OpenTok session.
          */
         var maybeError : OTError?
-       // MonkeyPublisher.shared.defaultVideoCapture?.toggleCameraPosition()
         session.publish(MonkeyPublisher.shared, error: &maybeError)
 
         if let error = maybeError {

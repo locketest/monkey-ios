@@ -72,6 +72,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 
     var clockTime:Int = 15000
     var effectsCoordinator = EffectsCoordinator()
+    var pixeled = false
     var ticker:Timer?
     var isAnimatingMinuteAdd = false
     var animator: UIDynamicAnimator!
@@ -88,10 +89,11 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     }
 
     func togglePublisherEffects() {
-        if self.effectsCoordinator.effects.count == 0 {
-            self.effectsCoordinator.effects.append(PixelationEffect(pixelationAmount: 24))
+		self.pixeled = !self.pixeled
+        if self.pixeled == true {
+			HWCameraManager.shared().addPixellate()
         } else {
-            self.effectsCoordinator.effects.removeAll()
+			HWCameraManager.shared().removePixellate()
         }
     }
 
@@ -293,9 +295,9 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 	}
 	
 	@IBAction func cameraPositionButtonClick(_ sender: Any) {
-		self.effectsCoordinator.effects.removeAll()
         self.chatSession?.toggleCameraPosition()
     }
+	
     // MARK: Snapchat Button
     @IBAction func addSnapchat(_ sender: BigYellowButton) {
 		// add friend
@@ -305,6 +307,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         Achievements.shared.addedFirstSnapchat = true
         let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!) ?? false
     }
+	
     @IBAction func endCall(_ sender: BigYellowButton) {
         self.endCallButton.isEnabled = false
         self.endCallButton.layer.opacity = 0.5

@@ -449,6 +449,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	func stopFindingChats(andDisconnect: Bool, forReason: String) {
 		print("Stopped finding: \(forReason)")
+		self.continuous_request_count = 0
 		self.chatRequest?.cancel()
 		self.stopFindingReasons.append(forReason)
 		if self.stopFindingReasons.count == 1 {
@@ -670,7 +671,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var chatRequest: JSONAPIRequest?
 	var gettingNewSession = false
 	var sessionIndex = 0 // used to make sure we don't run more than one DispatchQueue.main.asyncAfter
-
+	var continuous_request_count = 0
 
 	func getNewSession() {
 		// log first match request event
@@ -725,14 +726,18 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}
 			
 			let commonParameters = [
-				"user_gender": currentUser?.show_gender ?? "",
+				"user_gender": currentUser?.gender ?? "",
 				"user_age": "\(currentUser?.age.value ?? 0)",
 				"user_country": currentUser?.location ?? "",
 				"user_ban": "\(is_banned)",
 				"match_type": match_type,
-				"trees": channels
+				"trees": channels,
+				"failure": "\(self.continuous_request_count)",
 			]
+			AnaliticsCenter.add(amplitudeUserProperty: ["match_request": 1])
+			AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_request": 1])
 			AnaliticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
+			AnaliticsCenter.log(withEvent: AnalyticEvent.matchRequest, andParameter: commonParameters)
 			
 			print("Chat request completed")
 			self.gettingNewSession = false
@@ -777,13 +782,13 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 						alert.addAction(UIAlertAction(title: (meta?["alert_retry_text"] as? String) ?? "Retry", style: .cancel, handler: {
 							(UIAlertAction) in
 							alert.dismiss(animated: true, completion: nil)
-//                                   self.getNewSession()
+							//                                   self.getNewSession()
 						}))
 					}
 					self.present(alert, animated: true, completion: nil)
 				} else if (meta?["should_retry"] as? Bool) == true {
 					print("Retrying")
-//                         self.getNewSession()
+					//                         self.getNewSession()
 					return
 				}
 				if error.code.rawValue == "-999" {
@@ -793,9 +798,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 					print("Cancelled finding chat.")
 					return
 				}
-//                    self.getNewSession()
 			}
 		}
+		self.continuous_request_count += 1;
 	}
 	
 	func progressMatch(call: RealmCall, data: [String: Any]) {
@@ -811,14 +816,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			return
 		}
 		
-		if let includeds = jsonAPIDocument.included,
-			let included = includeds.first
-		{
-			if let attribute = included.attributes {
-				if let channels = attribute["channels"] as? [String] {
-					self.listTrees(trees: channels)
-				}
-			}
+		if let matchRelationships = jsonAPIDocument.dataResource?.relationships,
+			let matchedUser = matchRelationships["user"] as? JSONAPIDocument, let attribute = matchedUser.dataResource?.attributes, let channels = attribute["channels"] as? [String] {
+			self.listTrees(trees: channels)
 		}
 		
 		var bio = "Connecting"
@@ -969,7 +969,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 
 	func dismissCallViewController(for chatSession: ChatSession) {
-        EffectsCoordinator().effects.removeAll()
+		
+	 HWCameraManager.shared().removePixellate()
+	 HWCameraManager.shared().changeCameraPosition(to: .front)
      let realm = try? Realm()
 
      if chatSession.isReportedChat , chatSession.friendMatched , let userID = self.chatSession?.chat?.user_id,chatSession.isReportedByOther==false {
@@ -1035,9 +1037,15 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		let presentingViewController = self.matchViewController?.presentingViewController
 		self.factTextView.text = self.nextFact
 		let callViewController = self.matchViewController
-		if chatSession.hadAddTime == false {
+		
+		if chatSession.textMode == false && chatSession.hadAddTime == false {
+			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
+		}else if chatSession.textMode == true && chatSession.isUnMuteSound == false ,
+			let connectTime = chatSession.connectTime ,
+			(Date.init().timeIntervalSince1970 - connectTime) <= 30 {
 			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}
+		
 		self.timer?.fireDate = Date.distantFuture
 		UIView.animate(withDuration: 0.3, animations: {
 			callViewController?.isPublisherViewEnlarged = true
