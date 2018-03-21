@@ -211,7 +211,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                         self?.firstNameField.isUserInteractionEnabled = false
                         self?.firstNameTipLab.text = "You can change your name after \(d) days"
                     }
-//                        self?.birthdayField.isUserInteractionEnabled = true
+                     
 				}
 			}
 		}
@@ -827,7 +827,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.birthdayTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.birthdayTipLab)
         
-        self.birthdayField = UITextField.init(frame: CGRect(x:205,y:64,width:textFieldWidth,height:64))
+        self.birthdayField = UITextField.init(frame: CGRect(x:45,y:64,width:self.editProfileView.frame.size.width-45-10,height:64))
         self.birthdayField.textColor = UIColor.init(white: 1, alpha: 0.7)
         self.birthdayField.text = ""
         self.birthdayField.isUserInteractionEnabled = false
@@ -914,7 +914,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             }
         }
         self.saveBtn.alpha = 0.25
-        if self.editBirthdayStatus{
+        //if self.editBirthdayStatus{
             UIView.animate(
                 withDuration: 0.25,
                 delay: 0,
@@ -925,10 +925,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             },
                 completion: { Void in()  }
             )
-        }else{
-         self.pickerContainerView.frame = CGRect(x:0,y:UIScreen.main.bounds.size.height,width:UIScreen.main.bounds.size.width,height:220);
-         self.editProfileView.frame = CGRect(x:5,y:self.containerView.frame.origin.y,width:self.editProfileView.frame.size.width,height:self.editProfileView.frame.size.height)
-        }
+//        }else{
+//         self.pickerContainerView.frame = CGRect(x:0,y:UIScreen.main.bounds.size.height,width:UIScreen.main.bounds.size.width,height:220);
+//         self.editProfileView.frame = CGRect(x:5,y:self.containerView.frame.origin.y,width:self.editProfileView.frame.size.width,height:self.editProfileView.frame.size.height)
+//        }
         self.cancelBtn.isHidden = true
         self.saveBtn.isHidden = true
 //        self.firstNameTipLab.text = ""
@@ -947,17 +947,22 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         }
     }
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-//        self.firstNameTipLab.text = ""
-//        self.birthdayTipLab.text = ""
+        self.snchatTipLab.text = ""
         self.editBirthdayStatus = false
         self.cancelBtn.isHidden = false
         self.saveBtn.isHidden = false
         if textField == self.firstNameField{
             self.firstNameTipLab.text = "You can change your name once every 2 months"
             self.firstNameTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
+            if self.birthdayField.isUserInteractionEnabled{
+                self.birthdayTipLab.text = ""
+            }
         }
         if textField == self.birthdayField{
             self.editBirthdayStatus = true
+            if self.firstNameField.isUserInteractionEnabled{
+                self.firstNameTipLab.text = ""
+            }
             self.view.endEditing(true)
             UIView.animate(
                 withDuration: 0.25,
@@ -970,6 +975,15 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 completion: { Void in()  }
             )
             return  false
+        }else{
+            if textField == self.snapChatUserName{
+                if self.firstNameField.isUserInteractionEnabled{
+                    self.firstNameTipLab.text = ""
+                }
+                if self.birthdayField.isUserInteractionEnabled{
+                    self.birthdayTipLab.text = ""
+                }
+            }
         }
         return true
     }
