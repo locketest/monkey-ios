@@ -1045,7 +1045,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			(Date.init().timeIntervalSince1970 - connectTime) <= 30 {
 			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}
-		
+     
 		self.timer?.fireDate = Date.distantFuture
 		UIView.animate(withDuration: 0.3, animations: {
 			callViewController?.isPublisherViewEnlarged = true

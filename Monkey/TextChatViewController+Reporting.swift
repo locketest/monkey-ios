@@ -190,11 +190,16 @@ extension TextChatViewController {
             return
         }
         
-        if ( arc4random() % 100) > (RemoteConfigManager.shared.moderation_non_peak) {
+        if  let hour = Date.init().component(.hour),
+            hour > 8 && hour < 20,
+            ( arc4random() % 100) > (RemoteConfigManager.shared.moderation_non_peak) {
             return
         }
         
-        if (arc4random() % 100) > (RemoteConfigManager.shared.moderation_gender_match) {
+        if  let myGender = APIController.shared.currentUser?.gender,
+            let otherGender = self.chatSession?.realmCall?.user?.gender,
+            myGender == "male" && otherGender == "male",
+            (arc4random() % 100) > (RemoteConfigManager.shared.moderation_gender_match) {
             return
         }
 		
