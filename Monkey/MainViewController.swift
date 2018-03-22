@@ -738,6 +738,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_request": 1])
 			AnaliticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
 			AnaliticsCenter.log(withEvent: AnalyticEvent.matchRequest, andParameter: commonParameters)
+			self.continuous_request_count += 1;
 			
 			print("Chat request completed")
 			self.gettingNewSession = false
@@ -800,7 +801,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				}
 			}
 		}
-		self.continuous_request_count += 1;
 	}
 	
 	func progressMatch(call: RealmCall, data: [String: Any]) {
@@ -816,9 +816,25 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			return
 		}
 		
+		var first_name: String?
+		var gender: String?
+		var profile_photo_url: String?
+		var user_id: String?
+		var age: Int?
+		var location: String?
+		
 		if let matchRelationships = jsonAPIDocument.dataResource?.relationships,
-			let matchedUser = matchRelationships["user"] as? JSONAPIDocument, let attribute = matchedUser.dataResource?.attributes, let channels = attribute["channels"] as? [String] {
-			self.listTrees(trees: channels)
+			let matchedUser = matchRelationships["user"] as? JSONAPIDocument, let attribute = matchedUser.dataResource?.attributes {
+			if let channels = attribute["channels"] as? [String] {
+				self.listTrees(trees: channels)
+			}
+			
+			first_name = attribute["first_name"] as? String
+			gender = attribute["gender"] as? String
+			profile_photo_url = attribute["profile_photo_url"] as? String
+			user_id = attribute["user_id"] as? String
+			age = attribute["age"] as? Int
+			location = attribute["location"] as? String
 		}
 		
 		var bio = "Connecting"
@@ -826,7 +842,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			bio = convertBio
 		}
 		
-		self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: call.user?.first_name, profile_image_url: call.user?.profile_photo_url, user_id: call.user?.user_id, match_mode: call.match_mode), token: token, loadingDelegate: self, isDialedCall: false)
+		self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: first_name, gender: gender, age: age, location: location, profile_image_url: profile_photo_url, user_id: user_id, match_mode: call.match_mode), token: token, loadingDelegate: self, isDialedCall: false)
 		
 		self.start(fact: bio)
 		

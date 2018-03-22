@@ -270,7 +270,7 @@ class TextChatViewController: MonkeyViewController {
 		if Achievements.shared.unMuteFirstTextMode == false {
 			let chatSession = self.chatSession
 			
-			let first_name = chatSession?.realmCall?.user?.first_name ?? ""
+			let first_name = chatSession?.chat?.first_name ?? ""
 			let unMuteFirstTextModeAlert = UIAlertController(title: "Open sound!", message: "You will open the sound channel when \(first_name) open the sound channel too!", preferredStyle: .alert)
 			unMuteFirstTextModeAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { (UIAlertAction) in
 				if chatSession == self.chatSession && chatSession?.status == .connected {
@@ -290,7 +290,7 @@ class TextChatViewController: MonkeyViewController {
 		
 		if Achievements.shared.addFirstSnapchat == false {
 			let chatSession = self.chatSession
-			let first_name = chatSession?.realmCall?.user?.first_name ?? ""
+			let first_name = chatSession?.chat?.first_name ?? ""
 			let addFirstSnapchatAlert = UIAlertController(title: "Add friends!", message: "You will become friends when \(first_name) add friends too!", preferredStyle: .alert)
 			addFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { (UIAlertAction) in
 				if chatSession == self.chatSession && chatSession?.status == .connected {
@@ -504,7 +504,7 @@ extension TextChatViewController: MatchViewControllerProtocol {
 		if let currentChatSession = chatSession {
 			Achievements.shared.snapchatMatches += 1
 			if Achievements.shared.addedFirstSnapchat == false {
-				let first_name = currentChatSession.realmCall?.user?.first_name ?? ""
+				let first_name = currentChatSession.chat?.first_name ?? ""
 				let addedFirstSnapchatAlert = UIAlertController(title: "👫 Add friends!", message: "Add friends success with \(first_name)", preferredStyle: .alert)
 				addedFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { (UIAlertAction) in
 					Achievements.shared.addedFirstSnapchat = true

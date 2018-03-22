@@ -54,9 +54,8 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     }
     var wasSkippable = false
 	var hadAddTime = false {
-		didSet {
-			if self.hadAddTime {
-				
+		willSet {
+			if self.hadAddTime == false && newValue == true {
 				var toAddInfo = ["match_success_add_time": 1]
 				if self.friendMatched == true {
 					toAddInfo["match_success_time&friend"] = 1
@@ -64,7 +63,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				
 				AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
 				AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
-				
+			}
+		}
+		
+		didSet {
+			if self.hadAddTime {
 				self.track(matchEvent: .matchFirstAddTime)
 			}
 		}
@@ -157,10 +160,10 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             "trees": common_trees ?? "",
 		]
 
-        if let videoCall = self.realmCall, let matchedUser = videoCall.user {
-			commonParameters["match_with_gender"] = matchedUser.gender ?? ""
-			commonParameters["match_with_country"] = matchedUser.location ?? ""
-			commonParameters["match_with_age"] = "\(matchedUser.age.value ?? 0)"
+        if let videoCall = self.realmCall, let chat = chat {
+			commonParameters["match_with_gender"] = chat.gender ?? ""
+			commonParameters["match_with_country"] = chat.location ?? ""
+			commonParameters["match_with_age"] = "\(chat.age ?? 0)"
             var match_with_type = "video"
 			if let match_with_mode = videoCall.match_mode, match_with_mode == MatchMode.TextMode.rawValue {
 				match_with_type = "text"
@@ -173,7 +176,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			}
 
 			if event == .matchInfo {
-				commonParameters["duration"] = matchedUser.gender ?? ""
+				var match_duration = 0
+				if let connectTime = connectTime {
+					match_duration = Int(Date().timeIntervalSince1970 - connectTime)
+				}
+				
+				commonParameters["duration"] = "\(match_duration)"
 				let time_add = ((self.chat?.minutesAdded ?? 0) > 0)
 				commonParameters["time_add"] = "\(time_add)"
 				commonParameters["time_add_success_times"] = "\(min(self.chat?.minutesAdded ?? 0, self.chat?.theirMinutesAdded ?? 0))"
@@ -237,6 +245,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
                 break
             }
         }
+		
+		AnaliticsCenter.add(amplitudeUserProperty: ["match_receive": 1])
+		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_receive": 1])
+		
+		self.track(matchEvent: .matchFirstRecieve)
+		self.track(matchEvent: .matchReveived)
 
         self.session = OTSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, delegate: self)
         var maybeError : OTError?
@@ -256,12 +270,6 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     func accept() {
         self.response = .accepted
 		self.acceptTime = NSDate().timeIntervalSince1970
-		
-		AnaliticsCenter.add(amplitudeUserProperty: ["match_receive": 1])
-		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_receive": 1])
-
-		self.track(matchEvent: .matchFirstRecieve)
-		self.track(matchEvent: .matchReveived)
 
 		guard let connection = self.subscriberConnection else {
             // call will be accepted as soon as the subscriber connected
@@ -535,10 +543,10 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             self.loadingDelegate?.presentCallViewController(for: self)
 			
 			var toAddInfo = ["match_success": 1]
-			if self.realmCall?.user?.gender == Gender.female.rawValue {
+			if self.chat?.gender == Gender.female.rawValue {
 				toAddInfo["match_success_f"] = 1
 			}else {
-				toAddInfo["match_success"] = 1
+				toAddInfo["match_success_m"] = 1
 			}
 			
 			if self.textMode == true {
@@ -859,6 +867,8 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				self.matchReady = true
 				if self.response == .accepted {
 					self.loadingDelegate?.shouldShowConnectingStatus!(in: self)
+					AnaliticsCenter.add(amplitudeUserProperty: ["match_connect": 1])
+					AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_connect": 1])
 					self.track(matchEvent: .matchConnect)
 				}
 				self.matchUserDidAccept = true

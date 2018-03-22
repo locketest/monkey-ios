@@ -198,7 +198,7 @@ extension CallViewController {
         
         
         if  let myGender = APIController.shared.currentUser?.gender,
-            let otherGender = self.chatSession?.realmCall?.user?.gender,
+            let otherGender = self.chatSession?.chat?.gender,
             myGender == "male" && otherGender == "male",
             (arc4random() % 100) > (RemoteConfigManager.shared.moderation_gender_match) {
             return

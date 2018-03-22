@@ -140,7 +140,6 @@ class AuthViewController: UIViewController {
                     self.fetchAndUploadSnapcode()
                 }
             }
-
             print("Reloaded current user")
             completion()
         }
@@ -272,6 +271,8 @@ class AuthViewController: UIViewController {
      */
     func nextVC() {
         self.activityIndicator.stopAnimating()
+		
+		AnaliticsCenter.loginAccount()
 
         // Ensure version is supported
         guard self.currentAppVersionIsSupported else {

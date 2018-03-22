@@ -63,14 +63,17 @@ class AnaliticsCenter {
 			runAsynchronouslyOnEventProcessingQueue {
 				Amplitude.shared.setUserId(userID)
 				Crashlytics.sharedInstance().setUserIdentifier(userID)
-				
-				let userInfo: [String: Any] = [
-					"Monkey_gender": currentUser.gender ?? "male",
-					"Monkey_age": currentUser.age.value ?? 0,
-					"Monkey_ban": currentUser.is_banned.value ?? false,
-					]
-				AnaliticsCenter.update(userProperty: userInfo)
 			}
+			var userInfo: [String: Any] = [
+				"Monkey_gender": currentUser.gender ?? "male",
+				"Monkey_age": currentUser.age.value ?? 0,
+				"Monkey_ban": currentUser.is_banned.value ?? false,
+				]
+			if let create_at = currentUser.created_at?.timeIntervalSince1970 {
+				let Monkey_signup_date = Date.init(timeIntervalSince1970: create_at)
+				userInfo["Monkey_signup_date"] = Monkey_signup_date.toString(format: DateFormatType.custom("yyyyMMddHHmmss"))
+			}
+			AnaliticsCenter.update(userProperty: userInfo)
 		}
 	}
 	

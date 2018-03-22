@@ -11,7 +11,7 @@ import Foundation
 import Alamofire
 
 class Chat {
-    var chatId:String
+    var chatId: String
     var wastedTime = 0
 	
     var theirMinutesAdded = 0
@@ -28,6 +28,9 @@ class Chat {
 	
     var skipped = false
 	
+	var age: Int?
+	var location: String?
+	var gender: String?
     var first_name: String?
     var profile_image_url: String?
     var user_id: String?
@@ -39,9 +42,12 @@ class Chat {
 		return .VideoMode
 	}
 	
-	init(chat_id: String, first_name: String?, profile_image_url: String?, user_id: String?, match_mode: String? = MatchMode.VideoMode.rawValue) {
+	init(chat_id: String, first_name: String?, gender: String? = Gender.male.rawValue, age: Int? = 0, location: String? = "", profile_image_url: String?, user_id: String?, match_mode: String? = MatchMode.VideoMode.rawValue) {
         self.chatId = chat_id
         self.first_name = first_name
+		self.gender = gender
+		self.age = age
+		self.location = location
         self.profile_image_url = profile_image_url
         self.user_id = user_id
 		self.match_mode = MatchMode.init(string: match_mode ?? MatchMode.VideoMode.rawValue)
