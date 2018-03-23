@@ -20,7 +20,7 @@ import Alamofire
 
     /// When tapped, launches action sheet for Camera or Photo Library
     var addPhotoButton: UIButton!
-    
+
     var curImageV: UIImageView?
 
     var cachedImageView: CachedImageView?
@@ -97,7 +97,7 @@ import Alamofire
     var presentingViewController : UIViewController?
 
     /// Selected profile image, or previously set profile image if available from server.
-    var profileImage : UIImage? 
+    var profileImage : UIImage?
 
     /// The picker class that manages photo selection and cropping
     var profilePicker : MMSProfileImagePicker!
@@ -158,11 +158,11 @@ import Alamofire
         imageView.frame.origin.x = (self.frame.size.width - imageView.frame.size.width) / 2 // center x
 
         imageView.layer.cornerRadius = imageView.frame.size.height / 2
-        
+
         if let curImgV = self.curImageV {
             curImgV.removeFromSuperview()
         }
-        
+
         self.curImageV = imageView
 
         self.addPhotoButton.setImage(nil, for: .normal)
@@ -218,7 +218,8 @@ import Alamofire
     }
 
     func mmsImagePickerControllerDidCancel(_ picker: MMSProfileImagePicker) {
-        picker.dismiss(animated: true, completion: nil)
+//        picker.dismiss(animated: true, completion: nil)
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     override func layoutSubviews() {
