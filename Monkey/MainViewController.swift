@@ -124,7 +124,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				stopWaitingForFriend()
 			}
 			let realm = try? Realm()
-			var didFindFriend = false
+          let didFindFriend = false
 
 			DispatchQueue.main.asyncAfter(deadline: .after(seconds: 5)) {
 				if !didFindFriend {

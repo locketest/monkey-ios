@@ -113,7 +113,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         }
         self.view.setNeedsLayout()
     }
-
+    
     var hideStatusBarForScreenshot = false {
         didSet {
             self.setNeedsStatusBarAppearanceUpdate()
@@ -125,7 +125,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         }
         return .slide
     }
-
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         print("sh-1226- \(self) callVC init...")

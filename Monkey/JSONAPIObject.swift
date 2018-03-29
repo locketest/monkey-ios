@@ -173,6 +173,28 @@ class JSONAPIObject: Object {
                 }
             })
     }
+    
+    
+    @discardableResult class func customURLCreate<T: JSONAPIObjectProtocol>(url:String,parameters: [String:Any] = [:], completion operationCompletionHandler: @escaping JSONAPIOperationCompletionHandler<T>) -> JSONAPIRequest? {
+        
+        return JSONAPIRequest(url: url, method:.post, parameters: parameters as Parameters, options: [
+            .header("Authorization", APIController.authorization),
+            ]).addCompletionHandler({ result in
+                switch result {
+                case .error(let error):
+                    return operationCompletionHandler(.error(error))
+                case .success(let jsonAPIDocument):
+                    RealmDataController.shared.apply(jsonAPIDocument) { result in
+                        switch result {
+                        case .error(let error):
+                            return operationCompletionHandler(.error(error))
+                        case .success(let documentObjects):
+                            operationCompletionHandler(.success(documentObjects as? [T] ?? [T]()))
+                        }
+                    }
+                }
+            })
+    }
 
     /// Updates a relationship.
     ///

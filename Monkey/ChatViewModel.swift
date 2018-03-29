@@ -225,25 +225,15 @@ class ChatViewModel {
 
         let parameters:[String:Any] = [
             "data": [
-                "type": "chats",
-                "relationships": [
-                    "friendship": [
-                        "data": [
-                            "type": "friendships",
-                            "id": friendshipId,
-                        ]
-                    ],
-                    "user": [
-                        "data": [
-                            "type": "users",
-                            "id": userId,
-                        ]
+                "type": "videocall",
+                "friendship": [
+                    "id" : friendshipId,
+                    "friend_id": userId,
                     ]
-                ]
             ]
         ]
 
-        RealmCall.create(parameters: parameters) { (result:JSONAPIResult<[RealmCall]>) in
+        RealmCall.customURLCreate(url: "\(Environment.baseURL)/api/v1.3/videocall",parameters: parameters) { (result:JSONAPIResult<[RealmCall]>) in
             switch result {
             case .success(let callObjects):
                 callObjects.first.then { self.delegate?.processRecievedRealmCallFromServer(realmCall: $0) }

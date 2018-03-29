@@ -30,6 +30,7 @@ class RealmDataController: NSObject {
         RealmInstagramPhoto.self,
         RealmBlock.self,
 		RealmMatchedUser.self,
+        RealmVideoCall.self,
         ]
 
     /**
@@ -196,6 +197,9 @@ class RealmDataController: NSObject {
 				if oldSchemaVersion < 17 {
 					migration.deleteData(forType: "RealmRelationship")
 				}
+                if oldSchemaVersion < 17 {
+
+                }
 
         }, objectTypes: objectTypes)
 

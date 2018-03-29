@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F79A1201831140069D473 /* APIController+UserCenter.swift */; };
 		1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76554620132B0600FAB045 /* MKMatchManager.swift */; };
+		1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76B194206A46560044AC7F /* RealmVideoCall.swift */; };
 		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD655482046B2A900CAA2D5 /* Configs.swift */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
@@ -229,6 +230,7 @@
 		1680612B3D43C974FC315A41 /* Pods-Monkey.sandbox.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.sandbox.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.sandbox.xcconfig"; sourceTree = "<group>"; };
 		1B3F79A1201831140069D473 /* APIController+UserCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIController+UserCenter.swift"; sourceTree = "<group>"; };
 		1B76554620132B0600FAB045 /* MKMatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMatchManager.swift; sourceTree = "<group>"; };
+		1B76B194206A46560044AC7F /* RealmVideoCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmVideoCall.swift; sourceTree = "<group>"; };
 		1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKNetworkHelper.swift; sourceTree = "<group>"; };
 		1BD655482046B2A900CAA2D5 /* Configs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -600,6 +602,7 @@
 				D192A3DC2029966E00791002 /* Message.swift */,
 				D1B79CF3205FA80800F209B4 /* UserOptions.swift */,
 				D1B79CFE2060B52500F209B4 /* MonkeyFilter.swift */,
+				1B76B194206A46560044AC7F /* RealmVideoCall.swift */,
 			);
 			name = "Modern API Wrapper";
 			sourceTree = "<group>";
@@ -1314,6 +1317,7 @@
 				C0AD96BA1F6721A9007932AF /* RealmFriendship.swift in Sources */,
 				8B3A787D1DB32CB000FA68A7 /* SoundPlayer.swift in Sources */,
 				D4C767A51F689C6E002606C6 /* RealmSnapcode.swift in Sources */,
+				1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */,
 				D1B79D3A2060DACB00F209B4 /* IFXproIIFilter.m in Sources */,
 				8B19B6761EBD5D9000493A3A /* EditProfilePopupViewController.swift in Sources */,
 				D4656C4D1F49F98700966C6D /* PermissionViewController.swift in Sources */,
