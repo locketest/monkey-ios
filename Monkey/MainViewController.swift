@@ -53,7 +53,7 @@ typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate {
 	
 	func webSocketDidRecieveMatch(match: Any, data: [String : Any]) {
-		if isFindingChats , let realmCall = match as? RealmCall , self.chatSession == nil{
+		if isFindingChats, let realmCall = match as? RealmCall, self.chatSession == nil {
 			self.progressMatch(call: realmCall,data: data)
 		}
 	}
@@ -110,7 +110,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var currentUserNotifcationToken:NotificationToken?
 	var currentExperimentNotifcationToken:NotificationToken?
 	var channels: Results<RealmChannel>?
-     var matchRequestTimer:Timer?
+	var matchRequestTimer:Timer?
 
 	var waitingForFriendToken:NotificationToken?
 	/// After a friendship is made, if there is no snapchat name, we wait for the user id to come down from the socket and push to their chat page
@@ -123,7 +123,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				// Clear old attempt.
 				stopWaitingForFriend()
 			}
-			self.stopFindingChats(andDisconnect: false, forReason: "waiting-friend")
 			let realm = try? Realm()
 			var didFindFriend = false
 
@@ -134,21 +133,18 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}
 
 			self.waitingForFriendToken = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(friendUserId)\"").addNotificationBlock({ [weak self] (changes) in
-				guard let friendship = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(friendUserId)\"").first, let friendshipId = friendship.friendship_id else {
+				guard let _ = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(friendUserId)\"").first else {
 					return
 				}
 				didFindFriend = true
-				(self?.swipableViewControllerToPresentOnLeft as? FriendsViewController)?.initialConversation = friendshipId
-				self?.swipableViewControllerToPresentOnLeft.then { self?.present($0, animated: true, completion: nil) }
 				self?.stopWaitingForFriend()
-				self?.startFindingChats(forReason: "waiting-friend")
 			})
 		}
 	}
+	
 	private func stopWaitingForFriend() {
 		self.waitingForFriendToken?.stop()
 		self.waitingForFriendToken = nil
-		self.startFindingChats(forReason: "waiting-friend")
 	}
 
 	/**
@@ -220,7 +216,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 
 	var isFindingChats = false {
 		didSet {
-			self.loadingTextLabel?.isTicking = self.isFindingChats
 			if self.isFindingChats {
 				UIApplication.shared.isIdleTimerDisabled = true
 			} else {
@@ -365,20 +360,20 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				return
 		}
 
-     let realm = try? Realm()
-     self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true")).sorted(byKeyPath: "channel_id")
-
-     if self.channels?.count == 0 {
-          RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>) in
-               switch result {
-               case .success(_):
-                    self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true"))
-                    break
-               case .error(let error):
-                    error.log()
-               }
-          }
-     }
+		let realm = try? Realm()
+		self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true")).sorted(byKeyPath: "channel_id")
+		
+		if self.channels?.count == 0 {
+			RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>) in
+				switch result {
+				case .success(_):
+					self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true"))
+					break
+				case .error(let error):
+					error.log()
+				}
+			}
+		}
 
 		guard let selectedChannels = APIController.shared.currentUser?.channels else {
 			return
@@ -418,63 +413,238 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.skippedText.layer.opacity = 0.0
 		Socket.shared.isEnabled = true
 		Socket.shared.delegate = self
-     
-		  self.matchRequestTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(MainViewController.getNewSession), userInfo: nil, repeats: true)
+		
+		
+//	    Step 1: As the view comes into the foreground, begin the connection process.
+//		if !appeared {
+//			appeared = true
+//		}
+
+//	    Step 2: check camera and micphone permission
+		self.checkCamAccess()
+		
+//		Step 3: update user location
+		self.stopFindingChats(andDisconnect: true, forReason: "location-services")
+		self.requestLocationPermissionIfUnavailable() // This will cause the thred to hang so we still need to toggle chat finding to cancel any existing requests.
+		
+//		Step 4: Start finding chats
+		self.startFindingChats(forReason: "location-services")
 	}
 
+	var stopFindingReasons = [String]()
+	func startFindingChats(forReason: String) {
+		let prevReasonCount = self.stopFindingReasons.count
+		let reason = self.stopFindingReasons.removeObject(object: forReason)
+		print("Started finding \(forReason):  \(reason)")
+		if prevReasonCount != 0 && self.stopFindingReasons.count == 0 {
+			isFindingChats = true
+			self.beginMatchRequest()
+		} else {
+			print("Still not finding because: \(stopFindingReasons.split(separator: ","))")
+		}
+	}
+	
+	func stopFindingChats(andDisconnect: Bool, forReason: String) {
+		print("Stopped finding: \(forReason)")
+		self.continuous_request_count = 0
+		self.isFindingChats = false
+		self.stopFindingReasons.append(forReason)
+		if self.stopFindingReasons.count == 1 {
+			self.stopMatchRequest()
+		}
+		
+		if forReason == "is-swiping" {
+			self.revokePrevMatchRequest()
+		}
+		
+		if andDisconnect {
+			self.chatSession?.disconnect(.consumed)
+		}
+	}
+	
+	var chatRequest: JSONAPIRequest?
+	var gettingNewSession = false // use to know match request is running
+	var continuous_request_count = 0
+	var request_id: String?
+	
+	func beginMatchRequest() {
+		guard self.isFindingChats == true, self.matchRequestTimer == nil else {
+			return
+		}
+//		if self.gettingNewSession == false {
+			self.consumeMatchRequest()
+//		}
+		
+		self.matchRequestTimer = Timer.scheduledTimer(timeInterval: 15, target: self, selector: #selector(consumeMatchRequest), userInfo: nil, repeats: true)
+	}
+	
+	func generateNewRequestID() {
+		let characters = Array("abcdefghijklmnopqrstuvwxyz1234567890")
+		var randomRequestID = ""
+		
+		for _ in 0...5 {
+			let randomIndex = abs(Int.arc4random() % characters.count)
+			randomRequestID.append(characters[randomIndex])
+		}
+		self.request_id = randomRequestID
+	}
+	
+	func consumeMatchRequest() {
+		print("consume match request")
+		// log first match request event
+		guard self.nextSessionToPresent == nil else {
+			self.chatSession = self.nextSessionToPresent
+			self.nextSessionToPresent = nil
+			self.chatSession?.accept() // will trigger presentcallvc
+			return
+		}
+		
+		if (self.gettingNewSession || !isFindingChats || self.chatSession != nil) {
+			print("Already finding because gettingNewSession:\(gettingNewSession) or isFindingChats:\(isFindingChats) or Retrieving new session before finished with old session.")
+			return
+		}
+		
+		self.gettingNewSession = true
+		self.generateNewRequestID()
+		let parameters:[String:Any] = [
+			"data": [
+				"type": "chats",
+				"attributes": [
+					"matching_mode": self.matchingMode.rawValue,
+					"match_mode": Achievements.shared.selectMatchMode?.rawValue ?? MatchMode.VideoMode.rawValue,
+					"request_id": self.request_id,
+				]
+			]
+		]
+		
+		self.chatRequest = RealmCall.create(parameters: parameters) { (result:JSONAPIResult<[RealmCall]>) in
+			print("Chat request completed")
+			self.cancelMatchRequest()
+			self.trackMatchRequest()
+			
+			switch result {
+			case .success( _):
+				break
+				
+			case .error(let error):
+				
+				let meta = error.meta
+				if let fact = meta?["fact"] as? String {
+					self.nextFact = fact
+					self.resetFact()
+				}
+				
+				error.log(context:"Create (POST) a matched call")
+				let statusCode = error.status
+				guard statusCode != "401" else {
+					self.stopFindingChats(andDisconnect: true, forReason: "log-out")
+					self.signOut()
+					return
+				}
+				
+				guard statusCode != "403" else {
+					if (error.message == "You are old") { // was error["title"] before so may need to be investigated
+						self.stopFindingChats(andDisconnect: true, forReason: "old-vc")
+						self.present((self.storyboard!.instantiateViewController(withIdentifier: "oldVC")), animated: true) { (Bool) in
+							self.startFindingChats(forReason: "old-vc")
+						}
+					} else {
+						self.stopFindingChats(andDisconnect: true, forReason: "banned-vc")
+						self.present((self.storyboard!.instantiateViewController(withIdentifier: "bannedVC")), animated: true) { (Bool) in
+							self.startFindingChats(forReason: "banned-vc")
+						}
+					}
+					return
+				}
+				
+				if let errorMessage = (meta?["alert_message_text"] as? String) {
+					let alert = UIAlertController(title: (meta?["alert_title_text"] as? String) ?? "Status Error", message: errorMessage, preferredStyle: .alert)
+					if (meta?["alert_disable_retry"] as? Bool) != true {
+						alert.addAction(UIAlertAction(title: (meta?["alert_retry_text"] as? String) ?? "Retry", style: .cancel, handler: {
+							(UIAlertAction) in
+							alert.dismiss(animated: true, completion: nil)
+						}))
+					}
+					self.present(alert, animated: true, completion: nil)
+				}
+			}
+		}
+	}
+	
+	func revokePrevMatchRequest() {
+		self.cancelMatchRequest()
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/match_cancel", method: .post, options: [
+			.header("Authorization", APIController.authorization),
+			]).addCompletionHandler { (_) in
+			
+		}
+	}
+	
+	func cancelMatchRequest() {
+		if let chatRequest = self.chatRequest {
+			chatRequest.cancel()
+		}
+		self.chatRequest = nil
+		self.gettingNewSession = false
+	}
+	
+	func stopMatchRequest() {
+		self.cancelMatchRequest()
+		
+		if self.matchRequestTimer != nil {
+			self.matchRequestTimer?.invalidate()
+			self.matchRequestTimer = nil
+		}
+	}
+	
+	func trackMatchRequest() {
+		var commonParameters = self.commomParameters(for: AnalyticEvent.matchRequest)
+		commonParameters["failure"] = "\(self.continuous_request_count)"
+		
+		AnaliticsCenter.add(amplitudeUserProperty: ["match_request": 1])
+		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_request": 1])
+		AnaliticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
+		AnaliticsCenter.log(withEvent: AnalyticEvent.matchRequest, andParameter: commonParameters)
+		
+		self.continuous_request_count += 1;
+	}
+	
+	func commomParameters(for event: AnalyticEvent) -> [String: Any] {
+		let currentUser = APIController.shared.currentUser
+		let is_banned = currentUser?.is_banned.value ?? false
+		var match_type = "video"
+		if let match_mode = Achievements.shared.selectMatchMode, match_mode == .TextMode {
+			match_type = "text"
+		}
+		
+		var channels = ""
+		if let selectChannels = currentUser?.channels {
+			for (_ , tree) in selectChannels.enumerated() {
+				channels.append("tree \(tree.channel_id ?? ""),")
+			}
+			channels.removeLast()
+		}
+		
+		let commonParameters = [
+			"user_gender": currentUser?.gender ?? "",
+			"user_age": "\(currentUser?.age.value ?? 0)",
+			"user_country": currentUser?.location ?? "",
+			"user_ban": "\(is_banned)",
+			"match_type": match_type,
+			"trees": channels,
+		]
+		return commonParameters
+	}
+	
 	func incomingCallManager(_ incomingCallManager: IncomingCallManager, didDismissNotificatationFor chatSession: ChatSession) {
 		self.startFindingChats(forReason: "incoming-call")
 	}
-
+	
 	func incomingCallManager(_ incomingCallManager: IncomingCallManager, shouldShowNotificationFor chatSession: ChatSession) -> Bool {
 		if self.presentedViewController == nil {
 			self.stopFindingChats(andDisconnect: false, forReason: "incoming-call")
 		}
 		return true
-	}
-
-	var stopFindingReasons = [String]()
-	func startFindingChats(forReason: String) {
-		let reason = self.stopFindingReasons.removeObject(object: forReason)
-		print("Started finding \(forReason):  \(reason)")
-		if self.stopFindingReasons.count == 0 {
-			isFindingChats = true
-			if self.chatSession == nil {
-				self.matchRequestTimer?.fire()
-				self.matchRequestTimer?.fireDate = Date()
-			}
-		} else {
-			print("Still not finding because: \(stopFindingReasons.split(separator: ","))")
-		}
-	}
-	func stopFindingChats(andDisconnect: Bool, forReason: String) {
-		print("Stopped finding: \(forReason)")
-		self.continuous_request_count = 0
-		self.chatRequest?.cancel()
-		self.stopFindingReasons.append(forReason)
-		if self.stopFindingReasons.count == 1 {
-			isFindingChats = false
-		}
-		if andDisconnect {
-			self.chatSession?.disconnect(.consumed)
-		}
-     
-        self.matchRequestTimer?.fireDate = Date.distantFuture
-	}
-
-	var movingToBackground = false
-
-	func appMovedToBackground() {
-		self.hashtag = ""
-		self.stopFindingChats(andDisconnect: false, forReason: "application-status")
-		Socket.shared.isEnabled = false
-        self.chatSession?.userTurnIntoBackground()
-	}
-
-	func appMovedToForeground() {
-		Socket.shared.isEnabled = true
-		self.checkCamAccess()
-		self.startFindingChats(forReason: "application-status")
 	}
 
 	func incomingCallManager(_ incomingCallManager: IncomingCallManager, transitionToChatSession chatSession: ChatSession) {
@@ -486,6 +656,23 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		}
 		chatSession.accept()
 	}
+	
+	var movingToBackground = false
+	
+	func appMovedToBackground() {
+		self.hashtag = ""
+		self.revokePrevMatchRequest()
+		self.stopFindingChats(andDisconnect: false, forReason: "application-status")
+		Socket.shared.isEnabled = false
+		self.chatSession?.userTurnIntoBackground()
+	}
+	
+	func appMovedToForeground() {
+		Socket.shared.isEnabled = true
+		self.checkCamAccess()
+		self.startFindingChats(forReason: "application-status")
+	}
+	
 	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return .lightContent
 	}
@@ -494,79 +681,98 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-
-     APIController.trackSignUpFinish()
-     if !self.hadRegiNoti {
-          if Achievements.shared.promptedNotifications {
-               self.hadRegiNoti = true
-               UIApplication.shared.registerForRemoteNotifications()
-          }else {
-               self.checkNotifiPermission()
-          }
-     }
-
-     if APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.birth_date == nil {
-          self.present(self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0 ? "editAccountSmallVC" : "editAccountVC"), animated: true, completion: nil)
-     }
 		
+		APIController.trackSignUpFinish()
+		if !self.hadRegiNoti {
+			if Achievements.shared.promptedNotifications {
+				self.hadRegiNoti = true
+				UIApplication.shared.registerForRemoteNotifications()
+			}else {
+				self.checkNotifiPermission()
+			}
+		}
+		
+		if APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.birth_date == nil {
+			self.present(self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0 ? "editAccountSmallVC" : "editAccountVC"), animated: true, completion: nil)
+		}
+	}
+	
+	func checkNotifiPermission(){
+		if #available(iOS 10.0, *) {
+			let center = UNUserNotificationCenter.current()
+			DispatchQueue.main.async {
+				center.getNotificationSettings(completionHandler: { (setting) in
+					if setting.authorizationStatus == UNAuthorizationStatus.authorized {
+						DispatchQueue.main.async {
+							UIApplication.shared.registerForRemoteNotifications()
+							self.hadRegiNoti = true
+						}
+					}
+				})
+			}
+		}else {
+			if UIApplication.shared.isRegisteredForRemoteNotifications {
+				UIApplication.shared.registerForRemoteNotifications()
+				self.hadRegiNoti = true
+			}
+		}
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
-		// Step 2: As the view comes into the foreground, begin the connection process.
-		if !appeared {
-			appeared = true
-		}
-
-		print("Start finding chats")
-		self.stopFindingChats(andDisconnect: true, forReason: "location-services")
-		self.requestLocationPermissionIfUnavailable() // This will cause the thred to hang so we still need to toggle chat finding to cancel any existing requests.
-		self.startFindingChats(forReason: "location-services")
-		self.checkCamAccess()
+		super.viewWillAppear(animated)
 	}
 
 	func checkCamAccess() {
-		if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeAudio) != AVAuthorizationStatus.authorized {
-			AVAudioSession.sharedInstance().requestRecordPermission({ (granted) in
-				if (!granted) {
-					let alert = UIAlertController(title: "Monkey needs access to microphone", message: "Please give Monkey access to microphone in the Settings app.", preferredStyle: .alert)
-					alert.addAction(UIAlertAction(title: "Sure", style: .cancel, handler: {
-						(UIAlertAction) in
-						guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
-							return
+		let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
+		let micPhoneAuthorizationStatus = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeAudio)
+		if cameraAuthorizationStatus != .authorized || micPhoneAuthorizationStatus != .authorized {
+			self.stopFindingChats(andDisconnect: true, forReason: "permission-access")
+			
+			if micPhoneAuthorizationStatus != .authorized {
+				AVAudioSession.sharedInstance().requestRecordPermission({ (granted) in
+					if (!granted) {
+						let alert = UIAlertController(title: "Monkey needs access to microphone", message: "Please give Monkey access to microphone in the Settings app.", preferredStyle: .alert)
+						alert.addAction(UIAlertAction(title: "Sure", style: .cancel, handler: {
+							(UIAlertAction) in
+							guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+								return
+							}
+							
+							if UIApplication.shared.canOpenURL(settingsUrl) {
+								UIApplication.shared.openURL(settingsUrl)
+							}
+						}))
+						
+						DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.5)) {
+							self.present(alert, animated: true, completion: nil)
 						}
-
-						if UIApplication.shared.canOpenURL(settingsUrl) {
-							UIApplication.shared.openURL(settingsUrl)
+					}
+				})
+			}else {
+				AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted) in
+					if (!granted) {
+						let alert = UIAlertController(title: "Monkey needs access to camera", message: "Please give Monkey access to camera in the Settings app.", preferredStyle: .alert)
+						alert.addAction(UIAlertAction(title: "Sure", style: .cancel, handler: {
+							(UIAlertAction) in
+							guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+								return
+							}
+							
+							if UIApplication.shared.canOpenURL(settingsUrl) {
+								UIApplication.shared.openURL(settingsUrl)
+							}
+						}))
+						DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.5)) {
+							self.present(alert, animated: true, completion: nil)
 						}
-					}))
-					self.stopFindingChats(andDisconnect: true, forReason: "camera-access")
-					self.present(alert, animated: true, completion: nil)
-				}
-			})
-		}
-		if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) !=  AVAuthorizationStatus.authorized {
-			AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted) in
-				if (!granted) {
-					let alert = UIAlertController(title: "Monkey needs access to camera", message: "Please give Monkey access to camera in the Settings app.", preferredStyle: .alert)
-					alert.addAction(UIAlertAction(title: "Sure", style: .cancel, handler: {
-						(UIAlertAction) in
-						guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
-							return
-						}
-
-						if UIApplication.shared.canOpenURL(settingsUrl) {
-							UIApplication.shared.openURL(settingsUrl)
-						}
-					}))
-					self.stopFindingChats(andDisconnect: true, forReason: "mic-access")
-					self.present(alert, animated: true, completion: nil)
-				}
-			})
+					}
+				})
+			}
 		}
 	}
 
 	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillAppear(animated)
+		super.viewWillDisappear(animated)
 ///		self.stopFindingChats(andDisconnect: true, forReason: "view-appearance")
 	}
 
@@ -574,6 +780,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	/// Displays invite friends messaging dialog.
 	///
 	/// - Parameter sender: the instance of `BigYellowButton` that triggered the action
+	/// should be deleted
 	@IBAction func showInviteFromMessagesViewController(sender:BigYellowButton) {
 		let smsVC = MFMessageComposeViewController()
 		smsVC.body = APIController.shared.currentExperiment?.sms_invite_friends
@@ -607,37 +814,15 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		}
 	}
 
-
-     func checkNotifiPermission(){
-          if #available(iOS 10.0, *) {
-               let center = UNUserNotificationCenter.current()
-               DispatchQueue.main.async {
-                    center.getNotificationSettings(completionHandler: { (setting) in
-                         if setting.authorizationStatus == UNAuthorizationStatus.authorized {
-                              DispatchQueue.main.async {
-                                   UIApplication.shared.registerForRemoteNotifications()
-                                   self.hadRegiNoti = true
-                              }
-                         }
-                    })
-               }
-          }else{
-               if UIApplication.shared.isRegisteredForRemoteNotifications {
-                    UIApplication.shared.registerForRemoteNotifications()
-                    self.hadRegiNoti = true
-               }
-          }
-     }
-
 	@IBAction func skipButtonTapped(sender: Any) {
-        MKMatchManager.shareManager.afmCount = 0
-     self.mySkip = true
+		MKMatchManager.shareManager.afmCount = 0
+		self.mySkip = true
 		self.resetFact()
 		self.chatSession?.response = .skipped
 		self.chatSession?.chat?.skipped = true
-     self.hideTreeLabels()
-     //  the connection may not created , this will cause connection destroy callback never call , and it will not going to find next chat
-//          self.chatSession?.disconnect(.consumed)
+		self.hideTreeLabels()
+//		the connection may not created , this will cause connection destroy callback never call , and it will not going to find next chat
+//		self.chatSession?.disconnect(.consumed)
 		self.start()
 	}
 
@@ -648,6 +833,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.stopFindingChats(andDisconnect: true, forReason: "onboarding-video")
 	}
 
+	/// should be deleted
 	private func selectedMode(_ newMatchingMode: MatchingMode) {
 		guard self.matchingMode != newMatchingMode else {
 			self.startFindingChats(forReason: "mode-selection")
@@ -668,140 +854,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	func requestPresentation(of alertController: UIAlertController, from view: UIView) {
 		self.present(alertController, animated: true, completion: nil)
 	}
-	var chatRequest: JSONAPIRequest?
-	var gettingNewSession = false
-	var sessionIndex = 0 // used to make sure we don't run more than one DispatchQueue.main.asyncAfter
-	var continuous_request_count = 0
-
-	func getNewSession() {
-		// log first match request event
-		guard self.nextSessionToPresent == nil else {
-			self.chatSession = self.nextSessionToPresent
-			self.nextSessionToPresent = nil
-			self.chatSession?.accept() // will trigger presentcallvc
-			return
-		}
-		if (gettingNewSession || !isFindingChats) {
-			print("Already finding because gettingNewSession:\(gettingNewSession) or isFindingChats:\(isFindingChats)")
-			return
-		}
-		guard self.chatSession == nil else {
-			print("Error: Retrieving new session before finished with old session. Typically caused by unbalanced calls to stop/start finding chats.")
-			return
-		}
-		gettingNewSession = true
-		print("Getting a new session")
-		if !self.isFindingChats {
-			print("Not finding chats")
-			self.gettingNewSession = false
-			return
-		}
-
-		let parameters:[String:Any] = [
-			"data": [
-				"type": "chats",
-				"attributes": [
-					"matching_mode": self.matchingMode.rawValue,
-					"match_mode": Achievements.shared.selectMatchMode?.rawValue ?? MatchMode.VideoMode.rawValue,
-				]
-			]
-		]
-
-		self.chatRequest = RealmCall.create(parameters: parameters) { (result:JSONAPIResult<[RealmCall]>) in
-			self.chatRequest = nil
-			
-			let currentUser = APIController.shared.currentUser
-			let is_banned = currentUser?.is_banned.value ?? false
-			var match_type = "video"
-			if let match_mode = Achievements.shared.selectMatchMode, match_mode == .TextMode {
-				match_type = "text"
-			}
-			
-			var channels = ""
-			if let selectChannels = currentUser?.channels {
-				for (_ , tree) in selectChannels.enumerated() {
-					channels.append("tree \(tree.channel_id ?? ""),")
-				}
-				channels.removeLast()
-			}
-			
-			let commonParameters = [
-				"user_gender": currentUser?.gender ?? "",
-				"user_age": "\(currentUser?.age.value ?? 0)",
-				"user_country": currentUser?.location ?? "",
-				"user_ban": "\(is_banned)",
-				"match_type": match_type,
-				"trees": channels,
-				"failure": "\(self.continuous_request_count)",
-			]
-			AnaliticsCenter.add(amplitudeUserProperty: ["match_request": 1])
-			AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_request": 1])
-			AnaliticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
-			AnaliticsCenter.log(withEvent: AnalyticEvent.matchRequest, andParameter: commonParameters)
-			self.continuous_request_count += 1;
-			
-			print("Chat request completed")
-			self.gettingNewSession = false
-			guard self.isFindingChats == true else {
-				print("Not finding chats")
-				return // stopped finding chats before request finished
-			}
-			switch result {
-			case .success( _):
-				break
-				
-			case .error(let error):
-				error.log(context:"Create (POST) a matched call")
-				let statusCode = error.status
-				guard statusCode != "401" else {
-					self.signOut()
-					return
-				}
-				guard statusCode != "403" else {
-					if (error.message == "You are old") { // was error["title"] before so may need to be investigated
-						self.present((self.storyboard!.instantiateViewController(withIdentifier: "oldVC")), animated: true) { (Bool) in
-							self.startFindingChats(forReason: "old-vc")
-						}
-						self.stopFindingChats(andDisconnect: true, forReason: "old-vc")
-					} else {
-						self.present((self.storyboard!.instantiateViewController(withIdentifier: "bannedVC")), animated: true) { (Bool) in
-							self.startFindingChats(forReason: "banned-vc")
-						}
-						self.stopFindingChats(andDisconnect: true, forReason: "banned-vc")
-					}
-					return
-				}
-				let meta = error.meta
-				if let fact = meta?["fact"] as? String {
-					self.nextFact = fact
-					self.resetFact()
-				}
-				
-				if let errorMessage = (meta?["alert_message_text"] as? String) {
-					let alert = UIAlertController(title: (meta?["alert_title_text"] as? String) ?? "Status Error", message: errorMessage, preferredStyle: .alert)
-					if (meta?["alert_disable_retry"] as? Bool) != true {
-						alert.addAction(UIAlertAction(title: (meta?["alert_retry_text"] as? String) ?? "Retry", style: .cancel, handler: {
-							(UIAlertAction) in
-							alert.dismiss(animated: true, completion: nil)
-							//                                   self.getNewSession()
-						}))
-					}
-					self.present(alert, animated: true, completion: nil)
-				} else if (meta?["should_retry"] as? Bool) == true {
-					print("Retrying")
-					//                         self.getNewSession()
-					return
-				}
-				if error.code.rawValue == "-999" {
-					if self.isFindingChats {
-						self.getNewSession()
-					}
-					print("Cancelled finding chat.")
-					return
-				}
-			}
-		}
-	}
 	
 	func progressMatch(call: RealmCall, data: [String: Any]) {
 		let jsonAPIDocument = JSONAPIDocument.init(json: data)
@@ -810,11 +862,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.nextFact = nextFact
 		}
 		
-		guard let sessionId = call.session_id, let chatId = call.chat_id, let token = call.token else {
+		guard let sessionId = call.session_id, let chatId = call.chat_id, let token = call.token, let received_id = call.request_id, self.request_id == received_id else {
 			print("Error: RealmCall object did not return with sufficient data to create a chatSession")
-			self.getNewSession()
 			return
 		}
+		self.stopFindingChats(andDisconnect: false, forReason: "receive-match")
 		
 		var first_name: String?
 		var gender: String?
@@ -832,7 +884,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			first_name = attribute["first_name"] as? String
 			gender = attribute["gender"] as? String
 			profile_photo_url = attribute["profile_photo_url"] as? String
-			user_id = attribute["user_id"] as? String
+			user_id = call.user?.user_id
 			age = attribute["age"] as? Int
 			location = attribute["location"] as? String
 		}
@@ -844,6 +896,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		
 		self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: first_name, gender: gender, age: age, location: location, profile_image_url: profile_photo_url, user_id: user_id, match_mode: call.match_mode), token: token, loadingDelegate: self, isDialedCall: false)
 		
+		AnaliticsCenter.add(amplitudeUserProperty: ["match_receive": 1])
+		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_receive": 1])
+		
+		self.chatSession?.track(matchEvent: .matchFirstRecieve)
+		self.chatSession?.track(matchEvent: .matchReceived)
 		self.start(fact: bio)
 		
 		if Achievements.shared.closeAcceptButton {
@@ -872,6 +929,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 
 	func presentCallViewController(for chatSession:ChatSession) {
+		self.stopFindingChats(andDisconnect: false, forReason: "re-start")
 		// This will do nothing if the current chat
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
         self.waitingText.isHidden = true
@@ -937,8 +995,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		let lastShowDate = Date.init(timeIntervalSince1970: lastShowTime)
 		let monkeychatScheme = URL.init(string: Environment.MonkeyChatScheme)
 		let monkeychatUrl = APIController.shared.currentExperiment?.monkeychat_link
-     let monkeychatDes = APIController.shared.currentExperiment?.mc_invite_desc ?? "Check out our new app Monkey Chat, it's awesome, just trust"
-     let monkeychatConfirm = APIController.shared.currentExperiment?.mc_invite_btn_pos_text ?? "Try it"
+		let monkeychatDes = APIController.shared.currentExperiment?.mc_invite_desc ?? "Check out our new app Monkey Chat, it's awesome, just trust"
+		let monkeychatConfirm = APIController.shared.currentExperiment?.mc_invite_btn_pos_text ?? "Try it"
 	    if monkeychatUrl != nil && showMonkeyChatConsumeCount < 3 && lastShowDate.compare(.isToday) == false && UIApplication.shared.canOpenURL(monkeychatScheme!) == false {
 			 UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "MKShowMonkeyChatTimeConsumeChat")
 			 UserDefaults.standard.set(showMonkeyChatConsumeCount + 1, forKey: "MKShowMonkeyChatCountConsumeChat")
@@ -951,10 +1009,10 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 
 			let cancel = UIAlertAction(title: "No trust", style: .cancel, handler: nil)
 			controller.addAction(cancel)
-
-			 DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.5)) {
-				 self.present(controller, animated: true, completion: nil)
-			 }
+			
+			DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.5)) {
+				self.present(controller, animated: true, completion: nil)
+			}
 	  	}
 	}
 
@@ -985,50 +1043,35 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 
 	func dismissCallViewController(for chatSession: ChatSession) {
+		HWCameraManager.shared().removePixellate()
+		HWCameraManager.shared().changeCameraPosition(to: .front)
 		
-	 HWCameraManager.shared().removePixellate()
-	 HWCameraManager.shared().changeCameraPosition(to: .front)
-     let realm = try? Realm()
-
-     if chatSession.isReportedChat , chatSession.friendMatched , let userID = self.chatSession?.chat?.user_id,chatSession.isReportedByOther==false {
-          let friendShip = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"")
-          if let friendShipID = friendShip?.last?.friendship_id {
-
-               let alert = UIAlertController(title: nil, message: "Do you want to remove this user from your friend list?", preferredStyle: .alert)
-               let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
-                    friendShip?.last?.delete(completion: { (error) in
-
-                    })
-
-                    JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/friendships/\(friendShipID)", method: .patch, parameters: [
-                         "data": [
-                              "id": friendShipID,
-                              "type": "friendships",
-                         ],
-                         ], options: [
-                              .header("Authorization", APIController.authorization),
-                              ]).addCompletionHandler { (response) in
-
-                              }
-                    self.startFindingChats(forReason: "delete_report_friend")
-               })
-
-
-               let cancel = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
-                    self.startFindingChats(forReason: "delete_report_friend")
-               })
-
-               alert.addAction(remove)
-               alert.addAction(cancel)
-
-               self.stopFindingChats(andDisconnect: false, forReason: "delete_report_friend")
-
-               let when = DispatchTime.now() + (Double(0.5))
-               DispatchQueue.main.asyncAfter(deadline: when, execute: {
-                    self.present(alert, animated: true)
-               });
-          }
-     }
+		if chatSession.isReportedChat, chatSession.friendMatched, let userID = self.chatSession?.realmCall?.user?.user_id, chatSession.isReportedByOther == false {
+			
+			if let realm = try? Realm(), let friendShip = realm.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"").first {
+				
+				let alert = UIAlertController(title: nil, message: "Do you want to remove this user from your friend list?", preferredStyle: .alert)
+				let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
+					self.startFindingChats(forReason: "delete_report_friend")
+					friendShip.delete(completion: { (error) in
+						
+					})
+				})
+				
+				let cancel = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
+					self.startFindingChats(forReason: "delete_report_friend")
+				})
+				
+				alert.addAction(remove)
+				alert.addAction(cancel)
+				
+				self.stopFindingChats(andDisconnect: false, forReason: "delete_report_friend")
+				
+				DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 1.0)) {
+					self.present(alert, animated: true, completion: nil)
+				}
+			}
+		}
 
 		guard self.matchViewController != nil else {
 			self.skipped()
@@ -1095,6 +1138,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				}
 			}
 		}
+		
+		self.startFindingChats(forReason: "re-start")
 	}
 	/// Inserts MonkeyPublisher.shared.view at the back of the ViewController's view and sets it's constraints.
 	private func addPublisherToView() {
@@ -1104,6 +1149,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
 		MonkeyPublisher.shared.view.translatesAutoresizingMaskIntoConstraints = false
 	}
+	
 	func chatSession(_ chatSession: ChatSession, callEndedWithError error: Error?) {
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
 		if (self.connectText.isHidden == false) && (error != nil) {
@@ -1116,27 +1162,20 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.skipped()
 		}
 		let isCurrentSession = chatSession == self.chatSession
+		self.chatSession = nil
+		
 		if !isCurrentSession {
 			print("Error: It's strange for a session to be ending that we don't own.")
 		}
-		self.chatSession = nil
-
 		if error != nil {
 			print("Error: Uh, oh! Unknown error occurred.")
-			self.getNewSession()
-			return
-		} else if chatSession.friendMatched == true {
-			if let username = chatSession.theirSnapchatUsername {
-				let snapchatURL = URL(string: chatSession.subscriberData?["u"] ?? "snapchat://add/\(username)")
-				if UIApplication.shared.canOpenURL(snapchatURL!) {
-					print("Opening snapchat \(username)")
-					UIApplication.shared.openURL(snapchatURL!)
-				}
-			}
-			if let theirUserId = chatSession.chat?.user_id {
+		}
+
+		if chatSession.friendMatched == true {
+			// Setting this will open the user's chat page as soon as the socket friendship is available when snapchat opening failed (for example, sever didn't send it because we don't open snap directly anymore)
+			if let theirUserId = chatSession.realmCall?.user?.user_id {
 				self.waitingForFriendUserId = theirUserId
 			}
-			// Setting this will open the user's chat page as soon as the socket friendship is available when snapchat opening failed (for example, sever didn't send it because we don't open snap directly anymore)
 		} /*else if
 			// if they haven't invited snapchat friends
 			!Achievements.shared.invitedSnapchatFriends &&
@@ -1157,13 +1196,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.startFindingChats(forReason: "snapchat-vc")
 			})
 			#endif
-		}*/ else {
-			// check if chat id exists
-			print("Trying again")
-			if isCurrentSession {
-				self.getNewSession()
-			}
-		}
+		}*/
+		self.startFindingChats(forReason: "receive-match")
 	}
 
 	func shouldShowConnectingStatus(in chatSession: ChatSession) {
@@ -1172,6 +1206,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 
 	@IBAction func matchModeChanged(_ sender: MatchModeSwitch) {
+		self.revokePrevMatchRequest()
 		self.stopFindingChats(andDisconnect: false, forReason: "switch match mode")
 
 		var currentMatchMode = MatchMode.TextMode
@@ -1213,7 +1248,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.present(alert, animated: true, completion: nil)
 	}
 
-	func warnConnectionTimeout(in chatSession:ChatSession) {
+	func warnConnectionTimeout(in chatSession: ChatSession) {
 		self.stopFindingChats(andDisconnect: false, forReason: "ignoring")
 		let alert = UIAlertController(title: "👮‍♀️ Don't ignore people", message: "Make sure to skip or accept chats.", preferredStyle: UIAlertControllerStyle.alert)
 		alert.addAction(UIAlertAction(title: "Soz officer", style: .cancel, handler: {
@@ -1251,13 +1286,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 
 	deinit {
 		NotificationCenter.default.removeObserver(self)
+		self.stopMatchRequest()
 		self.bananaNotificationToken?.stop()
 		self.unreadMessageNotificationToken?.stop()
 		self.incomingCallNotificationToken?.stop()
 		self.currentUserNotifcationToken?.stop()
 		self.currentExperimentNotifcationToken?.stop()
 		Socket.shared.isEnabled = false
-     self.timer?.invalidate()
+		self.timer?.invalidate()
 	}
 }
 
@@ -1289,7 +1325,6 @@ extension MainViewController {
 extension MainViewController {
 
 	func setupBananas() {
-
 		self.numberFormatter.numberStyle = .decimal
 		self.bananaNotificationToken = APIController.shared.currentUser?.addNotificationBlock { [weak self] (changes) in
 			DispatchQueue.main.async {
@@ -1307,7 +1342,7 @@ extension MainViewController {
 		let isNotBlocking = NSPredicate(format: "is_blocking == NO")
 		let isUnreadConversation = NSPredicate(format: "last_message_read_at < last_message_received_at")
 
-     let realm = try? Realm()
+		let realm = try? Realm()
 		self.friendships = realm?.objects(RealmFriendship.self).filter(NSCompoundPredicate(andPredicateWithSubpredicates: [
 			isNotBlocker,
 			isNotBlocking,
@@ -1435,7 +1470,7 @@ extension MainViewController {
           self.loadingTextLabel.setTicksWithArray(ticks: emojiArr)
      }
 
-     func hideTreeLabels(){
+     func hideTreeLabels() {
           self.loadingTextLabel.setDefaultTicks()
      }
 

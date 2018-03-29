@@ -22,6 +22,7 @@ class RealmCall: JSONAPIObject, JSONAPIObjectProtocol {
     dynamic var created_at: NSDate?
 	
 	dynamic var match_mode: String?
+	dynamic var request_id: String?
     dynamic var user: RealmUser?
     dynamic var friendship: RealmFriendship?
     dynamic var initiator: RealmUser?

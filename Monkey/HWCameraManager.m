@@ -89,6 +89,7 @@
 - (void)addPixellate {
 	[self clearFilter];
 	
+	self.pixellated = YES;
 	_gpuImagefilter = [[GPUImageFilterGroup alloc] init];
 	[_gpuImagefilter addFilter:self.pixellateFilter];
 	[_gpuImagefilter setInitialFilters:@[self.pixellateFilter]];
@@ -98,6 +99,7 @@
 }
 
 - (void)removePixellate {
+	self.pixellated = NO;
 	[self clearFilter];
 	self.filterType = self.filterType;
 	[self addFilter];

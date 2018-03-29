@@ -45,7 +45,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     var subscriberData: Dictionary<String, String>?
     var status: ChatSessionStatus = .loading
     var disconnectReason: DisconnectReason?
-    var response:Response?{
+    var response: Response? {
         didSet{
             if self.wasSkippable && response == .skipped {
                 self.sendSkip()
@@ -86,7 +86,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     }
     var friendMatched = false {
         didSet {
-            if let callDelegate = self.callDelegate, friendMatched {
+            if let callDelegate = self.callDelegate, friendMatched == true {
                 callDelegate.friendMatched(in: self)
 				
 				var toAddInfo = ["match_success_add_friend": 1]
@@ -220,7 +220,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 		self.textMode = (chat.match_with_mode == .TextMode)
 
 		let realm = try? Realm()
-		if let currentMatchUser = chat.user_id, let friend = realm?.objects(RealmFriendship.self).filter("user.user_id == \"\(currentMatchUser)\"").first {
+		if let currentMatchUser = realmCall?.user?.user_id, let friend = realm?.objects(RealmFriendship.self).filter("user.user_id == \"\(currentMatchUser)\"").first {
 			self.theirSnapchatUsername = friend.user?.snapchat_username
 			self.chat?.sharedSnapchat = true
 			self.chat?.theySharedSnapchat = true
@@ -245,12 +245,6 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
                 break
             }
         }
-		
-		AnaliticsCenter.add(amplitudeUserProperty: ["match_receive": 1])
-		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_receive": 1])
-		
-		self.track(matchEvent: .matchFirstRecieve)
-		self.track(matchEvent: .matchReveived)
 
         self.session = OTSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, delegate: self)
         var maybeError : OTError?
@@ -889,7 +883,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				let messageInfo = [
 					"type": messageType.rawValue,
 					"body": message,
-					"sender": chat?.user_id ?? ""
+					"sender": realmCall?.user?.user_id ?? ""
 				]
 				if let textMessage = Mapper<TextMessage>().map(JSON: messageInfo) {
 					self.callDelegate?.received(textMessage: textMessage, in: self)
@@ -899,7 +893,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				let messageInfo = [
 					"type": messageType.rawValue,
 					"body": message,
-					"sender": chat?.user_id ?? ""
+					"sender": realmCall?.user?.user_id ?? ""
 				]
 				if let textMessage = Mapper<TextMessage>().map(JSON: messageInfo) {
 					self.callDelegate?.received(textMessage: textMessage, in: self)

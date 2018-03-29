@@ -22,6 +22,10 @@
  *  本地预览视图
  */
 @property (nonatomic, strong) UIView *localPreviewView;
+/**
+ *	是否有 pixellate 滤镜
+ */
+@property (nonatomic, assign) BOOL pixellated;
 
 // 添加 pixel
 - (void)addPixellate;

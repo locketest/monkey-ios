@@ -28,7 +28,7 @@ public enum AnalyticEvent: String {
     case matchFirstAddFriend = "MATCH_1ST_ADDFRIEND"
 	
 	case matchRequest = "MATCH_REQUEST"
-    case matchReveived = "MATCH_RECEIVED"
+    case matchReceived = "MATCH_RECEIVED"
     case matchConnect = "MATCH_CONNECT"
     case matchConnectTimeOut = "MATCH_CONNECT_TIME_OUT"
     case matchSuccess = "MATCH_SUCCESS"
@@ -133,7 +133,7 @@ extension AnaliticsCenter {
 		AnalyticEvent.matchFirstAddFriend,
 		
 		AnalyticEvent.matchRequest,
-		AnalyticEvent.matchReveived,
+		AnalyticEvent.matchReceived,
 		AnalyticEvent.matchConnect,
 		AnalyticEvent.matchConnectTimeOut,
 		AnalyticEvent.matchSuccess,
@@ -193,7 +193,7 @@ extension AnaliticsCenter {
 		AnalyticEvent.notifyClick,
 		
 		AnalyticEvent.matchRequest,
-		AnalyticEvent.matchReveived,
+		AnalyticEvent.matchReceived,
 		AnalyticEvent.matchConnect,
 		AnalyticEvent.matchConnectTimeOut,
 		AnalyticEvent.matchSuccess,

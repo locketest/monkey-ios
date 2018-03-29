@@ -72,7 +72,6 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 
     var clockTime:Int = 15000
     var effectsCoordinator = EffectsCoordinator()
-    var pixeled = false
     var ticker:Timer?
     var isAnimatingMinuteAdd = false
     var animator: UIDynamicAnimator!
@@ -89,8 +88,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     }
 
     func togglePublisherEffects() {
-		self.pixeled = !self.pixeled
-        if self.pixeled == true {
+        if HWCameraManager.shared().pixellated == false {
 			HWCameraManager.shared().addPixellate()
         } else {
 			HWCameraManager.shared().removePixellate()
@@ -190,7 +188,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         let realm = try? Realm()
         self.cameraPositionButton.isHidden = true
         self.cameraPositionButton.backgroundColor = UIColor.clear
-        if let userID = self.chatSession?.chat?.user_id {
+        if let userID = self.chatSession?.realmCall?.user?.user_id {
             let friendShip = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"")
             if (friendShip?.last?.friendship_id) != nil {
                 self.cameraPositionButton.isHidden = false
