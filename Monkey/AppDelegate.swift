@@ -138,6 +138,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
 		self.logNotificationClick(userInfo: userInfo)
 		FBSDKAppEvents.logPushNotificationOpen(userInfo)
+        self.handleNotification(application: application, userInfo: userInfo)
 	}
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		self.logNotificationClick(userInfo: userInfo)
@@ -155,7 +156,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		FBSDKAppEvents.logPushNotificationOpen(userInfo, action: identifier)
 		completionHandler()
 	}
-	
+    
 	// local notification
 	func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
 		handleNotification(application: application, userInfo: notification.userInfo ?? [:])
@@ -326,7 +327,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			return
 		}
 		
-		mainVC.present(toPresent, animated: true)
+        mainVC.present(toPresent, animated: true, completion: nil)
 	}
 	
 	func checkIfAppUpdated() {

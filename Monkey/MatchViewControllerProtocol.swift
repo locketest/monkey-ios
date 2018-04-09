@@ -18,4 +18,9 @@ protocol MatchViewControllerProtocol: ChatSessionCallDelegate {
 		get
 		set
 	}
+    
+    var commonTree:RealmChannel?{
+        get
+        set
+    }
 }

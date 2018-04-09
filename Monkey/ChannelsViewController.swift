@@ -34,11 +34,17 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
             }
         }
         
-        if let channels = APIController.shared.currentUser?.channels {
+        if var channels = APIController.shared.currentUser?.channels {
+            if channels.count > 1 {
+                channels = List.init()
+                self.updateChannels(selectedChannels:channels )
+            }
             self.selectedChannels = Array(channels)
         }
         
         self.addBottomPadding()
+        
+        UserDefaults.standard.set(true, forKey: "HadShowNewTreeRuleRemindLabel")
     }
     
     /// Adds 14px spacing between last channel and its superview
@@ -69,6 +75,9 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         let cell = tableView.dequeueReusableCell(withIdentifier: "channelCell", for: indexPath) as! ChannelsTableViewCell
         cell.backgroundColor = .clear
         cell.channelId = self.channels?[indexPath.row].channel_id
+        if cell.channelId != self.selectedChannels.first?.channel_id {
+            cell.setSelected(false, animated: true)
+        }
         return cell
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -84,8 +93,18 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
             return
         }
         
+        if let selectedRows = self.tableView.indexPathsForSelectedRows {
+            selectedRows.forEach { [weak self](indexPath) in
+                let cell = self?.tableView.cellForRow(at: indexPath)
+                cell?.setSelected(false, animated: true)
+            }
+        }
+        
+        cell.setSelected(!cell.isSelected, animated: true)
+        
+        self.selectedChannels.removeAll()
         self.selectedChannels.append(channel)
-        self.updateChannels(selectedChannels: List(selectedChannels))
+//        self.updateChannels(selectedChannels: List(selectedChannels))
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -99,7 +118,7 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         }
         
         self.selectedChannels = self.selectedChannels.filter { $0 != channel }
-        self.updateChannels(selectedChannels: List(selectedChannels))
+//        self.updateChannels(selectedChannels: List(selectedChannels))
         
     }
     
@@ -118,11 +137,7 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
     }
     
     func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
-        
-        if selectedChannels.count > 1 {
-            return indexPath
-        }
-        return nil
+        return indexPath
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -138,6 +153,8 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         
         if self.selectedChannels.contains(channel) {
             tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        }else {
+            tableView.deselectRow(at: indexPath, animated: false)
         }
     }
     

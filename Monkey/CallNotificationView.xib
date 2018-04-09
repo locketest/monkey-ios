@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -19,6 +20,9 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EoX-gh-OQw">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ezw-Ty-Y4z" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                     <rect key="frame" x="5" y="0.0" width="365" height="94"/>
                     <subviews>
@@ -53,7 +57,12 @@
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Vi-xP-60k" customClass="JigglyButton" customModule="Monkey" customModuleProvider="target">
                                     <rect key="frame" x="303" y="13" width="48" height="48"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🐵" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pds-2o-QC8" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
+                                        <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="ps7-QL-Ibc">
+                                            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                            <color key="backgroundColor" red="0.95686274509803915" green="0.94813776019999996" blue="0.99608600140000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </activityIndicatorView>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="📞" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pds-2o-QC8" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
                                             <color key="backgroundColor" red="0.9572889805" green="0.94813776019999996" blue="0.99608600140000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <constraints>
@@ -68,10 +77,14 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstItem="Pds-2o-QC8" firstAttribute="leading" secondItem="9Vi-xP-60k" secondAttribute="leading" id="8Ja-p4-6tM"/>
+                                        <constraint firstItem="ps7-QL-Ibc" firstAttribute="height" secondItem="Pds-2o-QC8" secondAttribute="height" id="ALt-jo-2IK"/>
                                         <constraint firstItem="Pds-2o-QC8" firstAttribute="top" secondItem="9Vi-xP-60k" secondAttribute="top" id="CKq-br-G7L"/>
+                                        <constraint firstItem="ps7-QL-Ibc" firstAttribute="centerY" secondItem="Pds-2o-QC8" secondAttribute="centerY" id="Glz-ix-5eL"/>
                                         <constraint firstAttribute="trailing" secondItem="Pds-2o-QC8" secondAttribute="trailing" id="KBb-Lm-oQ8"/>
+                                        <constraint firstItem="ps7-QL-Ibc" firstAttribute="centerX" secondItem="Pds-2o-QC8" secondAttribute="centerX" id="keV-2X-f3b"/>
                                         <constraint firstAttribute="width" constant="48" id="loB-NP-39l"/>
                                         <constraint firstAttribute="height" constant="48" id="luR-ph-jh6"/>
+                                        <constraint firstItem="ps7-QL-Ibc" firstAttribute="width" secondItem="Pds-2o-QC8" secondAttribute="width" id="mMs-rC-P6x"/>
                                         <constraint firstAttribute="bottom" secondItem="Pds-2o-QC8" secondAttribute="bottom" id="oee-0Y-n4y"/>
                                     </constraints>
                                     <userDefinedRuntimeAttributes>
@@ -81,6 +94,39 @@
                                     </userDefinedRuntimeAttributes>
                                     <connections>
                                         <action selector="callFriendWithSender:" destination="iN0-l3-epB" eventType="touchUpInside" id="ZbU-Ta-xsM"/>
+                                    </connections>
+                                </view>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KMF-3B-6cz" customClass="JigglyButton" customModule="Monkey" customModuleProvider="target">
+                                    <rect key="frame" x="224" y="13" width="48" height="48"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="❌" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hDE-uv-ato" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                            <color key="backgroundColor" red="0.9572889805" green="0.94813776019999996" blue="0.99608600140000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="48" id="a2C-bD-OS8"/>
+                                                <constraint firstAttribute="width" constant="48" id="tvA-Hf-4IY"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="26"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="hDE-uv-ato" secondAttribute="bottom" id="4v2-vf-fif"/>
+                                        <constraint firstAttribute="trailing" secondItem="hDE-uv-ato" secondAttribute="trailing" id="8fI-ne-AEw"/>
+                                        <constraint firstAttribute="height" constant="48" id="VKW-A7-7Gq"/>
+                                        <constraint firstAttribute="width" constant="48" id="nE0-qC-oGo"/>
+                                        <constraint firstItem="hDE-uv-ato" firstAttribute="top" secondItem="KMF-3B-6cz" secondAttribute="top" id="qjp-Df-Q8g"/>
+                                        <constraint firstItem="hDE-uv-ato" firstAttribute="leading" secondItem="KMF-3B-6cz" secondAttribute="leading" id="x0h-S1-58I"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <integer key="value" value="20"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="ignoreCall:" destination="iN0-l3-epB" eventType="touchUpInside" id="WKg-bs-H02"/>
                                     </connections>
                                 </view>
                             </subviews>
@@ -96,7 +142,9 @@
                                 <constraint firstAttribute="trailing" secondItem="TKV-m3-BKj" secondAttribute="trailing" constant="5" id="VYQ-7l-Gf7"/>
                                 <constraint firstItem="9Vi-xP-60k" firstAttribute="centerY" secondItem="wQe-fc-7Ie" secondAttribute="centerY" id="aTH-cj-3Tw"/>
                                 <constraint firstAttribute="trailing" secondItem="9Vi-xP-60k" secondAttribute="trailing" constant="14" id="hlW-Zb-Sxu"/>
+                                <constraint firstItem="Pds-2o-QC8" firstAttribute="leading" secondItem="hDE-uv-ato" secondAttribute="trailing" constant="31" id="s9d-xa-Oyu"/>
                                 <constraint firstItem="MFA-OF-TVe" firstAttribute="centerY" secondItem="wQe-fc-7Ie" secondAttribute="centerY" id="sLm-yb-AxV"/>
+                                <constraint firstItem="hDE-uv-ato" firstAttribute="centerY" secondItem="wQe-fc-7Ie" secondAttribute="centerY" id="ykN-Ob-siv"/>
                             </constraints>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -127,12 +175,20 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="ezw-Ty-Y4z" secondAttribute="trailing" constant="5" id="8ut-Zb-1Ff"/>
                 <constraint firstItem="ezw-Ty-Y4z" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="Ee2-fH-rZd"/>
+                <constraint firstAttribute="bottom" secondItem="EoX-gh-OQw" secondAttribute="bottom" id="H3k-q0-zfg"/>
                 <constraint firstItem="ezw-Ty-Y4z" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Vf4-ef-JLl"/>
+                <constraint firstItem="EoX-gh-OQw" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="nXK-CZ-iH5"/>
+                <constraint firstItem="EoX-gh-OQw" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="otp-w1-EJN"/>
+                <constraint firstAttribute="trailing" secondItem="EoX-gh-OQw" secondAttribute="trailing" id="x3J-07-Hxo"/>
             </constraints>
             <connections>
                 <outlet property="callButton" destination="9Vi-xP-60k" id="Gpq-tw-8Fr"/>
+                <outlet property="connectingActivityIndicator" destination="ps7-QL-Ibc" id="5OC-iW-dog"/>
                 <outlet property="emojiLabel" destination="Pds-2o-QC8" id="aef-Aq-Z5W"/>
+                <outlet property="ignoreButton" destination="KMF-3B-6cz" id="lF5-Fd-UPw"/>
+                <outlet property="ignoreLabel" destination="hDE-uv-ato" id="uu7-4C-iXd"/>
                 <outlet property="notificationDescriptionLabel" destination="3du-Ir-ADt" id="rbJ-ur-qVb"/>
+                <outlet property="panGes" destination="ayl-C0-cF3" id="r3a-E3-ljP"/>
                 <outlet property="profileImageView" destination="MFA-OF-TVe" id="paW-Cm-Iqe"/>
                 <outlet property="profileNameLabel" destination="TKV-m3-BKj" id="y2s-Lg-2ph"/>
                 <outletCollection property="gestureRecognizers" destination="ayl-C0-cF3" appends="YES" id="H7B-XD-Kii"/>

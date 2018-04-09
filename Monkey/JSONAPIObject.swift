@@ -9,6 +9,7 @@
 import Foundation
 import RealmSwift
 typealias JSONAPIOperationCompletionHandler<T> = (_ result: JSONAPIResult<[T]>) -> Void
+typealias JSONAPIOperationCompletionHandlerWithFlag<T> = (_ result: JSONAPIResult<[T]>,_ flag:Bool) -> Void
 class JSONAPIObject: Object {
     /**
      Updates the current item with the latest data available in the server.
@@ -189,7 +190,8 @@ class JSONAPIObject: Object {
                         case .error(let error):
                             return operationCompletionHandler(.error(error))
                         case .success(let documentObjects):
-                            operationCompletionHandler(.success(documentObjects as? [T] ?? [T]()))
+                            let doc = documentObjects as! [T]
+                            operationCompletionHandler(.success(doc))
                         }
                     }
                 }

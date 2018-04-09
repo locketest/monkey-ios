@@ -51,7 +51,7 @@ class IncomingCallManager {
     
     func checkForIncomingCall() {
         let realm = try? Realm()
-        guard let incomingCall = realm?.objects(RealmCall.self).first(where: { (chat) -> Bool in
+        guard let incomingCall = realm?.objects(RealmVideoCall.self).first(where: { (chat) -> Bool in
             let status = chat.status == "WAITING"
             let isNotInitiator = chat.initiator?.user_id != APIController.shared.currentUser?.user_id
             let hasSession = chat.session_id?.isEmpty == false
@@ -59,17 +59,16 @@ class IncomingCallManager {
         }) else {
             return
         }
-    
         self.reactToIncomingCall(incomingCall)
     }
     
-    func reactToIncomingCall(_ realmCall:RealmCall) {
+    func reactToIncomingCall(_ realmCall:RealmVideoCall) {
         
         guard self.delegate != nil, showingNotification == nil, self.skipCallIds.contains(realmCall.chat_id!) != true else {
             return
         }
     
-        self.chatSession = self.createChatSession(fromCall: realmCall)
+        self.chatSession = self.createChatSession(fromVideoCall: realmCall)
         let chatSession = self.chatSession!
         
         if self.delegate?.incomingCallManager(self, shouldShowNotificationFor: chatSession) == true {
@@ -91,6 +90,11 @@ class IncomingCallManager {
         } 
     }
     
+    ///  if user ignore video call , call this func
+    func cancelVideoCall(chatsession:ChatSession) {
+        
+    }
+    
     func createChatSession(fromCall:RealmCall) -> ChatSession? {
         guard let chatId = fromCall.chat_id, let sessionId = fromCall.session_id, let userId = fromCall.initiator?.user_id, let token = fromCall.token else {
             return nil
@@ -99,6 +103,18 @@ class IncomingCallManager {
         return ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId,
                            chat: Chat(chat_id: chatId, first_name:fromCall.user?.first_name ?? "Your friend", profile_image_url:fromCall.user?.profile_photo_url, user_id:userId),
                            token: token, loadingDelegate: self, isDialedCall: true)
+    }
+    
+    func createChatSession(fromVideoCall:RealmVideoCall) -> ChatSession? {
+        guard let chatId = fromVideoCall.chat_id, let sessionId = fromVideoCall.session_id, let userId = fromVideoCall.initiator?.user_id, let token = fromVideoCall.token else {
+            return nil
+        }
+        
+        let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId,
+                                      chat: Chat(chat_id: chatId, first_name:fromVideoCall.user?.first_name ?? "Your friend", profile_image_url:fromVideoCall.user?.profile_photo_url, user_id:userId),
+                                      token: token, loadingDelegate: self, isDialedCall: true)
+        chatSession.realmVideoCall = fromVideoCall
+        return chatSession
     }
     
     func initiateCallTimer() {
@@ -142,7 +158,11 @@ extension IncomingCallManager:ChatSessionLoadingDelegate {
         self.dismissShowingNotificationForChatSession(chatSession)
         self.stopCallSound()
         self.chatSession = nil
-        self.checkForIncomingCall()
+//        self.checkForIncomingCall()
+    }
+    
+    func shouldShowConnectingStatus(in chatSession: ChatSession) {
+        //  do nothing
     }
 }
 

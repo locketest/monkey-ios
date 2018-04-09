@@ -211,8 +211,14 @@ class NotificationManager {
          let notification = CallNotificationView.instanceFromNib()
         notification.chatSession = chatSession
         
-        notification.profileNameLabel.text = chatSession.chat?.first_name ?? "Your friend"
-        notification.profileImageView.url = chatSession.chat?.profile_image_url
+        if let userID = chatSession.chat?.user_id{
+            let realm = try? Realm()
+            let filter = NSPredicate(format:"user_id == \"\(userID)\"")
+            let user = realm?.objects(RealmUser.self).filter(filter).first
+            notification.profileImageView.url = user?.profile_photo_url
+            notification.profileNameLabel.text = user?.first_name ?? "Your friend"
+        }
+        
         notification.notificationDescriptionLabel.text = "video call"
         
         notification.onAccept = {

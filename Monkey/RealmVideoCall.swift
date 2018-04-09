@@ -10,7 +10,7 @@ import Foundation
 
 class RealmVideoCall: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "videocall"
-    static let requst_subfix = "match_request"
+    static let requst_subfix = "videocall"
     static let api_version = "v1.3"
     
     dynamic var chat_id: String?

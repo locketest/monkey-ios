@@ -207,6 +207,8 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
             self.parseJSONAPIData(data: data,channel: channel)
         case "matched_user":
             self.parseJSONAPIData(data: data,channel: channel)
+        case "videocall_call":
+            self.parseJSONAPIData(data: data, channel: channel)
         default:
             break
         }
@@ -220,6 +222,22 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
             case .success(let objects):
                 if(channel == "matched_user") , let delegate = self.delegate {
                     delegate.webSocketDidRecieveMatch(match: objects.first as Any,data: data)
+                }else if(channel == "videocall_call"){
+                    if let dt = data["data"] as? [String:Any],
+                        let re = dt["relationships"] as? [String:Any],
+                        let usr = re["user"] as? [String:Any],
+                        let usrID = usr["id"] as? String,
+                        let realm = try? Realm(),
+                        let realmUsr = realm.objects(RealmUser.self).filter({ return ($0.user_id == usrID) }).first,
+                            let call = objects.first as? RealmVideoCall
+                        {
+                            realm.beginWrite()
+                            call.initiator = realmUsr
+//                            call.status = "WAITING"
+                            try! realm.commitWrite()
+                            
+                            self.delegate?.webSocketDidRecieveVideoCall(videoCall: call, data: data)
+                        }
                 }
                 print("Received \(objects.count) more objects from the socket.")
             }
@@ -261,6 +279,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 
 public protocol MonkeySocketDelegate: class {
     func webSocketDidRecieveMatch(match: Any,data: [String:Any])
+    func webSocketDidRecieveVideoCall(videoCall:Any,data:[String:Any])
 }
 
 extension Array {

@@ -261,15 +261,15 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     }
     
     func friendshipForCell(from longPressGesture:UILongPressGestureRecognizer) -> RealmFriendship? {
-        let locationInView = longPressGesture.location(in: self.view)
-        if locationInView.y < 146.0 { // in new friends
-            let newFriendsLocation = longPressGesture.location(in: self.newFriendsCollectionView)
-            guard let longPressedIndexPath =  self.newFriendsCollectionView.indexPathForItem(at: newFriendsLocation) else {
-                // Long press is not in collection view
-                return nil
-            }
-            return self.viewModel.newFriends?[longPressedIndexPath.row]
-        } else {
+//        let locationInView = longPressGesture.location(in: self.view)
+//        if locationInView.y < 146.0 { // in new friends
+//            let newFriendsLocation = longPressGesture.location(in: self.newFriendsCollectionView)
+//            guard let longPressedIndexPath =  self.newFriendsCollectionView.indexPathForItem(at: newFriendsLocation) else {
+//                // Long press is not in collection view
+//                return nil
+//            }
+//            return self.viewModel.newFriends?[longPressedIndexPath.row]
+//        } else {
             let friendsLocation = longPressGesture.location(in: self.friendsTableView)
             
             guard let longPressedIndexPath = self.friendsTableView.indexPathForRow(at: friendsLocation) else {
@@ -277,7 +277,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
                 return nil
             }
             return self.viewModel.openChats?[longPressedIndexPath.row]
-        }
+//        }
     }
 
     
@@ -340,16 +340,17 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             self.noFriendsView.isHidden = true
         }
         
+// TODO: this should be deleted
         // Hide new friends card if no new friends
-        let numberOfNewFriends = self.viewModel.newFriends.count
-        if numberOfNewFriends == 0 {
+//        let numberOfNewFriends = self.viewModel.newFriends.count
+//        if numberOfNewFriends == 0 {
             // Hide new friends
             self.newFriendsView.isHidden = true
             self.openChatsTopConstraint?.isActive = false
-        } else {
-            self.newFriendsView.isHidden = false
-            self.openChatsTopConstraint?.isActive = true
-        }
+//        } else {
+//            self.newFriendsView.isHidden = false
+//            self.openChatsTopConstraint?.isActive = true
+//        }
         
         self.view.setNeedsLayout()
     }

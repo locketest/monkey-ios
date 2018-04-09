@@ -101,8 +101,8 @@ class WelcomeViewController: MonkeyViewController {
 			guard let `self` = self else { return }
 			
 			switch response {
-			case .error( _):
-				NSLog("error login")
+			case .error(let error):
+				NSLog("error login \(error)")
 			case .success(let jsonAPIDocument):
 				if let attributes = jsonAPIDocument.dataResource?.json["attributes"] as? [String: String], let relationships = jsonAPIDocument.dataResource?.json["relationships"] as? [String: [String: [String: String]]] {
 					guard let token = attributes["token"], let user = relationships["user"], let user_data = user["data"], let user_id = user_data["id"] else {

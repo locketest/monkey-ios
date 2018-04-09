@@ -37,7 +37,11 @@ class TextChatViewController: MonkeyViewController {
 	@IBOutlet weak var addFriendButtonHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var policeButtonTopConstraint: NSLayoutConstraint!
 	@IBOutlet weak var inputContainerViewBottomConstraint: NSLayoutConstraint!
-	
+    
+    @IBOutlet weak var commonTreeContainView: UIView!
+    @IBOutlet weak var commonTreeEmojiLabel: UILabel!
+    @IBOutlet weak var commonTreeLabel: UILabel!
+    	
 	var chatSession: ChatSession?
 	var messages = [TextMessage].init()
 	var reportImage: UIImage?
@@ -45,6 +49,8 @@ class TextChatViewController: MonkeyViewController {
 	weak var callDelegate: CallViewControllerDelegate?
 	var soundPlayer = SoundPlayer.shared
 	var eras = "👂"
+    
+    var commonTree:RealmChannel?
 	
 	var tips = [
 		"Share your weekend vibe. Use emojis only.",
@@ -229,6 +235,8 @@ class TextChatViewController: MonkeyViewController {
 			self.remoteStreamView?.layer.masksToBounds = true
 			self.remoteStreamView?.frame = CGRect.init(x: self.containerView.frame.size.width - streamViewWidth - 4, y: self.isIphoneX() ? 44 : 20, width: streamViewWidth, height: 192)
 			self.view.layoutIfNeeded()
+            
+            self.setupCommonTree()
 		}
 	}
 	
@@ -309,6 +317,17 @@ class TextChatViewController: MonkeyViewController {
 		self.endCallButton.isEnabled = false
 		self.chatSession?.disconnect(.consumed)
 	}
+    
+    func setupCommonTree(){
+        if let curcommonTree = self.commonTree {
+            self.commonTreeLabel.adjustsFontSizeToFitWidth = true
+            self.commonTreeLabel.minimumScaleFactor = 0.5
+            self.commonTreeEmojiLabel.text = curcommonTree.emoji
+            self.commonTreeLabel.text = curcommonTree.title
+        }else {
+            self.commonTreeContainView.isHidden = true
+        }
+    }
 	
 	func updatePublisherViewConstraints(enlarged: Bool) {
 		if enlarged {
@@ -496,6 +515,7 @@ extension TextChatViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension TextChatViewController: MatchViewControllerProtocol {
+    
     func opponentDidTurnToBackground(in chatSession: ChatSession) {
         self.autoScreenShotUpload(source: .opponent_background)
     }

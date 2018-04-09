@@ -40,8 +40,8 @@ class ChannelsTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         self.iconLabelContainer.backgroundColor = selected ? .white : Colors.blue
-        super.setSelected(selected, animated: animated)
         titleLabel.text = selected ? (channelName ?? "") + " 🌴" : channelName
+        super.setSelected(selected, animated: animated)
     }
     
 }

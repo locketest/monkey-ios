@@ -18,6 +18,7 @@ protocol CallViewControllerDelegate:class {
 
 // TODO: this class shouldn't create and destroy every time
 class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSessionCallDelegate, MatchViewControllerProtocol {
+    var commonTree: RealmChannel?
 
     // MARK: Interface Elements
     @IBOutlet var addTimeHorizontalCenterConstraint: NSLayoutConstraint!
@@ -36,6 +37,14 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     @IBOutlet weak var statusCornerView: UIView!
     @IBOutlet weak var publisherContainerView: UIView!
     @IBOutlet weak var containerView: UIView!
+    
+    @IBOutlet weak var commonTreeContainV: UIView!
+    @IBOutlet weak var commonTreeEmojiLabel: UILabel!
+    @IBOutlet weak var commonTreeLabel: UILabel!
+    
+    @IBOutlet weak var clockTop: NSLayoutConstraint!
+    @IBOutlet weak var clockViewBottom: NSLayoutConstraint!
+    
 	weak var filterBackground: UIView?
     /// The orange view behind the clock label, animated on addMinute
     @IBOutlet var clockLabelBackgroundView: UIView!
@@ -43,6 +52,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     @IBOutlet weak var cameraPositionButton: UIButton!
     static var lastScreenShotTime:TimeInterval = 0
     var currentMatchPastTime:TimeInterval = 0
+    
     var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧"
     let truthOrDareView = TruthOrDareView.instanceFromNib()
     var soundPlayer = SoundPlayer.shared
@@ -188,7 +198,11 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         let realm = try? Realm()
         self.cameraPositionButton.isHidden = true
         self.cameraPositionButton.backgroundColor = UIColor.clear
-        if let userID = self.chatSession?.realmCall?.user?.user_id {
+        var callUserID = self.chatSession?.realmCall?.user?.user_id
+        if callUserID == nil {
+            callUserID = self.chatSession?.realmVideoCall?.initiator?.user_id
+        }
+        if let userID = callUserID {
             let friendShip = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"")
             if (friendShip?.last?.friendship_id) != nil {
                 self.cameraPositionButton.isHidden = false
@@ -203,6 +217,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         UIView.animate(withDuration: 0.3) {
             self.isPublisherViewEnlarged = false
             self.view.layoutIfNeeded()
+            self.setupCommonTree()
         }
     }
 
@@ -294,6 +309,22 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 	
 	@IBAction func cameraPositionButtonClick(_ sender: Any) {
         self.chatSession?.toggleCameraPosition()
+    }
+    
+    func setupCommonTree(){
+        if let curcommonTree = self.commonTree {
+            self.commonTreeLabel.adjustsFontSizeToFitWidth = true
+            self.commonTreeLabel.minimumScaleFactor = 0.5
+            self.commonTreeEmojiLabel.text = curcommonTree.emoji
+            self.commonTreeLabel.text = curcommonTree.title
+            
+            self.clockLabelBackgroundView.layer.cornerRadius = 20
+            self.clockLabelBackgroundView.layer.masksToBounds = true
+        }else {
+            self.clockViewBottom.constant = 0
+            self.clockTop.constant = 0
+            self.commonTreeContainV.isHidden = true
+        }
     }
 	
     // MARK: Snapchat Button

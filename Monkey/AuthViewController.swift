@@ -372,7 +372,7 @@ class AuthViewController: UIViewController {
                         break
                     }
 
-                    mainVC.present(viewControllerToPresent, animated: true)
+                    mainVC.present(viewControllerToPresent, animated: true, completion: nil)
                 }
             })
         }

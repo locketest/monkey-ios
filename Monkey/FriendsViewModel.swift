@@ -42,9 +42,21 @@ class FriendsViewModel {
     var openChats: Results<RealmFriendship>? {
         let isInConversation = NSPredicate(format: "last_message_at != nil")
         
+        //  if last message is nil , use create at
+        self.newFriends?.forEach({ (friendShip) in
+            if friendShip.last_message_at == nil {
+                let realm = try? Realm()
+                realm?.beginWrite()
+                friendShip.last_message_at = friendShip.created_at
+                try! realm?.commitWrite()
+            }
+        })
+        
         let realm = try? Realm()
         return realm?.objects(RealmFriendship.self).filter(isInConversation).sorted(byKeyPath: "last_message_at", ascending: false)
     }
+    
+    // TODO: this should be deleted
     var newFriends: Results<RealmFriendship>? {
         let isNotBlocker = NSPredicate(format: "is_blocker == NO")
         let isNotBlocking = NSPredicate(format: "is_blocking == NO")
@@ -84,7 +96,7 @@ class FriendsViewModel {
     
     func latestMessageForFriendship(friendship: RealmFriendship) -> String {
         let messages = friendship.messages.sorted(byKeyPath: "created_at", ascending: false)
-        return messages.first?.text ?? "No messages"
+        return messages.first?.text ?? "New Friend! 🎉"
     }
     
     deinit {

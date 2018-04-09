@@ -13,7 +13,7 @@ import RealmSwift
 protocol ChatViewModelDelegate:class {
     func reloadData()
     func callFailedBeforeInitializingChatSession()
-    func processRecievedRealmCallFromServer(realmCall: RealmCall)
+    func processRecievedRealmCallFromServer(realmVideoCall: RealmVideoCall)
 }
 
 /// Represents a message that has been created locally and is currently being sent to server.
@@ -233,10 +233,10 @@ class ChatViewModel {
             ]
         ]
 
-        RealmCall.customURLCreate(url: "\(Environment.baseURL)/api/v1.3/videocall",parameters: parameters) { (result:JSONAPIResult<[RealmCall]>) in
+        RealmVideoCall.customURLCreate(url: "\(Environment.baseURL)/api/v1.3/videocall",parameters: parameters) { (result:JSONAPIResult<[RealmVideoCall]>) in
             switch result {
             case .success(let callObjects):
-                callObjects.first.then { self.delegate?.processRecievedRealmCallFromServer(realmCall: $0) }
+                callObjects.first.then { self.delegate?.processRecievedRealmCallFromServer(realmVideoCall: $0) }
             case .error(let error):
                 // revert fade animation back to screen
                 // notify user call failed
@@ -244,6 +244,8 @@ class ChatViewModel {
                 self.delegate?.callFailedBeforeInitializingChatSession()
             }
         }
+        
+        
     }
 
     func playMessageSoundIfNecessary() {

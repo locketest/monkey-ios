@@ -133,55 +133,32 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     func callFailedBeforeInitializingChatSession() {
         self.callButton.isJiggling = false
         self.callButton.isSpinning = false
+        self.sendCancelCallMessage()
         self.stopCallSound()
     }
 
     /// This method is a callback for the API request to create a RealmCall object. It is only called when user initiates a call.
-    func processRecievedRealmCallFromServer(realmCall: RealmCall) {
+    func processRecievedRealmCallFromServer(realmVideoCall: RealmVideoCall) {
 
-        guard let sessionId = realmCall.session_id, let chatId = realmCall.chat_id, let token = realmCall.token else {
+        guard let sessionId = realmVideoCall.session_id, let chatId = realmVideoCall.chat_id, let token = realmVideoCall.token else {
             self.callFailedBeforeInitializingChatSession()
             print("Chat couldn't be created because the server did not return the correct token, chat, or session_id")
             return
         }
 
-        let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name:self.profileNameLabel.text, profile_image_url:self.profileImageView.url, user_id:realmCall.initiator?.user_id), token: token, loadingDelegate: self, isDialedCall: true)
+        let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name:self.profileNameLabel.text, profile_image_url:self.profileImageView.url, user_id:realmVideoCall.initiator?.user_id), token: token, loadingDelegate: self, isDialedCall: true)
         chatSession.accept() // we accept before setting it because didSet checks to see if it's been accepted to differientiate bw initiated and incoming calls
         
-        self.chatSession = chatSession
-        
-        guard let userID = self.viewModel.friendship?.user?.user_id else {
-            print("Missed user id when make a friend call");
-            return
+        let realm = try? Realm()
+        if let realmUsr = realm?.objects(RealmUser.self).filter({ return ($0.user_id == self.viewModel.friendship?.user?.user_id) }).first
+        {
+            realm?.beginWrite()
+            realmVideoCall.initiator = realmUsr
+            try! realm?.commitWrite()
         }
         
-        let parameters:[String:Any] = [
-            "sessionId":chatSession.session.sessionId,
-            "event":"connectionCreated",
-            "timestamp": NSNumber.init(value: Date.init().timeIntervalSince1970 * 1000),
-            "connection":[
-                "data":"c=\(String(describing: chatSession.chat?.chatId)),user_id=\(userID)"
-            ]
-        ]
-        
-        JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/opentok_callbacks", method:.post, parameters: parameters as Parameters, options: [
-            .header("Authorization", APIController.authorization),
-            ]).addCompletionHandler({ result in
-                switch result {
-                case .error(let error):
-                    print("make friend call notifi failed .. \(error)")
-                case .success(let jsonAPIDocument):
-                    RealmDataController.shared.apply(jsonAPIDocument) { result in
-                        switch result {
-                        case .error(let error):
-                            print("make friend call notifi failed .. \(error)")
-                            break
-                        case .success(let documentObjects): break
-                            //  do nothing
-                        }
-                    }
-                }
-            })
+        self.chatSession = chatSession
+        self.chatSession?.realmVideoCall = realmVideoCall
     }
 
     override func viewDidLoad() {        
@@ -460,6 +437,15 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
         self.view.layoutIfNeeded()
     }
+    
+    func sendCancelCallMessage(){
+        if let chatSession = self.chatSession {
+            IncomingCallManager.shared.cancelVideoCall(chatsession: chatSession)
+        }
+        
+        self.viewModel.sendText("Call canceled")
+        self.view.layoutIfNeeded()
+    }
 
     @IBAction func addSnapchat(_ sender: Any) {
         self.viewModel.addSnapchat()
@@ -519,6 +505,9 @@ extension ChatViewController: ChatSessionLoadingDelegate {
         self.callButton.isSpinning = false
         self.callButton.isJiggling = false
         self.stopCallSound()
+        if !chatSession.matchUserDidAccept {
+            self.sendCancelCallMessage()
+        }
 
         self.chatSession = nil
         self.profileActiveLabel.text = viewModel.userLastOnlineAtString
@@ -545,6 +534,33 @@ extension ChatViewController: ChatSessionLoadingDelegate {
     }
 
     func dismissCallViewController(for chatSession:ChatSession) {
+        
+        HWCameraManager.shared().removePixellate()
+        HWCameraManager.shared().changeCameraPosition(to: .front)
+        
+        if chatSession.isReportedChat, chatSession.friendMatched, let userID = self.chatSession?.realmCall?.user?.user_id, chatSession.isReportedByOther == false {
+            
+            if let realm = try? Realm(), let friendShip = realm.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"").first {
+                
+                let alert = UIAlertController(title: nil, message: "Do you want to remove this user from your friend list?", preferredStyle: .alert)
+                let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
+                    friendShip.delete(completion: { (error) in
+                        
+                    })
+                })
+                
+                let cancel = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
+
+                })
+                
+                alert.addAction(remove)
+                alert.addAction(cancel)
+                
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 1.0)) {
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
 
         self.callButton.isJiggling = false
         self.callButton.isSpinning = false // sets jiggling to false if its true so captures both
@@ -572,6 +588,9 @@ extension ChatViewController: ChatSessionLoadingDelegate {
         }
     }
 	
+    func shouldShowConnectingStatus(in chatSession: ChatSession) {
+        // do noting
+    }
 
     internal func initiateCallTimer() {
 

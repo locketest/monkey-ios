@@ -51,6 +51,38 @@ let treeLabelWidth:CGFloat = 48.0
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
 class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate {
+     func webSocketDidRecieveVideoCall(videoCall: Any, data: [String : Any]) {
+          if self.chatSession != nil {
+               
+          }
+          
+          // present call view controller
+          if let videoc = videoCall as? RealmVideoCall ?? nil{
+               if let chatsession = IncomingCallManager.shared.createChatSession(fromVideoCall: videoc){
+                    self.stopFindingChats(andDisconnect: false, forReason: "videocallnotify")
+                    let callnoti = NotificationManager.shared.showCallNotification(chatSession: chatsession, completion: { (callResponse) in
+                         switch callResponse {
+                              case .accepted:
+                                   if self.chatSession != nil {
+                                        self.chatSession?.disconnect(.consumed)
+                                   }
+                                   self.startFindingChats(forReason: "videocallnotify")
+                                   self.chatSession = chatsession
+                                   chatsession.loadingDelegate = self
+                                   chatsession.accept()
+                                   break
+                              case .declined:
+                                   self.startFindingChats(forReason: "videocallnotify")
+                                   break
+                         }
+//               IncomingCallManager.shared.reactToIncomingCall(videoc)
+                    })
+                    
+                    self.callNotification = callnoti
+               }
+          }
+     }
+     
 	
 	func webSocketDidRecieveMatch(match: Any, data: [String : Any]) {
 		if isFindingChats, let realmCall = match as? RealmCall, self.chatSession == nil {
@@ -82,7 +114,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	@IBOutlet weak var matchModeTip: UILabel!
 	@IBOutlet weak var matchModeEmojiLeft: UILabel!
 	@IBOutlet weak var matchModeEmojiRight: UILabel!
-	@IBOutlet weak public var loadingTextLabel: LoadingTextLabel!
+     
+     @IBOutlet weak var newTipsRemindLabel: UIView!
+    
+    @IBOutlet weak var channelUpdateRemindV: UIView!
+    @IBOutlet weak public var loadingTextLabel: LoadingTextLabel!
 	@IBOutlet var skippedTextBottomConstraint: NSLayoutConstraint!
 	@IBOutlet var skippedText: UILabel!
 	@IBOutlet var waitingText: UILabel!
@@ -111,6 +147,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var currentExperimentNotifcationToken:NotificationToken?
 	var channels: Results<RealmChannel>?
 	var matchRequestTimer:Timer?
+     var curCommonTree:RealmChannel?
 
 	var waitingForFriendToken:NotificationToken?
 	/// After a friendship is made, if there is no snapchat name, we wait for the user id to come down from the socket and push to their chat page
@@ -124,7 +161,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				stopWaitingForFriend()
 			}
 			let realm = try? Realm()
-          let didFindFriend = false
+          var didFindFriend = false
 
 			DispatchQueue.main.asyncAfter(deadline: .after(seconds: 5)) {
 				if !didFindFriend {
@@ -190,6 +227,25 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	@IBAction func arrowButtonTapped(sender: Any) {
 		self.present(self.swipableViewControllerToPresentOnBottom!, animated: true, completion: nil)
 	}
+     
+     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)?) {
+          if viewControllerToPresent == self.swipableViewControllerToPresentOnRight {
+               self.channelUpdateRemindV.alpha = 0
+               self.newTipsRemindLabel.alpha = 0
+          }
+          
+          if self.presentedViewController != nil {
+               var presentedVC = self.presentedViewController!
+               while presentedVC.presentedViewController != nil {
+                   presentedVC = presentedVC.presentedViewController!
+               }
+               presentedVC.present(viewControllerToPresent, animated: true, completion: nil)
+
+          }else {
+               super.present(viewControllerToPresent, animated: flag, completion: completion)
+          }
+
+     }
 
 	@IBOutlet var containerView: UIView!
 	enum MatchingMode:String {
@@ -242,11 +298,12 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.bananaView.isHidden = true
 				self.matchModeSwitch.isHidden = true
 				self.matchModePopup.isHidden = true
+               self.channelUpdateRemindV.isHidden = true
 
 				let textMode = self.chatSession?.textMode ?? false
 				self.acceptButton?.backgroundColor = textMode ? UIColor.init(red: 150.0 / 255.0, green: 14.0 / 255.0, blue: 1.0, alpha: 1.0) : UIColor.init(red: 76.0 / 255.0, green: 71.0 / 255.0, blue: 1.0, alpha: 1.0)
-				self.matchModeEmojiLeft.text = textMode ? "💬" : "🐵"
-				self.matchModeEmojiRight.text = textMode ? "💬" : "🐵"
+				self.matchModeEmojiLeft.text = textMode ? "💬" : "🎦"
+				self.matchModeEmojiRight.text = textMode ? "💬" : "🎦"
 				self.matchModeTip.text = textMode ? "Text Chat" : "Video Chat"
 
 				// dismiss if showing
@@ -267,6 +324,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.filterButton.isHidden = false
 				self.pageViewIndicator.isHidden = false
 				self.bananaView.isHidden = false
+               self.channelUpdateRemindV.isHidden = false
 				if self.matchModeSwitch.isEnabled {
 					self.matchModeSwitch.isHidden = false
 				}
@@ -363,17 +421,18 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		let realm = try? Realm()
 		self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true")).sorted(byKeyPath: "channel_id")
 		
-		if self.channels?.count == 0 {
-			RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>) in
-				switch result {
-				case .success(_):
-					self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true"))
-					break
-				case .error(let error):
-					error.log()
-				}
-			}
-		}
+       RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>, hadUpdate:Bool) in
+           switch result {
+           case .success(_):
+               self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true"))
+               if hadUpdate {
+                    self.channelUpdateRemindV.alpha = 1
+               }
+               break
+           case .error(let error):
+               error.log()
+           }
+       }
 
 		guard let selectedChannels = APIController.shared.currentUser?.channels else {
 			return
@@ -504,6 +563,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			return
 		}
 		
+        self.curCommonTree = nil
 		self.gettingNewSession = true
 		self.generateNewRequestID()
 		let parameters:[String:Any] = [
@@ -622,7 +682,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			for (_ , tree) in selectChannels.enumerated() {
 				channels.append("tree \(tree.channel_id ?? ""),")
 			}
-			channels.removeLast()
+          if channels.count > 0 {
+               channels.removeLast()
+          }
 		}
 		
 		let commonParameters = [
@@ -663,7 +725,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.hashtag = ""
 		self.revokePrevMatchRequest()
 		self.stopFindingChats(andDisconnect: false, forReason: "application-status")
-		Socket.shared.isEnabled = false
+//          Socket.shared.isEnabled = false
 		self.chatSession?.userTurnIntoBackground()
 	}
 	
@@ -695,6 +757,14 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		if APIController.shared.currentUser?.first_name == nil || APIController.shared.currentUser?.birth_date == nil {
 			self.present(self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0 ? "editAccountSmallVC" : "editAccountVC"), animated: true, completion: nil)
 		}
+     
+     let hadShowRemindLabel = UserDefaults.standard.bool(forKey: "HadShowNewTreeRuleRemindLabel")
+          if let channelCount = APIController.shared.currentUser?.channels.count,
+               channelCount > 1 && !hadShowRemindLabel {
+               self.newTipsRemindLabel.alpha = 1
+          }else{
+               self.newTipsRemindLabel.alpha = 0
+          }
 	}
 	
 	func checkNotifiPermission(){
@@ -979,6 +1049,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.matchViewController = matchViewController
 			matchViewController.chatSession = chatSession
 			chatSession.callDelegate = matchViewController
+           matchViewController.commonTree = self.curCommonTree
 
 			self.callsInSession += 1
 			Achievements.shared.totalChats += 1
@@ -1047,31 +1118,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		HWCameraManager.shared().changeCameraPosition(to: .front)
 		
 		if chatSession.isReportedChat, chatSession.friendMatched, let userID = self.chatSession?.realmCall?.user?.user_id, chatSession.isReportedByOther == false {
-			
-			if let realm = try? Realm(), let friendShip = realm.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"").first {
-				
-				let alert = UIAlertController(title: nil, message: "Do you want to remove this user from your friend list?", preferredStyle: .alert)
-				let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
-					self.startFindingChats(forReason: "delete_report_friend")
-					friendShip.delete(completion: { (error) in
-						
-					})
-				})
-				
-				let cancel = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
-					self.startFindingChats(forReason: "delete_report_friend")
-				})
-				
-				alert.addAction(remove)
-				alert.addAction(cancel)
-				
-				self.stopFindingChats(andDisconnect: false, forReason: "delete_report_friend")
-				
-				DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 1.0)) {
-					self.present(alert, animated: true, completion: nil)
-				}
-			}
-		}
+			self.showAfterReportFriendAlert(userID: userID)
+        }else if let realmVideoCall = chatSession.realmVideoCall,let userID = realmVideoCall.initiator?.user_id,chatSession.isReportedChat,chatSession.isReportedByOther == false{
+               /// it is a video call
+               self.showAfterReportFriendAlert(userID: userID)
+          }
 
 		guard self.matchViewController != nil else {
 			self.skipped()
@@ -1450,6 +1501,8 @@ extension MainViewController {
                     org_emoji_str.append(emojiStr)
 
                     count += 1
+                    
+                    self.curCommonTree = treeInfo
                }
           }
 
@@ -1527,6 +1580,33 @@ extension MainViewController {
 			completion?()
 		}
 	}
+     
+     func showAfterReportFriendAlert(userID:String) {
+          if let realm = try? Realm(),
+               let friendShip = realm.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"").first {
+               
+               let alert = UIAlertController(title: nil, message: "Do you want to remove this user from your friend list?", preferredStyle: .alert)
+               let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
+                    self.startFindingChats(forReason: "delete_report_friend")
+                    friendShip.delete(completion: { (error) in
+                         
+                    })
+               })
+               
+               let cancel = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
+                    self.startFindingChats(forReason: "delete_report_friend")
+               })
+               
+               alert.addAction(remove)
+               alert.addAction(cancel)
+               
+               self.stopFindingChats(andDisconnect: false, forReason: "delete_report_friend")
+               
+               DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 1.0)) {
+                    self.present(alert, animated: true, completion: nil)
+               }
+          }
+     }
 }
 
 extension MainViewController:SlideViewManager {

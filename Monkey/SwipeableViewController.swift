@@ -240,6 +240,7 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
             swipeableViewController.transitioningDelegate = self
             swipeableViewController.interactor = self.interactor
         }
+        
         super.present(viewControllerToPresent, animated: flag, completion: completion)
     }
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {

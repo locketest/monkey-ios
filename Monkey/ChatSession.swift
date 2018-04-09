@@ -19,6 +19,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         let realm = try? Realm()
         return realm?.object(ofType: RealmCall.self, forPrimaryKey: self.chat?.chatId)
     }
+    var realmVideoCall:RealmVideoCall?
     private var chatNotificationToken: NotificationToken?
 
 	var matchedTime = NSDate().timeIntervalSince1970

@@ -35,7 +35,7 @@ class RealmFriendship: JSONAPIObject, JSONAPIObjectProtocol {
     /// Used to calculate "received 3m ago" text
     dynamic var last_message_received_at: NSDate?
     /// Used to order the new friends view
-    dynamic var created_at: NSDate?
+    dynamic var created_at: NSDate? 
     /// Determines sort order of friendships in the list
     dynamic var updated_at: NSDate?
     /// Toggles the current user's is_typing status.

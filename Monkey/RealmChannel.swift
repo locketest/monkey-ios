@@ -32,4 +32,52 @@ class RealmChannel: JSONAPIObject, JSONAPIObjectProtocol {
     override static func primaryKey() -> String {
         return "channel_id"
     }
+    
+    /**
+     Retrieve a set of items from the API and update/add that data to Realm.
+     
+     - parameter parameters: Key value parameters to use with Alamofire
+     - parameter completion: Called after the request finishes and the data is syced with Realm (or on error).
+     - parameter error: The error encountered.
+     - parameter items: The items retrieved.
+     - returns: The DataRequest if a request was started. Use this to cancel the in-flight HTTP request.
+     */
+    @discardableResult class func fetchAll<T: JSONAPIObjectProtocol>(parameters: [String:Any] = [:], completion operationCompletionHandler: @escaping JSONAPIOperationCompletionHandlerWithFlag<T>) -> JSONAPIRequest? {
+        guard let subfix = (self as? JSONAPIObjectProtocol.Type)?.requst_subfix else {
+            operationCompletionHandler(.error(.notJSONAPIObjectProtocol),false)
+            return nil
+        }
+        
+        guard let api_version = (self as? JSONAPIObjectProtocol.Type)?.api_version else {
+            operationCompletionHandler(.error(.notJSONAPIObjectProtocol),false)
+            return nil
+        }
+        
+        return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(api_version)/\(subfix)", parameters: parameters as Parameters, options: [
+            .header("Authorization", APIController.authorization),
+            ]).addCompletionHandler({ result in
+                switch result {
+                case .error(let error):
+                    return operationCompletionHandler(.error(error),false)
+                case .success(let jsonAPIDocument):
+                    let channel_version = (jsonAPIDocument.json["version"] as? NSNumber ?? NSNumber.init(value: 0)).doubleValue
+                    var newChannelVersion = false
+                    let lastVersion = UserDefaults.standard.double(forKey: "LAST_CHANNEL_VERSION")
+                    
+                    if  channel_version > 0,
+                        channel_version != lastVersion{
+                        newChannelVersion = true
+                        UserDefaults.standard.set(channel_version, forKey: "LAST_CHANNEL_VERSION")
+                    }
+                    RealmDataController.shared.apply(jsonAPIDocument) { result in
+                        switch result {
+                        case .error(let error):
+                            return operationCompletionHandler(.error(error),false)
+                        case .success(let documentObjects):
+                            operationCompletionHandler(.success(documentObjects as? [T] ?? [T]()),newChannelVersion)
+                        }
+                    }
+                }
+            })
+    }
 }
