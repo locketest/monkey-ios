@@ -26,6 +26,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
     weak var currentFriendshipsJSONAPIRequest: JSONAPIRequest?
     weak var currentMessagesJSONAPIRequest: JSONAPIRequest?
     public weak var delegate: MonkeySocketDelegate?
+    public weak var chatMessageDelegate: MonkeySocketChatMessageDelegate?
     var isEnabled = false {
         didSet {
             if self.isEnabled {
@@ -238,6 +239,8 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
                             
                             self.delegate?.webSocketDidRecieveVideoCall(videoCall: call, data: data)
                         }
+                }else if(channel == "chat"){
+                    self.chatMessageDelegate?.webScoketDidRecieveChatMessage(data: data)
                 }
                 print("Received \(objects.count) more objects from the socket.")
             }
@@ -280,6 +283,10 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 public protocol MonkeySocketDelegate: class {
     func webSocketDidRecieveMatch(match: Any,data: [String:Any])
     func webSocketDidRecieveVideoCall(videoCall:Any,data:[String:Any])
+}
+
+public protocol MonkeySocketChatMessageDelegate: class{
+    func webScoketDidRecieveChatMessage(data:[String:Any])
 }
 
 extension Array {

@@ -68,20 +68,17 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
           // present call view controller
           if let videoc = videoCall as? RealmVideoCall ?? nil{
                if let chatsession = IncomingCallManager.shared.createChatSession(fromVideoCall: videoc){
-                    self.stopFindingChats(andDisconnect: false, forReason: "videocallnotify")
                     let callnoti = NotificationManager.shared.showCallNotification(chatSession: chatsession, completion: { (callResponse) in
                          switch callResponse {
                               case .accepted:
                                    if self.chatSession != nil {
                                         self.chatSession?.disconnect(.consumed)
                                    }
-                                   self.startFindingChats(forReason: "videocallnotify")
                                    self.chatSession = chatsession
                                    chatsession.loadingDelegate = self
                                    chatsession.accept()
                                    break
                               case .declined:
-                                   self.startFindingChats(forReason: "videocallnotify")
                                    break
                          }
 //               IncomingCallManager.shared.reactToIncomingCall(videoc)

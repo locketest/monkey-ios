@@ -7,7 +7,7 @@
 //
 import UIKit
 
-class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, FriendsViewModelDelegate {
+class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, FriendsViewModelDelegate,MonkeySocketChatMessageDelegate {
 
     @IBOutlet weak var newFriendsCollectionView: UICollectionView!
     @IBOutlet weak var friendsTableView: UITableView!
@@ -81,6 +81,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        Socket.shared.chatMessageDelegate = self
         if let mainVC = self.presentingViewController as? MainViewController {
             IncomingCallManager.shared.delegate = mainVC
         }
@@ -90,6 +91,12 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         self.checkDeepLink()
 		
 		self.showMonkeyChatWhenOpenChat();
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        Socket.shared.chatMessageDelegate = nil
     }
 	
 	func showMonkeyChatWhenOpenChat() {
@@ -340,7 +347,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             self.noFriendsView.isHidden = true
         }
         
-// TODO: this should be deleted
+// TODO: this should be removed
         // Hide new friends card if no new friends
 //        let numberOfNewFriends = self.viewModel.newFriends.count
 //        if numberOfNewFriends == 0 {
@@ -388,6 +395,10 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         // Ensure that deep link is not acted upon twice, we reset these values to nil
         self.initialConversation = nil
         self.initialConversationOptions = nil
+    }
+    
+    func webScoketDidRecieveChatMessage(data: [String : Any]) {
+        self.reloadOpenChats()
     }
 }
 
