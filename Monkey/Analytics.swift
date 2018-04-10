@@ -61,6 +61,7 @@ class AnaliticsCenter {
 		
 		if isAuth == true, let currentUser = APIController.shared.currentUser, let userID = currentUser.user_id {
 			runAsynchronouslyOnEventProcessingQueue {
+				FBSDKAppEvents.setUserID(userID)
 				Amplitude.shared.setUserId(userID)
 				Crashlytics.sharedInstance().setUserIdentifier(userID)
 			}

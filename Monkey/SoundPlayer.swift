@@ -42,8 +42,8 @@ class SoundPlayer {
     private let whooshItem = AVPlayerItem(url: SoundPlayer.whooshSound)
     
     func play(sound: Sound) {
-        OTDefaultAudioDevice.shared().isMuted = true
-    
+//        OTDefaultAudioDevice.shared().isMuted = true
+		
         player.replaceCurrentItem(with: self.item(for: sound))
         
         NotificationCenter.default.addObserver(self,
@@ -74,7 +74,7 @@ class SoundPlayer {
         player.seek(to: CMTimeMake(0, 1))
         player.replaceCurrentItem(with: nil)
         print("Player did finish")
-        OTDefaultAudioDevice.shared().isMuted = false
+//        OTDefaultAudioDevice.shared().isMuted = false
     }
     
     private func item(for sound: Sound) -> AVPlayerItem {

@@ -9,7 +9,7 @@
 import Foundation
 
 protocol MatchViewControllerProtocol: ChatSessionCallDelegate {
-	func autoScreenShotUpload(source:AutoScreenShotType)
+	func autoScreenShotUpload(source: AutoScreenShotType)
 	var isPublisherViewEnlarged: Bool {
 		get
 		set

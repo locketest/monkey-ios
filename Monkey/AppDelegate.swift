@@ -41,7 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		window?.layer.cornerRadius = 4
 		window?.layer.masksToBounds = true
-		OTAudioDeviceManager.setAudioDevice(OTDefaultAudioDevice.shared())
+//		OTAudioDeviceManager.setAudioDevice(OTDefaultAudioDevice.shared())
 		if window?.rootViewController == nil {
 			let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
 			let mainVC = mainStoryboard.instantiateInitialViewController()
@@ -122,8 +122,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		FBSDKAppEvents.setPushNotificationsDeviceToken(deviceToken)
 		UserDefaults.standard.set(deviceToken.base64EncodedString(), forKey: "apns_token")
 		
-		let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-		print("device token:\(token)")
+//		let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+//		print("device token:\(token)")
 		Apns.update(callback: nil)
 	}
 	

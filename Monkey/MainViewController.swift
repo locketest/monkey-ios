@@ -37,13 +37,22 @@ enum ReportType: Int {
 enum AutoScreenShotType: String {
 	case match_5s = "match_5s"
 	case match_disconnec = "match_disconnec"
-     case opponent_background = "opponent_background"
+	case opponent_background = "opponent_background"
 }
 
 enum showRateAlertReason: String {
-     case addFriendJust = "addFriendJust"
-     case finishFriendCall = "finishFriendCall"
-     case contiLoginThreeDay = "contiLogin"
+	case addFriendJust = "addFriendJust"
+	case finishFriendCall = "finishFriendCall"
+	case contiLoginThreeDay = "contiLogin"
+}
+
+enum discoveryState: Int {
+	case avoidRequest = 1
+	case findingMatch = 2
+	case watingMyAccept = 3
+	case watingOtherAccept = 4
+	case connectingMatch = 5
+	case chatting = 6
 }
 
 let treeLabelWidth:CGFloat = 48.0
@@ -132,7 +141,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	@IBOutlet weak var bananaViewWidthConstraint:NSLayoutConstraint!
 	@IBOutlet weak var colorGradientView:UIView!
 
-     static var currentMainVC:MainViewController?
+	static var currentMainVC: MainViewController?
 
 	weak var matchViewController: MatchViewController?
 	var incomingCallNotificationToken:NotificationToken?
@@ -161,8 +170,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				stopWaitingForFriend()
 			}
 			let realm = try? Realm()
-          var didFindFriend = false
-
+			var didFindFriend = false
+			
 			DispatchQueue.main.asyncAfter(deadline: .after(seconds: 5)) {
 				if !didFindFriend {
 					self.stopWaitingForFriend()
@@ -259,6 +268,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	// count of chats the user timed out before accept/declining
 	var callsInSession = 0
 	var matchingMode:MatchingMode = .discover
+	var lastChatSession: ChatSession?
 	var chatSession: ChatSession?
 	/// The hashtag that the user has selected in settings. This is not persisted to disk anywhere.
 	var hashtag : String?
@@ -358,11 +368,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.containerView.alpha = opacity
 		})
 	}
-
-     class func getCurMainVC() -> MainViewController?{
-          return currentMainVC
-     }
-
+	
+	class func getCurMainVC() -> MainViewController?{
+		return currentMainVC
+	}
+	
 	// MARK: UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -694,7 +704,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			"user_ban": "\(is_banned)",
 			"match_type": match_type,
 			"trees": channels,
-		]
+			]
 		return commonParameters
 	}
 	
@@ -1002,9 +1012,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.stopFindingChats(andDisconnect: false, forReason: "re-start")
 		// This will do nothing if the current chat
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
-        self.waitingText.isHidden = true
-        self.connectText.isHidden = true
-        self.hideTreeLabels()
+		self.waitingText.isHidden = true
+		self.connectText.isHidden = true
+		self.hideTreeLabels()
 		var vcToPresentOn:UIViewController = self
 		while vcToPresentOn.presentedViewController is SwipeableViewController {
 			vcToPresentOn = vcToPresentOn.presentedViewController!
@@ -1068,10 +1078,10 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		let monkeychatUrl = APIController.shared.currentExperiment?.monkeychat_link
 		let monkeychatDes = APIController.shared.currentExperiment?.mc_invite_desc ?? "Check out our new app Monkey Chat, it's awesome, just trust"
 		let monkeychatConfirm = APIController.shared.currentExperiment?.mc_invite_btn_pos_text ?? "Try it"
-	    if monkeychatUrl != nil && showMonkeyChatConsumeCount < 3 && lastShowDate.compare(.isToday) == false && UIApplication.shared.canOpenURL(monkeychatScheme!) == false {
-			 UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "MKShowMonkeyChatTimeConsumeChat")
-			 UserDefaults.standard.set(showMonkeyChatConsumeCount + 1, forKey: "MKShowMonkeyChatCountConsumeChat")
-
+		if monkeychatUrl != nil && showMonkeyChatConsumeCount < 3 && lastShowDate.compare(.isToday) == false && UIApplication.shared.canOpenURL(monkeychatScheme!) == false {
+			UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "MKShowMonkeyChatTimeConsumeChat")
+			UserDefaults.standard.set(showMonkeyChatConsumeCount + 1, forKey: "MKShowMonkeyChatCountConsumeChat")
+			
 			let controller = UIAlertController(title: nil, message: monkeychatDes, preferredStyle: .alert)
 			let monkeychat = UIAlertAction(title: monkeychatConfirm, style: .default) { (action) in
 				UIApplication.shared.openURL(URL.init(string: monkeychatUrl!)!)
@@ -1128,9 +1138,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.skipped()
 			return
 		}
-
-        self.waitingText.isHidden = true
-        self.connectText.isHidden = true
+		
+		self.waitingText.isHidden = true
+		self.connectText.isHidden = true
 		//
 		print("Disconnecting event fired")
 		self.start()
@@ -1176,16 +1186,16 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 							self?.startFindingChats(forReason: "rating-notification")
 						}
 					}
-
-                    if chatSession.justAddFriend == true ,
-                         UserDefaults.standard.bool(forKey: showRateAlertReason.addFriendJust.rawValue) == false{
-                         UserDefaults.standard.set(true, forKey: showRateAlertReason.addFriendJust.rawValue)
-                         self.showRateAlert()
-                    }else if Configs.contiLogTimes() == 3,
-                         UserDefaults.standard.bool(forKey: showRateAlertReason.contiLoginThreeDay.rawValue) == false {
-                         UserDefaults.standard.set(true,forKey: showRateAlertReason.contiLoginThreeDay.rawValue)
-                         self.showRateAlert()
-                    }
+					
+					if chatSession.justAddFriend == true ,
+						UserDefaults.standard.bool(forKey: showRateAlertReason.addFriendJust.rawValue) == false{
+						UserDefaults.standard.set(true, forKey: showRateAlertReason.addFriendJust.rawValue)
+						self.showRateAlert()
+					}else if Configs.contiLogTimes() == 3,
+						UserDefaults.standard.bool(forKey: showRateAlertReason.contiLoginThreeDay.rawValue) == false {
+						UserDefaults.standard.set(true,forKey: showRateAlertReason.contiLoginThreeDay.rawValue)
+						self.showRateAlert()
+					}
 				}
 			}
 		}
@@ -1213,6 +1223,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.skipped()
 		}
 		let isCurrentSession = chatSession == self.chatSession
+		self.lastChatSession = chatSession
 		self.chatSession = nil
 		
 		if !isCurrentSession {
@@ -1310,31 +1321,31 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.present(alert, animated: true, completion: nil)
 	}
 	
-     func showRateAlert(){
-          let rated = UserDefaults.standard.bool(forKey: "kHadRateBefore")
-          if rated {return}
-          UserDefaults.standard.set(true,forKey: "kHadRateBefore")
-          if Configs.hadShowRateAlertToday() {return}
-
-          self.stopFindingChats(andDisconnect: false, forReason: "rateapp")
-          let alert = UIAlertController(title: "Having fun with Monkey?", message: "🐒🐒🐒\nIf you like Monkey, plz give us a good review!", preferredStyle: UIAlertControllerStyle.alert)
-          alert.addAction(UIAlertAction(title: "I hate it", style: .cancel, handler: {
-               (UIAlertAction) in
-               alert.dismiss(animated: true, completion: nil)
-               self.startFindingChats(forReason: "rateapp")
-          }))
-          alert.addAction(UIAlertAction(title: "Aight", style: .default, handler: {
-               (UIAlertAction) in
-               UserDefaults.standard.set(true, forKey: "kHadRateBefore")
-               alert.dismiss(animated: true, completion: nil)
-               self.startFindingChats(forReason: "rateapp")
-               if UIApplication.shared.canOpenURL(NSURL.init(string: Environment.MonkeyAppRateURL)! as URL) {
-                    UIApplication.shared.openURL(NSURL.init(string: Environment.MonkeyAppRateURL)! as URL)
-               }
-          }))
-          self.present(alert, animated: true, completion: nil)
-     }
-
+	func showRateAlert(){
+		let rated = UserDefaults.standard.bool(forKey: "kHadRateBefore")
+		if rated {return}
+		UserDefaults.standard.set(true,forKey: "kHadRateBefore")
+		if Configs.hadShowRateAlertToday() {return}
+		
+		self.stopFindingChats(andDisconnect: false, forReason: "rateapp")
+		let alert = UIAlertController(title: "Having fun with Monkey?", message: "🐒🐒🐒\nIf you like Monkey, plz give us a good review!", preferredStyle: UIAlertControllerStyle.alert)
+		alert.addAction(UIAlertAction(title: "I hate it", style: .cancel, handler: {
+			(UIAlertAction) in
+			alert.dismiss(animated: true, completion: nil)
+			self.startFindingChats(forReason: "rateapp")
+		}))
+		alert.addAction(UIAlertAction(title: "Aight", style: .default, handler: {
+			(UIAlertAction) in
+			UserDefaults.standard.set(true, forKey: "kHadRateBefore")
+			alert.dismiss(animated: true, completion: nil)
+			self.startFindingChats(forReason: "rateapp")
+			if UIApplication.shared.canOpenURL(NSURL.init(string: Environment.MonkeyAppRateURL)! as URL) {
+				UIApplication.shared.openURL(NSURL.init(string: Environment.MonkeyAppRateURL)! as URL)
+			}
+		}))
+		self.present(alert, animated: true, completion: nil)
+	}
+	
 	deinit {
 		NotificationCenter.default.removeObserver(self)
 		self.stopMatchRequest()
@@ -1452,94 +1463,94 @@ extension MainViewController {
 			self.isLoading = true
 		}
 	}
-
-     func listTrees(trees:Array<String>){
-          if trees.count == 0 {
-               return
-          }
-
-          guard let allTree = self.channels else {
-               print("no tree info now")
-               return
-          }
-
-          guard let curTrees = APIController.shared.currentUser?.channels else { return  }
-          var commonTrees = Array<String>.init()
-          for tree in curTrees {
-               if let treeID = tree.channel_id {
-                    if trees.contains(treeID) , treeID != "1" {
-                         commonTrees.append(treeID)
-                    }
-               }
-          }
-
-		  if commonTrees.count > 0 {
-			   var common_trees_str = ""
-			   for tree in commonTrees {
-					common_trees_str.append("tree \(tree),")
-			   }
-			   common_trees_str.removeLast()
-			   self.chatSession?.common_trees = common_trees_str
-          }else {
-               return
-          }
-          
-          commonTrees = commonTrees.sorted { (string1, string2) -> Bool in
-               return string1 > string2
-          }
-
-          var count = 0
-          var org_emoji_str = "🍌🍌🍌🍌"
-          var emojiArr:[String] = []
-
-          for treeInfo in allTree{
-               if count >= 3 {break}
-
-               if let channelID = treeInfo.channel_id , commonTrees.contains(channelID) ,
-                    let emojiStr = treeInfo.emoji {
-                    org_emoji_str.remove(at: org_emoji_str.startIndex)
-                    org_emoji_str.append(emojiStr)
-
-                    count += 1
-                    
-                    self.curCommonTree = treeInfo
-               }
-          }
-
-          for i in 0...3 {
-               if i == 0 {
-                    emojiArr.append(org_emoji_str)
-               }else{
-                    var newStr = emojiArr[i-1]
-                    let cha = newStr.remove(at: newStr.startIndex)
-                    newStr.append(cha)
-                    emojiArr.append(newStr)
-                    emojiArr[i-1].remove(at: emojiArr[i-1].startIndex)
-               }
-          }
-
-          emojiArr[3].remove(at: emojiArr[3].startIndex)
-
-          self.loadingTextLabel.setTicksWithArray(ticks: emojiArr)
-     }
-
-     func hideTreeLabels() {
-          self.loadingTextLabel.setDefaultTicks()
-     }
+	
+	func listTrees(trees:Array<String>){
+		if trees.count == 0 {
+			return
+		}
+		
+		guard let allTree = self.channels else {
+			print("no tree info now")
+			return
+		}
+		
+		guard let curTrees = APIController.shared.currentUser?.channels else { return  }
+		var commonTrees = Array<String>.init()
+		for tree in curTrees {
+			if let treeID = tree.channel_id {
+				if trees.contains(treeID) , treeID != "1" {
+					commonTrees.append(treeID)
+				}
+			}
+		}
+		
+		if commonTrees.count > 0 {
+			var common_trees_str = ""
+			for tree in commonTrees {
+				common_trees_str.append("tree \(tree),")
+			}
+			common_trees_str.removeLast()
+			self.chatSession?.common_trees = common_trees_str
+		}else {
+			return
+		}
+		
+		commonTrees = commonTrees.sorted { (string1, string2) -> Bool in
+			return string1 > string2
+		}
+		
+		var count = 0
+		var org_emoji_str = "🍌🍌🍌🍌"
+		var emojiArr:[String] = []
+		
+		for treeInfo in allTree{
+			if count >= 3 {break}
+			
+			if let channelID = treeInfo.channel_id , commonTrees.contains(channelID) ,
+				let emojiStr = treeInfo.emoji {
+				org_emoji_str.remove(at: org_emoji_str.startIndex)
+				org_emoji_str.append(emojiStr)
+				
+				count += 1
+				
+				self.curCommonTree = treeInfo
+			}
+		}
+		
+		for i in 0...3 {
+			if i == 0 {
+				emojiArr.append(org_emoji_str)
+			}else{
+				var newStr = emojiArr[i-1]
+				let cha = newStr.remove(at: newStr.startIndex)
+				newStr.append(cha)
+				emojiArr.append(newStr)
+				emojiArr[i-1].remove(at: emojiArr[i-1].startIndex)
+			}
+		}
+		
+		emojiArr[3].remove(at: emojiArr[3].startIndex)
+		
+		self.loadingTextLabel.setTicksWithArray(ticks: emojiArr)
+	}
+	
+	func hideTreeLabels() {
+		self.loadingTextLabel.setDefaultTicks()
+	}
 
 	func skipped() {
 		DispatchQueue.main.async {
 			self.start()
-          if !self.mySkip {
-               self.skippedText.layer.opacity = 1.0
-          }
-          self.mySkip = false
-            UIView.animate(withDuration: 1.0, animations: {
-                self.skippedText.layer.opacity = 0.0
-                self.factTextView.text = self.nextFact
-                self.view.layoutIfNeeded()
-            })
-            self.hideTreeLabels()
+			if !self.mySkip {
+				self.skippedText.layer.opacity = 1.0
+			}
+			self.mySkip = false
+			UIView.animate(withDuration: 1.0, animations: {
+				self.skippedText.layer.opacity = 0.0
+				self.factTextView.text = self.nextFact
+				self.view.layoutIfNeeded()
+			})
+			self.hideTreeLabels()
 		}
 	}
 	func start() {

@@ -47,10 +47,17 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     var status: ChatSessionStatus = .loading
     var disconnectReason: DisconnectReason?
     var response: Response? {
-        didSet{
-            if self.wasSkippable && response == .skipped {
-                self.sendSkip()
-            }
+        didSet {
+			if response == .skipped {
+				if self.wasSkippable {
+					self.sendSkip()
+				}else {
+					self.updateStatusTo(.consumed)
+					self.loadingDelegate = nil
+					self.callDelegate = nil
+					self.subscriber = nil
+				}
+			}
         }
     }
     var wasSkippable = false
@@ -468,7 +475,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         return true
     }
 
-    private func sendSkip(){
+    private func sendSkip() {
         var maybeError : OTError?
         session.signal(withType: "skip", string: "", connection: self.connections.last, error: &maybeError)
         self.disconnect(.consumed)
@@ -590,20 +597,23 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             self.log(.warning, "Attempting to disconnect while disconnecting")
             return
         }
+		
         if status != .consumed && status != .consumedWithError {
             // Disconnect in progress.
             self.log(.error, "Disconnects must have consumed status")
             return
         }
-        guard self.subscriberConnection != nil else {
-            // Wait a few seconds to see if they connect so we can tell them we are leaving.
-            self.disconnectStatus = status
-            self.updateStatusTo(.disconnecting)
-            DispatchQueue.main.asyncAfter(deadline: .after(seconds: 3.0)) { [weak self] in
-                self?.finishDisconnecting()
-            }
-            return
-        }
+		
+		if self.subscriberConnection == nil && status == .connected {
+			// Wait a few seconds to see if they connect so we can tell them we are leaving.
+			self.disconnectStatus = status
+			self.updateStatusTo(.disconnecting)
+			DispatchQueue.main.asyncAfter(deadline: .after(seconds: 3.0)) { [weak self] in
+				self?.finishDisconnecting()
+			}
+			return
+		}
+		
         if self.sessionStatus == .connected {
 			
 			var match_duration = 0
@@ -751,11 +761,17 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.subscriberData = ChatSession.parseConnectionData(connection.data ?? "")
 
         self.subscriberConnection = connection
+		self.wasSkippable = true
+		self.updateStatusTo(.skippable)
+		if self.response == .skipped {
+			self.sendSkip()
+			return;
+		}
+		
         if self.response == .accepted {
             self.accept()
-        }else if self.response == .skipped {
-            self.sendSkip()
         }
+		
         DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_accept_time))) { [weak self] in
             guard let `self` = self else { return }
             if self.response == nil {
@@ -781,10 +797,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             }else {
                 self.disconnect(.consumed)
             }
-
         }
-        self.wasSkippable = true
-        self.updateStatusTo(.skippable)
     }
 
     var messageHandlers = Array<MessageHandler>()
