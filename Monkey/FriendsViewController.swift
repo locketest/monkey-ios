@@ -81,7 +81,6 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        Socket.shared.chatMessageDelegate = self
         if let mainVC = self.presentingViewController as? MainViewController {
             IncomingCallManager.shared.delegate = mainVC
         }
@@ -91,12 +90,15 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         self.checkDeepLink()
 		
 		self.showMonkeyChatWhenOpenChat();
+        Socket.shared.chatMessageDelegate = self
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        Socket.shared.chatMessageDelegate = nil
+        if let delegate = Socket.shared.chatMessageDelegate , self.isEqual(delegate) {
+            Socket.shared.chatMessageDelegate = nil
+        }
     }
 	
 	func showMonkeyChatWhenOpenChat() {

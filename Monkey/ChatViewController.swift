@@ -521,16 +521,16 @@ extension ChatViewController: ChatSessionLoadingDelegate {
 
         self.callButton.backgroundColor = Colors.white(0.06)
 
-        if error != nil {
-            print("Showing unknown error")
-            let alert = UIAlertController(title: "Uh, oh!", message: "Something went wrong.", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "Try Again", style: .cancel, handler: {
-                (UIAlertAction) in
-                alert.dismiss(animated: true, completion: nil)
-            }))
-            self.present(alert, animated: true, completion: nil)
-            return
-        }
+//        if error != nil {
+//            print("Showing unknown error")
+//            let alert = UIAlertController(title: "Uh, oh!", message: "Something went wrong.", preferredStyle: UIAlertControllerStyle.alert)
+//            alert.addAction(UIAlertAction(title: "Try Again", style: .cancel, handler: {
+//                (UIAlertAction) in
+//                alert.dismiss(animated: true, completion: nil)
+//            }))
+//            self.present(alert, animated: true, completion: nil)
+//            return
+//        }
     }
 
     func dismissCallViewController(for chatSession:ChatSession) {

@@ -59,7 +59,7 @@ let treeLabelWidth:CGFloat = 48.0
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
-class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate {
+class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate,MonkeySocketChatMessageDelegate {
      func webSocketDidRecieveVideoCall(videoCall: Any, data: [String : Any]) {
           if self.chatSession != nil {
                
@@ -95,6 +95,10 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.progressMatch(call: realmCall,data: data)
 		}
 	}
+     
+     func webScoketDidRecieveChatMessage(data: [String : Any]) {
+          self.chatButton.imageView?.image = #imageLiteral(resourceName: "FriendsButtonNotification")
+     }
 
 	internal func showAlert(alert: UIAlertController) {
 		self.present(alert, animated: true, completion: nil)
@@ -238,6 +242,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
           if viewControllerToPresent == self.swipableViewControllerToPresentOnRight {
                self.channelUpdateRemindV.alpha = 0
                self.newTipsRemindLabel.alpha = 0
+          }else if viewControllerToPresent == self.swipableViewControllerToPresentOnLeft{
+               self.chatButton.imageView?.image = #imageLiteral(resourceName: "FriendsButton")
           }
           
           if self.presentedViewController != nil {
@@ -793,10 +799,6 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 				self.hadRegiNoti = true
 			}
 		}
-	}
-
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
 	}
 
 	func checkCamAccess() {

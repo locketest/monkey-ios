@@ -157,6 +157,7 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 				if isToMainViewController {
 					let to = (toViewController as! MainViewController)
 					to.startFindingChats(forReason: "is-swiped-away")
+                    Socket.shared.chatMessageDelegate = to
 					to.pageViewIndicator.currentPage = 1
 				}
 				
