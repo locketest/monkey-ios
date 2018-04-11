@@ -33,6 +33,9 @@ public enum AnalyticEvent: String {
     case matchConnectTimeOut = "MATCH_CONNECT_TIME_OUT"
     case matchSuccess = "MATCH_SUCCESS"
 	case matchInfo = "MATCH_INFO"
+	
+	case opentokError = "OPENTOK_ERROR"
+	case opentokConnected = "OPENTOK_CONNECTED"
 }
 
 /**
@@ -139,6 +142,9 @@ extension AnaliticsCenter {
 		AnalyticEvent.matchConnectTimeOut,
 		AnalyticEvent.matchSuccess,
 		AnalyticEvent.matchInfo,
+		
+		AnalyticEvent.opentokError,
+		AnalyticEvent.opentokConnected,
 	]
 	
 	fileprivate static let oneTimeEvents: Set<AnalyticEvent> = [

@@ -22,7 +22,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     var realmVideoCall:RealmVideoCall?
     private var chatNotificationToken: NotificationToken?
 
-	var matchedTime = NSDate().timeIntervalSince1970
+	var matchedTime: TimeInterval?
 	var acceptTime: TimeInterval?
 	var connectTime: TimeInterval?
 
@@ -226,6 +226,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.chat = chat
         self.loadingDelegate = loadingDelegate
 		self.textMode = (chat.match_with_mode == .TextMode)
+		self.matchedTime = NSDate().timeIntervalSince1970
 
 		let realm = try? Realm()
 		if let currentMatchUser = realmCall?.user?.user_id, let friend = realm?.objects(RealmFriendship.self).filter("user.user_id == \"\(currentMatchUser)\"").first {
@@ -261,6 +262,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             self.log(.error, "Could not connect to session \(error)")
             self.sessionStatus = .disconnected
             self.updateStatusTo(.consumedWithError)
+			
+			AnaliticsCenter.log(withEvent: .opentokError, andParameter: [
+				"channel": "session",
+				"code": error.code,
+				"duration": Int(NSDate().timeIntervalSince1970 - self.matchedTime!),
+				])
             return
         }
     }
@@ -759,6 +766,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             messageHandler.chatSesssion(self, connectionCreated: connection)
         }
         self.subscriberData = ChatSession.parseConnectionData(connection.data ?? "")
+		AnaliticsCenter.log(withEvent: .opentokConnected, andParameter: [
+			"duration": Int(NSDate().timeIntervalSince1970 - self.matchedTime!),
+			])
 
         self.subscriberConnection = connection
 		self.wasSkippable = true
@@ -936,6 +946,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.log(.info, "session didFailWithError \(error)")
         self.disconnect(.consumedWithError)
         // sessionDidDisconnect (sometimes) called right after
+		AnaliticsCenter.log(withEvent: .opentokError, andParameter: [
+			"channel": "session",
+			"code": error.code,
+			"duration": Int(NSDate().timeIntervalSince1970 - self.matchedTime!),
+			])
     }
 
     // MARK: - OTSubscriber delegate callbacks
@@ -961,6 +976,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     func subscriber(_ subscriber: OTSubscriberKit, didFailWithError error : OTError) {
         self.log(.info, "subscriber didFailWithError \(error)")
         self.disconnect(.consumedWithError)
+		AnaliticsCenter.log(withEvent: .opentokError, andParameter: [
+			"channel": "subscriber",
+			"code": error.code,
+			"duration": Int(NSDate().timeIntervalSince1970 - self.matchedTime!),
+			])
     }
 
     func publisher(_ publisher: OTPublisherKit, streamCreated stream: OTStream) {
@@ -977,6 +997,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     func publisher(_ publisher: OTPublisherKit, didFailWithError error: OTError) {
         self.log(.info, "publisher didFailWithError \(error)")
         self.disconnect(.consumedWithError)
+		AnaliticsCenter.log(withEvent: .opentokError, andParameter: [
+			"channel": "publisher",
+			"code": error.code,
+			"duration": Int(NSDate().timeIntervalSince1970 - self.matchedTime!),
+			])
     }
 }
 
