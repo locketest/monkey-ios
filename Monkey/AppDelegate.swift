@@ -122,8 +122,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		FBSDKAppEvents.setPushNotificationsDeviceToken(deviceToken)
 		UserDefaults.standard.set(deviceToken.base64EncodedString(), forKey: "apns_token")
 		
-//		let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-//		print("device token:\(token)")
+		let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+		print("device token:\(token)")
 		Apns.update(callback: nil)
 	}
 	

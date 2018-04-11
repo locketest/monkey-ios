@@ -172,6 +172,30 @@ extension UITextField {
         self.backgroundColor = self.interfaceBuilderBackgroundColor ?? self.backgroundColor
     }
 }
+
+extension BigYellowButton {
+	@IBInspectable var cornerRadius: CGFloat {
+		get {
+			return layer.cornerRadius
+		}
+		set {
+			layer.cornerRadius = newValue
+			layer.masksToBounds = newValue > 0
+		}
+	}
+	@IBInspectable var shadowRadius: CGFloat {
+		get {
+			return layer.shadowRadius
+		}
+		set {
+			layer.shadowOffset = CGSize(width: 0, height: 0)
+			layer.shadowColor = UIColor.black.cgColor
+			layer.shadowOpacity = 0.4
+			layer.shadowRadius = shadowRadius
+		}
+	}
+}
+
 extension Amplitude {
     class var shared:Amplitude {
         return Amplitude.instance()

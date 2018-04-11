@@ -13,8 +13,8 @@ PODS:
   - Branch/Core (0.17.10)
   - Crashlytics (3.10.1):
     - Fabric (~> 1.7.5)
-  - DeviceKit (1.5.0)
-  - Fabric (1.7.5)
+  - DeviceKit (1.6.0)
+  - Fabric (1.7.6)
   - FBNotifications (1.0.1)
   - FBSDKCoreKit (4.31.1):
     - Bolts (~> 1.7)
@@ -114,8 +114,8 @@ SPEC CHECKSUMS:
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   Branch: 29745957de17eb5973627f4c7720bd0eb390fd45
   Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
-  DeviceKit: 883552d64028056216e913a88f892e7e29678e75
-  Fabric: ae7146a5f505ea370a1e44820b4b1dc8890e2890
+  DeviceKit: 3de509f9db7ae93bf676da5e97b945517bc957cd
+  Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
   FBSDKCoreKit: e08ccfcefa7bc1347a07c276dac9bf6c7fe57024
   Firebase: cc13dfab1038c8b45d7903e01fc690451d6d0b24

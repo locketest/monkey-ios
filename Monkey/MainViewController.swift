@@ -1222,7 +1222,12 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			self.skipped()
 		}
 		let isCurrentSession = chatSession == self.chatSession
-		self.lastChatSession = chatSession
+		// 如果还没进到房间内
+		if chatSession.wasSkippable == false {
+			self.lastChatSession = chatSession
+		}else {
+			self.lastChatSession = nil
+		}
 		self.chatSession = nil
 		
 		if !isCurrentSession {
