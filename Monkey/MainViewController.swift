@@ -91,6 +91,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      
 	
 	func webSocketDidRecieveMatch(match: Any, data: [String : Any]) {
+		AnaliticsCenter.log(event: AnalyticEvent.matchReceivedTotal)
 		if isFindingChats, let realmCall = match as? RealmCall, self.chatSession == nil {
 			self.progressMatch(call: realmCall,data: data)
 		}
@@ -590,6 +591,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			]
 		]
 		
+		AnaliticsCenter.log(event: AnalyticEvent.matchRequestTotal)
 		self.chatRequest = RealmCall.create(parameters: parameters) { (result:JSONAPIResult<[RealmCall]>) in
 			print("Chat request completed")
 			self.cancelMatchRequest()
@@ -978,7 +980,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		AnaliticsCenter.add(amplitudeUserProperty: ["match_receive": 1])
 		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_receive": 1])
 		
-		self.chatSession?.track(matchEvent: .matchFirstRecieve)
+		self.chatSession?.track(matchEvent: .matchFirstRecieved)
 		self.chatSession?.track(matchEvent: .matchReceived)
 		self.start(fact: bio)
 		

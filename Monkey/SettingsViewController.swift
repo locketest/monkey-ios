@@ -724,16 +724,26 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     let aboutUSData = SettingsTableViewCellData(for: .aboutUS, title: "🐒 About us")
     let signOutData = SettingsTableViewCellData(for: .signOut, title: "🙈 Sign out")
     var cells: [SettingsTableViewCellData] {
-        return [
-            talkToData,
-            acceptButtonData,
-            inviteFriendsData,
-//            rateOnAppStoreData,
-//            addOnSnapchatData,
-//            legalStuffData,
-            aboutUSData,
-            signOutData]
+		var basicCells = [
+			talkToData,
+		]
+		if RemoteConfigManager.shared.app_in_review == false {
+			basicCells.append(acceptButtonData)
+		}
+		
+		basicCells.append(contentsOf: [
+			inviteFriendsData,
+			aboutUSData,
+			signOutData,
+			])
+		return basicCells
+//		rateOnAppStoreData,
+//		addOnSnapchatData,
+//		legalStuffData,
     }
+	
+	
+	
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }

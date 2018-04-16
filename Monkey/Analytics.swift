@@ -22,12 +22,14 @@ public enum AnalyticEvent: String {
     
     //  ----------------------------  Match  ------------------------------
     case matchFirstRequest = "MATCH_1ST_REQUEST"
-    case matchFirstRecieve = "MATCH_1ST_RECEIVE"
+    case matchFirstRecieved = "MATCH_1ST_RECEIVED"
     case matchFirstSuccess = "MATCH_1ST_SUCCESS" /// First match success
     case matchFirstAddTime = "MATCH_1ST_ADDTIME"
     case matchFirstAddFriend = "MATCH_1ST_ADDFRIEND"
 	
+	case matchRequestTotal = "MATCH_REQUEST_TOTAL"
 	case matchRequest = "MATCH_REQUEST"
+	case matchReceivedTotal = "MATCH_RECEIVED_TOTAL"
     case matchReceived = "MATCH_RECEIVED"
     case matchConnect = "MATCH_CONNECT"
     case matchConnectTimeOut = "MATCH_CONNECT_TIME_OUT"
@@ -131,12 +133,14 @@ extension AnaliticsCenter {
 		AnalyticEvent.notifyClick,
 		
 		AnalyticEvent.matchFirstRequest,
-		AnalyticEvent.matchFirstRecieve,
+		AnalyticEvent.matchFirstRecieved,
 		AnalyticEvent.matchFirstSuccess,
 		AnalyticEvent.matchFirstAddTime,
 		AnalyticEvent.matchFirstAddFriend,
 		
+		AnalyticEvent.matchRequestTotal,
 		AnalyticEvent.matchRequest,
+		AnalyticEvent.matchReceivedTotal,
 		AnalyticEvent.matchReceived,
 		AnalyticEvent.matchConnect,
 		AnalyticEvent.matchConnectTimeOut,
@@ -149,7 +153,7 @@ extension AnaliticsCenter {
 	
 	fileprivate static let oneTimeEvents: Set<AnalyticEvent> = [
 		AnalyticEvent.matchFirstRequest,
-		AnalyticEvent.matchFirstRecieve,
+		AnalyticEvent.matchFirstRecieved,
 		AnalyticEvent.matchFirstSuccess,
 		AnalyticEvent.matchFirstAddTime,
 		AnalyticEvent.matchFirstAddFriend,
@@ -157,7 +161,7 @@ extension AnaliticsCenter {
 	
 	fileprivate static let firstDayEvents: Set<AnalyticEvent> = [
 		AnalyticEvent.matchFirstRequest,
-		AnalyticEvent.matchFirstRecieve,
+		AnalyticEvent.matchFirstRecieved,
 		AnalyticEvent.matchFirstSuccess,
 		AnalyticEvent.matchFirstAddTime,
 		AnalyticEvent.matchFirstAddFriend,
@@ -199,7 +203,9 @@ extension AnaliticsCenter {
 	fileprivate static let exceptAmplitudeEvents: Set<AnalyticEvent> = [
 		AnalyticEvent.notifyClick,
 		
+		AnalyticEvent.matchRequestTotal,
 		AnalyticEvent.matchRequest,
+		AnalyticEvent.matchReceivedTotal,
 		AnalyticEvent.matchReceived,
 		AnalyticEvent.matchConnect,
 		AnalyticEvent.matchConnectTimeOut,
@@ -208,6 +214,12 @@ extension AnaliticsCenter {
 	]
 	
 	fileprivate class func log(forAmpitude event: AnalyticEvent, andParameter parameter: [String: Any]?) {
+		if event == .opentokConnected || event == .opentokError {
+			if let currentUser = APIController.shared.currentUser, let user_id = currentUser.user_id, user_id.hasSuffix("0") == false, user_id.hasSuffix("5") == false {
+				return
+			}
+		}
+		
 		if self.exceptAmplitudeEvents.contains(event) == false || Environment.environment == .sandbox {
 			if (parameter != nil) {
 				Amplitude.shared.logEvent(event.rawValue, withEventProperties: parameter!)

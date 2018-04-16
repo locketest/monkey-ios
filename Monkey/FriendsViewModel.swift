@@ -44,12 +44,12 @@ class FriendsViewModel {
         
         //  if last message is nil , use create at
         self.newFriends?.forEach({ (friendShip) in
-            if friendShip.last_message_at == nil {
-                let realm = try? Realm()
-                realm?.beginWrite()
-                friendShip.last_message_at = friendShip.created_at
-                try! realm?.commitWrite()
-            }
+			if friendShip.last_message_at != nil {
+				let realm = try? Realm()
+				try? realm?.write({
+					friendShip.last_message_at = friendShip.created_at
+				})
+			}
         })
         
         let realm = try? Realm()
