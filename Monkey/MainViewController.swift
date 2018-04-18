@@ -97,6 +97,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		}
 	}
      
+     
      func webScoketDidRecieveChatMessage(data: [String : Any]) {
           self.chatButton.imageView?.image = #imageLiteral(resourceName: "FriendsButtonNotification")
      }
