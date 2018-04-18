@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			Achievements.shared.grantedPermissionsV2 = true
 			Achievements.shared.promptedNotifications = true
 		}
+        
 		
 		FirebaseApp.configure(options: FirebaseOptions.init(contentsOfFile: Environment.firebaseConfigurationPath)!)
 		FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
