@@ -498,6 +498,19 @@ extension String {
     }
 }
 
+extension NSURLComponents {
+    func queryDict() -> [String:String] {
+        var dict = Dictionary<String, String>.init()
+        self.queryItems?.forEach({ (obj) in
+            if obj.name.count != 0,
+                obj.value?.count != 0 {
+                dict[obj.name] = obj.value!
+            }
+        })
+        return dict
+    }
+}
+
 // MARK: - String Sizing
 extension String {
     func boundingRect(forFont font: UIFont, constrainedTo size: CGSize) -> CGRect {

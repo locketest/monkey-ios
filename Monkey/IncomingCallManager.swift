@@ -92,7 +92,21 @@ class IncomingCallManager {
     
     ///  if user ignore video call , call this func
     func cancelVideoCall(chatsession:ChatSession) {
-        
+        if let userID = self.chatSession?.realmCall?.user?.user_id,
+            let realm = try? Realm(), let friendShip = realm.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"").first ,
+        let friendshipID = friendShip.friendship_id{
+            let param = [
+                "data":[
+                    "type":"videocall",
+                    "friendship":[
+                        "id":friendshipID,
+                        "friend_id":userID
+                    ]
+                ]
+            ]
+            JSONAPIRequest.init(url: "\(Environment.baseURL)/api/videocall/cancel", method: .post, parameters: param,
+                                options: [.header("Authorization", APIController.authorization),])
+        }
     }
     
     func createChatSession(fromCall:RealmCall) -> ChatSession? {

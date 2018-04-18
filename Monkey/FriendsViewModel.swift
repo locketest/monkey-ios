@@ -17,6 +17,8 @@ protocol FriendsViewModelDelegate: class {
 
 class FriendsViewModel {
     
+    static var sharedFreindsViewModel = FriendsViewModel()
+    
     weak var delegate:FriendsViewModelDelegate?
     
     var friendships: Results<RealmFriendship>? {
@@ -44,16 +46,17 @@ class FriendsViewModel {
         
         //  if last message is nil , use create at
         self.newFriends?.forEach({ (friendShip) in
-			if friendShip.last_message_at != nil {
-				let realm = try? Realm()
-				try? realm?.write({
-					friendShip.last_message_at = friendShip.created_at
-				})
-			}
+            if friendShip.last_message_at == nil {
+                let realm = try? Realm()
+                try? realm?.write({
+                    friendShip.last_message_at = friendShip.created_at
+                })
+            }
         })
         
         let realm = try? Realm()
-        return realm?.objects(RealmFriendship.self).filter(isInConversation).sorted(byKeyPath: "last_message_at", ascending: false)
+        let friendships = realm?.objects(RealmFriendship.self).filter(isInConversation).sorted(byKeyPath: "last_message_at", ascending: false)
+        return friendships
     }
     
     // TODO: this should be deleted
@@ -91,6 +94,10 @@ class FriendsViewModel {
         self.openChatsNotificationToken = self.openChats?.addNotificationBlock { (change) in
             self.delegate?.reloadOpenChats()
         }
+    }
+    
+    func needReloadData(){
+        self.delegate?.reloadOpenChats()
     }
 
     

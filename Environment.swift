@@ -94,13 +94,25 @@ struct Environment {
 		default: return "04f72fae8a9c614c47cc38e822778a36"
 		}
 	}
-	
-	static var firebaseConfigurationPath: String {
-		switch self.environment {
-		case .production, .release: return Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")!
-		default: return Bundle.main.path(forResource: "GoogleService-Info-Dev", ofType: "plist")!
-		}
-	}
+    
+    static let adjustToken = "p79q291s4ef4"
+
+    static var firebaseConfigurationPath: String {
+        switch self.environment {
+        case .production, .release: return Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")!
+        default: return Bundle.main.path(forResource: "GoogleService-Info-Dev", ofType: "plist")!
+        }
+    }
+    
+    static var deeplink_source : String {
+        get {
+            return UserDefaults.standard.string(forKey: "kDeepLinkSourceValue") ?? ""
+        }
+        
+        set {
+            UserDefaults.standard.set(newValue, forKey: "kDeepLinkSourceValue")
+        }
+    }
 	
 	static let MonkeyAppStoreUrl = "itms-apps://itunes.apple.com/app/id1165924249"
     static let MonkeyAppRateURL = "https://itunes.apple.com/us/app/id1165924249?action=write-review"

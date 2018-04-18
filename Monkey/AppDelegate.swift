@@ -17,6 +17,7 @@ import Firebase
 import FBSDKCoreKit
 import FBNotifications
 import FirebaseMessaging
+import Adjust
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -56,6 +57,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? [AnyHashable : Any] {
 			handleNotification(application: application, userInfo: userInfo)
 		}
+        
+        if  let options = launchOptions,
+            let url = options[UIApplicationLaunchOptionsKey.url] as? URL{
+            self.openWithDeeplinkURL(url: url.absoluteString)
+        }
 		
 		application.applicationIconBadgeNumber = 0
 		self.checkIfAppUpdated()
@@ -64,9 +70,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+            self.openWithDeeplinkURL(url: userActivity.webpageURL?.absoluteString)
+        }
 		return Branch.getInstance().continue(userActivity)
 	}
-	
+    
+    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        self.openWithDeeplinkURL(url: url.absoluteString)
+        return true
+    }
+    
 	func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
 		return handleOpen(url: url, options:options)
 	}
@@ -339,6 +353,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			UserDefaults.standard.set(false,forKey: "kHadRateBefore")
 		}
 	}
+    
+    func openWithDeeplinkURL(url:String?) {
+        if let urlStr = url,
+            let urlCom = NSURLComponents.init(string: urlStr){
+            let queryDict = urlCom.queryDict()
+            
+            if let urlobj = URL.init(string: urlStr) {
+                Adjust.appWillOpen(urlobj)
+            }
+            
+            if (urlCom.scheme == "monkey" || urlCom.host == "join.monkey.cool"),
+                let sourceStr = queryDict["source"] ,
+                sourceStr.count != 0{
+                Environment.deeplink_source = sourceStr
+            }
+        }
+    }
 }
 
 extension AppDelegate: MessagingDelegate {

@@ -1,5 +1,8 @@
 PODS:
   - AccountKit (4.31.0)
+  - Adjust (4.12.3):
+    - Adjust/Core (= 4.12.3)
+  - Adjust/Core (4.12.3)
   - Alamofire (4.3.0)
   - Amplitude-iOS (4.1.0)
   - Bolts (1.9.0):
@@ -13,45 +16,45 @@ PODS:
   - Branch/Core (0.17.10)
   - Crashlytics (3.10.1):
     - Fabric (~> 1.7.5)
-  - DeviceKit (1.6.0)
+  - DeviceKit (1.7.0)
   - Fabric (1.7.6)
   - FBNotifications (1.0.1)
-  - FBSDKCoreKit (4.31.1):
+  - FBSDKCoreKit (4.32.0):
     - Bolts (~> 1.7)
-  - Firebase/Core (4.11.0):
-    - FirebaseAnalytics (= 4.1.0)
-    - FirebaseCore (= 4.0.18)
-  - Firebase/Messaging (4.11.0):
+  - Firebase/Core (4.13.0):
+    - FirebaseAnalytics (= 4.2.0)
+    - FirebaseCore (= 4.0.20)
+  - Firebase/Messaging (4.13.0):
     - Firebase/Core
-    - FirebaseMessaging (= 2.1.1)
-  - Firebase/RemoteConfig (4.11.0):
+    - FirebaseMessaging (= 2.2.0)
+  - Firebase/RemoteConfig (4.13.0):
     - Firebase/Core
-    - FirebaseRemoteConfig (= 2.1.2)
+    - FirebaseRemoteConfig (= 2.1.3)
   - FirebaseABTesting (1.0.0):
     - FirebaseCore (~> 4.0)
     - Protobuf (~> 3.1)
-  - FirebaseAnalytics (4.1.0):
+  - FirebaseAnalytics (4.2.0):
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
     - nanopb (~> 0.3)
-  - FirebaseCore (4.0.18):
+  - FirebaseCore (4.0.20):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
   - FirebaseInstanceID (2.0.10):
     - FirebaseCore (~> 4.0)
-  - FirebaseMessaging (2.1.1):
+  - FirebaseMessaging (2.2.0):
     - FirebaseAnalytics (~> 4.1)
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/Logger (~> 2.1)
     - Protobuf (~> 3.5)
-  - FirebaseRemoteConfig (2.1.2):
+  - FirebaseRemoteConfig (2.1.3):
     - FirebaseABTesting (~> 1.0)
-    - FirebaseAnalytics (~> 4.0)
+    - FirebaseAnalytics (~> 4.1)
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-    - Protobuf (~> 3.1)
+    - Protobuf (~> 3.5)
   - GoogleToolboxForMac/Defines (2.1.3)
   - GoogleToolboxForMac/Logger (2.1.3):
     - GoogleToolboxForMac/Defines (= 2.1.3)
@@ -79,6 +82,7 @@ PODS:
 
 DEPENDENCIES:
   - AccountKit
+  - Adjust
   - Alamofire (~> 4.3.0)
   - Amplitude-iOS
   - Branch (~> 0.17.10)
@@ -109,22 +113,23 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AccountKit: f3e48047e6fb1c433dff37c61158fd32bbc482cf
+  Adjust: 22d701f72be3457e9f4f7c18ad4aab9436e0ef56
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
   Amplitude-iOS: c923c4a576698083c1cd05e45072c92d41e206bd
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   Branch: 29745957de17eb5973627f4c7720bd0eb390fd45
   Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
-  DeviceKit: 3de509f9db7ae93bf676da5e97b945517bc957cd
+  DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
-  FBSDKCoreKit: e08ccfcefa7bc1347a07c276dac9bf6c7fe57024
-  Firebase: cc13dfab1038c8b45d7903e01fc690451d6d0b24
+  FBSDKCoreKit: 55d7f2ac45d9c4b9b6119f4e43900fe84b9b7b1b
+  Firebase: 5ec5e863d269d82d66b4bf56856726f8fb8f0fb3
   FirebaseABTesting: d07d0ee833b842d5153549e4c7e2e2cb1c23a3f9
-  FirebaseAnalytics: 3dfae28d4a5e06f86c4fae830efc2ad3fadb19bc
-  FirebaseCore: b981f47e5254cbcfdeb483355300d743f6fcab2c
+  FirebaseAnalytics: 7ef69e76a5142f643aeb47c780e1cdce4e23632e
+  FirebaseCore: 90cb1c53d69b556f112a1bf72b5fcfaad7650790
   FirebaseInstanceID: 8d20d890d65c917f9f7d9950b6e10a760ad34321
-  FirebaseMessaging: db0e01c52ef7e1f42846431273558107d084ede4
-  FirebaseRemoteConfig: df64ce784a45e9b9d4988030a59da6baede8bdb0
+  FirebaseMessaging: 75cdb862e86c30e0913a2ff307e48d49357c5b73
+  FirebaseRemoteConfig: 3e95fb7c072308492e85fa41d59d38b3d6fd2372
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
   GPUImage: f6034f21f92df6171520f604226ae64b90b35911
   MMSCameraViewController: 70e128c8398686e323645e032aa8d1ea2b0cb54a
@@ -138,6 +143,6 @@ SPEC CHECKSUMS:
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftyGif: d36c6dfb52e2ca1e48fe349d225f50ec4123ec85
 
-PODFILE CHECKSUM: e2609f038f70181d035bb4eb88427da9b13c9303
+PODFILE CHECKSUM: 859f818a15fc04e5a3379cd3e8ef14d33741cbda
 
 COCOAPODS: 1.4.0

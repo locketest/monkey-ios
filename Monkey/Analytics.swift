@@ -10,6 +10,7 @@ import Foundation
 import Amplitude_iOS
 import FBSDKCoreKit
 import Crashlytics
+import Adjust
 
 /// Analytics Event Name
 public enum AnalyticEvent: String {
@@ -40,6 +41,10 @@ public enum AnalyticEvent: String {
 	case opentokConnected = "OPENTOK_CONNECTED"
 }
 
+public enum AdjustEvent: String {
+    case none = ""
+}
+
 /**
 公共方法，提供给外部使用
 */
@@ -47,6 +52,7 @@ class AnaliticsCenter {
 	
 	class func logLaunchApp() {
 		self.prepereAmplitude()
+        self.prepareAdjust()
 	}
 	
 	fileprivate class func prepereAmplitude() {
@@ -60,6 +66,19 @@ class AnaliticsCenter {
 			Amplitude.shared.initializeApiKey(Environment.amplitudeKey)
 		}
 	}
+    
+    fileprivate class func prepareAdjust() {
+        let envir = (Environment.environment == .sandbox) ? ADJEnvironmentSandbox : ADJEnvironmentProduction
+        let adjConf = ADJConfig.init(appToken: Environment.adjustToken, environment: envir)
+        adjConf?.logLevel = ADJLogLevelError
+        Adjust.appDidLaunch(adjConf)
+        
+        let isAuth = (APIController.authorization != nil)
+        let isLogin = (APIController.shared.currentUser?.user_id != nil)
+        if (isAuth && isLogin) {
+            //
+        }
+    }
 	
 	fileprivate class func setUserID() {
 		let isAuth = (APIController.authorization != nil)
@@ -69,6 +88,7 @@ class AnaliticsCenter {
 				FBSDKAppEvents.setUserID(userID)
 				Amplitude.shared.setUserId(userID)
 				Crashlytics.sharedInstance().setUserIdentifier(userID)
+                Adjust.addSessionCallbackParameter("user_id", value: userID)
 			}
 			var userInfo: [String: Any] = [
 				"Monkey_gender": currentUser.gender ?? "male",
@@ -228,6 +248,16 @@ extension AnaliticsCenter {
 			}
 		}
 	}
+    
+    fileprivate class func log(forAdjust event: AdjustEvent, andParameter param: [String: Any]?) {
+        let adjEvt = ADJEvent.init(eventToken: event.rawValue)
+        param?.forEach({ (key,value) in
+            adjEvt?.addCallbackParameter(key, value: "\(value)")
+        })
+        
+        Adjust.trackEvent(adjEvt)
+        print("adjust event log \(event) , param : \(param ?? [:])")
+    }
 	
 	fileprivate class func set(amplitudeUserProperty userProperties: [String: Any], increse: Bool, update: Bool) {
 		let identify = AMPIdentify.init()

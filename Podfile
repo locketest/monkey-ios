@@ -22,6 +22,7 @@ target 'Monkey' do
 	pod 'Amplitude-iOS'
 	pod 'Fabric'
 	pod 'Crashlytics'
+    pod 'Adjust'
 	
 	pod 'SwiftyGif'
 	pod 'Alamofire', '~> 4.3.0'

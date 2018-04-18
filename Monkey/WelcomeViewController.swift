@@ -95,7 +95,10 @@ class WelcomeViewController: MonkeyViewController {
     }
 	
 	func validateAccountkitAuth(_ accountkit_token: String) {
-		let parameters = ["accountkit_token": accountkit_token]
+		var parameters = ["accountkit_token": accountkit_token]
+        if Environment.deeplink_source.count > 0 {
+            parameters["source"] = Environment.deeplink_source
+        }
 		
 		JSONAPIRequest(url:"\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/auth/accountkit", method:.post, parameters:parameters, options:nil).addCompletionHandler {[weak self] (response) in
 			guard let `self` = self else { return }
@@ -104,6 +107,9 @@ class WelcomeViewController: MonkeyViewController {
 			case .error(let error):
 				NSLog("error login \(error)")
 			case .success(let jsonAPIDocument):
+                // clean deep link source
+                Environment.deeplink_source = ""
+                
 				if let attributes = jsonAPIDocument.dataResource?.json["attributes"] as? [String: String], let relationships = jsonAPIDocument.dataResource?.json["relationships"] as? [String: [String: [String: String]]] {
 					guard let token = attributes["token"], let user = relationships["user"], let user_data = user["data"], let user_id = user_data["id"] else {
 						NSLog("error login second")

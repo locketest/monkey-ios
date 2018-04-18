@@ -17,7 +17,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     @IBOutlet weak var newFriendsView: MakeUIViewGreatAgain!
     @IBOutlet var openChatsTopConstraint: NSLayoutConstraint!
     
-    let viewModel = FriendsViewModel()
+    let viewModel = FriendsViewModel.sharedFreindsViewModel
     
     /// When opening notifications that route you to a specific conversation from cold launch, the code that manages the navigation executes too early, leaving user stuck on FriendsVC. This fixes that
     var callingFromViewDidLoad = false
@@ -77,7 +77,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         
         return super.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -400,6 +400,10 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     }
     
     func webScoketDidRecieveChatMessage(data: [String : Any]) {
+        self.reloadOpenChats()
+    }
+    
+    func webSocketNeedUpdateFriendList() {
         self.reloadOpenChats()
     }
 }

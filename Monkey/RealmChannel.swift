@@ -63,8 +63,10 @@ class RealmChannel: JSONAPIObject, JSONAPIObjectProtocol {
                     let channel_version = (jsonAPIDocument.json["version"] as? NSNumber ?? NSNumber.init(value: 0)).doubleValue
                     var newChannelVersion = false
                     let lastVersion = UserDefaults.standard.double(forKey: "LAST_CHANNEL_VERSION")
-                    
-                    if  channel_version > 0, channel_version != lastVersion, lastVersion != 0 {
+
+                    if  channel_version > 0,
+                        lastVersion != 0,
+                        channel_version != lastVersion{
                         newChannelVersion = true
                         UserDefaults.standard.set(channel_version, forKey: "LAST_CHANNEL_VERSION")
                     }

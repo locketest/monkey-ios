@@ -210,6 +210,15 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
             self.parseJSONAPIData(data: data,channel: channel)
         case "videocall_call":
             self.parseJSONAPIData(data: data, channel: channel)
+        case "friendship_deleted":
+            if  let dataDict = data["data"] as? [String:Any],
+                let friendshipDict = dataDict["friendship"] as? [String:Any],
+                let friendshipID = friendshipDict["friendship_id"] as? String,
+                let userDict = friendshipDict["user"] as? [String:Any],
+                let userID = userDict["id"] as? String{
+                self.delegate?.webSocketDidRecieveUnfriendMessage(friendID: friendshipID, userID: userID)
+                self.chatMessageDelegate?.webSocketNeedUpdateFriendList()
+            }
         default:
             break
         }
@@ -283,10 +292,12 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 public protocol MonkeySocketDelegate: class {
     func webSocketDidRecieveMatch(match: Any,data: [String:Any])
     func webSocketDidRecieveVideoCall(videoCall:Any,data:[String:Any])
+    func webSocketDidRecieveUnfriendMessage(friendID:String,userID:String)
 }
 
 public protocol MonkeySocketChatMessageDelegate: class{
     func webScoketDidRecieveChatMessage(data:[String:Any])
+    func webSocketNeedUpdateFriendList()
 }
 
 extension Array {

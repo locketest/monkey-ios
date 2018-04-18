@@ -10,6 +10,12 @@ import Foundation
 import RealmSwift
 import ObjectMapper
 
+enum MonkeyMatchMode : String {
+    case videoMode = "videomode"
+    case chatMode = "chatmode"
+    case funmeetMode = "funmeetmode"
+}
+
 class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     weak var callDelegate:ChatSessionCallDelegate?
     weak var loadingDelegate:ChatSessionLoadingDelegate?
@@ -107,6 +113,10 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				
 				self.track(matchEvent: .matchFirstAddFriend)
 				self.chat?.update(callback: nil)
+                
+                RealmFriendship.fetchAll(completion: { (result:JSONAPIResult<[RealmFriendship]>) in
+                    FriendsViewModel.sharedFreindsViewModel.needReloadData()
+                })
             }
         }
     }
@@ -880,6 +890,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 					self.log(.info, "Openning snapchat")
 					self.friendMatched = true
                     self.justAddFriend = true
+                    RealmFriendship.fetchAll(completion: { (result:JSONAPIResult<[RealmFriendship]>) in
+                        FriendsViewModel.sharedFreindsViewModel.needReloadData()
+                    })
 				}
 			case .Accept:
 				self.matchReady = true

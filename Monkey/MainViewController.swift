@@ -100,6 +100,38 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      func webScoketDidRecieveChatMessage(data: [String : Any]) {
           self.chatButton.imageView?.image = #imageLiteral(resourceName: "FriendsButtonNotification")
      }
+     
+     func webSocketDidRecieveUnfriendMessage(friendID: String, userID: String) {
+          RealmFriendship.fetchAll { (result:JSONAPIResult<[RealmFriendship]>) in
+               switch result {
+               case .success(let friendships):
+                    let realm = try? Realm()
+                    guard let storedFriendships = realm?.objects(RealmFriendship.self) else {
+                         print("Error: No friendships to delete on the device when syncing friendships from server")
+                         return
+                    }
+                    let friendshipIdsToKeep = friendships.map { $0.friendship_id }
+                    let predicate = NSPredicate(format: "NOT friendship_id IN %@", friendshipIdsToKeep)
+                    let exFriends = storedFriendships.filter(predicate)
+                    if exFriends.count > 0 {
+                         do {
+                              try realm?.write {
+                                   realm?.delete(exFriends)
+                              }
+                         } catch (let error) {
+                              print("Error: \(error.localizedDescription)")
+                              APIError.unableToSave.log(context: "Deleting old friendships.")
+                         }
+                    }
+               case .error(let error):
+                    error.log(context: "RealmFriendship sync failed")
+               }
+          }
+     }
+     
+     func webSocketNeedUpdateFriendList() {
+          
+     }
 
 	internal func showAlert(alert: UIAlertController) {
 		self.present(alert, animated: true, completion: nil)

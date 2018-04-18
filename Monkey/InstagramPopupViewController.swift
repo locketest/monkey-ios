@@ -234,6 +234,8 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
                 if error != nil {
                     error?.log()
                 }
+                
+                self.dismiss(animated: true, completion: nil)
             })
         })
         
