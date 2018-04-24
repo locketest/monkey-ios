@@ -331,6 +331,30 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     @IBAction func addSnapchat(_ sender: BigYellowButton) {
 		// add friend
 //		AnaliticsCenter.log(event: .requestedSnapchatDuringCall)
+        
+        let isFirstClickAddFriendButtonBool = UserDefaults.standard.value(forKey: IsFirstClickAddFriendButtonTag) as! Bool
+        
+        if isFirstClickAddFriendButtonBool {
+            
+            let alertController = UIAlertController(title: "🎉 To successfully add friends, both users have to tap the button", message: nil, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: {
+                (UIAlertAction) in
+                alertController.dismiss(animated: true, completion: nil)
+                
+                UserDefaults.standard.setValue(false, forKey: IsFirstClickAddFriendButtonTag)
+                
+                self.handleAddSnapchat(sender: sender)
+            }))
+            
+            self.present(alertController, animated: true, completion: nil)
+            
+        } else {
+            self.handleAddSnapchat(sender: sender)
+        }
+    }
+    
+    func handleAddSnapchat(sender: BigYellowButton) {
+        
         sender.isEnabled = false
         sender.layer.opacity = 0.5
         Achievements.shared.addedFirstSnapchat = true

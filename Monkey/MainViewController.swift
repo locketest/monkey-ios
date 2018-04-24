@@ -18,6 +18,7 @@
 import UIKit
 import Alamofire
 import Social
+import SwiftyJSON
 import MediaPlayer
 import RealmSwift
 import MessageUI
@@ -56,6 +57,12 @@ enum discoveryState: Int {
 }
 
 let treeLabelWidth:CGFloat = 48.0
+
+public let RemoteNotificationTag = "RemoteNotification" // 推送消息通知key
+
+public let IsFirstClickAddTimeButtonTag = "IsFirstClickAddTimeButton"
+public let IsFirstClickAddFriendButtonTag = "IsFirstClickAddFriendButton"
+public let IsFirstClickOpenSoundButtonTag = "IsFirstClickOpenSoundButton"
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
@@ -192,6 +199,11 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	var channels: Results<RealmChannel>?
 	var matchRequestTimer:Timer?
      var curCommonTree:RealmChannel?
+     
+     var yesterdayString : String?
+     var addTimeString : String?
+     var addFriendString : String?
+     var equivalentString : String?
 
 	var waitingForFriendToken:NotificationToken?
 	/// After a friendship is made, if there is no snapchat name, we wait for the user id to come down from the socket and push to their chat page
@@ -535,7 +547,51 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		
 //		Step 4: Start finding chats
 		self.startFindingChats(forReason: "location-services")
-	}
+     NotificationCenter.default.addObserver(self, selector: #selector(handleRemoteNotificationFunc), name: NSNotification.Name(rawValue: RemoteNotificationTag), object: nil)
+     
+     self.loadBananaData(isNotificationBool: false)
+     
+     }
+     
+     func loadBananaData(isNotificationBool:Bool) {
+          
+          JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/bananas", method: .get, parameters: nil, options: [
+               .header("Authorization", APIController.authorization),
+               ]).addCompletionHandler { (result) in
+                    switch result {
+                    case .error(let error):
+                         error.log()
+                    case .success(_):
+                         
+                         let json = JSON(result)
+                         
+                         if let data = json["data"].dictionary {
+                              
+                              self.yesterdayString = data["me"]?["yesterday"].string ?? ""
+                              
+                              self.addTimeString = data["redeem"]?["add_time"].string ?? ""
+                              self.addFriendString = data["redeem"]?["add_friend"].string ?? ""
+                              
+                              self.equivalentString = data["promotion"]?.string ?? ""
+                              
+                              if isNotificationBool {
+                                   self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!)
+                              }
+                         }
+                    }
+          }
+          
+     }
+     
+     func handleRemoteNotificationFunc(notification:NSNotification) {
+          
+          let array = notification.object! as! Array<String>
+          print(array)
+          
+          if "banana" == array[0] {
+               self.loadBananaData(isNotificationBool: true)
+          }
+     }
 
 	var stopFindingReasons = [String]()
 	func startFindingChats(forReason: String) {
@@ -1324,30 +1380,37 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.startFindingChats(forReason: "switch match mode")
 	}
 
-	@IBAction func bananaButtonTapped(sender: Any) {
-		let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
-
-		let paragraph = NSMutableParagraphStyle()
-		paragraph.lineSpacing = 9
-		paragraph.alignment = .center
-
-		let attributedString = NSAttributedString(
-			string: "🕑 Time added = 🍌2 \n 🎉 Friend added = 🍌5",
-			attributes: [
-				NSParagraphStyleAttributeName: paragraph,
-				NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
-			]
-		)
-
-		alert.setValue(attributedString, forKey: "attributedMessage")
-
-		alert.addAction(UIAlertAction(title: "Cool", style: .cancel, handler: {
-			(UIAlertAction) in
-			alert.dismiss(animated: true, completion: nil)
-		}))
-
-		self.present(alert, animated: true, completion: nil)
-	}
+     @IBAction func bananaButtonTapped(sender: Any) {
+          self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!)
+     }
+     
+     func alertControllerFunc(yesterdayString:String, addTimeString:String, addFriendString:String, equivalentString:String) {
+          
+          let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
+          
+          let paragraph = NSMutableParagraphStyle()
+          paragraph.lineSpacing = 9
+          paragraph.alignment = .center
+          
+          let string = "📲Yesterday: 🍌\(yesterdayString) \n 🕑 Time added = 🍌\(addTimeString) \n 🎉 Friend added = 🍌\(addFriendString) \n\n \(equivalentString)"
+          
+          let attributedString = NSAttributedString(
+               string: string,
+               attributes: [
+                    NSParagraphStyleAttributeName: paragraph,
+                    NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
+               ]
+          )
+          
+          alert.setValue(attributedString, forKey: "attributedMessage")
+          
+          alert.addAction(UIAlertAction(title: "Cool", style: .cancel, handler: {
+               (UIAlertAction) in
+               alert.dismiss(animated: true, completion: nil)
+          }))
+          
+          self.present(alert, animated: true, completion: nil)
+     }
 
 	func warnConnectionTimeout(in chatSession: ChatSession) {
 		self.stopFindingChats(andDisconnect: false, forReason: "ignoring")

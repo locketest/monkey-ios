@@ -36,10 +36,10 @@ PODS:
   - FirebaseAnalytics (4.2.0):
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
-    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - nanopb (~> 0.3)
   - FirebaseCore (4.0.20):
-    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
   - FirebaseInstanceID (2.0.10):
     - FirebaseCore (~> 4.0)
   - FirebaseMessaging (2.2.0):
@@ -53,12 +53,12 @@ PODS:
     - FirebaseAnalytics (~> 4.1)
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
-    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - Protobuf (~> 3.5)
   - GoogleToolboxForMac/Defines (2.1.3)
   - GoogleToolboxForMac/Logger (2.1.3):
     - GoogleToolboxForMac/Defines (= 2.1.3)
-  - GoogleToolboxForMac/NSData+zlib (2.1.3):
+  - "GoogleToolboxForMac/NSData+zlib (2.1.3)":
     - GoogleToolboxForMac/Defines (= 2.1.3)
   - GPUImage (0.1.71)
   - MMSCameraViewController (1.2.1)
@@ -79,6 +79,7 @@ PODS:
     - Realm (= 2.10.2)
   - Starscream (2.1.1)
   - SwiftyGif (4.1.0)
+  - SwiftyJSON (4.0.0)
 
 DEPENDENCIES:
   - AccountKit
@@ -100,6 +101,40 @@ DEPENDENCIES:
   - RealmSwift (~> 2.10.0)
   - Starscream (~> 2.1.1)
   - SwiftyGif
+  - SwiftyJSON (~> 4.0.0)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - AccountKit
+    - Adjust
+    - Alamofire
+    - Amplitude-iOS
+    - Bolts
+    - Branch
+    - Crashlytics
+    - DeviceKit
+    - Fabric
+    - FBNotifications
+    - FBSDKCoreKit
+    - Firebase
+    - FirebaseABTesting
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseInstanceID
+    - FirebaseMessaging
+    - FirebaseRemoteConfig
+    - GoogleToolboxForMac
+    - MMSCameraViewController
+    - MMSProfileImagePicker
+    - nanopb
+    - ObjectMapper
+    - OpenTok
+    - Protobuf
+    - Realm
+    - RealmSwift
+    - Starscream
+    - SwiftyGif
+    - SwiftyJSON
 
 EXTERNAL SOURCES:
   GPUImage:
@@ -142,7 +177,8 @@ SPEC CHECKSUMS:
   RealmSwift: 07a9ae0505091eda6b2ee7c190c3786d6e90a7b0
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftyGif: d36c6dfb52e2ca1e48fe349d225f50ec4123ec85
+  SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
-PODFILE CHECKSUM: 859f818a15fc04e5a3379cd3e8ef14d33741cbda
+PODFILE CHECKSUM: 3e9960d5bbf18b221a5da72bfe279c05251cf369
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0

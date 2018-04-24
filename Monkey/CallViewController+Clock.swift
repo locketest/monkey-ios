@@ -147,6 +147,29 @@ extension CallViewController: CountingLabelDelegate {
     
     // MARK: - Minute Button
     @IBAction func addMinute(_ sender: BigYellowButton) {
+        
+        let isFirstClickAddTimeButtonBool = UserDefaults.standard.value(forKey: IsFirstClickAddTimeButtonTag) as! Bool
+        
+        if isFirstClickAddTimeButtonBool {
+            
+            let alertController = UIAlertController(title: "🕑 To successfully add time, both users have to tap the button", message: nil, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: {
+                (UIAlertAction) in
+                alertController.dismiss(animated: true, completion: nil)
+                
+                UserDefaults.standard.setValue(false, forKey: IsFirstClickAddTimeButtonTag)
+                
+                self.handleAddMinute(sender: sender)
+            }))
+            
+            self.present(alertController, animated: true, completion: nil)
+            
+        } else {
+            self.handleAddMinute(sender: sender)
+        }
+    }
+    
+    func handleAddMinute(sender: BigYellowButton) {
         guard Achievements.shared.isOnboardingExplainAddTimePopupCompleted else {
             let chatSession = self.chatSession
             let explainAddTimeAlert = UIAlertController(title: "🕑 Time?", message: "Tapping the Time button suggests that you want to keep talking.", preferredStyle: .alert)

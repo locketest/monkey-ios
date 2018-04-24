@@ -66,6 +66,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		application.applicationIconBadgeNumber = 0
 		self.checkIfAppUpdated()
+        
+        self.initUserDefaultsValueFunc()
 		
 		return true
 	}
@@ -164,8 +166,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			} else {
 				completionHandler(.newData)
 			}
-		}
-	}
+        }
+        
+        self.handleRemoteNotificationFunc(userInfo: userInfo, application: application)
+    }
+    
+    func handleRemoteNotificationFunc(userInfo: [AnyHashable : Any], application: UIApplication) {
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object: [userInfo[AnyHashable("key_name")] as! String])
+        
+    }
+    
 	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
 		self.logNotificationClick(userInfo: userInfo)
 		FBSDKAppEvents.logPushNotificationOpen(userInfo, action: identifier)
@@ -218,6 +229,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let notificationUserInfo = NotificationUserInfo(userInfo: userInfo)
 		AnaliticsCenter.log(withEvent: .notifyClick, andParameter: ["source": notificationUserInfo.source])
 	}
+    
+    /**
+     初始化相关标记
+     */
+    func initUserDefaultsValueFunc() {
+        UserDefaults.standard.setValue(true, forKey: IsFirstClickAddTimeButtonTag)
+        UserDefaults.standard.setValue(true, forKey: IsFirstClickAddFriendButtonTag)
+        UserDefaults.standard.setValue(true, forKey: IsFirstClickOpenSoundButtonTag)
+    }
 	
 	// will open first URL possible
 	func openNotificationURLs(urls: [String]) {

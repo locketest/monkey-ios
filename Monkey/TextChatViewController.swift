@@ -273,44 +273,91 @@ class TextChatViewController: MonkeyViewController {
 	
 	// Sound Button
 	@IBAction func unMute(_ sender: BigYellowButton) {
-		self.soundButton.isEnabled = false
 		
-		if Achievements.shared.unMuteFirstTextMode == false {
-			let chatSession = self.chatSession
-			
-			let first_name = chatSession?.chat?.first_name ?? ""
-			let unMuteFirstTextModeAlert = UIAlertController(title: "Open sound!", message: "You will open the sound channel when \(first_name) open the sound channel too!", preferredStyle: .alert)
-			unMuteFirstTextModeAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { (UIAlertAction) in
-				if chatSession == self.chatSession && chatSession?.status == .connected {
-					self.chatSession?.sentUnMute()
-					Achievements.shared.unMuteFirstTextMode = true
-				}
-			}))
-			self.present(unMuteFirstTextModeAlert, animated: true)
-		}else {
-			self.chatSession?.sentUnMute()
-		}
+        let isFirstClickOpenSoundButtonBool = UserDefaults.standard.value(forKey: IsFirstClickOpenSoundButtonTag) as! Bool
+        
+        if isFirstClickOpenSoundButtonBool {
+            
+            let alertController = UIAlertController(title: "👂 To successfully turn on sound, both users have to tap the button", message: nil, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: {
+                (UIAlertAction) in
+                alertController.dismiss(animated: true, completion: nil)
+                
+                UserDefaults.standard.setValue(false, forKey: IsFirstClickOpenSoundButtonTag)
+                
+                self.handleUnMute(sender: sender)
+            }))
+            
+            self.present(alertController, animated: true, completion: nil)
+            
+        } else {
+            self.handleUnMute(sender: sender)
+        }
 	}
+    
+    func handleUnMute(sender: BigYellowButton) {
+        self.soundButton.isEnabled = false
+        
+        if Achievements.shared.unMuteFirstTextMode == false {
+            let chatSession = self.chatSession
+            
+            let first_name = chatSession?.chat?.first_name ?? ""
+            let unMuteFirstTextModeAlert = UIAlertController(title: "Open sound!", message: "You will open the sound channel when \(first_name) open the sound channel too!", preferredStyle: .alert)
+            unMuteFirstTextModeAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { (UIAlertAction) in
+                if chatSession == self.chatSession && chatSession?.status == .connected {
+                    self.chatSession?.sentUnMute()
+                    Achievements.shared.unMuteFirstTextMode = true
+                }
+            }))
+            self.present(unMuteFirstTextModeAlert, animated: true)
+        }else {
+            self.chatSession?.sentUnMute()
+        }
+    }
 	
 	// Add Friend Button
 	@IBAction func addSnapchat(_ sender: BigYellowButton) {
-		sender.isEnabled = false
-		
-		if Achievements.shared.addFirstSnapchat == false {
-			let chatSession = self.chatSession
-			let first_name = chatSession?.chat?.first_name ?? ""
-			let addFirstSnapchatAlert = UIAlertController(title: "Add friends!", message: "You will become friends when \(first_name) add friends too!", preferredStyle: .alert)
-			addFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { (UIAlertAction) in
-				if chatSession == self.chatSession && chatSession?.status == .connected {
-					let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
-					Achievements.shared.addFirstSnapchat = true
-				}
-			}))
-			self.present(addFirstSnapchatAlert, animated: true)
-		}else {
-			let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
-		}
+        
+        let isFirstClickAddFriendButtonBool = UserDefaults.standard.value(forKey: IsFirstClickAddFriendButtonTag) as! Bool
+        
+        if isFirstClickAddFriendButtonBool {
+            
+            let alertController = UIAlertController(title: "🎉 To successfully add friends, both users have to tap the button", message: nil, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: {
+                (UIAlertAction) in
+                alertController.dismiss(animated: true, completion: nil)
+                
+                UserDefaults.standard.setValue(false, forKey: IsFirstClickAddFriendButtonTag)
+                
+                self.handleAddSnapchat(sender: sender)
+            }))
+            
+            self.present(alertController, animated: true, completion: nil)
+            
+        } else {
+            self.handleAddSnapchat(sender: sender)
+        }
 	}
+    
+    func handleAddSnapchat(sender: BigYellowButton) {
+        
+        sender.isEnabled = false
+        
+        if Achievements.shared.addFirstSnapchat == false {
+            let chatSession = self.chatSession
+            let first_name = chatSession?.chat?.first_name ?? ""
+            let addFirstSnapchatAlert = UIAlertController(title: "Add friends!", message: "You will become friends when \(first_name) add friends too!", preferredStyle: .alert)
+            addFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { (UIAlertAction) in
+                if chatSession == self.chatSession && chatSession?.status == .connected {
+                    let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
+                    Achievements.shared.addFirstSnapchat = true
+                }
+            }))
+            self.present(addFirstSnapchatAlert, animated: true)
+        }else {
+            let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
+        }
+    }
 	
 	// Next Button
 	@IBAction func endCall(_ sender: BigYellowButton) {
