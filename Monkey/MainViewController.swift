@@ -58,11 +58,16 @@ enum discoveryState: Int {
 
 let treeLabelWidth:CGFloat = 48.0
 
+public let ScreenWidth = UIScreen.main.bounds.width
+public let ScreenHeight = UIScreen.main.bounds.height
+
 public let RemoteNotificationTag = "RemoteNotification" // 推送消息通知key
 
 public let IsFirstClickAddTimeButtonTag = "IsFirstClickAddTimeButton"
 public let IsFirstClickAddFriendButtonTag = "IsFirstClickAddFriendButton"
 public let IsFirstClickOpenSoundButtonTag = "IsFirstClickOpenSoundButton"
+
+public let BananaAlertDataTag = "BananaAlertData" // Adjust promotion link下载，Bananas提醒tag
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
@@ -551,6 +556,27 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      
      self.loadBananaData(isNotificationBool: false)
      
+     self.handleBananaAlertFunc()
+     }
+     
+     func handleBananaAlertFunc() {
+          
+          let bananaAlertData = JSON(UserDefaults.standard.value(forKey: BananaAlertDataTag) ?? "")
+          
+          guard (bananaAlertData.dictionaryValue["is_used"]?.bool) != nil else {
+               print("is_used is nil")
+               return
+          }
+          
+          if bananaAlertData.dictionaryValue["is_used"]!.boolValue {
+               
+               let alertController = UIAlertController(title: bananaAlertData.dictionaryValue["text"]?.stringValue, message: nil, preferredStyle: .alert)
+               alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: nil))
+               
+               DispatchQueue.main.async {
+                    self.present(alertController, animated: true, completion: nil)
+               }
+          }
      }
      
      func loadBananaData(isNotificationBool:Bool) {
@@ -561,22 +587,22 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                     switch result {
                     case .error(let error):
                          error.log()
-                    case .success(_):
+                    case .success(let jsonAPIDocument):
                          
-                         let json = JSON(result)
+                         let json = JSON(jsonAPIDocument.dataResource?.json as Any)
+                         print("*** json = \(json)")
                          
-                         if let data = json["data"].dictionary {
-                              
-                              self.yesterdayString = data["me"]?["yesterday"].string ?? ""
-                              
-                              self.addTimeString = data["redeem"]?["add_time"].string ?? ""
-                              self.addFriendString = data["redeem"]?["add_friend"].string ?? ""
-                              
-                              self.equivalentString = data["promotion"]?.string ?? ""
-                              
-                              if isNotificationBool {
-                                   self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!)
-                              }
+                         self.yesterdayString = json["me"].dictionaryValue["yesterday"]!.intValue.description
+                         
+                         self.addTimeString = json["redeem"].dictionaryValue["add_time"]!.intValue.description
+                         self.addFriendString = json["redeem"].dictionaryValue["add_friend"]!.intValue.description
+                         
+                         self.equivalentString = json["promotion"].string ?? ""
+                         
+                         self.bananaCountLabel.text = self.yesterdayString!
+                         
+                         if isNotificationBool {
+                              self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!)
                          }
                     }
           }
@@ -585,10 +611,10 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      
      func handleRemoteNotificationFunc(notification:NSNotification) {
           
-          let array = notification.object! as! Array<String>
-          print(array)
+          let linkString = notification.object! as! String
+//          print("*** linkString = \(linkString)")
           
-          if "banana" == array[0] {
+          if linkString.contains("banana_recap_popup") {
                self.loadBananaData(isNotificationBool: true)
           }
      }
@@ -1540,7 +1566,7 @@ extension MainViewController {
 
 		let bananaCount = APIController.shared.currentUser?.bananas.value ?? 0
 		let formattedNumber = numberFormatter.string(from: NSNumber(value:bananaCount))
-		self.bananaCountLabel.text = formattedNumber
+//          self.bananaCountLabel.text = formattedNumber
 
 		let bananaRect = formattedNumber?.boundingRect(forFont: self.bananaCountLabel.font, constrainedTo: CGSize(width: CGFloat.greatestFiniteMagnitude, height: self.bananaCountLabel.frame.size.height))
 		let bananaViewWidth = (bananaRect?.size.width)! + 64 // padding

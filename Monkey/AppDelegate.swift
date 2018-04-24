@@ -11,6 +11,7 @@ import UIKit
 import Fabric
 import Branch
 import RealmSwift
+import SwiftyJSON
 import Realm
 import Crashlytics
 import Firebase
@@ -158,6 +159,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.handleNotification(application: application, userInfo: userInfo)
 	}
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
 		self.logNotificationClick(userInfo: userInfo)
 		FBSDKAppEvents.logPushNotificationOpen(userInfo)
 		FBNotificationsManager.shared().presentPushCard(forRemoteNotificationPayload: userInfo, from: nil) { (viewController, error) in
@@ -173,7 +175,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func handleRemoteNotificationFunc(userInfo: [AnyHashable : Any], application: UIApplication) {
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object: [userInfo[AnyHashable("key_name")] as! String])
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object: (userInfo[AnyHashable("data")] as! NSDictionary)["link"] as! String)
         
     }
     

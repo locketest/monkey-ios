@@ -128,6 +128,8 @@ class WelcomeViewController: MonkeyViewController {
 							APIController.authorization = authorization
 							AnaliticsCenter.loginAccount()
 							UserDefaults.standard.set(user_id, forKey: "user_id")
+                            
+                            UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
 							
 							Apns.update(callback: nil)
 							self.dismiss(animated: false, completion: nil)

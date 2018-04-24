@@ -9,5 +9,7 @@
 #import "KeyboardManager.h"
 #import "HWCameraManager.h"
 
+#import "UIView+MJ.h"
+
 #import <GPUImage/GPUImage.h>
 #import <CommonCrypto/CommonCrypto.h>

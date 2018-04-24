@@ -12,6 +12,8 @@
 		1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76B194206A46560044AC7F /* RealmVideoCall.swift */; };
 		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD655482046B2A900CAA2D5 /* Configs.swift */; };
+		34B7F7DB20898CCA00A6B7B2 /* UIView+MJ.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */; };
+		34B7F7DC20898CCA00A6B7B2 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
 		5D419F63CE951F23C4C7D274 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */; };
 		8435C2E11F12EE6600C80AC6 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2E01F12EE6600C80AC6 /* ChatViewController.swift */; };
@@ -235,6 +237,10 @@
 		1BD655482046B2A900CAA2D5 /* Configs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE97C1F3FCD83F9563287C4 /* Pods-Monkey.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.production.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.production.xcconfig"; sourceTree = "<group>"; };
+		34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJ.m"; sourceTree = "<group>"; };
+		34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
+		34B7F7D920898CC900A6B7B2 /* UIView+MJ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJ.h"; sourceTree = "<group>"; };
+		34B7F7DA20898CC900A6B7B2 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
 		36BDAAEC1AB6615D506ADC62 /* Pods-Monkey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.release.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.release.xcconfig"; sourceTree = "<group>"; };
 		79CF9C670055FE2BC0618C68 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8435C2E01F12EE6600C80AC6 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
@@ -491,6 +497,10 @@
 		1BCCDE551FE284E50081CFD2 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
+				34B7F7DA20898CC900A6B7B2 /* UIView+Extension.h */,
+				34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */,
+				34B7F7D920898CC900A6B7B2 /* UIView+MJ.h */,
+				34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */,
 				D192A3EA202B015A00791002 /* KeyboardManager.h */,
 				D192A3EB202B015A00791002 /* KeyboardManager.m */,
 				1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */,
@@ -1312,6 +1322,7 @@
 				8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */,
 				847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */,
 				D1B79CFD2060243700F209B4 /* FilterCollectionView.swift in Sources */,
+				34B7F7DB20898CCA00A6B7B2 /* UIView+MJ.m in Sources */,
 				8B2ED8BE1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift in Sources */,
 				D1B79D402060DACB00F209B4 /* IFNashvilleFilter.m in Sources */,
 				D192A3DB20286E0600791002 /* TextChatViewController.swift in Sources */,
@@ -1347,6 +1358,7 @@
 				1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */,
 				8B46EAEC1E8770360069C7D7 /* Colors.swift in Sources */,
 				D1B79CF7205FDD0500F209B4 /* FilterViewController.swift in Sources */,
+				34B7F7DC20898CCA00A6B7B2 /* UIView+Extension.m in Sources */,
 				C01873711F4F2B92008C8790 /* InstagramPopupViewController.swift in Sources */,
 				8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */,
 				8BA5D3561F57263900F732BF /* InputLabel.swift in Sources */,

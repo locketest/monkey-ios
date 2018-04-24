@@ -18,12 +18,18 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 
     @IBOutlet var containerView: MakeUIViewGreatAgain!
 
+    @IBOutlet weak var stuffView: MakeUIViewGreatAgain!
+    
+    @IBOutlet weak var placeholderView: MakeUIViewGreatAgain!
+    
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var rightMargin: NSLayoutConstraint!
     @IBOutlet weak var editButtons: UIButton!
     @IBOutlet weak var timeOnMonkey: UILabel!
     @IBOutlet weak var firstName: UILabel!
 
+    @IBOutlet weak var linkInstgramLabel: UILabel!
+    
     @IBOutlet weak var profilePhoto: ProfilePhotoButtonView!
     @IBOutlet var tableView: UITableView!
     @IBOutlet var titleButton: UIButton!
@@ -67,7 +73,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         if self.keyBoardWasShow {
             return UIScreen.main.bounds.size.height
         }else {
-            return 500
+            return ScreenHeight - self.profileView.frame.minY
         }
     }
 
@@ -128,6 +134,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         editProfileContentView =  UIView.init(frame: CGRect(x: 0, y: 30, width: UIScreen.main.bounds.size.width, height: self.editProfileView.frame.size.height - 30))
         editProfileContentView.backgroundColor = UIColor.black
         self.editProfileView.addSubview(editProfileContentView)
+        self.editBirthdayStatus = false
 		self.crateEditProfileUI()
     }
 
@@ -250,6 +257,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         return super.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
     }
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        self.placeholderView.isHidden = true
         return !self.editStatus
     }
 
@@ -284,6 +292,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         RealmInstagramAccount.create(parameters: parameters) { [weak self] (result: JSONAPIResult<[RealmInstagramAccount]>) in
             switch result {
             case .success(_):
+                self?.linkInstgramLabel.text = "📸 Link instagram"
                 break
             case .error(let error):
                 error.log()
@@ -467,7 +476,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     @IBAction func editProfileTapped(_ sender: UIButton) {
         let  settingRect:CGRect = CGRect(x:-self.view.frame.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height);
         sender.isUserInteractionEnabled = false
-        let  editprofileRect:CGRect = CGRect(x:5,y:self.containerView.frame.origin.y,width:UIScreen.main.bounds.size.width-10,height:containerView.frame.size.height)
+        let  editprofileRect:CGRect = CGRect(x:5,y:self.containerView.frame.origin.y,width:UIScreen.main.bounds.size.width-10,height:414)
         self.keyBoardWasShow = false
         self.editProfileView.frame = CGRect(x:self.editProfileView.frame.origin.x,y:self.containerView.frame.origin.y,width:self.editProfileView.frame.size.width,height:self.editProfileView.frame.size.height)
         self.editProfileView.setNeedsLayout()
@@ -478,6 +487,9 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             self.editStatus = false
             UIView.animate(withDuration:0.35, animations: {
                 self.editProfileView.frame = CGRect(x:UIScreen.main.bounds.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height)
+                
+                self.placeholderView.isHidden = true
+                
                 self.view.layoutIfNeeded()
 //                self.containerView.frame = CGRect(x:5,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height)
             }) { (completed) in
@@ -503,6 +515,16 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 self.view.layoutIfNeeded()
                 self.editProfileView.frame = editprofileRect
                 self.containerView.frame = settingRect
+                
+                self.stuffView.frame = CGRect(x: -self.view.frame.size.width, y: self.stuffView.frame.origin.y, width: self.stuffView.frame.size.width, height: self.stuffView.frame.size.height)
+                
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.20, execute: {
+//                    self.placeholderView.isHidden = false
+                    
+                    UIView.animate(withDuration:0.25, animations: {
+                        self.placeholderView.isHidden = false
+                    })
+                })
             }) { (completed) in
                 UIView.animate(withDuration: 0.15, animations: {
                     self.rightMargin.constant = 5
@@ -537,6 +559,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 error?.log()
                 return
             }
+            
+            self.linkInstgramLabel.text = "🌅 Unlink instagram"
 
             print("Instagram account unlinked & deleted")
         }
@@ -717,9 +741,46 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.secretButtonTimer?.invalidate()
     }
 
+    @IBAction func inviteFriendsBtnClickFunc(_ sender: UIButton) {
+        guard let inviteFriendsViewController = self.inviteFriendsViewController else {
+            return
+        }
+        self.present(inviteFriendsViewController, animated: true, completion: nil)
+    }
+    
+    @IBAction func linkInstgramBtnClickFunc(_ sender: UIButton) {
+        if self.linkInstgramLabel.text == "📸 Link instagram" {
+            self.linkInstagram()
+        } else {
+            self.unlinkInstagram()
+        }
+    }
+    
+    @IBAction func signOutClickFunc(_ sender: UIButton) {
+        RealmDataController.shared.deleteAllData() { (error) in
+            guard error == nil else {
+                error?.log()
+                return
+            }
+            APIController.authorization = nil
+            UserDefaults.standard.removeObject(forKey: "user_id")
+            Apns.update(callback: nil)
+            
+            
+            let rootVC = self.view.window?.rootViewController
+            rootVC?.presentedViewController?.dismiss(animated: false, completion: {
+                DispatchQueue.main.async {
+                    rootVC?.dismiss(animated: true, completion: nil)
+                }
+            })
+        }
+    }
+    
     let inviteFriendsData = SettingsTableViewCellData(for: .inviteFriends, title: "🎉 Invite friends")
     let talkToData = SettingsTableViewCellData(for: .talkTo, title: "💬 Talk to", style: .talkToCell) //SettingsTableViewCellData(for: .talkTo, title: "💖 Talk to")
-    let acceptButtonData = SettingsTableViewCellData(for: .acceptButton, title: "😊 Accept control", style: .accetpBtnCell)
+    let acceptButtonData = SettingsTableViewCellData(for: .acceptButton, title: "😊 Accept", style: .accetpBtnCell)
+    
+    let nearbyButtonData = SettingsTableViewCellData(for: .acceptButton, title: "🏡 Nearby", style: .accetpBtnCell)
 
     let aboutUSData = SettingsTableViewCellData(for: .aboutUS, title: "🐒 About us")
     let signOutData = SettingsTableViewCellData(for: .signOut, title: "🙈 Sign out")
@@ -732,9 +793,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 		}
 		
 		basicCells.append(contentsOf: [
-			inviteFriendsData,
-			aboutUSData,
-			signOutData,
+            acceptButtonData,
+            nearbyButtonData,
+//            inviteFriendsData,
+//            aboutUSData,
+//            signOutData,
 			])
 		return basicCells
 //		rateOnAppStoreData,
@@ -775,9 +838,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             let cell = tableView.dequeueReusableCell(withIdentifier: "AcceptBtnCell", for: indexPath) as! SettingAcceptButtonCell
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             cell.titleLabel?.text = data.title
-			cell.acceptSwitch.open = !Achievements.shared.closeAcceptButton
+            
+            cell.acceptSwitch.open = indexPath.row == 1 ? Achievements.shared.closeAcceptButton : Achievements.shared.nearbyAcceptButton
+            
 			cell.acceptSwitch.switchValueChanged = {
-				Achievements.shared.closeAcceptButton = !$0
+                indexPath.row == 1 ? (Achievements.shared.closeAcceptButton = $0) : (Achievements.shared.nearbyAcceptButton = $0)
 			}
             return cell;
         case .booleanButtons:
@@ -1088,7 +1153,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 delay: 0,
                 options: options,
                 animations: {
-                    self.editProfileView.frame = CGRect(x:5,y:UIScreen.main.bounds.size.height-deltaY-5-self.editProfileView.frame.size.height+25,width:self.editProfileView.frame.size.width,height:self.editProfileView.frame.size.height)
+                    // 键盘高度
+                    self.editProfileView.frame = CGRect(x:5,y:UIScreen.main.bounds.size.height-deltaY-5-self.editProfileView.frame.size.height+105,width:self.editProfileView.frame.size.width,height:self.editProfileView.frame.size.height)
             },
                 completion: { Void in()  }
             )
@@ -1097,6 +1163,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         }
     }
     func keyBoardWillHide(notification: Notification){
+        
         if self.editBirthdayStatus {
             return
         }

@@ -361,14 +361,22 @@ class Achievements {
 			return nil
 		}
 	}
-	var closeAcceptButton: Bool {
-		set {
-			defaults.set(newValue, forKey: "MonkeyCloseAcceptButton")
-		}
-		get {
-			return defaults.bool(forKey: "MonkeyCloseAcceptButton")
-		}
-	}
+    var closeAcceptButton: Bool {
+        set {
+            defaults.set(newValue, forKey: "MonkeyCloseAcceptButton")
+        }
+        get {
+            return defaults.bool(forKey: "MonkeyCloseAcceptButton")
+        }
+    }
+    var nearbyAcceptButton: Bool {
+        set {
+            defaults.set(newValue, forKey: "MonkeyNearbyCloseAcceptButton")
+        }
+        get {
+            return defaults.bool(forKey: "MonkeyNearbyCloseAcceptButton")
+        }
+    }
 	var selectMonkeyFilter: String {
 		set {
 			defaults.set(newValue, forKey: "MonkeySelectFilter")
