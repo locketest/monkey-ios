@@ -11,6 +11,7 @@ import Contacts
 import CoreLocation
 import RealmSwift
 import Amplitude_iOS
+import Starscream
 
 @IBDesignable class MakeTextFieldGreatAgain: UITextField {
     @IBInspectable var lineColor = Colors.yellow {

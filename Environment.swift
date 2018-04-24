@@ -95,7 +95,7 @@ struct Environment {
 		}
 	}
     
-    static let adjustToken = "p79q291s4ef4"
+    static let adjustToken = "w8wlqq6li0w0"
 
     static var firebaseConfigurationPath: String {
         switch self.environment {

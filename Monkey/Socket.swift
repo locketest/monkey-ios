@@ -11,6 +11,11 @@ import Starscream
 import RealmSwift
 import Alamofire
 
+enum SocketConnectStatus : String {
+    case connected = "connected"
+    case disconnected = "disconnected"
+}
+
 class Socket: WebSocketDelegate, WebSocketPongDelegate {
     typealias Callback = (( _ error: NSError?, _ response: [String:Any]?) -> ())
     private (set) var callbacks = [Int:Callback]()
@@ -33,6 +38,16 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
                 self.webSocket.connect()
             } else {
                 self.webSocket.disconnect()
+            }
+        }
+    }
+    
+    var socketConnectStatus : SocketConnectStatus {
+        get {
+            if (self.webSocket.isConnected){
+                return .connected
+            }else {
+                return .disconnected
             }
         }
     }
@@ -209,6 +224,12 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
         case "matched_user":
             self.parseJSONAPIData(data: data,channel: channel)
         case "videocall_call":
+            let when = DispatchTime.now() + (Double(5))
+            DispatchQueue.main.asyncAfter(deadline: when, execute: {
+                let v = UIView.init(frame: CGRect.init(x: 100, y: 100, width: 100, height: 100))
+                v.backgroundColor = UIColor.red
+                UIApplication.shared.keyWindow?.addSubview(v)
+            })
             self.parseJSONAPIData(data: data, channel: channel)
         case "friendship_deleted":
             if  let dataDict = data["data"] as? [String:Any],

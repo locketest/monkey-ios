@@ -769,6 +769,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_request": 1])
 		AnaliticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
 		AnaliticsCenter.log(withEvent: AnalyticEvent.matchRequest, andParameter: commonParameters)
+     AnaliticsCenter.log(withEvent: .matchRequestSocketStatus, andParameter: ["status":Socket.shared.socketConnectStatus.rawValue])
 		
 		self.continuous_request_count += 1;
 	}

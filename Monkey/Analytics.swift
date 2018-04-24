@@ -39,6 +39,7 @@ public enum AnalyticEvent: String {
 	
 	case opentokError = "OPENTOK_ERROR"
 	case opentokConnected = "OPENTOK_CONNECTED"
+    case matchRequestSocketStatus = "match_request_socket_status"
 }
 
 public enum AdjustEvent: String {
@@ -169,6 +170,7 @@ extension AnaliticsCenter {
 		
 		AnalyticEvent.opentokError,
 		AnalyticEvent.opentokConnected,
+        AnalyticEvent.matchRequestSocketStatus
 	]
 	
 	fileprivate static let oneTimeEvents: Set<AnalyticEvent> = [
@@ -231,10 +233,11 @@ extension AnaliticsCenter {
 		AnalyticEvent.matchConnectTimeOut,
 		AnalyticEvent.matchSuccess,
 		AnalyticEvent.matchInfo,
+        AnalyticEvent.matchRequestSocketStatus,
 	]
 	
 	fileprivate class func log(forAmpitude event: AnalyticEvent, andParameter parameter: [String: Any]?) {
-		if event == .opentokConnected || event == .opentokError {
+		if event == .opentokConnected || event == .opentokError || event == .matchRequestSocketStatus{
 			if let currentUser = APIController.shared.currentUser, let user_id = currentUser.user_id, user_id.hasSuffix("0") == false, user_id.hasSuffix("5") == false {
 				return
 			}
