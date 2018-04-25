@@ -335,9 +335,9 @@
                                                     </constraints>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ox0-db-fV4" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                                    <rect key="frame" x="158" y="433" width="48" height="48"/>
+                                                    <rect key="frame" x="158" y="443" width="48" height="48"/>
                                                     <subviews>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👻" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1f2-xM-wo6" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
+                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🐒" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1f2-xM-wo6" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="48" id="NMC-Bw-pnK"/>
@@ -369,7 +369,7 @@
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="mCt-o3-uPY" secondAttribute="trailing" id="72s-cm-CbO"/>
                                                 <constraint firstItem="1sH-iu-QFZ" firstAttribute="leading" secondItem="7bD-O1-zyU" secondAttribute="leading" id="AcV-4M-veL"/>
-                                                <constraint firstAttribute="bottom" secondItem="ox0-db-fV4" secondAttribute="bottom" constant="30" id="BHo-KT-CBb"/>
+                                                <constraint firstAttribute="bottom" secondItem="ox0-db-fV4" secondAttribute="bottom" constant="20" id="BHo-KT-CBb"/>
                                                 <constraint firstItem="ox0-db-fV4" firstAttribute="centerX" secondItem="7bD-O1-zyU" secondAttribute="centerX" id="YJR-8K-chf"/>
                                                 <constraint firstAttribute="trailing" secondItem="1sH-iu-QFZ" secondAttribute="trailing" id="crd-RZ-Gim"/>
                                                 <constraint firstItem="E42-gA-IeE" firstAttribute="centerY" secondItem="7bD-O1-zyU" secondAttribute="centerY" constant="-22" id="e4M-v1-ezl"/>
