@@ -330,35 +330,22 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     // MARK: Snapchat Button
     @IBAction func addSnapchat(_ sender: BigYellowButton) {
 		// add friend
-//		AnaliticsCenter.log(event: .requestedSnapchatDuringCall)
-        
-        let isFirstClickAddFriendButtonBool = UserDefaults.standard.value(forKey: IsFirstClickAddFriendButtonTag) as! Bool
-        
-        if isFirstClickAddFriendButtonBool {
-            
-            let alertController = UIAlertController(title: "🎉 To successfully add friends, both users have to tap the button", message: nil, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: {
-                (UIAlertAction) in
-                alertController.dismiss(animated: true, completion: nil)
-                
-                UserDefaults.standard.setValue(false, forKey: IsFirstClickAddFriendButtonTag)
-                
-                self.handleAddSnapchat(sender: sender)
-            }))
-            
-            self.present(alertController, animated: true, completion: nil)
-            
-        } else {
-            self.handleAddSnapchat(sender: sender)
-        }
-    }
-    
-    func handleAddSnapchat(sender: BigYellowButton) {
-        
-        sender.isEnabled = false
-        sender.layer.opacity = 0.5
-        Achievements.shared.addedFirstSnapchat = true
-        let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!) ?? false
+		self.disableAddMinute()
+		
+		if Achievements.shared.addFirstSnapchat == false {
+			let addFirstSnapchatAlert = UIAlertController(title: nil, message: "To successfully add friends, both users have to tap the button", preferredStyle: .alert)
+			addFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: {[weak self] (UIAlertAction) in
+				Achievements.shared.addFirstSnapchat = true
+				guard let `self` = self else { return }
+				if let chatSession = self.chatSession, chatSession.status == .connected {
+					let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
+				}
+			}))
+			let mainVC = self.parent as? MainViewController
+			mainVC?.showAlert(alert: addFirstSnapchatAlert)
+		}else {
+			let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
+		}
     }
 	
     @IBAction func endCall(_ sender: BigYellowButton) {

@@ -67,8 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		application.applicationIconBadgeNumber = 0
 		self.checkIfAppUpdated()
-        
-        self.initUserDefaultsValueFunc()
+		self.initUserDefaultsValueFunc()
 		
 		return true
 	}
@@ -177,6 +176,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object: (userInfo[AnyHashable("data")] as! NSDictionary)["link"] as! String)
         
+        UserDefaults.standard.setValue((userInfo[AnyHashable("data")] as! NSDictionary)["link"] as! String, forKey: KillAppBananaNotificationTag)
+        
     }
     
 	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
@@ -231,14 +232,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let notificationUserInfo = NotificationUserInfo(userInfo: userInfo)
 		AnaliticsCenter.log(withEvent: .notifyClick, andParameter: ["source": notificationUserInfo.source])
 	}
-    
     /**
      初始化相关标记
      */
     func initUserDefaultsValueFunc() {
-        UserDefaults.standard.setValue(true, forKey: IsFirstClickAddTimeButtonTag)
-        UserDefaults.standard.setValue(true, forKey: IsFirstClickAddFriendButtonTag)
-        UserDefaults.standard.setValue(true, forKey: IsFirstClickOpenSoundButtonTag)
+        UserDefaults.standard.setValue("", forKey: KillAppBananaNotificationTag)
     }
 	
 	// will open first URL possible

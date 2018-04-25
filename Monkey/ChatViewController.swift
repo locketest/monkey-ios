@@ -36,6 +36,12 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     /// A button shown when users have not exchanged any messages. Pressing it will send a random conversation starter
     @IBOutlet weak var startConvoButton: UIButton!
 
+    @IBOutlet weak var textFieldBgView: UIView!
+    
+    @IBOutlet weak var snapchatButtonConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var chatTableViewBottomConstraint: NSLayoutConstraint!
+    
     /// Data backing for ChatViewController
     lazy var viewModel = ChatViewModel()
     let textInset:CGFloat = 12
@@ -45,7 +51,9 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     var isAnimatingDown = false
 
     var callTimer:Timer?
-
+    
+    let OfficialKeyString = ".FsoCh7V..0VadEt2i0w6k"
+    
     /// A reference to the presented instagramVC. Currently used to forward longPressGestureRecognizer updates
     weak var instagramViewController: InstagramPopupViewController?
     /// The location of the user's finger when instagram popup is presented, used to calculate displacement to pass to instagramVC if they do not lift finger to pan
@@ -191,12 +199,35 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         if self.viewModel.friendship?.user?.username == nil {
             self.snapchatButton.isHidden = true
         }
+        
+        self.handleViewFunc()
 
         // notifications for keyboard hide/show
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
 
         // notification for dictation
         NotificationCenter.default.addObserver(self, selector: #selector(changeInputMode(notification:)), name: .UITextInputCurrentInputModeDidChange, object: nil)
+    }
+    
+    func handleViewFunc() {
+        
+        if let chatIdString = self.viewModel.friendshipId {
+            
+            if OfficialKeyString == chatIdString {
+                self.chatTableViewBottomConstraint.constant = 0
+                self.snapchatButtonConstraint.constant = 14
+                self.startConvoButton.isHidden = true
+                self.textFieldBgView.isHidden = true
+                self.callButton.isHidden = true
+
+            } else {
+                self.chatTableViewBottomConstraint.constant = 44
+                self.snapchatButtonConstraint.constant = 76
+                self.startConvoButton.isHidden = false
+                self.textFieldBgView.isHidden = false
+                self.callButton.isHidden = false
+            }
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -216,6 +247,73 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         }
     }
 
+    @IBAction func aboutUsBtnClickFunc(_ sender: BigYellowButton) {
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "💖 Rate Us", style: .default, handler: { (UIAlertAction) in
+            self.openURL("https://itunes.apple.com/us/app/id1165924249?action=write-review", inVC: true)
+        }))
+        alertController.addAction(UIAlertAction(title: "📲 Support", style: .default, handler: { (UIAlertAction) in
+            self.openURL("https://monkey.canny.io/requests", inVC: true)
+        }))
+        alertController.addAction(UIAlertAction(title: "👻 Follow Us Snapchat", style: .default, handler: { (UIAlertAction) in
+            if (UIApplication.shared.canOpenURL(URL(string:"snapchat://")!)) {
+                UIApplication.shared.openURL(URL(string: "snapchat://add/monkeyapp")!)
+            } else {
+                UIApplication.shared.openURL(URL(string: "http://snapchat.com/add/monkeyapp")!)
+            }
+        }))
+        alertController.addAction(UIAlertAction(title: "📸 Follow Us Instgram", style: .default, handler: { (UIAlertAction) in
+            if (UIApplication.shared.canOpenURL(URL(string:"instagram://")!)) {
+                UIApplication.shared.openURL(URL(string: "instagram://user?username=chatonmonkey")!)
+            } else {
+                self.openURL("http://instagram/chatonmonkey", inVC: true)
+            }
+        }))
+        alertController.addAction(UIAlertAction(title: "🚑 Safety", style: .default, handler: { (UIAlertAction) in
+            
+            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            alertController.addAction(UIKit.UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
+            }))
+            alertController.addAction(UIKit.UIAlertAction(title: "😐 Terms of Use", style: .default, handler: { (UIAlertAction) in
+                self.openURL("http://monkey.cool/terms", inVC: true)
+            }))
+            alertController.addAction(UIKit.UIAlertAction(title: "☹️ Privacy Policy", style: .default, handler: { (UIAlertAction) in
+                self.openURL("http://monkey.cool/privacy", inVC: true)
+            }))
+            alertController.addAction(UIKit.UIAlertAction(title: "😇 Safety Center", style: .default, handler: { (UIAlertAction) in
+                self.openURL("http://monkey.cool/safety", inVC: true)
+            }))
+            alertController.addAction(UIKit.UIAlertAction(title: "😁 Community Guidelines", style: .default, handler: { (UIAlertAction) in
+                self.openURL("http://monkey.cool/community", inVC: true)
+            }))
+            if let creditsURL = APIController.shared.currentExperiment?.credits_url {
+                alertController.addAction(UIKit.UIAlertAction(title: "Credits", style: .default, handler: { (UIAlertAction) in
+                    self.openURL(creditsURL, inVC: true)
+                }))
+            }
+            self.present(alertController, animated: true, completion: nil)
+            
+        }))
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func openURL(_ urlString: String, inVC: Bool)
+    {
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        if !inVC {
+            UIApplication.shared.openURL(url)
+            return
+        }
+        let vc = SFSafariViewController(url: url, entersReaderIfAvailable: false)
+        vc.modalPresentationCapturesStatusBarAppearance = true
+        vc.modalPresentationStyle = .overFullScreen
+        present(vc, animated: true, completion: nil)
+    }
+    
     @IBAction func presentInstagramPopover(_ longPressGestureRecognizer: UILongPressGestureRecognizer) {
 
         let locationPoint = longPressGestureRecognizer.location(in: longPressGestureRecognizer.view)
@@ -286,7 +384,9 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // endTransition on DismissPopupAnimator calls view life cycle methods (even if cancelled); dont want keyboard to come up over insta
-        self.chatTextField.becomeFirstResponder()
+        if self.viewModel.friendshipId != self.OfficialKeyString {
+            self.chatTextField.becomeFirstResponder()
+        }
         self.chatTableView.scrollToBottom()
 
         IncomingCallManager.shared.delegate = self
@@ -709,7 +809,9 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        self.startConvoButton.isHidden = self.viewModel.messageCount != 0
+        if self.viewModel.friendshipId != self.OfficialKeyString {
+            self.startConvoButton.isHidden = self.viewModel.messageCount != 0
+        }
         return self.viewModel.messageCount
     }
 

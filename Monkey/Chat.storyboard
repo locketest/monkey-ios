@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="0RD-YE-SvQ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="0RD-YE-SvQ">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -110,36 +110,6 @@
                                                     <outletCollection property="gestureRecognizers" destination="Ehc-Le-M4t" appends="YES" id="YSF-C2-Hos"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsY-GI-mIi" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                                <rect key="frame" x="241" y="14" width="48" height="48"/>
-                                                <subviews>
-                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👻" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xem-5s-jLV" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="48" id="Dxm-KG-X0K"/>
-                                                            <constraint firstAttribute="width" constant="48" id="sBm-IF-vIh"/>
-                                                        </constraints>
-                                                        <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="26"/>
-                                                        <nil key="textColor"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                </subviews>
-                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.061902265099999999" colorSpace="calibratedRGB"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="trailing" secondItem="Xem-5s-jLV" secondAttribute="trailing" id="adY-p4-SFh"/>
-                                                    <constraint firstItem="Xem-5s-jLV" firstAttribute="leading" secondItem="gsY-GI-mIi" secondAttribute="leading" id="dfE-cH-zjq"/>
-                                                    <constraint firstItem="Xem-5s-jLV" firstAttribute="top" secondItem="gsY-GI-mIi" secondAttribute="top" id="tI6-GO-iZc"/>
-                                                    <constraint firstAttribute="bottom" secondItem="Xem-5s-jLV" secondAttribute="bottom" id="uDf-ou-IWj"/>
-                                                </constraints>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                        <real key="value" value="20"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="addSnapchat:" destination="1uQ-Ta-rcw" eventType="touchUpInside" id="dgY-nd-5lI"/>
-                                                </connections>
-                                            </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aao-6J-Dkf" customClass="JigglyButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="303" y="14" width="48" height="48"/>
                                                 <subviews>
@@ -170,6 +140,36 @@
                                                     <action selector="makeCall:" destination="1uQ-Ta-rcw" eventType="touchUpInside" id="n78-Au-GS5"/>
                                                 </connections>
                                             </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsY-GI-mIi" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="241" y="14" width="48" height="48"/>
+                                                <subviews>
+                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👻" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xem-5s-jLV" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="48" id="Dxm-KG-X0K"/>
+                                                            <constraint firstAttribute="width" constant="48" id="sBm-IF-vIh"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="26"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.061902265099999999" colorSpace="calibratedRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="trailing" secondItem="Xem-5s-jLV" secondAttribute="trailing" id="adY-p4-SFh"/>
+                                                    <constraint firstItem="Xem-5s-jLV" firstAttribute="leading" secondItem="gsY-GI-mIi" secondAttribute="leading" id="dfE-cH-zjq"/>
+                                                    <constraint firstItem="Xem-5s-jLV" firstAttribute="top" secondItem="gsY-GI-mIi" secondAttribute="top" id="tI6-GO-iZc"/>
+                                                    <constraint firstAttribute="bottom" secondItem="Xem-5s-jLV" secondAttribute="bottom" id="uDf-ou-IWj"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                        <real key="value" value="20"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="addSnapchat:" destination="1uQ-Ta-rcw" eventType="touchUpInside" id="dgY-nd-5lI"/>
+                                                </connections>
+                                            </view>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.40000000000000002" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -180,7 +180,7 @@
                                             <constraint firstAttribute="trailing" secondItem="nya-nl-oPV" secondAttribute="trailing" constant="14" id="cpx-vb-yFL"/>
                                             <constraint firstItem="DkN-4Q-fdA" firstAttribute="centerY" secondItem="gsY-GI-mIi" secondAttribute="centerY" id="uhu-Mq-mID"/>
                                             <constraint firstItem="gsY-GI-mIi" firstAttribute="leading" secondItem="DkN-4Q-fdA" secondAttribute="trailing" constant="2" id="w81-0B-h7m"/>
-                                            <constraint firstItem="aao-6J-Dkf" firstAttribute="leading" secondItem="Xem-5s-jLV" secondAttribute="trailing" constant="14" id="xnW-zy-N6v"/>
+                                            <constraint firstAttribute="trailing" secondItem="gsY-GI-mIi" secondAttribute="trailing" constant="76" id="x8m-oI-jGP"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -334,14 +334,46 @@
                                                         <constraint firstAttribute="height" constant="44" id="uDv-0P-HTL"/>
                                                     </constraints>
                                                 </view>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ox0-db-fV4" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                    <rect key="frame" x="158" y="433" width="48" height="48"/>
+                                                    <subviews>
+                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👻" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1f2-xM-wo6" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="48" id="NMC-Bw-pnK"/>
+                                                                <constraint firstAttribute="width" constant="48" id="jld-sZ-7Xa"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="26"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.061902265099999999" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="trailing" secondItem="1f2-xM-wo6" secondAttribute="trailing" id="Bic-kc-Mbv"/>
+                                                        <constraint firstItem="1f2-xM-wo6" firstAttribute="leading" secondItem="ox0-db-fV4" secondAttribute="leading" id="cNK-AX-b0V"/>
+                                                        <constraint firstItem="1f2-xM-wo6" firstAttribute="top" secondItem="ox0-db-fV4" secondAttribute="top" id="hD5-Ri-aGr"/>
+                                                        <constraint firstAttribute="bottom" secondItem="1f2-xM-wo6" secondAttribute="bottom" id="nDB-Jd-f7B"/>
+                                                    </constraints>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                            <real key="value" value="20"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <action selector="aboutUsBtnClickFunc:" destination="1uQ-Ta-rcw" eventType="touchUpInside" id="nqT-Ve-dZf"/>
+                                                    </connections>
+                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="mCt-o3-uPY" secondAttribute="trailing" id="72s-cm-CbO"/>
                                                 <constraint firstItem="1sH-iu-QFZ" firstAttribute="leading" secondItem="7bD-O1-zyU" secondAttribute="leading" id="AcV-4M-veL"/>
-                                                <constraint firstItem="mCt-o3-uPY" firstAttribute="top" secondItem="1sH-iu-QFZ" secondAttribute="bottom" id="KaY-B4-Kx4"/>
+                                                <constraint firstAttribute="bottom" secondItem="ox0-db-fV4" secondAttribute="bottom" constant="30" id="BHo-KT-CBb"/>
+                                                <constraint firstItem="ox0-db-fV4" firstAttribute="centerX" secondItem="7bD-O1-zyU" secondAttribute="centerX" id="YJR-8K-chf"/>
                                                 <constraint firstAttribute="trailing" secondItem="1sH-iu-QFZ" secondAttribute="trailing" id="crd-RZ-Gim"/>
                                                 <constraint firstItem="E42-gA-IeE" firstAttribute="centerY" secondItem="7bD-O1-zyU" secondAttribute="centerY" constant="-22" id="e4M-v1-ezl"/>
+                                                <constraint firstAttribute="bottom" secondItem="1sH-iu-QFZ" secondAttribute="bottom" constant="44" id="fmu-Ui-ggB"/>
                                                 <constraint firstItem="E42-gA-IeE" firstAttribute="centerX" secondItem="7bD-O1-zyU" secondAttribute="centerX" id="hX1-cE-wU5"/>
                                                 <constraint firstItem="1sH-iu-QFZ" firstAttribute="top" secondItem="7bD-O1-zyU" secondAttribute="top" id="jks-Kp-Xz1"/>
                                                 <constraint firstAttribute="bottom" secondItem="mCt-o3-uPY" secondAttribute="bottom" id="jth-LY-fAg"/>
@@ -391,6 +423,7 @@
                         <outlet property="callButton" destination="aao-6J-Dkf" id="86H-U2-XmI"/>
                         <outlet property="callEmojiLabel" destination="nya-nl-oPV" id="ctk-rS-Ky0"/>
                         <outlet property="chatTableView" destination="1sH-iu-QFZ" id="XbA-II-O6A"/>
+                        <outlet property="chatTableViewBottomConstraint" destination="fmu-Ui-ggB" id="HRs-Gx-xYI"/>
                         <outlet property="chatTextField" destination="pQz-s9-fw6" id="EGA-BQ-7pp"/>
                         <outlet property="inputHeightConstraint" destination="uDv-0P-HTL" id="HO4-0O-3kc"/>
                         <outlet property="placeholderTextLabel" destination="aYy-EO-ZZ2" id="8Fk-pj-DSP"/>
@@ -398,7 +431,9 @@
                         <outlet property="profileImageView" destination="wS7-IR-GDw" id="wG3-Rb-sIl"/>
                         <outlet property="profileNameLabel" destination="JRg-Ax-uOI" id="jd6-BT-v3i"/>
                         <outlet property="snapchatButton" destination="gsY-GI-mIi" id="Sm8-v3-LQc"/>
+                        <outlet property="snapchatButtonConstraint" destination="x8m-oI-jGP" id="Mof-tN-C5b"/>
                         <outlet property="startConvoButton" destination="E42-gA-IeE" id="zn5-sb-xM1"/>
+                        <outlet property="textFieldBgView" destination="mCt-o3-uPY" id="5Vv-8i-7v5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4rT-5c-p2f" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -20,7 +20,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 
     @IBOutlet weak var stuffView: MakeUIViewGreatAgain!
     
-    @IBOutlet weak var placeholderView: MakeUIViewGreatAgain!
+//    @IBOutlet weak var placeholderView: MakeUIViewGreatAgain!
     
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var rightMargin: NSLayoutConstraint!
@@ -257,7 +257,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         return super.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
     }
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        self.placeholderView.isHidden = true
+//        self.placeholderView.isHidden = true
         return !self.editStatus
     }
 
@@ -488,7 +488,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             UIView.animate(withDuration:0.35, animations: {
                 self.editProfileView.frame = CGRect(x:UIScreen.main.bounds.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height)
                 
-                self.placeholderView.isHidden = true
+//                self.placeholderView.isHidden = true
                 
                 self.view.layoutIfNeeded()
 //                self.containerView.frame = CGRect(x:5,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height)
@@ -522,7 +522,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 //                    self.placeholderView.isHidden = false
                     
                     UIView.animate(withDuration:0.25, animations: {
-                        self.placeholderView.isHidden = false
+//                        self.placeholderView.isHidden = false
                     })
                 })
             }) { (completed) in
@@ -757,23 +757,36 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     }
     
     @IBAction func signOutClickFunc(_ sender: UIButton) {
-        RealmDataController.shared.deleteAllData() { (error) in
-            guard error == nil else {
-                error?.log()
-                return
-            }
-            APIController.authorization = nil
-            UserDefaults.standard.removeObject(forKey: "user_id")
-            Apns.update(callback: nil)
+        
+        let alertController = UIAlertController(title: "You sure you want to log out?", message: nil, preferredStyle: .alert)
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+
+        alertController.addAction(UIAlertAction(title: "Yes", style: .default, handler: {
+            (UIAlertAction) in
             
+            alertController.dismiss(animated: true, completion: nil)
             
-            let rootVC = self.view.window?.rootViewController
-            rootVC?.presentedViewController?.dismiss(animated: false, completion: {
-                DispatchQueue.main.async {
-                    rootVC?.dismiss(animated: true, completion: nil)
+            RealmDataController.shared.deleteAllData() { (error) in
+                guard error == nil else {
+                    error?.log()
+                    return
                 }
-            })
-        }
+                APIController.authorization = nil
+                UserDefaults.standard.removeObject(forKey: "user_id")
+                Apns.update(callback: nil)
+                
+                
+                let rootVC = self.view.window?.rootViewController
+                rootVC?.presentedViewController?.dismiss(animated: false, completion: {
+                    DispatchQueue.main.async {
+                        rootVC?.dismiss(animated: true, completion: nil)
+                    }
+                })
+            }
+        }))
+        
+        self.present(alertController, animated: true, completion: nil)
     }
     
     let inviteFriendsData = SettingsTableViewCellData(for: .inviteFriends, title: "🎉 Invite friends")
@@ -788,9 +801,9 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 		var basicCells = [
 			talkToData,
 		]
-		if RemoteConfigManager.shared.app_in_review == false {
-			basicCells.append(acceptButtonData)
-		}
+//        if RemoteConfigManager.shared.app_in_review == false {
+//            basicCells.append(acceptButtonData)
+//        }
 		
 		basicCells.append(contentsOf: [
             acceptButtonData,

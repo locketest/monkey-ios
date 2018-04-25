@@ -62,11 +62,7 @@ public let ScreenWidth = UIScreen.main.bounds.width
 public let ScreenHeight = UIScreen.main.bounds.height
 
 public let RemoteNotificationTag = "RemoteNotification" // 推送消息通知key
-
-public let IsFirstClickAddTimeButtonTag = "IsFirstClickAddTimeButton"
-public let IsFirstClickAddFriendButtonTag = "IsFirstClickAddFriendButton"
-public let IsFirstClickOpenSoundButtonTag = "IsFirstClickOpenSoundButton"
-
+public let KillAppBananaNotificationTag = "KillAppBananaNotificationTag"
 public let BananaAlertDataTag = "BananaAlertData" // Adjust promotion link下载，Bananas提醒tag
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
@@ -580,7 +576,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      }
      
      func loadBananaData(isNotificationBool:Bool) {
-          
+
           JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/bananas", method: .get, parameters: nil, options: [
                .header("Authorization", APIController.authorization),
                ]).addCompletionHandler { (result) in
@@ -601,8 +597,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                          
                          self.bananaCountLabel.text = self.yesterdayString!
                          
-                         if isNotificationBool {
-                              self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!)
+                         if isNotificationBool || (UserDefaults.standard.value(forKey: KillAppBananaNotificationTag) as! String) != "" {
+                              self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!, isNotificationBool:isNotificationBool)
                          }
                     }
           }
@@ -611,8 +607,10 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      
      func handleRemoteNotificationFunc(notification:NSNotification) {
           
+          UserDefaults.standard.setValue("", forKey: KillAppBananaNotificationTag)
+          
           let linkString = notification.object! as! String
-//          print("*** linkString = \(linkString)")
+          print("*** linkString = \(linkString)")
           
           if linkString.contains("banana_recap_popup") {
                self.loadBananaData(isNotificationBool: true)
@@ -896,6 +894,19 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
           }else{
                self.newTipsRemindLabel.alpha = 0
           }
+		
+		self.startFindingChats(forReason: "view-appearance")
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+	}
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		
+		self.stopFindingChats(andDisconnect: false, forReason: "view-appearance")
 	}
 	
 	func checkNotifiPermission(){
@@ -967,13 +978,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}
 		}
 	}
-
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-///		self.stopFindingChats(andDisconnect: true, forReason: "view-appearance")
-	}
-
-
+	
 	/// Displays invite friends messaging dialog.
 	///
 	/// - Parameter sender: the instance of `BigYellowButton` that triggered the action
@@ -1408,10 +1413,17 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 	}
 
      @IBAction func bananaButtonTapped(sender: Any) {
-          self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!)
+          
+          guard self.yesterdayString != nil else {
+               return
+          }
+          
+        self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!, isNotificationBool: false)
      }
      
-     func alertControllerFunc(yesterdayString:String, addTimeString:String, addFriendString:String, equivalentString:String) {
+     func alertControllerFunc(yesterdayString:String, addTimeString:String, addFriendString:String, equivalentString:String, isNotificationBool:Bool) {
+          
+          if !isNotificationBool { UserDefaults.standard.setValue("", forKey: KillAppBananaNotificationTag) }
           
           let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
           

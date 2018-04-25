@@ -147,40 +147,19 @@ extension CallViewController: CountingLabelDelegate {
     
     // MARK: - Minute Button
     @IBAction func addMinute(_ sender: BigYellowButton) {
-        
-        let isFirstClickAddTimeButtonBool = UserDefaults.standard.value(forKey: IsFirstClickAddTimeButtonTag) as! Bool
-        
-        if isFirstClickAddTimeButtonBool {
-            
-            let alertController = UIAlertController(title: "🕑 To successfully add time, both users have to tap the button", message: nil, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: {
-                (UIAlertAction) in
-                alertController.dismiss(animated: true, completion: nil)
-                
-                UserDefaults.standard.setValue(false, forKey: IsFirstClickAddTimeButtonTag)
-                
-                self.handleAddMinute(sender: sender)
-            }))
-            
-            self.present(alertController, animated: true, completion: nil)
-            
-        } else {
-            self.handleAddMinute(sender: sender)
-        }
-    }
-    
-    func handleAddMinute(sender: BigYellowButton) {
         guard Achievements.shared.isOnboardingExplainAddTimePopupCompleted else {
             let chatSession = self.chatSession
-            let explainAddTimeAlert = UIAlertController(title: "🕑 Time?", message: "Tapping the Time button suggests that you want to keep talking.", preferredStyle: .alert)
-            explainAddTimeAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            explainAddTimeAlert.addAction(UIAlertAction(title: "Time", style: .default, handler: { (UIAlertAction) in
+            let explainAddTimeAlert = UIAlertController(title: nil, message: "To successfully add time, both users have to tap the button", preferredStyle: .alert)
+            explainAddTimeAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: {[weak self] (UIAlertAction) in
+				
+				Achievements.shared.isOnboardingExplainAddTimePopupCompleted = true
+				guard let `self` = self else { return }
                 if chatSession == self.chatSession && chatSession?.status == .connected {
                     self.addMinute()
-                    Achievements.shared.isOnboardingExplainAddTimePopupCompleted = true
                 }
             }))
-            self.present(explainAddTimeAlert, animated: true)
+			let mainVC = self.parent as? MainViewController
+			mainVC?.showAlert(alert: explainAddTimeAlert)
             return
         }
         self.addMinute()
@@ -190,14 +169,7 @@ extension CallViewController: CountingLabelDelegate {
 		// requested to add minute
 //		AnaliticsCenter.log(event: .requestedMinuteDuringCall)
         self.disableAddMinute()
-        let isWaiting = self.chatSession?.sendMinute() ?? false
-        if isWaiting && !Achievements.shared.isOnboardingExplainTheyAddTimePopupCompleted {
-            let explainAddTimeAlert = UIAlertController(title: "😢 You both have to tap Time", message: "The person you're talking to has to tap the Time button too for the call to continue.", preferredStyle: .alert)
-            explainAddTimeAlert.addAction(UIAlertAction(title: "Got it!", style: .default, handler: { (UIAlertAction) in
-                Achievements.shared.isOnboardingExplainTheyAddTimePopupCompleted = true
-            }))
-            self.present(explainAddTimeAlert, animated: true)
-        }
+        let _ = self.chatSession?.sendMinute() ?? false
     }
     
     func enableAddMinute() {
