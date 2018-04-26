@@ -125,7 +125,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.view.addSubview(self.editProfileView)
         self.editProfileView.layer.cornerRadius = self.containerView.layer.cornerRadius
         self.editProfileView.layer.masksToBounds = true
-
+        
+       
         let editProfileTitleLab:UILabel = UILabel.init(frame: CGRect(x:0,y:0,width:UIScreen.main.bounds.size.width,height:30))
         //foregroundColor
         editProfileTitleLab.backgroundColor = UIColor.init(white: 0, alpha: 0.56)
@@ -137,10 +138,18 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         editProfileTitleLab.attributedText = attributedString
         self.editProfileView.addSubview(editProfileTitleLab)
 
+        let blurEffect = UIBlurEffect(style: .dark)
+        //创建一个承载模糊效果的视图
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.frame = CGRect(x: 0, y: 30, width: UIScreen.main.bounds.size.width, height: self.editProfileView.height)
+        blurView.autoresizingMask = UIViewAutoresizing.flexibleHeight
+        self.editProfileView.addSubview(blurView)
+        
         editProfileContentView =  UIView.init(frame: CGRect(x: 0, y: 30, width: UIScreen.main.bounds.size.width, height: self.editProfileView.height - 30))
-        editProfileContentView.backgroundColor = UIColor.black
+        editProfileContentView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         self.editProfileView.addSubview(editProfileContentView)
         self.editBirthdayStatus = false
+        
 		self.crateEditProfileUI()
         
         ScreenHeight < 666 ? (self.scrollViewHeightConstraint.constant = ScreenHeight - 44) : (self.scrollViewHeightConstraint.constant = 578)
@@ -156,7 +165,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 	
     func resetEditProfileFrame(){
         self.pickerContainerView.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220);
-        self.editProfileView.frame = CGRect(x:UIScreen.main.bounds.size.width,y:self.contentScrollview.y+self.profileView.height+5,width:UIScreen.main.bounds.size.width-10,height:self.contentScrollview.height-self.profileView.height-5)
+        self.editProfileView.frame = CGRect(x:UIScreen.main.bounds.size.width,y:self.contentScrollview.y+self.profileView.height+5,width:ScreenWidth-10,height:self.contentScrollview.height-self.profileView.height-5)
         self.editButtons.setImage(UIImage(named:"EditProfileButtton"), for: .normal)
         self.editButtons.isSelected = false
         self.containerView.isHidden = false
@@ -164,6 +173,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.containerView.x = 0
         self.stuffView.x = 0
         self.contentScrollview.isScrollEnabled = true
+        self.profileView.isHidden = false
+        self.stuffView.isHidden = false
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -209,8 +220,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 
                     if canEditUserBirthday{
                         self?.birthdayField.isUserInteractionEnabled = true
+                        self?.birthdayField.textColor = UIColor.white.withAlphaComponent(0.7);
                     }else{
                         self?.birthdayField.isUserInteractionEnabled = false
+                        self?.birthdayField.textColor = UIColor.white.withAlphaComponent(0.5);
                     }
                     //服务器返回的时间是 未来能修改的那一天的日期,不是返回的修改日期
 					let time = self?.userOption?.update_username.timeIntervalSince1970 ?? 0
