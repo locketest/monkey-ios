@@ -654,6 +654,7 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
                         <outlet property="containerView" destination="R2F-EW-BP4" id="IIZ-ee-2b6"/>
+                        <outlet property="contentScrollview" destination="80f-iG-I4o" id="Tr8-R5-k5z"/>
                         <outlet property="editButtons" destination="WHn-tT-9g8" id="0uP-lS-GoA"/>
                         <outlet property="firstName" destination="ipg-ZY-ZMF" id="8QV-bb-rfX"/>
                         <outlet property="linkInstgramLabel" destination="uOM-fU-h9Z" id="wWa-NO-DHk"/>
