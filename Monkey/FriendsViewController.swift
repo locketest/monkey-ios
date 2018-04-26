@@ -174,10 +174,17 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         let cell = tableView.dequeueReusableCell(withIdentifier: "friendshipCell", for: indexPath) as! FriendTableViewCell
         
         cell.configureWithFriendship(friendship)
-        if (friendship.user_is_typing.value ?? false) == true {
-            cell.descriptionLabel.text = "typing..."
-        } else {
-            cell.descriptionLabel?.text = self.viewModel.latestMessageForFriendship(friendship: friendship)
+        
+        if let user = friendship.user {
+            if user.user_id != "2" {
+                if (friendship.user_is_typing.value ?? false) == true {
+                    cell.descriptionLabel.text = "typing..."
+                } else {
+                    cell.descriptionLabel?.text = self.viewModel.latestMessageForFriendship(friendship: friendship)
+                }
+            } else {
+                cell.descriptionLabel.text = ""
+            }
         }
 
         return cell
@@ -330,6 +337,11 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         
         let chatViewController = storyboard.instantiateViewController(withIdentifier: "chat") as! ChatViewController
         chatViewController.viewModel.friendshipId = friendship.friendship_id
+        
+        if let user = friendship.user {
+            user.user_id == "2" ? (chatViewController.isMonkeyKingBool = true) : (chatViewController.isMonkeyKingBool = false)
+        }
+        
         if let chatId = self.initialConversationOptions?["chat_id"] as? String {
             chatViewController.acceptChat(chatId: chatId)
         }

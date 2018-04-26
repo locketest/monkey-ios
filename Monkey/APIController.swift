@@ -37,6 +37,10 @@ class APIController {
         return threadSafeRealm?.object(ofType: RealmExperiment.self, forPrimaryKey: APIController.shared.appVersion)
     }
     
+    var languageString : String {
+        return NSLocale.preferredLanguages.first ?? ""
+    }
+    
     var appVersion: String {
         return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0" // Use zeros instead of crashing. This should not happen.
     }

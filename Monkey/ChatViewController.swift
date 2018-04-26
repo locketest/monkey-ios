@@ -52,7 +52,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
     var callTimer:Timer?
     
-    let OfficialKeyString = ".FsoCh7V..0VadEt2i0w6k"
+    var isMonkeyKingBool : Bool?
     
     /// A reference to the presented instagramVC. Currently used to forward longPressGestureRecognizer updates
     weak var instagramViewController: InstagramPopupViewController?
@@ -129,12 +129,17 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     func reloadData() {
         self.chatTableView.reloadData()
         self.chatTableView.scrollToBottom(animated: true)
-        if (self.viewModel.friendship?.user_is_typing.value ?? false) == true {
-            self.profileActiveLabel.text = "typing..."
-        } else if self.callButton.isSpinning {
-            self.profileActiveLabel.text = "connecting..."
-        } else {
-            self.profileActiveLabel.text = viewModel.userLastOnlineAtString
+        
+        if !self.isMonkeyKingBool! {
+            if (self.viewModel.friendship?.user_is_typing.value ?? false) == true {
+                self.profileActiveLabel.text = "typing..."
+            } else if self.callButton.isSpinning {
+                self.profileActiveLabel.text = "connecting..."
+            } else {
+                self.profileActiveLabel.text = viewModel.userLastOnlineAtString
+            }
+        } else{
+            self.profileActiveLabel.isHidden = true
         }
     }
 
@@ -211,9 +216,14 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     
     func handleViewFunc() {
         
+        guard self.isMonkeyKingBool != nil else {
+            print("Monkey King user id is nil")
+            return
+        }
+        
         if let chatIdString = self.viewModel.friendshipId {
             
-            if OfficialKeyString == chatIdString {
+            if self.isMonkeyKingBool! {
                 self.chatTableViewBottomConstraint.constant = 0
                 self.snapchatButtonConstraint.constant = 14
                 self.startConvoButton.isHidden = true
@@ -257,6 +267,8 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         alertController.addAction(UIAlertAction(title: "📲 Support", style: .default, handler: { (UIAlertAction) in
             self.openURL("https://monkey.canny.io/requests", inVC: true)
         }))
+        
+        /*
         alertController.addAction(UIAlertAction(title: "👻 Follow Us Snapchat", style: .default, handler: { (UIAlertAction) in
             if (UIApplication.shared.canOpenURL(URL(string:"snapchat://")!)) {
                 UIApplication.shared.openURL(URL(string: "snapchat://add/monkeyapp")!)
@@ -271,6 +283,8 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                 self.openURL("http://instagram/chatonmonkey", inVC: true)
             }
         }))
+        */
+        
         alertController.addAction(UIAlertAction(title: "🚑 Safety", style: .default, handler: { (UIAlertAction) in
             
             let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -384,7 +398,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // endTransition on DismissPopupAnimator calls view life cycle methods (even if cancelled); dont want keyboard to come up over insta
-        if self.viewModel.friendshipId != self.OfficialKeyString {
+        if !self.isMonkeyKingBool! {
             self.chatTextField.becomeFirstResponder()
         }
         self.chatTableView.scrollToBottom()
@@ -560,7 +574,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                 self.callButton.backgroundColor = Colors.white(0.06)
             } else {
                 self.callButton.isSpinning = true
-                self.profileActiveLabel.text = "connecting..."
+                self.isMonkeyKingBool! ? (self.profileActiveLabel.isHidden = true) : (self.profileActiveLabel.text = "connecting...")
                 self.chatSession?.accept()
 			}
             return
@@ -610,7 +624,7 @@ extension ChatViewController: ChatSessionLoadingDelegate {
         }
 
         self.chatSession = nil
-        self.profileActiveLabel.text = viewModel.userLastOnlineAtString
+        self.isMonkeyKingBool! ? (self.profileActiveLabel.isHidden = true) : (self.profileActiveLabel.text = viewModel.userLastOnlineAtString)
 
         if let nextSessionToPresent = self.nextSessionToPresent {
             self.nextSessionToPresent = nil
@@ -737,7 +751,7 @@ extension ChatViewController: ChatSessionLoadingDelegate {
                                       token: token, loadingDelegate: self!, isDialedCall: true)
             self?.chatSession?.accept()
             self?.callButton.isSpinning = true
-            self?.profileActiveLabel.text = "connecting..."
+            self!.isMonkeyKingBool! ? (self!.profileActiveLabel.isHidden = true) : (self?.profileActiveLabel.text = "connecting...")
             self?.pendingCallId = nil
         }
     }
@@ -809,7 +823,7 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if self.viewModel.friendshipId != self.OfficialKeyString {
+        if !self.isMonkeyKingBool! {
             self.startConvoButton.isHidden = self.viewModel.messageCount != 0
         }
         return self.viewModel.messageCount

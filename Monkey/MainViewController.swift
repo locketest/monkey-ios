@@ -586,7 +586,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                     case .success(let jsonAPIDocument):
                          
                          let json = JSON(jsonAPIDocument.dataResource?.json as Any)
-                         print("*** json = \(json)")
+//                         print("*** json = \(json)")
                          
                          self.yesterdayString = json["me"].dictionaryValue["yesterday"]!.intValue.description
                          
@@ -610,7 +610,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
           UserDefaults.standard.setValue("", forKey: KillAppBananaNotificationTag)
           
           let linkString = notification.object! as! String
-          print("*** linkString = \(linkString)")
+//          print("*** linkString = \(linkString)")
           
           if linkString.contains("banana_recap_popup") {
                self.loadBananaData(isNotificationBool: true)

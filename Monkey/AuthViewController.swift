@@ -214,19 +214,41 @@ class AuthViewController: UIViewController {
     }
 
     func updateExperiments(completion: @escaping () -> Void) {
-        RealmExperiment.fetch(id: APIController.shared.appVersion, completion: { (error: APIError?, experiment: RealmExperiment?) in
-            guard error == nil else {
-                if error!.status == "401" {
+//        RealmExperiment.fetch(id: APIController.shared.appVersion, completion: { (error: APIError?, experiment: RealmExperiment?) in
+//            guard error == nil else {
+//                if error!.status == "401" {
+//                    return
+//                }
+//                self.show(error: error!) {
+//                    self.updateExperiments(completion: completion)
+//                }
+//                return
+//            }
+//            print("Updated experiments")
+//            completion()
+//        })
+        
+        JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/experiments/\(APIController.shared.appVersion)", parameters: [:], options: [
+            .header("Authorization", APIController.authorization),
+            .header("lang", APIController.shared.languageString),
+            ]).addCompletionHandler { (response) in
+                switch response {
+                case .error(let error):
+                    print(error)
                     return
+                case .success(let jsonAPIDocument):
+                    RealmDataController.shared.apply(jsonAPIDocument) { (result) in
+                        switch result {
+                        case .error(let error):
+                            print(error)
+                            return
+                        case .success(let newObjects):
+                            print(newObjects.first!)
+                            return
+                        }
+                    }
                 }
-                self.show(error: error!) {
-                    self.updateExperiments(completion: completion)
-                }
-                return
-            }
-            print("Updated experiments")
-            completion()
-        })
+        }
     }
     func crashInvalidSession() {
         RealmDataController.shared.deleteAllData { (error) in

@@ -100,7 +100,11 @@ class WelcomeViewController: MonkeyViewController {
             parameters["source"] = Environment.deeplink_source
         }
 		
-		JSONAPIRequest(url:"\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/auth/accountkit", method:.post, parameters:parameters, options:nil).addCompletionHandler {[weak self] (response) in
+        JSONAPIRequest(url:"\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/auth/accountkit", method:.post, parameters:parameters, options:[
+            .header("version", APIController.shared.appVersion),
+            .header("lang", APIController.shared.languageString),
+            .header("device", "ios"),
+            ]).addCompletionHandler {[weak self] (response) in
 			guard let `self` = self else { return }
 			
 			switch response {
