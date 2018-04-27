@@ -223,6 +223,9 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             }
             instagramVC.friendshipId = friendship.friendship_id
             instagramVC.userId = friendship.user?.user_id
+            
+            instagramVC.isMonkeyKingBool = friendship.user?.user_id == "2" ? true : false
+            
             self.present(instagramVC, animated: true, completion: {
                 self.initialLongPressLocation = locationPoint
                 self.previousLongPressLocation = locationPoint
@@ -339,7 +342,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         chatViewController.viewModel.friendshipId = friendship.friendship_id
         
         if let user = friendship.user {
-            user.user_id == "2" ? (chatViewController.isMonkeyKingBool = true) : (chatViewController.isMonkeyKingBool = false)
+            chatViewController.isMonkeyKingBool = user.user_id == "2" ? true : false
         }
         
         if let chatId = self.initialConversationOptions?["chat_id"] as? String {

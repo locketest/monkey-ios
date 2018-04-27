@@ -419,6 +419,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="375" height="667"/>
                     <connections>
+                        <outlet property="aboutUsButton" destination="ox0-db-fV4" id="7uV-vl-ZDD"/>
                         <outlet property="bottomConstraint" destination="lHp-lr-RZz" id="Ceo-G9-fHc"/>
                         <outlet property="callButton" destination="aao-6J-Dkf" id="86H-U2-XmI"/>
                         <outlet property="callEmojiLabel" destination="nya-nl-oPV" id="ctk-rS-Ky0"/>

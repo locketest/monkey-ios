@@ -35,6 +35,9 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     var userId: String?
     /// The realm user for the popup. Only passed if no instagram account is linked to be used as a backup data source for UI elements
     /// Implemented as a getter for thread safety
+    
+    var isMonkeyKingBool : Bool?
+    
     var user: RealmUser? {
         let realm = try? Realm()
         return realm?.object(ofType: RealmUser.self, forPrimaryKey: userId)
@@ -118,6 +121,8 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         self.setEmojisForChannelButtons(self.user)
         
         self.setLabelsAndImages(using: instagramAccount)
+        
+        self.purpleUpButton.isHidden = self.isMonkeyKingBool! ? true : false
     }
     
     @IBAction func toggleChannelLabelSpacing(_ tapGestureRecognizer: UITapGestureRecognizer) {
@@ -402,7 +407,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
                         self.interactiveDismissTransition.hasStarted = false
                     }
                     // prentation logic is self contained on the didSet of this property
-                    self.presentFriendOptionsSheet()
+                    if !self.isMonkeyKingBool! { self.presentFriendOptionsSheet() }
                 }
             } else {
                 if self.isShowingFriendsAlertSheet && yVelocity > 0 {

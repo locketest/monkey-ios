@@ -244,7 +244,7 @@ class AuthViewController: UIViewController {
                             return
                         case .success(let newObjects):
                             print(newObjects.first!)
-                            return
+                            completion()
                         }
                     }
                 }

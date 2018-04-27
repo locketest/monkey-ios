@@ -38,6 +38,8 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
     @IBOutlet weak var textFieldBgView: UIView!
     
+    @IBOutlet weak var aboutUsButton: BigYellowButton!
+    
     @IBOutlet weak var snapchatButtonConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var chatTableViewBottomConstraint: NSLayoutConstraint!
@@ -221,22 +223,21 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             return
         }
         
-        if let chatIdString = self.viewModel.friendshipId {
-            
-            if self.isMonkeyKingBool! {
-                self.chatTableViewBottomConstraint.constant = 0
-                self.snapchatButtonConstraint.constant = 14
-                self.startConvoButton.isHidden = true
-                self.textFieldBgView.isHidden = true
-                self.callButton.isHidden = true
-
-            } else {
-                self.chatTableViewBottomConstraint.constant = 44
-                self.snapchatButtonConstraint.constant = 76
-                self.startConvoButton.isHidden = false
-                self.textFieldBgView.isHidden = false
-                self.callButton.isHidden = false
-            }
+        if self.isMonkeyKingBool! {
+            self.chatTableViewBottomConstraint.constant = 0
+            self.chatTableView.contentInset.bottom = 68
+            self.snapchatButtonConstraint.constant = 14
+            self.startConvoButton.isHidden = true
+            self.textFieldBgView.isHidden = true
+            self.aboutUsButton.isHidden = false
+            self.callButton.isHidden = true
+        } else {
+            self.chatTableViewBottomConstraint.constant = 44
+            self.snapchatButtonConstraint.constant = 76
+            self.startConvoButton.isHidden = false
+            self.textFieldBgView.isHidden = false
+            self.aboutUsButton.isHidden = true
+            self.callButton.isHidden = false
         }
     }
 
@@ -353,13 +354,19 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             guard let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as? InstagramPopupViewController else {
                 return
             }
-            instagramVC.responderAfterDismissal = self.chatTextField
+            
+            if !self.isMonkeyKingBool! {
+                instagramVC.responderAfterDismissal = self.chatTextField
+            }
+            
             self.chatTextField.resignFirstResponder()
             self.initialLongPressLocation = nil
             self.previousLongPressLocation = nil
 
             instagramVC.friendshipId = friendshipId
             instagramVC.userId = friendship.user?.user_id
+            instagramVC.isMonkeyKingBool = self.isMonkeyKingBool
+            
             self.present(instagramVC, animated: true, completion: {
                 self.initialLongPressLocation = locationPoint
                 self.previousLongPressLocation = locationPoint
