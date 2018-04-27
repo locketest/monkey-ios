@@ -78,7 +78,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         if self.keyBoardWasShow {
             return UIScreen.main.bounds.size.height
         }else {
-            return ScreenHeight - self.profileView.frame.minY
+            return ScreenHeight - self.contentScrollview.frame.minY
         }
     }
 
