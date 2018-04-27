@@ -22,9 +22,9 @@ class Colors {
     static let clear: UIColor = .clear
     
     /// The Monkey brand blue color.
-    static let blue = UIColor(red: 76.0 / 255.0, green: 71.0 / 255.0, blue: 249.0 / 255.0, alpha: 1.0)
+    static let blue = UIColor(red: 100.0 / 255.0, green: 74.0 / 255.0, blue: 241.0 / 255.0, alpha: 1.0)
     /// An alias for blue since some people thing Monkey is purple when it is actually blue.
-    static let purple = Colors.blue
+    static let purple = UIColor(red: 100.0 / 255.0, green: 74.0 / 255.0, blue: 241.0 / 255.0, alpha: 1.0)
     /// The Monkey brand yellow color.
     static let yellow = UIColor(red: 255.0 / 255.0, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1.0)
     

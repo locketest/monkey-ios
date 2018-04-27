@@ -36,7 +36,7 @@ class WelcomeViewController: MonkeyViewController {
 		loginViewController?.navigationItem.leftBarButtonItem = nil
 		
         let theme = AKFTheme.default()
-        theme.backgroundColor = UIColor.init(red:77.0 / 255.0 , green:79.0 / 255.0, blue:1.0, alpha: 1.0)
+        theme.backgroundColor = UIColor.init(red:100.0 / 255.0 , green:74.0 / 255.0, blue:241.0/255.0, alpha: 1.0)
         theme.buttonBackgroundColor = UIColor.yellow
         theme.buttonTextColor = UIColor.black
         theme.buttonDisabledBackgroundColor = UIColor.yellow.withAlphaComponent(0.4)

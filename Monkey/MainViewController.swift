@@ -361,7 +361,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
                self.channelUpdateRemindV.isHidden = true
 
 				let textMode = self.chatSession?.textMode ?? false
-				self.acceptButton?.backgroundColor = textMode ? UIColor.init(red: 150.0 / 255.0, green: 14.0 / 255.0, blue: 1.0, alpha: 1.0) : UIColor.init(red: 76.0 / 255.0, green: 71.0 / 255.0, blue: 1.0, alpha: 1.0)
+				self.acceptButton?.backgroundColor = textMode ? UIColor.init(red: 150.0 / 255.0, green: 14.0 / 255.0, blue: 1.0, alpha: 1.0) : UIColor.init(red: 100.0 / 255.0, green: 74.0 / 255.0, blue: 241.0/255.0, alpha: 1.0)
 				self.matchModeEmojiLeft.text = textMode ? "💬" : "🎦"
 				self.matchModeEmojiRight.text = textMode ? "💬" : "🎦"
 				self.matchModeTip.text = textMode ? "Text Chat" : "Video Chat"

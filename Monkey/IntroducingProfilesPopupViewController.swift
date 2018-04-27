@@ -20,7 +20,7 @@ class IntroducingProfilesPopupViewController: PopupViewController {
         let profiles = NSAttributedString(string: " Profiles ",
                                              attributes: [
                                                 NSFontAttributeName: font,
-                                                NSForegroundColorAttributeName: Colors.blue,
+                                                NSForegroundColorAttributeName: UIColor.init(red: 100.0/255.0, green: 74.0/255.0, blue: 241.0/255.0, alpha: 1.0),
             ])
         let onMonkey = NSAttributedString(string: "on Monkey!",
                                              attributes: [

@@ -33,7 +33,7 @@
                                 </connections>
                             </containerView>
                         </subviews>
-                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="b8u-d9-pSj"/>
                     </view>
                     <connections>
@@ -122,7 +122,7 @@
                                 <rect key="frame" x="169" y="315" width="37" height="37"/>
                             </activityIndicatorView>
                         </subviews>
-                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="wHu-jB-PwC" firstAttribute="top" secondItem="hWM-97-iXR" secondAttribute="top" id="6hi-OX-EHL"/>
                             <constraint firstItem="9T9-cg-jN0" firstAttribute="centerX" secondItem="hWM-97-iXR" secondAttribute="centerX" id="8oz-8I-YaU"/>
@@ -494,7 +494,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ul8-CP-Vhm" firstAttribute="top" secondItem="4lX-xn-RWG" secondAttribute="bottom" id="76t-S3-JhK"/>
                             <constraint firstAttribute="bottom" secondItem="ul8-CP-Vhm" secondAttribute="bottom" id="B9S-3r-ljq"/>
@@ -681,7 +681,7 @@
                                 </constraints>
                             </scrollView>
                         </subviews>
-                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="1Ig-7g-sBP" firstAttribute="trailing" secondItem="krO-Ei-IE2" secondAttribute="trailing" id="G2k-Lc-YDA"/>
                             <constraint firstItem="krO-Ei-IE2" firstAttribute="top" secondItem="1Ig-7g-sBP" secondAttribute="top" id="GWA-bL-Vi9"/>
@@ -945,7 +945,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="nmQ-ua-Ixu" firstAttribute="bottom" secondItem="qU7-N6-lIL" secondAttribute="bottom" id="3p1-tZ-jht"/>
                             <constraint firstItem="qU7-N6-lIL" firstAttribute="leading" secondItem="nmQ-ua-Ixu" secondAttribute="leading" id="e7E-4a-SSq"/>
@@ -1033,7 +1033,7 @@
                                 <rect key="frame" x="177.5" y="630" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
-                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="IX8-4R-TOk" firstAttribute="bottom" secondItem="Ol8-Yn-H6Y" secondAttribute="bottom" constant="16" id="0po-Sg-HYa"/>
                             <constraint firstItem="IX8-4R-TOk" firstAttribute="trailing" secondItem="Ruc-Pe-QIf" secondAttribute="trailing" id="4Ld-Lw-kdj"/>
@@ -1119,7 +1119,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="fkd-bO-OTJ" firstAttribute="trailing" secondItem="W9h-ah-onE" secondAttribute="trailing" id="Ide-lW-4fL"/>
                             <constraint firstItem="W9h-ah-onE" firstAttribute="leading" secondItem="fkd-bO-OTJ" secondAttribute="leading" id="c6b-cr-kqm"/>
@@ -1313,7 +1313,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.3411764706" green="0.12941176469999999" blue="0.99607843139999996" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="jBU-cC-qp2" firstAttribute="bottom" secondItem="t60-aP-64E" secondAttribute="bottom" id="3IP-2E-eBQ"/>
                             <constraint firstItem="t60-aP-64E" firstAttribute="leading" secondItem="jBU-cC-qp2" secondAttribute="leading" id="N4R-SD-oqG"/>
@@ -2384,7 +2384,7 @@ types of Monkey species in the entire world.</string>
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="XlF-88-5lB" secondAttribute="trailing" constant="20" id="2Bi-xz-PFb"/>
                                     <constraint firstAttribute="trailing" secondItem="gIm-jX-J1W" secondAttribute="trailing" constant="16" id="AM7-Ze-iZI"/>
@@ -2399,7 +2399,7 @@ types of Monkey species in the entire world.</string>
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="GFg-HX-vaR" firstAttribute="bottom" secondItem="1oD-Vz-doB" secondAttribute="bottom" id="A06-1E-GjB"/>
                             <constraint firstItem="GFg-HX-vaR" firstAttribute="top" secondItem="1oD-Vz-doB" secondAttribute="top" constant="-20" id="P4q-Wk-Ydl"/>
@@ -3103,7 +3103,7 @@ types of Monkey species in the entire world.</string>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ptC-ge-Xhz" firstAttribute="leading" secondItem="Mnq-Io-UYZ" secondAttribute="leading" id="3sZ-XZ-pDx"/>
                             <constraint firstItem="Mnq-Io-UYZ" firstAttribute="trailing" secondItem="ptC-ge-Xhz" secondAttribute="trailing" id="Fab-GU-TAq"/>

@@ -86,7 +86,7 @@
                                                     </stackView>
                                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wS7-IR-GDw" customClass="CachedImageView" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="14" y="14" width="48" height="48"/>
-                                                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="48" id="986-Fq-gtN"/>
                                                             <constraint firstAttribute="width" constant="48" id="CVV-HR-hpj"/>
@@ -124,7 +124,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                 </subviews>
-                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.061902265100671136" colorSpace="calibratedRGB"/>
+                                                <color key="backgroundColor" red="0.3921568627" green="0.2901960784" blue="0.94509803920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstItem="nya-nl-oPV" firstAttribute="top" secondItem="aao-6J-Dkf" secondAttribute="top" id="1C9-ua-CDm"/>
                                                     <constraint firstItem="nya-nl-oPV" firstAttribute="leading" secondItem="aao-6J-Dkf" secondAttribute="leading" id="4GJ-2t-OcX"/>
