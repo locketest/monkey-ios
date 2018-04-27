@@ -56,6 +56,10 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     
     var isMonkeyKingBool : Bool?
     
+    let MonkeyKingShadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+    
+    let MonkeyKingBgColor = UIColor(red: 34 / 255, green: 29 / 255, blue: 62 / 255, alpha: 1)
+    
     /// A reference to the presented instagramVC. Currently used to forward longPressGestureRecognizer updates
     weak var instagramViewController: InstagramPopupViewController?
     /// The location of the user's finger when instagram popup is presented, used to calculate displacement to pass to instagramVC if they do not lift finger to pan
@@ -224,8 +228,13 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         }
         
         if self.isMonkeyKingBool! {
+            self.aboutUsButton.layer.shadowColor = MonkeyKingShadowColor
+            self.aboutUsButton.backgroundColor = MonkeyKingBgColor
+            self.aboutUsButton.layer.shadowOpacity = 0.7
+            self.aboutUsButton.layer.shadowRadius = 10
+            self.aboutUsButton.clipsToBounds = false
+            
             self.chatTableViewBottomConstraint.constant = 0
-            self.chatTableView.contentInset.bottom = 68
             self.snapchatButtonConstraint.constant = 14
             self.startConvoButton.isHidden = true
             self.textFieldBgView.isHidden = true

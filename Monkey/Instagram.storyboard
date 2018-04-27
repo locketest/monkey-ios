@@ -138,7 +138,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a89-9U-MDe">
-                                                <rect key="frame" x="73.5" y="20" width="143" height="36"/>
+                                                <rect key="frame" x="73" y="20" width="143" height="36"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gabriel, 18" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="13" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VsM-Lm-l8T">
                                                         <rect key="frame" x="0.0" y="0.0" width="82" height="20"/>
@@ -164,101 +164,78 @@
                                                     <constraint firstItem="VsM-Lm-l8T" firstAttribute="leading" secondItem="a89-9U-MDe" secondAttribute="leading" id="vsm-Yi-wvh"/>
                                                 </constraints>
                                             </view>
-                                            <stackView opaque="NO" contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" spacing="-40" translatesAutoresizingMaskIntoConstraints="NO" id="ged-OR-SIe">
-                                                <rect key="frame" x="246" y="12" width="95" height="51"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oFV-ik-MMR" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="245" y="13" width="48" height="48"/>
                                                 <subviews>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fmt-O9-fsf" customClass="ChannelLabelView" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="44" y="0.0" width="51" height="51"/>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👻" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hth-CT-KYN" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="width" secondItem="fmt-O9-fsf" secondAttribute="height" multiplier="1:1" id="EZh-Gh-7Hl"/>
-                                                            <constraint firstAttribute="height" constant="51" id="xpd-Hg-u0K"/>
+                                                            <constraint firstAttribute="width" constant="48" id="358-Pu-vJW"/>
+                                                            <constraint firstAttribute="height" constant="48" id="JJX-Bb-SHI"/>
                                                         </constraints>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                <real key="value" value="25.5"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="emojiLabelText" value="🔥"/>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IRB-0A-Ft2" customClass="ChannelLabelView" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="33" y="0.0" width="51" height="51"/>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="width" secondItem="IRB-0A-Ft2" secondAttribute="height" multiplier="1:1" id="6p4-rw-yzQ"/>
-                                                            <constraint firstAttribute="height" constant="51" id="e83-RH-lOK"/>
-                                                        </constraints>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                <real key="value" value="25.5"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="emojiLabelText" value="🔥"/>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M2A-97-Sbs" customClass="ChannelLabelView" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="22" y="0.0" width="51" height="51"/>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="51" id="Gfa-cT-NeJ"/>
-                                                            <constraint firstAttribute="width" secondItem="M2A-97-Sbs" secondAttribute="height" multiplier="1:1" id="YT0-fD-v9y"/>
-                                                        </constraints>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                <real key="value" value="25.5"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="emojiLabelText" value="🔥"/>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ldX-aK-DvK" customClass="ChannelLabelView" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="11" y="0.0" width="51" height="51"/>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="width" secondItem="ldX-aK-DvK" secondAttribute="height" multiplier="1:1" id="SFe-M7-uJU"/>
-                                                            <constraint firstAttribute="height" constant="51" id="uFb-pH-yCU"/>
-                                                        </constraints>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                <real key="value" value="25.5"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="emojiLabelText" value="💞"/>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="idw-Nl-hkj" customClass="ChannelLabelView" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="0.0" width="51" height="51"/>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="51" id="66q-9J-UYf"/>
-                                                            <constraint firstAttribute="width" secondItem="idw-Nl-hkj" secondAttribute="height" multiplier="1:1" id="q6B-ls-gXg"/>
-                                                        </constraints>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                <real key="value" value="25.5"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="emojiLabelText" value="🍄"/>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </view>
+                                                        <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="26"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                 </subviews>
+                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.061902265099999999" colorSpace="calibratedRGB"/>
                                                 <constraints>
-                                                    <constraint firstItem="IRB-0A-Ft2" firstAttribute="width" secondItem="IRB-0A-Ft2" secondAttribute="height" multiplier="1:1" id="0sw-as-sZ6"/>
-                                                    <constraint firstItem="ldX-aK-DvK" firstAttribute="width" secondItem="ldX-aK-DvK" secondAttribute="height" multiplier="1:1" id="N5B-eN-a6n"/>
-                                                    <constraint firstItem="fmt-O9-fsf" firstAttribute="width" secondItem="fmt-O9-fsf" secondAttribute="height" multiplier="1:1" id="OCr-25-tJK"/>
-                                                    <constraint firstItem="fmt-O9-fsf" firstAttribute="width" secondItem="fmt-O9-fsf" secondAttribute="height" multiplier="1:1" id="fsy-q9-Vqv"/>
-                                                    <constraint firstItem="IRB-0A-Ft2" firstAttribute="width" secondItem="IRB-0A-Ft2" secondAttribute="height" multiplier="1:1" id="px3-Vo-6RD"/>
-                                                    <constraint firstItem="fmt-O9-fsf" firstAttribute="width" secondItem="fmt-O9-fsf" secondAttribute="height" multiplier="1:1" id="rmc-wv-9HS"/>
-                                                    <constraint firstItem="M2A-97-Sbs" firstAttribute="width" secondItem="M2A-97-Sbs" secondAttribute="height" multiplier="1:1" id="x40-jJ-upt"/>
+                                                    <constraint firstAttribute="bottom" secondItem="hth-CT-KYN" secondAttribute="bottom" id="P1t-oN-8bT"/>
+                                                    <constraint firstItem="hth-CT-KYN" firstAttribute="top" secondItem="oFV-ik-MMR" secondAttribute="top" id="bzk-43-AyK"/>
+                                                    <constraint firstAttribute="trailing" secondItem="hth-CT-KYN" secondAttribute="trailing" id="ilj-3r-VnG"/>
+                                                    <constraint firstItem="hth-CT-KYN" firstAttribute="leading" secondItem="oFV-ik-MMR" secondAttribute="leading" id="yIU-KI-AKy"/>
                                                 </constraints>
-                                            </stackView>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                        <real key="value" value="20"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="snapchatBtnClickFunc:" destination="970-6V-VH5" eventType="touchUpInside" id="gnk-iZ-1pL"/>
+                                                </connections>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xrw-hc-mJa" customClass="JigglyButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="298" y="13" width="48" height="48"/>
+                                                <subviews>
+                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="●●●" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n33-yI-MA1" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="48" height="43"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="48" id="1bU-ZI-Xqx"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="14"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.061902265099999999" colorSpace="calibratedRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="48" id="BCe-hm-For"/>
+                                                    <constraint firstAttribute="trailing" secondItem="n33-yI-MA1" secondAttribute="trailing" id="TLP-DZ-mMc"/>
+                                                    <constraint firstItem="n33-yI-MA1" firstAttribute="top" secondItem="xrw-hc-mJa" secondAttribute="top" id="UPD-ew-m1E"/>
+                                                    <constraint firstItem="n33-yI-MA1" firstAttribute="leading" secondItem="xrw-hc-mJa" secondAttribute="leading" id="a4L-xi-eLJ"/>
+                                                    <constraint firstAttribute="bottom" secondItem="n33-yI-MA1" secondAttribute="bottom" constant="5" id="rYy-mJ-xjE"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                        <real key="value" value="20"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="unfriendBtnClickFunc:" destination="970-6V-VH5" eventType="touchUpInside" id="SrV-aA-ogh"/>
+                                                </connections>
+                                            </view>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <gestureRecognizers/>
                                         <constraints>
+                                            <constraint firstItem="oFV-ik-MMR" firstAttribute="centerY" secondItem="VY3-gO-M8r" secondAttribute="centerY" id="BRX-Ol-U6v"/>
                                             <constraint firstItem="biO-k6-Yei" firstAttribute="top" secondItem="VY3-gO-M8r" secondAttribute="top" constant="14" id="GVS-JQ-nvN"/>
-                                            <constraint firstAttribute="trailing" secondItem="ged-OR-SIe" secondAttribute="trailing" constant="14" id="HF5-Du-USQ"/>
+                                            <constraint firstAttribute="trailing" secondItem="xrw-hc-mJa" secondAttribute="trailing" constant="9" id="GjW-Uj-TqL"/>
                                             <constraint firstItem="a89-9U-MDe" firstAttribute="leading" secondItem="biO-k6-Yei" secondAttribute="trailing" constant="12" id="Krf-7d-RqE"/>
                                             <constraint firstItem="a89-9U-MDe" firstAttribute="centerY" secondItem="biO-k6-Yei" secondAttribute="centerY" id="M5R-pK-AXH"/>
-                                            <constraint firstAttribute="bottom" secondItem="ged-OR-SIe" secondAttribute="bottom" constant="12.5" id="eyW-Ik-uyG"/>
+                                            <constraint firstItem="xrw-hc-mJa" firstAttribute="centerY" secondItem="VY3-gO-M8r" secondAttribute="centerY" id="Sl6-xo-z8t"/>
+                                            <constraint firstAttribute="trailing" secondItem="oFV-ik-MMR" secondAttribute="trailing" constant="62" id="Tb4-ga-S7e"/>
                                             <constraint firstItem="biO-k6-Yei" firstAttribute="leading" secondItem="VY3-gO-M8r" secondAttribute="leading" constant="14" id="jSC-RV-qaK"/>
-                                            <constraint firstItem="ged-OR-SIe" firstAttribute="top" secondItem="VY3-gO-M8r" secondAttribute="top" constant="12" id="vNU-QN-65g"/>
                                         </constraints>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="h6R-Gm-yg3" appends="YES" id="voq-QO-3My"/>
@@ -335,7 +312,6 @@
                         <outlet property="backgroundEmojiLabel" destination="eTL-45-G1X" id="K5a-ni-EKd"/>
                         <outlet property="backgroundTextView" destination="04R-7m-nry" id="XDf-NZ-1d9"/>
                         <outlet property="backgroundView" destination="Ilx-hJ-K7B" id="mmw-fX-BLa"/>
-                        <outlet property="channelStackView" destination="ged-OR-SIe" id="YhW-Ip-gro"/>
                         <outlet property="instagramContainerView" destination="gwW-uy-Ww4" id="Z0p-sX-2zz"/>
                         <outlet property="instagramContainerViewVerticalCenterConstraint" destination="nxv-7U-DpN" id="uyv-qI-XlE"/>
                         <outlet property="instagramImageView" destination="D9R-Hk-Omf" id="jqT-6V-ap0"/>
@@ -344,6 +320,9 @@
                         <outlet property="overlayView" destination="WXY-5c-a2S" id="HtX-yp-sB9"/>
                         <outlet property="profileImageView" destination="biO-k6-Yei" id="2M5-wx-oRM"/>
                         <outlet property="purpleUpButton" destination="Wha-lK-M4b" id="pST-GW-e63"/>
+                        <outlet property="snapchatButton" destination="oFV-ik-MMR" id="cVS-Wu-vLx"/>
+                        <outlet property="snapchatButtonTraillingConstraint" destination="Tb4-ga-S7e" id="eYn-zh-NqC"/>
+                        <outlet property="unfriendButton" destination="xrw-hc-mJa" id="PP8-Bl-0jk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="npb-qR-ol2" userLabel="First Responder" sceneMemberID="firstResponder"/>

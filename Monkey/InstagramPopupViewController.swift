@@ -31,6 +31,9 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     var responderAfterDismissal: UIResponder?
     /// The user id for the popup. Only passed if no instagram account is linked to be used as a backup data source for UI elements
     /// The view that houses the instagram container
+    @IBOutlet weak var unfriendButton: JigglyButton!
+    @IBOutlet weak var snapchatButton: BigYellowButton!
+    @IBOutlet weak var snapchatButtonTraillingConstraint: NSLayoutConstraint!
     @IBOutlet var instagramContainerView: MakeUIViewGreatAgain!
     var userId: String?
     /// The realm user for the popup. Only passed if no instagram account is linked to be used as a backup data source for UI elements
@@ -38,6 +41,8 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     
     var isMonkeyKingBool : Bool?
     
+    let ButtonBgColor = UIColor(red: 107 / 255, green: 68 / 255, blue: 1, alpha: 0.07)
+ 
     var user: RealmUser? {
         let realm = try? Realm()
         return realm?.object(ofType: RealmUser.self, forPrimaryKey: userId)
@@ -55,8 +60,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     var expandedChannelSpacing:CGFloat = -14.0
     /// The horizontal spacing between channel labels when in the contracted state
     var contractedChannelSpacing:CGFloat = -40.0
-    /// The stack view housing all the channelLabelView
-    @IBOutlet var channelStackView: UIStackView!
+    
     /// Is true if we are animating the dismissal of friendOptionsAlertSheetController and we pause updates to transition animator
     /// Note: We need this because transition animators do not allow for other animation blocks to occur.
     var isDismissingFriendsAlertSheet = false
@@ -106,7 +110,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
             self.backgroundEmojiLabel.text = "😢"
             self.nameLabel.text = self.user?.first_name ?? self.user?.username ?? ""
             if let age = self.user?.age.value {
-                self.nameLabel.text?.append(", \(age)")
+                self.nameLabel.text?.append(" \(age) \(self.isMonkeyKingBool! ? "" : (self.user?.gender == "female" ? "👩":"👱"))")
             }
             self.locationLabel.text = self.user?.location ?? ""
             self.profileImageView.url = self.user?.profile_photo_url
@@ -122,17 +126,61 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         
         self.setLabelsAndImages(using: instagramAccount)
         
-        self.purpleUpButton.isHidden = self.isMonkeyKingBool! ? true : false
+        self.handleMonkeyKingFunc()
+    }
+    
+    func handleMonkeyKingFunc() {
+        
+        self.purpleUpButton.isHidden = true
+
+        self.snapchatButton.backgroundColor = ButtonBgColor
+        
+        if self.isMonkeyKingBool! {
+            self.locationLabel.text = ""
+            self.unfriendButton.isHidden = true
+            self.snapchatButtonTraillingConstraint.constant = 9
+        } else {
+            self.unfriendButton.isHidden = false
+            self.unfriendButton.backgroundColor = ButtonBgColor
+           self.snapchatButtonTraillingConstraint.constant = 62
+        }
+    }
+    
+    @IBAction func unfriendBtnClickFunc(_ sender: BigYellowButton) {
+        
+        self.unfriendButton.isSelected = !self.unfriendButton.isSelected
+        
+        if self.unfriendButton.isSelected {
+            self.presentFriendOptionsSheet()
+        } else {
+            self.dismissFriendOptionsSheet()
+        }
+    }
+    
+    @IBAction func snapchatBtnClickFunc(_ sender: BigYellowButton) {
+        
+        guard let username = friendship?.user?.username else {
+            print("Error: could not get snapchat username to add")
+            return
+        }
+        
+        guard let url = URL(string: "snapchat://add/\(username)") else {
+            print("Error: could not get snapchat username to add")
+            return
+        }
+        
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.openURL(url)
+        } else {
+            let backupUrl = URL(string: "https://www.snapchat.com/add/\(username)")!
+            UIApplication.shared.openURL(backupUrl)
+        }
     }
     
     @IBAction func toggleChannelLabelSpacing(_ tapGestureRecognizer: UITapGestureRecognizer) {
         guard let channels = self.user?.channels else {
             return
         }
-        
-        UIView.animate(withDuration: 0.7, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: -1.0, options:.curveEaseInOut, animations: {
-            self.channelStackView.spacing = self.channelStackView.spacing == self.contractedChannelSpacing ? self.expandedChannelSpacing : self.contractedChannelSpacing
-        })
         
         if channels.count > 1 {
             UIView.animate(withDuration: 0.25, delay: 0.0, options:.curveEaseOut, animations: {
@@ -201,25 +249,25 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     /// Iterates through the channels the user is a part of and updates the emojis of the channel buttons
     func setEmojisForChannelButtons(_ user:RealmUser?) {
         
-        guard let channels = user?.channels else {
-            let firstChannel = self.channelStackView.arrangedSubviews[0] as? ChannelLabelView
-            firstChannel?.emojiLabelText = "🍌"
-            
-            // We don't use a for-each because we give a default value for the first channelView, and hide the rest
-            for i in 1 ... channelStackView.arrangedSubviews.count - 1 {
-                self.channelStackView.arrangedSubviews[i].isHidden = true
-            }
-            return
-        }
-        
-        for (index, view) in channelStackView.arrangedSubviews.enumerated() {
-            if channels.count > index, let channelView = view as? ChannelLabelView, let emoji = channels[index].emoji {
-                channelView.emojiLabelText = emoji
-                continue
-            }
-            // if we don't continue above, we weren't able to set the emoji so hide the view
-            view.isHidden = true
-        }
+//        guard let channels = user?.channels else {
+//            let firstChannel = self.channelStackView.arrangedSubviews[0] as? ChannelLabelView
+//            firstChannel?.emojiLabelText = "🍌"
+//
+//            // We don't use a for-each because we give a default value for the first channelView, and hide the rest
+//            for i in 1 ... channelStackView.arrangedSubviews.count - 1 {
+//                self.channelStackView.arrangedSubviews[i].isHidden = true
+//            }
+//            return
+//        }
+//
+//        for (index, view) in channelStackView.arrangedSubviews.enumerated() {
+//            if channels.count > index, let channelView = view as? ChannelLabelView, let emoji = channels[index].emoji {
+//                channelView.emojiLabelText = emoji
+//                continue
+//            }
+//            // if we don't continue above, we weren't able to set the emoji so hide the view
+//            view.isHidden = true
+//        }
     }
     
     /// Sets up the friends option sheet if the user has a friendship.
@@ -407,7 +455,6 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
                         self.interactiveDismissTransition.hasStarted = false
                     }
                     // prentation logic is self contained on the didSet of this property
-                    if !self.isMonkeyKingBool! { self.presentFriendOptionsSheet() }
                 }
             } else {
                 if self.isShowingFriendsAlertSheet && yVelocity > 0 {

@@ -339,10 +339,6 @@
                                                     <subviews>
                                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🐒" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1f2-xM-wo6" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="height" constant="48" id="NMC-Bw-pnK"/>
-                                                                <constraint firstAttribute="width" constant="48" id="jld-sZ-7Xa"/>
-                                                            </constraints>
                                                             <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="26"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -351,8 +347,10 @@
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.061902265099999999" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="trailing" secondItem="1f2-xM-wo6" secondAttribute="trailing" id="Bic-kc-Mbv"/>
+                                                        <constraint firstAttribute="width" constant="48" id="DGF-Bo-tT4"/>
                                                         <constraint firstItem="1f2-xM-wo6" firstAttribute="leading" secondItem="ox0-db-fV4" secondAttribute="leading" id="cNK-AX-b0V"/>
                                                         <constraint firstItem="1f2-xM-wo6" firstAttribute="top" secondItem="ox0-db-fV4" secondAttribute="top" id="hD5-Ri-aGr"/>
+                                                        <constraint firstAttribute="height" constant="48" id="kci-AB-Mx2"/>
                                                         <constraint firstAttribute="bottom" secondItem="1f2-xM-wo6" secondAttribute="bottom" id="nDB-Jd-f7B"/>
                                                     </constraints>
                                                     <userDefinedRuntimeAttributes>
