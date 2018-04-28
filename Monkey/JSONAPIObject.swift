@@ -300,13 +300,16 @@ class JSONAPIObject: Object {
     }
 }
 
-protocol JSONAPIObjectProtocol {
-    // Class property (equal to instance type)
-    static var type: String { get }
+protocol RealmObjectProtocol {
+	// Class property (equal to instance type)
+	static var type: String { get }
+	// Based on Realm
+	static func primaryKey() -> String
+}
+
+protocol JSONAPIObjectProtocol: RealmObjectProtocol {
 	// request subfix
 	static var requst_subfix: String { get }
-    // Based on Realm
-    static func primaryKey() -> String
 	// the special api version
 	static var api_version: String { get }
 }

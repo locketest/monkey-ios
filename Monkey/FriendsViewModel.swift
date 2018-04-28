@@ -78,7 +78,7 @@ class FriendsViewModel {
     }
     
     func setup() {
-        self.newFriendsNotificationToken = self.newFriends?.addNotificationBlock { (changes) in
+		self.newFriendsNotificationToken = self.newFriends?.observe { (changes) in
             switch changes {
             case .error(let error):
                 print("Error: \(error.localizedDescription)")
@@ -91,7 +91,7 @@ class FriendsViewModel {
             }
         }
             
-        self.openChatsNotificationToken = self.openChats?.addNotificationBlock { (change) in
+		self.openChatsNotificationToken = self.openChats?.observe { (change) in
             self.delegate?.reloadOpenChats()
         }
     }
@@ -107,7 +107,7 @@ class FriendsViewModel {
     }
     
     deinit {
-        self.openChatsNotificationToken?.stop()
-        self.newFriendsNotificationToken?.stop()
+		self.openChatsNotificationToken?.invalidate()
+		self.newFriendsNotificationToken?.invalidate()
     }
 }

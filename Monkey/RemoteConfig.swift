@@ -53,9 +53,20 @@ class RemoteConfigManager {
             return 8; // default value
         }
     }
+	var event_mode_next_show: Float {
+		if let event_mode_next_show = remoteConfig.configValue(forKey: "event_mode_next_show").numberValue?.floatValue {
+			return (event_mode_next_show == 0) ? 3 : event_mode_next_show;
+		}else {
+			return 3; // default value
+		}
+	}
 	var text_chat_mode: Bool {
 		let text_chat_mode = remoteConfig.configValue(forKey: "text_chat_mode").boolValue
 		return text_chat_mode;
+	}
+	var event_chat_mode: Bool {
+		let event_chat_mode = remoteConfig.configValue(forKey: "event_chat_mode").boolValue
+		return event_chat_mode;
 	}
 	var next_show_time: Int {
 		if let next_show_time = remoteConfig.configValue(forKey: "next_show").numberValue?.intValue {

@@ -149,16 +149,16 @@ extension CallViewController: CountingLabelDelegate {
     @IBAction func addMinute(_ sender: BigYellowButton) {
         guard Achievements.shared.isOnboardingExplainAddTimePopupCompleted else {
             let chatSession = self.chatSession
+			Achievements.shared.isOnboardingExplainAddTimePopupCompleted = true
             let explainAddTimeAlert = UIAlertController(title: nil, message: "To successfully add time, both users have to tap the button", preferredStyle: .alert)
             explainAddTimeAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: {[weak self] (UIAlertAction) in
 				
-				Achievements.shared.isOnboardingExplainAddTimePopupCompleted = true
 				guard let `self` = self else { return }
                 if chatSession == self.chatSession && chatSession?.status == .connected {
                     self.addMinute()
                 }
             }))
-			let mainVC = self.parent as? MainViewController
+			let mainVC = self.presentingViewController as? MainViewController
 			mainVC?.showAlert(alert: explainAddTimeAlert)
             return
         }

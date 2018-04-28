@@ -28,7 +28,8 @@ target 'Monkey' do
 	pod 'Alamofire', '~> 4.3.0'
 	pod 'Starscream', '~> 2.1.1'
 	pod 'Branch', '~> 0.17.10'
-	pod 'RealmSwift', '~> 2.10.0'
+	pod 'RealmSwift'
+	pod 'ObjectMapperAdditions/Realm', '~> 4.1'
 	pod 'ObjectMapper', '~> 3.1'
     pod 'SwiftyJSON', '~> 4.0.0'
 	

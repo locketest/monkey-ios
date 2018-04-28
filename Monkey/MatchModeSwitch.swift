@@ -72,7 +72,7 @@ import UIKit
 			self.modeIndicator.backgroundColor = textMode ? UIColor.init(red: 150.0 / 255.0, green: 14.0 / 255.0, blue: 1.0, alpha: 1.0) : UIColor.init(white: 0, alpha: 0.5)
 			self.modeEmoji.frame = CGRect.init(x: textMode ? 72 : 54, y: 5, width: 24, height: 30)
 		}) { ( _) in
-			self.isUserInteractionEnabled = true
+			self.isUserInteractionEnabled = self.isEnabled
 		}
 	}
 	

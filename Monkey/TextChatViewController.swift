@@ -287,7 +287,7 @@ class TextChatViewController: MonkeyViewController {
 					self.chatSession?.sentUnMute()
 				}
 			}))
-			let mainVC = self.parent as? MainViewController
+			let mainVC = self.presentingViewController as? MainViewController
 			mainVC?.showAlert(alert: unMuteFirstTextModeAlert)
 		}else {
 			self.chatSession?.sentUnMute()
@@ -307,7 +307,7 @@ class TextChatViewController: MonkeyViewController {
 					let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
 				}
 			}))
-			let mainVC = self.parent as? MainViewController
+			let mainVC = self.presentingViewController as? MainViewController
 			mainVC?.showAlert(alert: addFirstSnapchatAlert)
 		}else {
 			let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)

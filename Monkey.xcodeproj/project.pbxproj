@@ -178,6 +178,7 @@
 		D1B79D5520611C5500F209B4 /* HWCameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D5420611C5400F209B4 /* HWCameraManager.m */; };
 		D1B79D5A20614F8200F209B4 /* GPUImageSixInputFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D5620614F7E00F209B4 /* GPUImageSixInputFilter.m */; };
 		D1B79D5B20614F8200F209B4 /* GPUImageFiveInputFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D5920614F8000F209B4 /* GPUImageFiveInputFilter.m */; };
+		D1FCDBAA20933C1000CF1BD9 /* RealmMatchInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FCDBA920933C1000CF1BD9 /* RealmMatchInfo.swift */; };
 		D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
 		D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */; };
 		D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D433C1501F44D35500C9F704 /* IncomingCallManager.swift */; };
@@ -443,6 +444,7 @@
 		D1B79D5720614F7F00F209B4 /* GPUImageSixInputFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageSixInputFilter.h; sourceTree = "<group>"; };
 		D1B79D5820614F7F00F209B4 /* GPUImageFiveInputFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageFiveInputFilter.h; sourceTree = "<group>"; };
 		D1B79D5920614F8000F209B4 /* GPUImageFiveInputFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageFiveInputFilter.m; sourceTree = "<group>"; };
+		D1FCDBA920933C1000CF1BD9 /* RealmMatchInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmMatchInfo.swift; sourceTree = "<group>"; };
 		D40E59331F3A81510091A7B2 /* CallNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallNotificationView.swift; sourceTree = "<group>"; };
 		D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CallNotificationView.xib; sourceTree = "<group>"; };
 		D433C1501F44D35500C9F704 /* IncomingCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallManager.swift; sourceTree = "<group>"; tabWidth = 5; };
@@ -613,6 +615,7 @@
 				D1B79CF3205FA80800F209B4 /* UserOptions.swift */,
 				D1B79CFE2060B52500F209B4 /* MonkeyFilter.swift */,
 				1B76B194206A46560044AC7F /* RealmVideoCall.swift */,
+				D1FCDBA920933C1000CF1BD9 /* RealmMatchInfo.swift */,
 			);
 			name = "Modern API Wrapper";
 			sourceTree = "<group>";
@@ -1233,6 +1236,7 @@
 				"${BUILT_PRODUCTS_DIR}/MMSCameraViewController/MMSCameraViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/MMSProfileImagePicker/MMSProfileImagePicker.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/ObjectMapperAdditions/ObjectMapperAdditions.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
@@ -1256,6 +1260,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSCameraViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMSProfileImagePicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapperAdditions.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
@@ -1405,6 +1410,7 @@
 				8B8664BD1F04AB9700E5AC12 /* PixelationEffect.swift in Sources */,
 				8B6FC3E31EADAB6E00429964 /* RealmExperiment.swift in Sources */,
 				8B8460D41EB324F900D54DF3 /* RealmTag.swift in Sources */,
+				D1FCDBAA20933C1000CF1BD9 /* RealmMatchInfo.swift in Sources */,
 				D1B79D342060DACB00F209B4 /* IFImageFilter.m in Sources */,
 				D192A3DF2029AD8300791002 /* TextModeMessageCell.swift in Sources */,
 				D1B79D5B20614F8200F209B4 /* GPUImageFiveInputFilter.m in Sources */,

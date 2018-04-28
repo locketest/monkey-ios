@@ -88,7 +88,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
         self.keyBoardWasShow = false
         self.tableView.dataSource = self
         self.tableView.delegate = self
@@ -149,6 +149,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         editProfileContentView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         self.editProfileView.addSubview(editProfileContentView)
         self.editBirthdayStatus = false
+		self.contentScrollview.showsVerticalScrollIndicator = false
         
 		self.crateEditProfileUI()
         
@@ -585,8 +586,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith
         result: MessageComposeResult)
     {
+		if result == .sent {
+			AnaliticsCenter.log(event: .inviteFriendSuccess)
+		}
         self.dismiss(animated: true, completion: {
-            self.setupInviteFriendsViewController()
+//            self.setupInviteFriendsViewController()
         })
     }
     func setupInviteFriendsViewController() {
@@ -635,55 +639,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         }
         switch data.type {
 
-        case .aboutUS:
-            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            alertController.addAction(UIAlertAction(title: "💖 Rate Us", style: .default, handler: { (UIAlertAction) in
-                self.openURL("https://itunes.apple.com/us/app/id1165924249?action=write-review", inVC: true)
-            }))
-            alertController.addAction(UIAlertAction(title: "📲 Support", style: .default, handler: { (UIAlertAction) in
-                self.openURL("https://monkey.canny.io/requests", inVC: true)
-            }))
-            alertController.addAction(UIAlertAction(title: "👻 Follow Us Snapchat", style: .default, handler: { (UIAlertAction) in
-                if (UIApplication.shared.canOpenURL(URL(string:"snapchat://")!)) {
-                    UIApplication.shared.openURL(URL(string: "snapchat://add/monkeyapp")!)
-                } else {
-                    UIApplication.shared.openURL(URL(string: "http://snapchat.com/add/monkeyapp")!)
-                }
-            }))
-            alertController.addAction(UIAlertAction(title: "📸 Follow Us Instgram", style: .default, handler: { (UIAlertAction) in
-                if (UIApplication.shared.canOpenURL(URL(string:"instagram://")!)) {
-                    UIApplication.shared.openURL(URL(string: "instagram://user?username=chatonmonkey")!)
-                } else {
-                    self.openURL("http://instagram/chatonmonkey", inVC: true)
-                }
-            }))
-            alertController.addAction(UIAlertAction(title: "🚑 Safety", style: .default, handler: { (UIAlertAction) in
-
-                let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-                alertController.addAction(UIKit.UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-                }))
-                alertController.addAction(UIKit.UIAlertAction(title: "😐 Terms of Use", style: .default, handler: { (UIAlertAction) in
-                    self.openURL("http://monkey.cool/terms", inVC: true)
-                }))
-                alertController.addAction(UIKit.UIAlertAction(title: "☹️ Privacy Policy", style: .default, handler: { (UIAlertAction) in
-                    self.openURL("http://monkey.cool/privacy", inVC: true)
-                }))
-                alertController.addAction(UIKit.UIAlertAction(title: "😇 Safety Center", style: .default, handler: { (UIAlertAction) in
-                    self.openURL("http://monkey.cool/safety", inVC: true)
-                }))
-                alertController.addAction(UIKit.UIAlertAction(title: "😁 Community Guidelines", style: .default, handler: { (UIAlertAction) in
-                    self.openURL("http://monkey.cool/community", inVC: true)
-                }))
-                if let creditsURL = APIController.shared.currentExperiment?.credits_url {
-                    alertController.addAction(UIKit.UIAlertAction(title: "Credits", style: .default, handler: { (UIAlertAction) in
-                        self.openURL(creditsURL, inVC: true)
-                    }))
-                }
-                self.present(alertController, animated: true, completion: nil)
-
-            }))
-            self.present(alertController, animated: true, completion: nil)
         case .signOut:
             RealmDataController.shared.deleteAllData() { (error) in
                 guard error == nil else {
@@ -711,6 +666,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 return
             }
             self.present(inviteFriendsViewController, animated: true, completion: nil)
+		case .aboutUS:
+			break;
         case .talkTo:
             break;
         case .acceptButton:
@@ -762,6 +719,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         guard let inviteFriendsViewController = self.inviteFriendsViewController else {
             return
         }
+		AnaliticsCenter.log(event: .inviteFriendClick)
         self.present(inviteFriendsViewController, animated: true, completion: nil)
     }
     
@@ -781,9 +739,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 
         alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: {
             (UIAlertAction) in
-            
-            alertController.dismiss(animated: true, completion: nil)
-            
+			
+			AnaliticsCenter.log(event: .signOut)
             RealmDataController.shared.deleteAllData() { (error) in
                 guard error == nil else {
                     error?.log()
@@ -808,7 +765,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     
     let inviteFriendsData = SettingsTableViewCellData(for: .inviteFriends, title: "🎉 Invite friends")
     let talkToData = SettingsTableViewCellData(for: .talkTo, title: "💬 Talk to", style: .talkToCell) //SettingsTableViewCellData(for: .talkTo, title: "💖 Talk to")
-    let acceptButtonData = SettingsTableViewCellData(for: .acceptButton, title: "😊 Accept", style: .accetpBtnCell)
+    let acceptButtonData = SettingsTableViewCellData(for: .acceptButton, title: "🤙 Auto accept matches", style: .accetpBtnCell)
     
     let nearbyButtonData = SettingsTableViewCellData(for: .acceptButton, title: "🏡 Nearby", style: .accetpBtnCell)
 
@@ -868,11 +825,21 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             let cell = tableView.dequeueReusableCell(withIdentifier: "AcceptBtnCell", for: indexPath) as! SettingAcceptButtonCell
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             cell.titleLabel?.text = data.title
-            
-            cell.acceptSwitch.open = indexPath.row == 1 ? Achievements.shared.closeAcceptButton : Achievements.shared.nearbyAcceptButton
+			
+			if indexPath.row == 1 {
+				// auto accept
+				cell.acceptSwitch.open = Achievements.shared.autoAcceptMatch
+			}else {
+				cell.acceptSwitch.open = Achievements.shared.nearbyMatch
+			}
             
 			cell.acceptSwitch.switchValueChanged = {
-                indexPath.row == 1 ? (Achievements.shared.closeAcceptButton = $0) : (Achievements.shared.nearbyAcceptButton = $0)
+				if indexPath.row == 1 {
+					// auto accept
+					Achievements.shared.autoAcceptMatch = $0
+				}else {
+					Achievements.shared.nearbyMatch = $0
+				}
 			}
             return cell;
         case .booleanButtons:
@@ -1343,7 +1310,8 @@ class  SettingAcceptButtonCell: UITableViewCell {
         self.backgroundColor = UIColor.clear
         self.titleLabel = UILabel.init()
         self.titleLabel.backgroundColor = UIColor.clear;
-        self.titleLabel.frame = CGRect(x: 16, y: 0, width: 150, height: 64)
+        self.titleLabel.frame = CGRect(x: 16, y: 0, width: self.contentView.frame.size.width - 18 - 40 - 18, height: 64)
+		self.titleLabel.autoresizingMask = [.flexibleWidth]
         self.titleLabel.text = ""
         self.titleLabel.textColor = UIColor.white
         self.titleLabel.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
@@ -1351,6 +1319,8 @@ class  SettingAcceptButtonCell: UITableViewCell {
         self.contentView.addSubview(self.titleLabel)
 
 		self.acceptSwitch = MonkeySwitch.init(frame: CGRect(x: self.contentView.frame.size.width - 40 - 18, y: 17, width: 40, height: 30))
+		self.acceptSwitch.closeIndicatorColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.3)
+		self.acceptSwitch.openEmoji = "🐵"
 		self.acceptSwitch.autoresizingMask = [.flexibleLeftMargin]
         self.contentView.addSubview(self.acceptSwitch)
     }

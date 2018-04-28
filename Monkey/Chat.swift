@@ -35,9 +35,9 @@ class Chat {
     var profile_image_url: String?
     var user_id: String?
 	var match_mode: MatchMode = MatchMode.VideoMode
-	var match_with_mode: MatchMode {
-		if let selectedMatchMode = Achievements.shared.selectMatchMode, selectedMatchMode == .TextMode, match_mode == .TextMode {
-			return .TextMode
+	var match_room_mode: MatchMode {
+		if let selectedMatchMode = Achievements.shared.selectMatchMode, selectedMatchMode == match_mode {
+			return match_mode
 		}
 		return .VideoMode
 	}

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class RealmCall: JSONAPIObject, JSONAPIObjectProtocol {
     static let type = "chats"
@@ -18,6 +19,7 @@ class RealmCall: JSONAPIObject, JSONAPIObjectProtocol {
     dynamic var session_id: String?
     dynamic var status: String?
     dynamic var token: String?
+	let match_distance = RealmOptional<Int>()
     dynamic var bio: String?
     dynamic var created_at: NSDate?
 	

@@ -107,7 +107,7 @@ class ChatViewModel {
         let emptyPredicate = NSPredicate(format: "text != nil")
 
         self.messages = friendship.messages.sorted(byKeyPath: "created_at", ascending: true).filter(emptyPredicate)
-        self.messagesNotificationToken = self.messages?.addNotificationBlock { [weak self] (changes) in
+		self.messagesNotificationToken = self.messages?.observe { [weak self] (changes) in
             switch changes {
             case .error(let error):
                 print("Error: \(error.localizedDescription)")
@@ -293,6 +293,6 @@ class ChatViewModel {
     }
 
     deinit {
-        self.messagesNotificationToken?.stop()
+		self.messagesNotificationToken?.invalidate()
     }
 }

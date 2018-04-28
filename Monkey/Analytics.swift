@@ -17,6 +17,7 @@ public enum AnalyticEvent: String {
     //  ----------------------------  login  ------------------------------
     case codeVerify = "CODE_VERIFY"
     case signUpFinish = "SIGNUP_FINISH"
+	case signOut = "SIGN_OUT"
 	
 	//  ----------------------------  launch  ------------------------------
 	case notifyClick = "NOTIFY_CLICK"
@@ -40,6 +41,14 @@ public enum AnalyticEvent: String {
 	case opentokError = "OPENTOK_ERROR"
 	case opentokConnected = "OPENTOK_CONNECTED"
     case matchRequestSocketStatus = "match_request_socket_status"
+	
+	case inviteFriendClick = "INVITE_FRIEND_CLICK"
+	case inviteFriendSuccess = "INVITE_FRIEND_SUCCESS"
+	
+	case bananaPopupEnter = "BANANA_POPUP_ENTER"
+	
+	case sentMessageConvo = "SENT_MESSAGE_CONVO"
+	case snapchatClickConvo = "SNAPCHAT_CLICK_CONVO"
 }
 
 public enum AdjustEvent: String {
@@ -150,6 +159,7 @@ extension AnaliticsCenter {
 	fileprivate static let allEvents: Set<AnalyticEvent> = [
 		AnalyticEvent.codeVerify,
 		AnalyticEvent.signUpFinish,
+		AnalyticEvent.signOut,
 		
 		AnalyticEvent.notifyClick,
 		
@@ -170,7 +180,15 @@ extension AnaliticsCenter {
 		
 		AnalyticEvent.opentokError,
 		AnalyticEvent.opentokConnected,
-        AnalyticEvent.matchRequestSocketStatus
+        AnalyticEvent.matchRequestSocketStatus,
+		
+		AnalyticEvent.inviteFriendClick,
+		AnalyticEvent.inviteFriendSuccess,
+		
+		AnalyticEvent.bananaPopupEnter,
+		
+		AnalyticEvent.sentMessageConvo,
+		AnalyticEvent.snapchatClickConvo,
 	]
 	
 	fileprivate static let oneTimeEvents: Set<AnalyticEvent> = [
@@ -223,7 +241,7 @@ Amplitude 操作
 */
 extension AnaliticsCenter {
 	fileprivate static let exceptAmplitudeEvents: Set<AnalyticEvent> = [
-		AnalyticEvent.notifyClick,
+		AnalyticEvent.signOut,
 		
 		AnalyticEvent.matchRequestTotal,
 		AnalyticEvent.matchRequest,
@@ -232,8 +250,16 @@ extension AnaliticsCenter {
 		AnalyticEvent.matchConnect,
 		AnalyticEvent.matchConnectTimeOut,
 		AnalyticEvent.matchSuccess,
-		AnalyticEvent.matchInfo,
+//		AnalyticEvent.matchInfo,
         AnalyticEvent.matchRequestSocketStatus,
+		
+		AnalyticEvent.inviteFriendClick,
+		AnalyticEvent.inviteFriendSuccess,
+		
+		AnalyticEvent.bananaPopupEnter,
+		
+		AnalyticEvent.sentMessageConvo,
+		AnalyticEvent.snapchatClickConvo,
 	]
 	
 	fileprivate class func log(forAmpitude event: AnalyticEvent, andParameter parameter: [String: Any]?) {

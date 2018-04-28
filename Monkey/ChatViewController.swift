@@ -564,6 +564,8 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             self.viewModel.sendText(messageText)
         }
         self.isShowingPlaceholderText = true
+		
+		AnaliticsCenter.log(event: .sentMessageConvo)
 
         self.view.layoutIfNeeded()
     }

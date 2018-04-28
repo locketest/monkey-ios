@@ -16,7 +16,7 @@ class RealmDataController: NSObject {
     /// A Realm instance confined to the main thread
     private var mainRealm: Realm?
     let backgroundQueue = DispatchQueue(label: "cool.monkey.ios.realm-data-controller-background-queue")
-    let realmObjectClasses:[JSONAPIObjectProtocol.Type] = [
+    let realmObjectClasses:[RealmObjectProtocol.Type] = [
         RealmExperiment.self,
         RealmMessage.self,
         RealmUser.self,
@@ -31,6 +31,8 @@ class RealmDataController: NSObject {
         RealmBlock.self,
 		RealmMatchedUser.self,
         RealmVideoCall.self,
+		RealmMatchInfo.self,
+		RealmMatchEvent.self,
         ]
 
     /**
@@ -77,7 +79,7 @@ class RealmDataController: NSObject {
 
         let config = Realm.Configuration(
             syncConfiguration: nil,
-            schemaVersion: 17,
+            schemaVersion: 19,
             migrationBlock: { migration, oldSchemaVersion in
                 if oldSchemaVersion < 1 {
                     // Nothing to do!
@@ -195,11 +197,16 @@ class RealmDataController: NSObject {
 					*/
 				}
 				if oldSchemaVersion < 17 {
+					// Realm will automatically detect new properties and removed properties
+					// And will update the schema on disk automatically
+				}
+				if oldSchemaVersion < 18 {
 					migration.deleteData(forType: "RealmRelationship")
 				}
-                if oldSchemaVersion < 17 {
-
-                }
+				if oldSchemaVersion < 19 {
+					// Realm will automatically detect new properties and removed properties
+					// And will update the schema on disk automatically
+				}
 
         }, objectTypes: objectTypes)
 

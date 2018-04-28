@@ -38,12 +38,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
     var isReportedChat = false
 	var isReportedByOther = false
 	var isUnMuteSound = false
-	var textMode = false
+	var matchMode: MatchMode = .VideoMode
     var justAddFriend = false
 
     var message_send = 0
     var message_receive = 0
-    var common_trees: String?
+    var common_tree: String?
 
     var session: OTSession!
     var connections = [OTConnection]()
@@ -165,8 +165,13 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 		let currentUser = APIController.shared.currentUser
 		let is_banned = currentUser?.is_banned.value ?? false
         var match_type = "video"
-		if let match_mode = Achievements.shared.selectMatchMode, match_mode == .TextMode {
+		let selectMatchMode = Achievements.shared.selectMatchMode ?? .VideoMode
+		if selectMatchMode == .TextMode {
 			match_type = "text"
+		}else if selectMatchMode == .VideoMode {
+			match_type = "video"
+		}else {
+			match_type = "event"
 		}
 
 		var commonParameters = [
@@ -175,19 +180,37 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			"user_country": currentUser?.location ?? "",
 			"user_ban": "\(is_banned)",
             "match_type": match_type,
-            "trees": common_trees ?? "",
+			"auto_accept": Achievements.shared.autoAcceptMatch ? "false" : "true",
+			"user_gender_option": APIController.shared.currentUser?.show_gender ?? "both",
+			"user_tree": APIController.shared.currentUser?.channels.first?.channel_id ?? "",
+            "match_same_tree": common_tree ?? "",
 		]
 
-        if let videoCall = self.realmCall, let chat = chat {
+		if let _ = self.realmCall, let chat = chat {
 			commonParameters["match_with_gender"] = chat.gender ?? ""
 			commonParameters["match_with_country"] = chat.location ?? ""
 			commonParameters["match_with_age"] = "\(chat.age ?? 0)"
+			
             var match_with_type = "video"
-			if let match_with_mode = videoCall.match_mode, match_with_mode == MatchMode.TextMode.rawValue {
+			let match_with_mode = chat.match_mode
+			if match_with_mode == .TextMode {
 				match_with_type = "text"
+			}else if match_with_mode == .VideoMode {
+				match_with_type = "video"
+			}else {
+				match_with_type = "event"
 			}
             commonParameters["match_with_type"] = match_with_type
-			commonParameters["match_room_type"] = textMode ? "text" : "video"
+			
+			var match_room_type = "video"
+			if matchMode == .TextMode {
+				match_room_type = "text"
+			}else if matchMode == .VideoMode {
+				match_room_type = "video"
+			}else {
+				match_room_type = "event"
+			}
+			commonParameters["match_room_type"] = match_room_type
 
 			if event == .matchFirstAddFriend {
 				commonParameters["in_15s"] = "\(!self.hadAddTime)"
@@ -207,7 +230,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				commonParameters["firend_add_success"] = "\(self.friendMatched)"
 				commonParameters["report"] = "\(self.isReportedChat)"
 
-				if textMode {
+				if matchMode == .TextMode {
 					commonParameters["sound_open"] = "\(self.chat?.unMute ?? false)"
 					commonParameters["sound_open_success"] = "\(self.isUnMuteSound)"
                     commonParameters["message_send"] = "\(self.message_send)"
@@ -235,7 +258,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
         self.isDialedCall = isDialedCall
         self.chat = chat
         self.loadingDelegate = loadingDelegate
-		self.textMode = (chat.match_with_mode == .TextMode)
+		self.matchMode = chat.match_room_mode
 		self.matchedTime = NSDate().timeIntervalSince1970
 
 		let realm = try? Realm()
@@ -246,7 +269,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.friendMatched = true
 		}
 
-        self.chatNotificationToken = self.realmCall?.addNotificationBlock { [weak self] change in
+		self.chatNotificationToken = self.realmCall?.observe { [weak self] change in
             switch change {
             case .error(let error):
                 print("Error: \(error.localizedDescription)")
@@ -256,7 +279,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
                         let newStatus = property.newValue as? String
                         if newStatus == "MISSED" || newStatus == "ENDED" {
                             self?.disconnect(.consumed)
-                            self?.chatNotificationToken?.stop()
+							self?.chatNotificationToken?.invalidate()
                         }
                     }
                 }
@@ -399,7 +422,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			self.log(.error, "Send report error \(error)")
 		}
 
-		if (hadAddTime || friendMatched || textMode) {
+		if (hadAddTime || friendMatched || matchMode != .VideoMode) {
 			self.disconnect(.consumed)
 		}
 	}
@@ -511,7 +534,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             return
         }
 
-		if textMode == false {
+		if matchMode != .TextMode {
 			self.subscriber?.subscribeToAudio = true
 		}
 		self.connectTime = NSDate().timeIntervalSince1970
@@ -568,10 +591,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 				toAddInfo["match_success_m"] = 1
 			}
 			
-			if self.textMode == true {
+			if self.matchMode == .TextMode {
 				toAddInfo["match_success_text"] = 1
-			}else {
+			}else if self.matchMode == .VideoMode {
 				toAddInfo["match_success_video"] = 1
+			}else {
+				toAddInfo["match_success_eventmode"] = 1
 			}
 			
 			AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
@@ -582,11 +607,11 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			
         case .consumed:
             self.loadingDelegate?.chatSession(self, callEndedWithError: nil)
-            self.chatNotificationToken?.stop()
+			self.chatNotificationToken?.invalidate()
             self.chatNotificationToken = nil
         case .consumedWithError:
             self.loadingDelegate?.chatSession(self, callEndedWithError: NSError.unknownMonkeyError)
-            self.chatNotificationToken?.stop()
+			self.chatNotificationToken?.invalidate()
             self.chatNotificationToken = nil
         case .disconnecting:
             if self.didConnect {
@@ -640,10 +665,12 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			var toAddInfo = ["match_duration_total": match_duration]
 			AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
 			
-			if self.textMode == true {
+			if self.matchMode == .TextMode {
 				toAddInfo["match_duration_total_text"] = match_duration
-			}else {
+			}else if self.matchMode == .VideoMode {
 				toAddInfo["match_duration_total_video"] = match_duration
+			}else {
+				toAddInfo["match_duration_total_eventmode"] = match_duration
 			}
 			AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
 			

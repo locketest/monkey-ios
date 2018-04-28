@@ -20,7 +20,7 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         super.viewDidLoad()
         self.view.backgroundColor = .clear
         let realm = try? Realm()
-        self.channelsNotificationToken = realm?.objects(RealmChannel.self).addNotificationBlock { (change) in
+		self.channelsNotificationToken = realm?.objects(RealmChannel.self).observe { (change) in
             self.tableView.reloadData()
         }
         self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true")).sorted(byKeyPath: "updated_at", ascending: true)
@@ -65,7 +65,11 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        updateChannels(selectedChannels: List(self.selectedChannels))
+		
+		let list = List<RealmChannel>()
+		list.append(objectsIn: self.selectedChannels)
+		
+        updateChannels(selectedChannels: list)
     }
     
     override func isSwipingDidChange() {

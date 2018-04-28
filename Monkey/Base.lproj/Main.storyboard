@@ -1350,48 +1350,39 @@
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBC-65-2jJ" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
-                                                <rect key="frame" x="62.5" y="257.5" width="250" height="160"/>
+                                                <rect key="frame" x="65" y="250" width="246" height="177"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌🍌🐒" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wQB-BV-u1O" customClass="LoadingTextLabel" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="0.0" width="250" height="53"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="53" id="5qV-SF-2MR"/>
-                                                        </constraints>
+                                                        <rect key="frame" x="0.0" y="0.0" width="246" height="48"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v9E-7V-2CY" customClass="MakeTextViewGreatAgain" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="55" width="250" height="61"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="61" id="REa-h0-ULU"/>
-                                                        </constraints>
-                                                        <string key="text">There are currently 264 known
-types of Monkey species in the entire world.</string>
-                                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
-                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isPaddingRemoved" value="YES"/>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </textView>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qe6-B7-y4X">
+                                                        <rect key="frame" x="0.0" y="53" width="246.5" height="41"/>
+                                                        <string key="text">Did you know Monkey is made
+by 5 teenagers in NYC?</string>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wqO-t4-SQR">
-                                                        <rect key="frame" x="56" y="130" width="138.5" height="30"/>
+                                                        <rect key="frame" x="40" y="113" width="166.5" height="52"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="💬" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fsj-pf-9uD">
-                                                                <rect key="frame" x="0.0" y="0.0" width="23" height="30"/>
+                                                                <rect key="frame" x="14" y="0.0" width="23" height="52"/>
                                                                 <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="20"/>
                                                                 <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Text Chat" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C6c-AE-7sk">
-                                                                <rect key="frame" x="28" y="0.0" width="82.5" height="30"/>
+                                                                <rect key="frame" x="42" y="14" width="82.5" height="24"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                                 <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="💬" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jx5-dY-Z8u">
-                                                                <rect key="frame" x="115.5" y="0.0" width="23" height="30"/>
+                                                                <rect key="frame" x="129.5" y="0.0" width="23" height="52"/>
                                                                 <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="20"/>
                                                                 <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <nil key="highlightedColor"/>
@@ -1399,31 +1390,29 @@ types of Monkey species in the entire world.</string>
                                                         </subviews>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="bottom" secondItem="C6c-AE-7sk" secondAttribute="bottom" id="0BI-ew-Osy"/>
-                                                            <constraint firstItem="C6c-AE-7sk" firstAttribute="top" secondItem="wqO-t4-SQR" secondAttribute="top" id="7tq-FP-NcN"/>
+                                                            <constraint firstAttribute="bottom" secondItem="C6c-AE-7sk" secondAttribute="bottom" constant="14" id="0BI-ew-Osy"/>
+                                                            <constraint firstItem="C6c-AE-7sk" firstAttribute="top" secondItem="wqO-t4-SQR" secondAttribute="top" constant="14" id="7tq-FP-NcN"/>
                                                             <constraint firstItem="Jx5-dY-Z8u" firstAttribute="top" secondItem="wqO-t4-SQR" secondAttribute="top" id="7wt-AD-P2Y"/>
                                                             <constraint firstItem="Fsj-pf-9uD" firstAttribute="top" secondItem="wqO-t4-SQR" secondAttribute="top" id="FrC-0d-MaB"/>
                                                             <constraint firstAttribute="bottom" secondItem="Fsj-pf-9uD" secondAttribute="bottom" id="HiV-y8-VBN"/>
-                                                            <constraint firstAttribute="height" constant="30" id="JZS-FX-g4N"/>
                                                             <constraint firstAttribute="bottom" secondItem="Jx5-dY-Z8u" secondAttribute="bottom" id="R0j-Fb-6fd"/>
                                                             <constraint firstItem="Jx5-dY-Z8u" firstAttribute="leading" secondItem="C6c-AE-7sk" secondAttribute="trailing" constant="5" id="lH7-RM-eS7"/>
-                                                            <constraint firstItem="Fsj-pf-9uD" firstAttribute="leading" secondItem="wqO-t4-SQR" secondAttribute="leading" id="vGQ-hX-aze"/>
+                                                            <constraint firstItem="Fsj-pf-9uD" firstAttribute="leading" secondItem="wqO-t4-SQR" secondAttribute="leading" constant="14" id="vGQ-hX-aze"/>
                                                             <constraint firstItem="C6c-AE-7sk" firstAttribute="leading" secondItem="Fsj-pf-9uD" secondAttribute="trailing" constant="5" id="vHG-KK-c6G"/>
-                                                            <constraint firstAttribute="trailing" secondItem="Jx5-dY-Z8u" secondAttribute="trailing" id="yyQ-ia-m2F"/>
+                                                            <constraint firstAttribute="trailing" secondItem="Jx5-dY-Z8u" secondAttribute="trailing" constant="14" id="yyQ-ia-m2F"/>
                                                         </constraints>
                                                     </view>
                                                 </subviews>
                                                 <constraints>
-                                                    <constraint firstAttribute="trailing" secondItem="wQB-BV-u1O" secondAttribute="trailing" id="3lo-d7-2VE"/>
-                                                    <constraint firstItem="wqO-t4-SQR" firstAttribute="top" secondItem="v9E-7V-2CY" secondAttribute="bottom" constant="14" id="5gu-TX-c03"/>
-                                                    <constraint firstItem="wQB-BV-u1O" firstAttribute="top" secondItem="kBC-65-2jJ" secondAttribute="top" id="Wep-Ta-RUl"/>
-                                                    <constraint firstAttribute="bottom" secondItem="wqO-t4-SQR" secondAttribute="bottom" id="azd-LK-ChE"/>
-                                                    <constraint firstItem="v9E-7V-2CY" firstAttribute="leading" secondItem="kBC-65-2jJ" secondAttribute="leading" id="baU-nx-riM"/>
-                                                    <constraint firstItem="wQB-BV-u1O" firstAttribute="leading" secondItem="kBC-65-2jJ" secondAttribute="leading" id="m3l-t1-sv8"/>
-                                                    <constraint firstItem="v9E-7V-2CY" firstAttribute="top" secondItem="wQB-BV-u1O" secondAttribute="bottom" constant="2" id="ojG-rV-uqQ"/>
-                                                    <constraint firstAttribute="width" constant="250" id="tEi-To-CsA"/>
-                                                    <constraint firstItem="wqO-t4-SQR" firstAttribute="centerX" secondItem="kBC-65-2jJ" secondAttribute="centerX" id="zcQ-MI-0sd"/>
-                                                    <constraint firstAttribute="trailing" secondItem="v9E-7V-2CY" secondAttribute="trailing" id="ziC-IO-ccC"/>
+                                                    <constraint firstItem="wqO-t4-SQR" firstAttribute="centerX" secondItem="kBC-65-2jJ" secondAttribute="centerX" id="EaN-wh-8RI"/>
+                                                    <constraint firstItem="qe6-B7-y4X" firstAttribute="leading" secondItem="kBC-65-2jJ" secondAttribute="leading" id="f24-Vv-FTG"/>
+                                                    <constraint firstItem="wQB-BV-u1O" firstAttribute="top" secondItem="kBC-65-2jJ" secondAttribute="top" id="imO-rg-Kir"/>
+                                                    <constraint firstAttribute="bottom" secondItem="wqO-t4-SQR" secondAttribute="bottom" constant="12" id="jez-ml-Mmh"/>
+                                                    <constraint firstItem="wQB-BV-u1O" firstAttribute="leading" secondItem="kBC-65-2jJ" secondAttribute="leading" id="ni6-mH-2Ky"/>
+                                                    <constraint firstItem="qe6-B7-y4X" firstAttribute="top" secondItem="wQB-BV-u1O" secondAttribute="bottom" constant="5" id="ooo-FJ-vbe"/>
+                                                    <constraint firstItem="qe6-B7-y4X" firstAttribute="centerX" secondItem="kBC-65-2jJ" secondAttribute="centerX" id="sqA-kl-df3"/>
+                                                    <constraint firstItem="wqO-t4-SQR" firstAttribute="top" secondItem="qe6-B7-y4X" secondAttribute="bottom" constant="19" id="yjX-74-Hs3"/>
+                                                    <constraint firstItem="wQB-BV-u1O" firstAttribute="centerX" secondItem="kBC-65-2jJ" secondAttribute="centerX" id="ziH-FY-qbY"/>
                                                 </constraints>
                                             </view>
                                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="psw-iu-AsM" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
@@ -1585,11 +1574,61 @@ types of Monkey species in the entire world.</string>
                                                     <action selector="matchModeChanged:" destination="TT7-O9-9zR" eventType="touchUpInside" id="3wY-Fp-jL3"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="otb-Kx-f1J">
-                                                <rect key="frame" x="306" y="122" width="49" height="32"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="11l-nC-hLe" customClass="SmallYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="213" y="126" width="142" height="78.5"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ccn-n0-m1O">
-                                                        <rect key="frame" x="8" y="8" width="33" height="16"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👦🏼" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CUV-pr-RsE">
+                                                        <rect key="frame" x="10" y="9" width="25" height="24"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Justin" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mnC-UT-yx5">
+                                                        <rect key="frame" x="39" y="11" width="48" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zBt-xd-eGR" customClass="MonkeySwitch" customModule="Monkey" customModuleProvider="target">
+                                                        <rect key="frame" x="90" y="6" width="42" height="30"/>
+                                                        <color key="backgroundColor" red="0.44995594024658203" green="0.072316683828830719" blue="0.78099358081817627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="42" id="Bmo-9U-dZL"/>
+                                                            <constraint firstAttribute="height" constant="30" id="g6s-uY-TUd"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="You can meet he in this mode!" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qz8-D5-Rq6">
+                                                        <rect key="frame" x="11.5" y="36" width="119.5" height="31.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                        <color key="textColor" red="0.60392156862745094" green="0.60392156862745094" blue="0.60392156862745094" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <color key="backgroundColor" white="0.0" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstItem="Qz8-D5-Rq6" firstAttribute="top" secondItem="zBt-xd-eGR" secondAttribute="bottom" id="DyM-l2-L2W"/>
+                                                    <constraint firstItem="mnC-UT-yx5" firstAttribute="centerY" secondItem="CUV-pr-RsE" secondAttribute="centerY" id="KZw-zF-KPX"/>
+                                                    <constraint firstItem="CUV-pr-RsE" firstAttribute="top" secondItem="11l-nC-hLe" secondAttribute="top" constant="9" id="LBE-rj-Zbs"/>
+                                                    <constraint firstItem="Qz8-D5-Rq6" firstAttribute="leading" secondItem="11l-nC-hLe" secondAttribute="leading" constant="11" id="Nsd-Eq-9g8"/>
+                                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="280" id="TXJ-Q4-jpb"/>
+                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="120" id="UCt-Nr-JHe"/>
+                                                    <constraint firstItem="CUV-pr-RsE" firstAttribute="leading" secondItem="11l-nC-hLe" secondAttribute="leading" constant="10" id="dYR-me-c2A"/>
+                                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Qz8-D5-Rq6" secondAttribute="trailing" constant="11" id="gKr-xt-NTG"/>
+                                                    <constraint firstItem="zBt-xd-eGR" firstAttribute="leading" secondItem="mnC-UT-yx5" secondAttribute="trailing" constant="3" id="iFv-U6-2tW"/>
+                                                    <constraint firstAttribute="bottom" secondItem="Qz8-D5-Rq6" secondAttribute="bottom" constant="11" id="iYa-gj-Buf"/>
+                                                    <constraint firstAttribute="trailing" secondItem="zBt-xd-eGR" secondAttribute="trailing" constant="10" id="lR3-fw-03p"/>
+                                                    <constraint firstItem="zBt-xd-eGR" firstAttribute="centerY" secondItem="mnC-UT-yx5" secondAttribute="centerY" id="qHc-np-ZJ8"/>
+                                                    <constraint firstItem="mnC-UT-yx5" firstAttribute="leading" secondItem="CUV-pr-RsE" secondAttribute="trailing" constant="4" id="vD3-gq-86Q"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="roundedSquare" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="otb-Kx-f1J">
+                                                <rect key="frame" x="20" y="209.5" width="335" height="47.5"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Text mode and event mode,you can only choose one to enter.🕹" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ccn-n0-m1O">
+                                                        <rect key="frame" x="8" y="8" width="319" height="31.5"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="rjg-Jt-8fp"/>
                                                         </constraints>
@@ -1695,23 +1734,26 @@ types of Monkey species in the entire world.</string>
                                             <constraint firstItem="4OG-VV-HHr" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="SLG-59-Plb"/>
                                             <constraint firstAttribute="bottom" secondItem="Ulj-5R-07I" secondAttribute="bottom" constant="20" id="U4G-Le-GSm"/>
                                             <constraint firstItem="otb-Kx-f1J" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="Usm-YH-qfK"/>
-                                            <constraint firstItem="kBC-65-2jJ" firstAttribute="centerY" secondItem="ZLF-OB-nU9" secondAttribute="centerY" constant="4" id="WtG-oh-Hee"/>
                                             <constraint firstItem="Ulj-5R-07I" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="Yxw-6h-JqM"/>
                                             <constraint firstAttribute="trailing" secondItem="a3U-LG-nPc" secondAttribute="trailing" constant="20" id="dPU-ms-999"/>
                                             <constraint firstAttribute="bottom" secondItem="IDy-13-zRY" secondAttribute="bottom" constant="20" id="eAX-wX-J8M"/>
-                                            <constraint firstItem="otb-Kx-f1J" firstAttribute="top" secondItem="W2d-kQ-BTg" secondAttribute="bottom" constant="2" id="fdE-1B-NG9"/>
                                             <constraint firstItem="IDy-13-zRY" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="guH-Zs-FDt"/>
-                                            <constraint firstItem="kBC-65-2jJ" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="hFH-m1-lsm"/>
                                             <constraint firstItem="W2d-kQ-BTg" firstAttribute="top" secondItem="5GL-k1-GiO" secondAttribute="bottom" constant="6" id="had-iN-n8z"/>
                                             <constraint firstAttribute="bottom" secondItem="Uh6-Lu-Kac" secondAttribute="bottom" constant="-6" id="hjg-0g-L2G"/>
+                                            <constraint firstItem="kBC-65-2jJ" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="65" id="ihG-Kg-hXK"/>
                                             <constraint firstItem="DYS-hp-fSP" firstAttribute="centerY" secondItem="4OG-VV-HHr" secondAttribute="centerY" id="iic-q9-24W"/>
+                                            <constraint firstItem="11l-nC-hLe" firstAttribute="top" secondItem="W2d-kQ-BTg" secondAttribute="bottom" constant="6" id="lLN-Ry-rhL"/>
+                                            <constraint firstAttribute="trailing" secondItem="11l-nC-hLe" secondAttribute="trailing" constant="20" id="mCp-Q4-RFc"/>
                                             <constraint firstItem="DYS-hp-fSP" firstAttribute="centerX" secondItem="4OG-VV-HHr" secondAttribute="centerX" id="mIz-vt-epe"/>
                                             <constraint firstItem="5GL-k1-GiO" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="34" id="mfa-BL-9Bs"/>
                                             <constraint firstItem="Era-aI-5mW" firstAttribute="centerX" secondItem="4OG-VV-HHr" secondAttribute="centerX" id="mnQ-SR-lVU"/>
                                             <constraint firstItem="0hd-FL-4Jc" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="40" id="o3C-WD-Tsn"/>
+                                            <constraint firstItem="otb-Kx-f1J" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="209.5" id="oga-Gb-49Z"/>
+                                            <constraint firstItem="kBC-65-2jJ" firstAttribute="centerY" secondItem="ZLF-OB-nU9" secondAttribute="centerY" constant="5" id="poN-Bg-9gS"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="r3c-Jx-4VP"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="top" secondItem="4OG-VV-HHr" secondAttribute="bottom" constant="10" id="ucC-27-WkF"/>
                                             <constraint firstItem="Uh6-Lu-Kac" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="vmf-wM-sUo"/>
+                                            <constraint firstItem="kBC-65-2jJ" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="yYX-q4-AAz"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -1744,7 +1786,13 @@ types of Monkey species in the entire world.</string>
                         <outlet property="colorGradientView" destination="e3d-za-UK6" id="4Yv-Zd-oTA"/>
                         <outlet property="connectText" destination="Era-aI-5mW" id="qi7-BD-a4C"/>
                         <outlet property="containerView" destination="N5m-MM-8GO" id="bW5-GI-0Xk"/>
-                        <outlet property="factTextView" destination="v9E-7V-2CY" id="k9n-mv-dwN"/>
+                        <outlet property="eventModeDescription" destination="Qz8-D5-Rq6" id="HVZ-bi-XgA"/>
+                        <outlet property="eventModeEmoji" destination="CUV-pr-RsE" id="ekd-bZ-Dg5"/>
+                        <outlet property="eventModePopup" destination="11l-nC-hLe" id="mfF-80-kKS"/>
+                        <outlet property="eventModeSwitch" destination="zBt-xd-eGR" id="yr5-sm-bn7"/>
+                        <outlet property="eventModeTitle" destination="mnC-UT-yx5" id="LiQ-h5-Yu4"/>
+                        <outlet property="factTextBottom" destination="yjX-74-Hs3" id="eni-UY-Jws"/>
+                        <outlet property="factTextView" destination="qe6-B7-y4X" id="PUU-ew-Zb1"/>
                         <outlet property="filterButton" destination="0hd-FL-4Jc" id="M5A-yy-Mpw"/>
                         <outlet property="loadingContentView" destination="kBC-65-2jJ" id="a0G-6t-FNc"/>
                         <outlet property="loadingTextLabel" destination="wQB-BV-u1O" id="8gH-r0-Hip"/>
@@ -1753,6 +1801,7 @@ types of Monkey species in the entire world.</string>
                         <outlet property="matchModeEmojiRight" destination="Jx5-dY-Z8u" id="ypi-1v-gFA"/>
                         <outlet property="matchModeLabel" destination="Ccn-n0-m1O" id="Xes-kT-Oes"/>
                         <outlet property="matchModePopup" destination="otb-Kx-f1J" id="qff-9B-NlU"/>
+                        <outlet property="matchModePopupTop" destination="oga-Gb-49Z" id="1gr-d4-4wu"/>
                         <outlet property="matchModeSwitch" destination="W2d-kQ-BTg" id="jXU-IK-xTz"/>
                         <outlet property="matchModeTip" destination="C6c-AE-7sk" id="acn-Qu-8gZ"/>
                         <outlet property="newTipsRemindLabel" destination="a3U-LG-nPc" id="CDy-1E-v96"/>
@@ -1839,6 +1888,40 @@ types of Monkey species in the entire world.</string>
                                             <action selector="addMinute:" destination="zTu-EK-AVb" eventType="touchUpInside" id="n0s-TE-zll"/>
                                         </connections>
                                     </button>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VEb-nB-ntL">
+                                        <rect key="frame" x="39.5" y="591" width="140" height="56"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CE7-Gb-XVj" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="140" height="56"/>
+                                                <color key="backgroundColor" red="0.29803921570000003" green="0.2784313725" blue="0.97647058819999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="56" id="Jtd-Cm-tF7"/>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="140" id="jVL-SN-9eI"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                <state key="normal" title="Next">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="➡️"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="emojiY">
+                                                        <real key="value" value="0.0"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="skipButtonClick:" destination="zTu-EK-AVb" eventType="touchUpInside" id="gRs-dJ-RzZ"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="CE7-Gb-XVj" firstAttribute="leading" secondItem="VEb-nB-ntL" secondAttribute="leading" id="1Wy-ff-jrn"/>
+                                            <constraint firstItem="CE7-Gb-XVj" firstAttribute="top" secondItem="VEb-nB-ntL" secondAttribute="top" id="6cx-Qi-Asn"/>
+                                            <constraint firstAttribute="bottom" secondItem="CE7-Gb-XVj" secondAttribute="bottom" id="Bxt-ej-H1a"/>
+                                            <constraint firstAttribute="trailing" secondItem="CE7-Gb-XVj" secondAttribute="trailing" id="Mbw-SA-M5x"/>
+                                        </constraints>
+                                    </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GZI-MZ-WGI" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="118" y="591" width="140" height="56"/>
                                         <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1959,6 +2042,7 @@ types of Monkey species in the entire world.</string>
                                     </view>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="VEb-nB-ntL" secondAttribute="bottom" constant="20" id="3Ix-4l-1oo"/>
                                     <constraint firstItem="9JE-LS-ZES" firstAttribute="top" secondItem="jnj-Bx-OWp" secondAttribute="top" constant="28" id="3Kr-C5-cAP"/>
                                     <constraint firstAttribute="bottom" secondItem="lbf-rk-Za8" secondAttribute="bottom" constant="20" id="5px-G3-AWr"/>
                                     <constraint firstItem="bgY-Ht-n30" firstAttribute="leading" secondItem="aa2-H7-j91" secondAttribute="leading" id="8mi-XU-eks"/>
@@ -1972,6 +2056,7 @@ types of Monkey species in the entire world.</string>
                                     <constraint firstItem="aa2-H7-j91" firstAttribute="top" secondItem="jnj-Bx-OWp" secondAttribute="top" constant="28" id="lER-Nk-H2I"/>
                                     <constraint firstItem="lbf-rk-Za8" firstAttribute="centerX" secondItem="jnj-Bx-OWp" secondAttribute="centerX" constant="79" id="lON-Tc-vss"/>
                                     <constraint firstAttribute="trailing" secondItem="9JE-LS-ZES" secondAttribute="trailing" constant="23" id="mGw-y7-Imd"/>
+                                    <constraint firstItem="VEb-nB-ntL" firstAttribute="centerX" secondItem="jnj-Bx-OWp" secondAttribute="centerX" constant="-78" id="pCI-22-dG2"/>
                                     <constraint firstItem="bgY-Ht-n30" firstAttribute="bottom" secondItem="aa2-H7-j91" secondAttribute="bottom" constant="62" id="vtR-2D-GTC"/>
                                 </constraints>
                             </view>
@@ -2007,6 +2092,8 @@ types of Monkey species in the entire world.</string>
                         <outlet property="publisherContainerViewLeftConstraint" destination="PE0-fa-Qrj" id="sFu-IM-XY7"/>
                         <outlet property="publisherContainerViewTopConstraint" destination="lER-Nk-H2I" id="QIl-Wo-kSe"/>
                         <outlet property="publisherContainerViewWidthConstraint" destination="PNV-y2-HDQ" id="j2b-WQ-AIV"/>
+                        <outlet property="skipButton" destination="CE7-Gb-XVj" id="kcd-gL-jap"/>
+                        <outlet property="skipButtonContainerView" destination="VEb-nB-ntL" id="tSf-Nd-RWD"/>
                         <outlet property="snapchatButton" destination="lbf-rk-Za8" id="en5-z7-hHO"/>
                         <outlet property="statusCornerView" destination="aa2-H7-j91" id="i0A-ls-mxh"/>
                     </connections>

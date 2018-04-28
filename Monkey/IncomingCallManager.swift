@@ -42,12 +42,12 @@ class IncomingCallManager {
     var callTimer:Timer?
     var chatSession:ChatSession?
     var skipCallIds:[String] = []
-    init() {
-        let realm = try? Realm()
-        incomingCallNotificationToken = realm?.objects(RealmCall.self).addNotificationBlock({ [unowned self] (changes) in
-            self.checkForIncomingCall()
-        })
-    }
+	init() {
+		let realm = try? Realm()
+		incomingCallNotificationToken = realm?.objects(RealmCall.self).observe({ [unowned self] (changes) in
+			self.checkForIncomingCall()
+		})
+	}
     
     func checkForIncomingCall() {
         let realm = try? Realm()

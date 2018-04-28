@@ -129,6 +129,7 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
             break
         case .location:
             self.grantLocation(sender)
+			break
         case .notifications:
             self.grantNotifications()
             break

@@ -104,21 +104,6 @@ extension CallViewController {
             self.sendReport(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers, imageData: imageData)
         }))
         
-        alert.addAction(UIAlertAction(title: "❓ Person did something else", style: .default, handler: {
-            (UIAlertAction) in
-            let reason = ReportType.other
-            let parameters: Parameters = [
-                "data": [
-                    "type": "reports",
-                    "attributes": [
-                        "chat_id": chatId,
-                        "reason": reason.rawValue,
-                    ]
-                ]
-            ]
-            self.sendReport(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers, imageData: imageData)
-        }))
-        
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {
             (UIAlertAction) in
            self.callDelegate?.startFindingChats(forReason: "reporting")
@@ -383,7 +368,7 @@ extension CallViewController {
 		self.chatSession?.isReportedChat = true
         self.chatSession?.sentReport()
 		
-		if let addedTime = self.chatSession?.hadAddTime, let friendMatch = self.chatSession?.friendMatched, addedTime == false, friendMatch == false {
+		if let addedTime = self.chatSession?.hadAddTime, let friendMatch = self.chatSession?.friendMatched, addedTime == false, friendMatch == false, self.chatSession?.matchMode == .VideoMode {
 			//  open pixel effect and cant close anymore
 			HWCameraManager.shared().addPixellate()
 		}

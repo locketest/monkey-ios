@@ -70,13 +70,19 @@ PODS:
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
   - ObjectMapper (3.1.0)
+  - ObjectMapperAdditions/Core (4.1.0):
+    - ObjectMapper
+  - ObjectMapperAdditions/Realm (4.1.0):
+    - ObjectMapper
+    - ObjectMapperAdditions/Core
+    - RealmSwift
   - OpenTok (2.13.0)
   - Protobuf (3.5.0)
-  - Realm (2.10.2):
-    - Realm/Headers (= 2.10.2)
-  - Realm/Headers (2.10.2)
-  - RealmSwift (2.10.2):
-    - Realm (= 2.10.2)
+  - Realm (3.5.0):
+    - Realm/Headers (= 3.5.0)
+  - Realm/Headers (3.5.0)
+  - RealmSwift (3.5.0):
+    - Realm (= 3.5.0)
   - Starscream (2.1.1)
   - SwiftyGif (4.1.0)
   - SwiftyJSON (4.0.0)
@@ -97,8 +103,9 @@ DEPENDENCIES:
   - GPUImage (from `https://github.com/holla-world/GPUImage.git`, branch `master`)
   - MMSProfileImagePicker
   - ObjectMapper (~> 3.1)
+  - ObjectMapperAdditions/Realm (~> 4.1)
   - OpenTok
-  - RealmSwift (~> 2.10.0)
+  - RealmSwift
   - Starscream (~> 2.1.1)
   - SwiftyGif
   - SwiftyJSON (~> 4.0.0)
@@ -128,6 +135,7 @@ SPEC REPOS:
     - MMSProfileImagePicker
     - nanopb
     - ObjectMapper
+    - ObjectMapperAdditions
     - OpenTok
     - Protobuf
     - Realm
@@ -171,14 +179,15 @@ SPEC CHECKSUMS:
   MMSProfileImagePicker: 46b3640a9d9c97ecf711e514cefdc53a2aac21e1
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
+  ObjectMapperAdditions: db4243e10ebd9abf7e5e7938e4b0a4bbfd840980
   OpenTok: 9fa8d108284d751f284bf294a91c20529bde7df6
   Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
-  Realm: 0ef72b837fb67e9f4b098bac771ddd72c7fdbb69
-  RealmSwift: 07a9ae0505091eda6b2ee7c190c3786d6e90a7b0
+  Realm: 0378021c424e4e2bd6a0e63b27881e929d9b9ad1
+  RealmSwift: 3322562622fda2ad596985ead4d8d8be30cf838c
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftyGif: d36c6dfb52e2ca1e48fe349d225f50ec4123ec85
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
-PODFILE CHECKSUM: 3e9960d5bbf18b221a5da72bfe279c05251cf369
+PODFILE CHECKSUM: f0b69a9aac4289df1fb1a1fd732b019b2854f3f1
 
 COCOAPODS: 1.5.0

@@ -15,15 +15,20 @@ import Foundation
 public enum MatchMode: String {
 	init(string: String) {
 		switch string {
+		case MatchMode.EventMode.rawValue:
+			self = .EventMode
 		case MatchMode.TextMode.rawValue:
 			self = .TextMode
+		case MatchMode.VideoMode.rawValue:
+			self = .VideoMode
 		default:
 			self = .VideoMode
 		}
 	}
 	
-	case TextMode = "2"
 	case VideoMode = "1"
+	case TextMode = "2"
+	case EventMode = "3"
 }
 
 class Achievements {
@@ -353,12 +358,23 @@ class Achievements {
 			defaults.synchronize()
 		}
 		get {
-			if RemoteConfigManager.shared.text_chat_mode == false {
-				self.selectMatchMode = .VideoMode
-			}else if let selectMatchMode = defaults.string(forKey: "MonkeySelectMatchMode") {
-				return MatchMode.init(rawValue: selectMatchMode)
+			var matchMode: MatchMode?
+			if let selectMatchMode = defaults.string(forKey: "MonkeySelectMatchMode") {
+				matchMode = MatchMode.init(string: selectMatchMode)
+				if matchMode == .VideoMode {
+					
+				}else if matchMode == .TextMode {
+					if RemoteConfigManager.shared.text_chat_mode == false {
+						// 如果 text_mode 没有打开
+						self.selectMatchMode = .VideoMode
+						matchMode = .VideoMode
+					}
+				}else {
+					
+				}
 			}
-			return nil
+			
+			return matchMode
 		}
 	}
     var closeAcceptButton: Bool {
@@ -366,15 +382,26 @@ class Achievements {
             defaults.set(newValue, forKey: "MonkeyCloseAcceptButton")
         }
         get {
-            return defaults.bool(forKey: "MonkeyCloseAcceptButton")
+			if let value = defaults.value(forKey: "MonkeyCloseAcceptButton"), value is Bool {
+				return value as! Bool
+			}
+            return true
         }
     }
-    var nearbyAcceptButton: Bool {
+	var autoAcceptMatch: Bool {
+		set(newAutoAcceptMatch) {
+			closeAcceptButton = !newAutoAcceptMatch
+		}
+		get {
+			return !closeAcceptButton
+		}
+	}
+    var nearbyMatch: Bool {
         set {
-            defaults.set(newValue, forKey: "MonkeyNearbyCloseAcceptButton")
+            defaults.set(newValue, forKey: "MonkeyNearbyMatch")
         }
         get {
-            return defaults.bool(forKey: "MonkeyNearbyCloseAcceptButton")
+            return defaults.bool(forKey: "MonkeyNearbyMatch")
         }
     }
 	var selectMonkeyFilter: String {

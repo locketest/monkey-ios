@@ -33,6 +33,8 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     @IBOutlet weak var policeButton: BigYellowButton!
     @IBOutlet weak var snapchatButton: BigYellowButton!
 	@IBOutlet weak var filterButton: BigYellowButton!
+	@IBOutlet weak var skipButton: BigYellowButton!
+	@IBOutlet weak var skipButtonContainerView: UIView!
 	@IBOutlet var endCallButton: BigYellowButton!
     @IBOutlet weak var statusCornerView: UIView!
     @IBOutlet weak var publisherContainerView: UIView!
@@ -74,7 +76,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
             chatSession?.add(messageHandler: self.truthOrDareView)
             chatSession?.add(messageHandler: self.effectsCoordinator)
             chatSession?.toggleFrontCamera(front: true)
-            if chatSession?.isDialedCall == true {
+            if chatSession?.isDialedCall == true || chatSession?.matchMode == .EventMode {
                 self.clockTime = 0
             }
         }
@@ -115,8 +117,8 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
             publisherContainerViewWidthConstraint.constant = self.containerView.frame.size.width
         } else {
             statusCornerView.layer.cornerRadius = 6
-            publisherContainerViewLeftConstraint.constant = 22
-            publisherContainerViewTopConstraint.constant = 28
+            publisherContainerViewLeftConstraint.constant = 20
+            publisherContainerViewTopConstraint.constant = 34
 
             publisherContainerViewHeightConstraint.constant = 179
             publisherContainerViewWidthConstraint.constant = 103
@@ -166,17 +168,42 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 //        // make sure timer always runs correctly
         RunLoop.main.add(self.ticker!, forMode: .commonModes)
         self.endCallButton.isHidden = true
+		self.skipButton.isHidden = true
+		self.skipButtonContainerView.isHidden = true
+		
         self.clockLabel.delegate = self
+		self.clockLabelBackgroundView.layer.cornerRadius = 20
+		self.clockLabelBackgroundView.layer.masksToBounds = true
 
         if self.chatSession?.isDialedCall == true {
             self.endCallButton.isEnabled = true
             self.snapchatButton.isEnabled = false
             self.addMinuteButton.isEnabled = false
+			self.skipButton.isEnabled = false
             self.addMinuteButton.isHidden = true
             self.snapchatButton.isHidden = true
             self.endCallButton.isHidden = false
         }
-
+		
+		if self.chatSession?.matchMode == .EventMode {
+			self.snapchatButton.isEnabled = true
+			self.addMinuteButton.isEnabled = false
+			self.endCallButton.isEnabled = false
+			self.snapchatButton.isHidden = false
+			self.addMinuteButton.isHidden = true
+			self.skipButton.isHidden = false
+			self.skipButton.isEnabled = true
+			self.skipButtonContainerView.isUserInteractionEnabled = false
+			self.skipButtonContainerView.alpha = 0
+			self.skipButtonContainerView.isHidden = false
+			
+//			DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: TimeInterval(RemoteConfigManager.shared.event_mode_next_show))) { [weak self] in
+//				guard let `self` = self else { return }
+//				self.skipButton.isEnabled = true
+//			}
+			
+		}
+		
         self.truthOrDareView.frame = self.view.frame
         self.truthOrDareView.isHidden = true
         self.view.addSubview(truthOrDareView)
@@ -194,10 +221,10 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 
         publisherContainerViewHeightConstraint.constant = self.topLayoutGuide.length + self.containerView.frame.size.height + 43 + 22
         publisherContainerViewWidthConstraint.constant = self.containerView.frame.size.width
-        
+		
+		self.cameraPositionButton.isHidden = true
+		self.cameraPositionButton.backgroundColor = UIColor.clear
         let realm = try? Realm()
-        self.cameraPositionButton.isHidden = true
-        self.cameraPositionButton.backgroundColor = UIColor.clear
         var callUserID = self.chatSession?.realmCall?.user?.user_id
         if callUserID == nil {
             callUserID = self.chatSession?.realmVideoCall?.initiator?.user_id
@@ -210,7 +237,12 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
                 self.clockTimeIcon.isHidden = true
             }
         }
-        
+		
+		if chatSession?.matchMode == .EventMode {
+			self.clockLabel.isHidden = true
+			self.clockTimeIcon.isHidden = true
+			self.clockLabelBackgroundView.isHidden = true
+		}
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -219,6 +251,17 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
             self.view.layoutIfNeeded()
             self.setupCommonTree()
         }
+		
+		if self.chatSession?.matchMode == .EventMode {
+			UIView.animate(withDuration: TimeInterval(RemoteConfigManager.shared.event_mode_next_show), animations: {
+				self.skipButtonContainerView.alpha = 1
+			}) {[weak self] (finished) in
+				guard let `self` = self else { return }
+				if finished == true {
+					self.skipButtonContainerView.isUserInteractionEnabled = true
+				}
+			}
+		}
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -229,7 +272,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         self.publisherContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
 
 
-        let path = UIBezierPath(roundedRect:clockLabelBackgroundView.bounds, byRoundingCorners:[.bottomRight, .bottomLeft], cornerRadii: CGSize(width: 6, height:  6))
+        let path = UIBezierPath(roundedRect:clockLabelBackgroundView.bounds, byRoundingCorners:[.bottomRight, .bottomLeft], cornerRadii: CGSize(width: 20, height:  20))
         let maskLayer = CAShapeLayer()
         maskLayer.path = path.cgPath
         clockLabelBackgroundView.layer.mask = maskLayer
@@ -252,6 +295,9 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         if self.snapchatButton.isEnabled {
             self.snapchatButton.isHidden = false
         }
+		if self.chatSession?.friendMatched == false && self.chatSession?.matchMode == .EventMode {
+			self.skipButton.isHidden = false
+		}
 
         if let label = self.containerView.viewWithTag(71074) as? UILabel {
             label.isHidden = false
@@ -307,6 +353,11 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 		}
 	}
 	
+	@IBAction func skipButtonClick(_ sender: UIButton) {
+		self.skipButton.isEnabled = false
+		self.skipButton.layer.opacity = 0.5
+		self.chatSession?.disconnect(.consumed)
+	}
 	@IBAction func cameraPositionButtonClick(_ sender: Any) {
         self.chatSession?.toggleCameraPosition()
     }
@@ -317,20 +368,25 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
             self.commonTreeLabel.minimumScaleFactor = 0.5
             self.commonTreeEmojiLabel.text = curcommonTree.emoji
             self.commonTreeLabel.text = curcommonTree.title
-            
-            self.clockLabelBackgroundView.layer.cornerRadius = 20
-            self.clockLabelBackgroundView.layer.masksToBounds = true
+
         }else {
-            self.clockViewBottom.constant = 0
-            self.clockTop.constant = 0
             self.commonTreeContainV.isHidden = true
         }
+		
+		if (self.chatSession?.friendMatched == true || self.chatSession?.matchMode == .EventMode || self.chatSession?.isDialedCall == true) {
+			self.clockLabel.isHidden = true
+			self.clockTimeIcon.isHidden = true
+		}else {
+			self.clockLabel.isHidden = false
+			self.clockTimeIcon.isHidden = false
+		}
     }
 	
     // MARK: Snapchat Button
     @IBAction func addSnapchat(_ sender: BigYellowButton) {
 		// add friend
-		self.disableAddMinute()
+		sender.isEnabled = false
+		sender.layer.opacity = 0.5
 		
 		if Achievements.shared.addFirstSnapchat == false {
 			let addFirstSnapchatAlert = UIAlertController(title: nil, message: "To successfully add friends, both users have to tap the button", preferredStyle: .alert)
@@ -341,7 +397,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 					let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
 				}
 			}))
-			let mainVC = self.parent as? MainViewController
+			let mainVC = self.presentingViewController as? MainViewController
 			mainVC?.showAlert(alert: addFirstSnapchatAlert)
 		}else {
 			let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
@@ -421,6 +477,8 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 					self.addMinuteButton.isHidden = true
 					self.snapchatButton.isHidden = true
 					self.endCallButton.isHidden = false
+					self.skipButton.isHidden = true
+					self.skipButton.isEnabled = false
 				}
 			}
 		}else {
@@ -430,10 +488,13 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 			self.addMinuteButton.isHidden = true
 			self.snapchatButton.isHidden = true
 			self.endCallButton.isHidden = false
+			self.skipButton.isHidden = true
+			self.skipButton.isEnabled = false
 		}
+		self.clockLabelBackgroundView.isHidden = false
         self.cameraPositionButton.isHidden = false
+		self.clockTimeIcon.isHidden = true
         self.clockLabel.isHidden = true
-        self.clockTimeIcon.isHidden = true
 		self.clockTime = -1// (6 * 1000)
 		self.disableAddMinute()
     }
