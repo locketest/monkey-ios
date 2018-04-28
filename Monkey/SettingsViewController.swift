@@ -1187,9 +1187,9 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     
         let editProfileHeight :CGFloat = 300
         var editProfileStartPointY = UIScreen.main.bounds.size.height - deltaY - editProfileHeight-12
-        if editProfileStartPointY<20 {
-            editProfileStartPointY = 20
-        }
+//        if editProfileStartPointY<20 {
+//            editProfileStartPointY = 20
+//        }
         self.profileView.isHidden = true
         self.containerView.isHidden = true
         self.stuffView.isHidden = true
