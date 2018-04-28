@@ -239,10 +239,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 					if canEdit == true {
                         self?.firstNameField.isUserInteractionEnabled = true
                         self?.firstNameTipLab.text = ""
+                        self?.firstNameField.textColor = UIColor.init(white: 1, alpha: 0.7)
                     }else{
                         if d<1{
                             d = 1
                         }
+                        self?.firstNameField.textColor = UIColor.init(white: 1, alpha: 0.5)
                         self?.firstNameField.isUserInteractionEnabled = false
                         self?.firstNameTipLab.text = "You can change your name after \(d) days"
                     }
