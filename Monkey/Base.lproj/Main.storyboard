@@ -846,7 +846,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.3411764705882353" green="0.12941176470588237" blue="0.99607843137254903" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="v1C-Gd-pze" firstAttribute="centerY" secondItem="Eju-z0-aUe" secondAttribute="centerY" id="geJ-r2-MRI"/>
                             <constraint firstItem="v1C-Gd-pze" firstAttribute="centerX" secondItem="FVg-wY-5Ex" secondAttribute="centerX" id="rVQ-VC-V0Z"/>
@@ -1819,7 +1819,7 @@ types of Monkey species in the entire world.</string>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mbV-Rf-K1k" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="40" y="591" width="140" height="56"/>
-                                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="140" id="6Sf-jv-TYx"/>
                                             <constraint firstAttribute="height" constant="56" id="lH8-Kf-YgT"/>
@@ -1841,7 +1841,7 @@ types of Monkey species in the entire world.</string>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GZI-MZ-WGI" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="118" y="591" width="140" height="56"/>
-                                        <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="140" id="K8W-WX-1At"/>
                                             <constraint firstAttribute="height" constant="56" id="sfu-PW-aZa"/>
@@ -2519,7 +2519,7 @@ types of Monkey species in the entire world.</string>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ndP-LR-piO" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="20" y="591" width="335" height="56"/>
-                                <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="56" id="5QH-xh-ZGi"/>
                                 </constraints>
@@ -2634,7 +2634,7 @@ types of Monkey species in the entire world.</string>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ehi-Il-ATj" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="20" y="371" width="335" height="56"/>
-                                <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="56" id="3s7-3C-ubh"/>
                                 </constraints>
@@ -2714,7 +2714,7 @@ types of Monkey species in the entire world.</string>
                             </view>
                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HIW-kQ-hmw" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="20" y="591" width="335" height="56"/>
-                                <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="56" id="k9J-Hd-Kau"/>
                                 </constraints>
