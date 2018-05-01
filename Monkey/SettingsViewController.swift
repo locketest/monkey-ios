@@ -152,8 +152,15 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 		self.contentScrollview.showsVerticalScrollIndicator = false
         
 		self.crateEditProfileUI()
-        
+        self.contentScrollview.bounces = false
         ScreenHeight < 666 ? (self.scrollViewHeightConstraint.constant = ScreenHeight - 44) : (self.scrollViewHeightConstraint.constant = 578)
+        
+        var tapGesture = UITapGestureRecognizer(target: self,action:#selector(handleTapGesture))
+        self.profileView.addGestureRecognizer(tapGesture)
+    }
+    func handleTapGesture(){
+        self.panningTowardsSide = .top
+       self.dismiss(animated: true, completion: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {

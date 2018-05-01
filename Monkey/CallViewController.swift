@@ -285,20 +285,19 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 
     func unhideAfterReportScreenshot() {
         self.chatSession?.subscriber?.view?.effectsEnabled = true
-
         self.policeButton.isHidden = false
         self.statusCornerView.isHidden = false
-
-        if self.addMinuteButton.isEnabled {
+        
+        if self.chatSession?.friendMatched == true {
+            self.endCallButton.isHidden = false
+        }else if self.chatSession?.matchMode == .EventMode {
+            self.skipButton.isHidden = false
+            self.snapchatButton.isHidden = false
+        }else {
             self.addMinuteButton.isHidden = false
-        }
-        if self.snapchatButton.isEnabled {
             self.snapchatButton.isHidden = false
         }
-		if self.chatSession?.friendMatched == false && self.chatSession?.matchMode == .EventMode {
-			self.skipButton.isHidden = false
-		}
-
+        
         if let label = self.containerView.viewWithTag(71074) as? UILabel {
             label.isHidden = false
         }

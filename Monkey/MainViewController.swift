@@ -374,7 +374,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 
 				let matchMode = self.chatSession?.matchMode ?? .VideoMode
 				if matchMode == .VideoMode {
-					self.acceptButton?.backgroundColor = UIColor.init(red: 76.0 / 255.0, green: 71.0 / 255.0, blue: 249.0 / 255.0, alpha: 1.0)
+					self.acceptButton?.backgroundColor = UIColor.init(red: 100.0 / 255.0, green: 74.0 / 255.0, blue: 241.0 / 255.0, alpha: 1.0)
 					self.matchModeEmojiLeft.text = "🎦"
 					self.matchModeEmojiRight.text = "🎦"
 					self.matchModeTip.text = "Video Chat"
@@ -705,7 +705,9 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 					
 					self.equivalentString = json["promotion"].string ?? ""
 					
-					self.bananaCountLabel.text = self.yesterdayString!
+                    if let currentUser = APIController.shared.currentUser {
+                         self.bananaCountLabel.text = currentUser.bananas.value!.description
+                    }
 					
 					if isNotificationBool || (UserDefaults.standard.value(forKey: KillAppBananaNotificationTag) as! String) != "" {
 						self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!, isNotificationBool:isNotificationBool)
@@ -1498,7 +1500,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 			}else {
 				self.skipped()
 			}
-		}
+        
+      }
 		let isCurrentSession = chatSession == self.chatSession
 		// 如果还没进到房间内
 		if chatSession.wasSkippable == false {
@@ -1739,7 +1742,7 @@ extension MainViewController {
 
 		let bananaCount = APIController.shared.currentUser?.bananas.value ?? 0
 		let formattedNumber = numberFormatter.string(from: NSNumber(value:bananaCount))
-//          self.bananaCountLabel.text = formattedNumber
+          self.bananaCountLabel.text = formattedNumber
 		AnaliticsCenter.update(userProperty: ["current_banana": bananaCount])
 
 		let bananaRect = formattedNumber?.boundingRect(forFont: self.bananaCountLabel.font, constrainedTo: CGSize(width: CGFloat.greatestFiniteMagnitude, height: self.bananaCountLabel.frame.size.height))
