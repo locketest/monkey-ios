@@ -1238,6 +1238,15 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		var bio = "Connecting"
 		if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
 			bio = convertBio
+			if RemoteConfigManager.shared.app_in_review == true {
+				let user_age_str = convertBio.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "")
+//				print("match a user with age \(user_age_str)")
+				if let age_range = convertBio.range(of: user_age_str), let user_age = Int(user_age_str), user_age < 19, user_age > 0 {
+					let new_age = abs(Int.arc4random() % 5) + 19
+					bio = convertBio.replacingCharacters(in: age_range, with: "\(new_age)")
+				}
+			}
+			
 			if let match_distance = call.match_distance.value, match_distance > 0, Achievements.shared.nearbyMatch == true {
 				bio = bio.appending("\n🏡\(match_distance)m")
 			}

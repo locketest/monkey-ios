@@ -125,8 +125,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.view.addSubview(self.editProfileView)
         self.editProfileView.layer.cornerRadius = self.containerView.layer.cornerRadius
         self.editProfileView.layer.masksToBounds = true
-        
-       
+		
         let editProfileTitleLab:UILabel = UILabel.init(frame: CGRect(x:0,y:0,width:UIScreen.main.bounds.size.width,height:30))
         //foregroundColor
         editProfileTitleLab.backgroundColor = UIColor.init(white: 0, alpha: 0.56)
@@ -154,8 +153,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
 		self.crateEditProfileUI()
         self.contentScrollview.bounces = false
         ScreenHeight < 666 ? (self.scrollViewHeightConstraint.constant = ScreenHeight - 44) : (self.scrollViewHeightConstraint.constant = 578)
+		if RemoteConfigManager.shared.app_in_review {
+			self.scrollViewHeightConstraint.constant -= 233
+			self.containerView.removeFromSuperview()
+		}
         
-        var tapGesture = UITapGestureRecognizer(target: self,action:#selector(handleTapGesture))
+        let tapGesture = UITapGestureRecognizer(target: self,action:#selector(handleTapGesture))
         self.profileView.addGestureRecognizer(tapGesture)
     }
     func handleTapGesture(){
@@ -779,24 +782,13 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
     let aboutUSData = SettingsTableViewCellData(for: .aboutUS, title: "🐒 About us")
     let signOutData = SettingsTableViewCellData(for: .signOut, title: "🙈 Sign out")
     var cells: [SettingsTableViewCellData] {
-		var basicCells = [
+		let basicCells = [
 			talkToData,
-		]
-//        if RemoteConfigManager.shared.app_in_review == false {
-//            basicCells.append(acceptButtonData)
-//        }
+			acceptButtonData,
+			nearbyButtonData,
+			]
 		
-		basicCells.append(contentsOf: [
-            acceptButtonData,
-            nearbyButtonData,
-//            inviteFriendsData,
-//            aboutUSData,
-//            signOutData,
-			])
 		return basicCells
-//		rateOnAppStoreData,
-//		addOnSnapchatData,
-//		legalStuffData,
     }
 	
 	

@@ -615,6 +615,7 @@
                                             <constraint firstAttribute="trailing" secondItem="gyy-0x-vkc" secondAttribute="trailing" id="ChA-Xq-8nU"/>
                                             <constraint firstAttribute="trailing" secondItem="kYl-X6-h61" secondAttribute="trailing" id="DNH-eX-Rzm"/>
                                             <constraint firstAttribute="trailing" secondItem="R2F-EW-BP4" secondAttribute="trailing" id="HLt-2U-sSd"/>
+                                            <constraint firstItem="kYl-X6-h61" firstAttribute="top" relation="greaterThanOrEqual" secondItem="gyy-0x-vkc" secondAttribute="bottom" constant="5" id="Lyk-jH-4Ib"/>
                                             <constraint firstItem="gyy-0x-vkc" firstAttribute="top" secondItem="NaG-mn-wM0" secondAttribute="top" id="MDo-0m-WW9"/>
                                             <constraint firstAttribute="bottom" secondItem="kYl-X6-h61" secondAttribute="bottom" id="QCW-0z-z92"/>
                                             <constraint firstItem="gyy-0x-vkc" firstAttribute="leading" secondItem="NaG-mn-wM0" secondAttribute="leading" id="SMy-0D-CMx"/>
@@ -628,7 +629,6 @@
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="NaG-mn-wM0" secondAttribute="trailing" id="8pX-Yr-aMI"/>
                                     <constraint firstItem="NaG-mn-wM0" firstAttribute="leading" secondItem="80f-iG-I4o" secondAttribute="leading" id="Hud-Kz-rQb"/>
-                                    <constraint firstItem="NaG-mn-wM0" firstAttribute="height" secondItem="80f-iG-I4o" secondAttribute="height" priority="999" constant="1" id="SCI-SO-cvx"/>
                                     <constraint firstAttribute="height" constant="578" id="bnO-wI-r67"/>
                                     <constraint firstAttribute="bottom" secondItem="NaG-mn-wM0" secondAttribute="bottom" id="kYr-U6-L97"/>
                                     <constraint firstItem="NaG-mn-wM0" firstAttribute="top" secondItem="80f-iG-I4o" secondAttribute="top" id="lSS-xv-ufR"/>
