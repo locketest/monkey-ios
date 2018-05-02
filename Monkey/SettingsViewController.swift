@@ -16,7 +16,7 @@ import RealmSwift
 
 
 
-class SettingsViewController: SwipeableViewController, UITableViewDelegate, SettingsBooleanTableViewCellDelegate, SettingsHashtagCellDelegate, MFMessageComposeViewControllerDelegate, UITableViewDataSource, ProfilePhotoButtonViewDelegate,UITextFieldDelegate {
+class SettingsViewController: SwipeableViewController, UITableViewDelegate, SettingsBooleanTableViewCellDelegate, SettingsHashtagCellDelegate, MFMessageComposeViewControllerDelegate, UITableViewDataSource, ProfilePhotoButtonViewDelegate,UITextFieldDelegate,InstagramAuthDelegate {
 
     @IBOutlet var containerView: MakeUIViewGreatAgain!
 
@@ -186,6 +186,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.contentScrollview.isScrollEnabled = true
         self.profileView.isHidden = false
         self.stuffView.isHidden = false
+        if let ins = APIController.shared.currentUser?.instagram_account{
+            self.linkInstgramLabel.text = "🌅 Unlink instagram"
+        }else{
+            self.linkInstgramLabel.text = "📸 Link instagram"
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -332,7 +337,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         RealmInstagramAccount.create(parameters: parameters) { [weak self] (result: JSONAPIResult<[RealmInstagramAccount]>) in
             switch result {
             case .success(_):
-                self?.linkInstgramLabel.text = "📸 Link instagram"
+                self?.linkInstgramLabel.text = "🌅 Unlink instagram"
                 break
             case .error(let error):
                 error.log()
@@ -569,11 +574,19 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         guard let loginUrl = APIController.shared.currentExperiment?.instagram_login_url else {
             return
         }
-
-        let instagramWebViewController = SFSafariViewController(url: URL(string:loginUrl)!, entersReaderIfAvailable: false)
-        instagramWebViewController.modalPresentationStyle = .overFullScreen
-        instagramWebViewController.delegate = self
-        self.present(instagramWebViewController, animated: true, completion: nil)
+    
+        let inscontroller = InstagramAuthViewController.init()
+        let authurl =  URL.init(string:loginUrl)
+        
+        /**
+          let authurl =  URL.init(string: "https://www.instagram.com/oauth/authorize/?client_id=8b3db6cce44c4344a048cf9f91bfcfbc&redirect_uri=https://api.monkey.cool/instagram-login&response_type=code&scope=basic")
+         **/
+       
+        inscontroller.webURL = authurl
+        inscontroller.authDelegate = self
+        let insnav = UINavigationController.init(rootViewController: inscontroller)
+        insnav.modalPresentationStyle = .overFullScreen
+        self.present(insnav, animated: true, completion: nil)
     }
 
     func unlinkInstagram() {
@@ -587,7 +600,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 return
             }
             
-            self.linkInstgramLabel.text = "🌅 Unlink instagram"
+            self.linkInstgramLabel.text = "📸 Link instagram"
 
             print("Instagram account unlinked & deleted")
         }
@@ -740,7 +753,15 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
             self.unlinkInstagram()
         }
     }
-    
+    func authInstagramSuccess(code: String) {
+        //        self.linkInstagramToUser(code)
+        //        self.panningTowardsSide = .top
+        self.refreshEditStatus()
+        self.resetEditProfileFrame()
+    }
+    func authInstagramFailure() {
+        
+    }
     @IBAction func signOutClickFunc(_ sender: UIButton) {
         
         let alertController = UIAlertController(title: "You sure you want to log out?", message: nil, preferredStyle: .actionSheet)

@@ -110,6 +110,7 @@
 		8BFD6D681EFB280D002C9F9C /* EffectsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */; };
 		8BFD6D6D1EFB2DF0002C9F9C /* MonkeySubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */; };
 		926434F6647F6A00FB3D858C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C07119D48848FAD5F3C2D15D /* QuartzCore.framework */; };
+		990EC94C20997BC600CA5E0B /* InstagramAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990EC94B20997BC600CA5E0B /* InstagramAuthViewController.swift */; };
 		A9067019D4255969BBBF9985 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A7638BB109409425659E70 /* AssetsLibrary.framework */; };
 		BC6F255BD62D231DEEBA4D64 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CC1931042C0D849CBDEF7C6 /* SystemConfiguration.framework */; };
 		BF5258B01E95D1F4002EA03F /* RealmUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5258AF1E95D1F4002EA03F /* RealmUser.swift */; };
@@ -345,6 +346,7 @@
 		8BFD6D611EFAEA87002C9F9C /* MonkeyPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyPublisher.swift; sourceTree = "<group>"; };
 		8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EffectsCoordinator.swift; sourceTree = "<group>"; };
 		8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeySubscriber.swift; sourceTree = "<group>"; };
+		990EC94B20997BC600CA5E0B /* InstagramAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramAuthViewController.swift; sourceTree = "<group>"; };
 		AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		B9991ED105ADE4E332E64721 /* Pods_Monkey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Monkey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE54E7880503939DF9ADCFC1 /* Pods-Monkey.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.development.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.development.xcconfig"; sourceTree = "<group>"; };
@@ -704,6 +706,7 @@
 				8BE02A451EE9FBC7004CF000 /* Settings.storyboard */,
 				8BA4D6DE1E2362240066776A /* SettingsViewController.swift */,
 				8B8460D51EB3338800D54DF3 /* SettingsTextFieldTableViewCell.swift */,
+				990EC94B20997BC600CA5E0B /* InstagramAuthViewController.swift */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -1424,6 +1427,7 @@
 				C0DAAB141F538C5300739F42 /* RealmInstagramPhoto.swift in Sources */,
 				8B1769441ED1634E005EF8D4 /* RealmRelationship.swift in Sources */,
 				D1B79D302060DACB00F209B4 /* IFSierraFilter.m in Sources */,
+				990EC94C20997BC600CA5E0B /* InstagramAuthViewController.swift in Sources */,
 				8B6EB50E1DB0817F0051C8D2 /* AppDelegate.swift in Sources */,
 				D47833DE1F2BD3F7007F37DB /* MessageNotificationView.swift in Sources */,
 				8B8664BB1F04902D00E5AC12 /* Effect.swift in Sources */,
