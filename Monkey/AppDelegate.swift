@@ -173,11 +173,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func handleRemoteNotificationFunc(userInfo: [AnyHashable : Any], application: UIApplication) {
-        
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object: (userInfo[AnyHashable("data")] as! NSDictionary)["link"] as! String)
-        
-        UserDefaults.standard.setValue((userInfo[AnyHashable("data")] as! NSDictionary)["link"] as! String, forKey: KillAppBananaNotificationTag)
-        
+		if let notiInfoData = userInfo["data"] as? [String: Any], let link = notiInfoData["link"] as? String {
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object:link)
+			UserDefaults.standard.setValue(link, forKey: KillAppBananaNotificationTag)
+		}
     }
     
 	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {

@@ -819,6 +819,9 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             self.accept()
         }
 		
+		guard self.isDialedCall == false else {
+			return
+		}
         DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_accept_time))) { [weak self] in
             guard let `self` = self else { return }
             if self.response == nil {

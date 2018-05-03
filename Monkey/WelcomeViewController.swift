@@ -174,7 +174,7 @@ extension WelcomeViewController: AKFViewControllerDelegate {
 
 extension WelcomeViewController: UITextViewDelegate {
 	func configTermsView() {
-		let termsString = "By logging in, you are agreeing to our Terms of Service and Privacy Policy."
+		let termsString = "Tap \"Agree & Continue\" to accept the Monkey Terms of Service and  Privacy Policy."
 		let termsAttributeString = NSMutableAttributedString.init(string: termsString)
 		let termsNSString = NSString.init(string: termsString)
 		
@@ -192,15 +192,15 @@ extension WelcomeViewController: UITextViewDelegate {
 			NSLinkAttributeName: "monkey://privacy",
 			], range: privacyRange)
 		termsAttributeString.addAttributes([
-			NSForegroundColorAttributeName: UIColor.init(white: 1, alpha: 0.25),
-			NSFontAttributeName: UIFont.systemFont(ofSize: 13),
+			NSForegroundColorAttributeName: UIColor.init(red: 1, green: 1, blue: 0, alpha: 0.7),
+			NSFontAttributeName: UIFont.systemFont(ofSize: 19, weight: UIFontWeightSemibold),
 			NSParagraphStyleAttributeName: paragraphStyle,
 			], range: NSMakeRange(0, termsNSString.length))
 		termsTextView.attributedText = termsAttributeString;
 		
 		let linkAttributes = [
-			NSForegroundColorAttributeName: UIColor.init(white: 1, alpha: 0.25),
-			NSUnderlineColorAttributeName: UIColor.init(white: 1, alpha: 0.25),
+			NSForegroundColorAttributeName: UIColor.init(red: 1, green: 1, blue: 0, alpha: 0.7),
+			NSUnderlineColorAttributeName: UIColor.init(red: 1, green: 1, blue: 0, alpha: 0.7),
 			] as [String : Any]
 		termsTextView.linkTextAttributes = linkAttributes;
 	}

@@ -472,6 +472,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 		self.matchModePopup.layer.cornerRadius = 12
 		self.matchModePopup.alpha = 0
 		
+		self.eventModePopup.isHidden = true
 		self.eventModePopup.roundedSquare = true
 		self.eventModePopup.layer.cornerRadius = 12
 		self.eventModePopup.layer.masksToBounds = true

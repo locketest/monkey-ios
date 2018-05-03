@@ -70,14 +70,14 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yNH-Yi-tg9" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="531" width="335" height="56"/>
+                                        <rect key="frame" x="20" y="551" width="335" height="56"/>
                                         <color key="backgroundColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="56" id="uRW-Hj-84r"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" title="Get Started">
+                                        <state key="normal" title="Agree &amp; Continue">
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <userDefinedRuntimeAttributes>
@@ -89,11 +89,11 @@
                                             <action selector="nextVC:" destination="Yof-0h-XrG" eventType="touchUpInside" id="twB-Dy-2ia"/>
                                         </connections>
                                     </button>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="335" placeholderIntrinsicHeight="50" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" editable="NO" text="By logging in, you are agreeing to our Terms of Service and Privacy Policy." textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="qpl-V1-YUz">
-                                        <rect key="frame" x="20" y="597" width="335" height="50"/>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="335" placeholderIntrinsicHeight="78" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" editable="NO" text="Tap &quot;Agree &amp; Continue&quot; to accept the Monkey Terms of Service and  Privacy Policy." textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="qpl-V1-YUz">
+                                        <rect key="frame" x="20" y="445" width="335" height="78"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="0.25" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="textColor" red="1" green="0.98431372549019602" blue="0.0039215686274509803" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         <connections>
                                             <outlet property="delegate" destination="Yof-0h-XrG" id="V1j-yG-UFM"/>
@@ -108,14 +108,14 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="qpl-V1-YUz" firstAttribute="top" secondItem="yNH-Yi-tg9" secondAttribute="bottom" constant="10" id="AHu-XS-m3p"/>
                                     <constraint firstItem="Xzg-Tm-YZ7" firstAttribute="centerX" secondItem="wHu-jB-PwC" secondAttribute="centerX" id="HEW-lj-L1S"/>
                                     <constraint firstItem="yNH-Yi-tg9" firstAttribute="leading" secondItem="wHu-jB-PwC" secondAttribute="leading" constant="20" id="Qe6-r8-dPZ"/>
                                     <constraint firstAttribute="trailing" secondItem="qpl-V1-YUz" secondAttribute="trailing" constant="20" id="Rr9-DJ-m6a"/>
+                                    <constraint firstAttribute="bottom" secondItem="yNH-Yi-tg9" secondAttribute="bottom" constant="60" id="TE2-0s-fVW"/>
                                     <constraint firstItem="qpl-V1-YUz" firstAttribute="centerX" secondItem="wHu-jB-PwC" secondAttribute="centerX" id="U9f-ym-BJK"/>
                                     <constraint firstAttribute="trailing" secondItem="yNH-Yi-tg9" secondAttribute="trailing" constant="20" id="Zc0-kE-6b0"/>
-                                    <constraint firstAttribute="bottom" secondItem="qpl-V1-YUz" secondAttribute="bottom" constant="20" id="mST-DI-qNu"/>
                                     <constraint firstItem="Xzg-Tm-YZ7" firstAttribute="centerY" secondItem="wHu-jB-PwC" secondAttribute="centerY" constant="-20" id="mjL-32-f8Z"/>
+                                    <constraint firstItem="yNH-Yi-tg9" firstAttribute="top" secondItem="qpl-V1-YUz" secondAttribute="bottom" constant="28" id="yra-QJ-mBK"/>
                                 </constraints>
                             </view>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="9T9-cg-jN0">

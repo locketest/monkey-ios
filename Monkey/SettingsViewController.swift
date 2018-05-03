@@ -144,17 +144,18 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         blurView.autoresizingMask = UIViewAutoresizing.flexibleHeight
         self.editProfileView.addSubview(blurView)
         
-        editProfileContentView =  UIView.init(frame: CGRect(x: 0, y: 30, width: UIScreen.main.bounds.size.width, height: self.editProfileView.height - 30))
+        editProfileContentView =  UIView.init(frame: CGRect(x: 0, y: 30, width: self.editProfileView.frame.size.width, height: self.editProfileView.height - 30))
         editProfileContentView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+		editProfileContentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.editProfileView.addSubview(editProfileContentView)
         self.editBirthdayStatus = false
 		self.contentScrollview.showsVerticalScrollIndicator = false
         
 		self.crateEditProfileUI()
         self.contentScrollview.bounces = false
-        ScreenHeight < 666 ? (self.scrollViewHeightConstraint.constant = ScreenHeight - 44) : (self.scrollViewHeightConstraint.constant = 578)
+		let containerViewHeight: CGFloat = RemoteConfigManager.shared.app_in_review ? 233 : 0
+		self.scrollViewHeightConstraint.constant = min(ScreenHeight - 44, 578 - containerViewHeight)
 		if RemoteConfigManager.shared.app_in_review {
-			self.scrollViewHeightConstraint.constant -= 233
 			self.containerView.removeFromSuperview()
 		}
         
@@ -556,7 +557,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                 self.view.layoutIfNeeded()
                 self.editProfileView.frame = editprofileRect
                 self.containerView.frame = settingRect
-                self.editProfileContentView.height = self.editProfileView.height-30
                 self.stuffView.frame = CGRect(x: -self.view.frame.size.width, y: self.stuffView.frame.origin.y, width: self.stuffView.frame.size.width, height: self.stuffView.frame.size.height)
             }) { (completed) in
                 UIView.animate(withDuration: 0.15, animations: {
@@ -760,7 +760,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.resetEditProfileFrame()
     }
     func authInstagramFailure() {
-        
+		self.refreshEditStatus()
+		self.resetEditProfileFrame()
     }
     @IBAction func signOutClickFunc(_ sender: UIButton) {
         
@@ -1036,7 +1037,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
                     
                     self.pickerContainerView.frame = CGRect(x:0,y:UIScreen.main.bounds.size.height,width:UIScreen.main.bounds.size.width,height:220);
                     self.editProfileView.frame = CGRect(x:5,y:self.contentScrollview.y+self.profileView.height+5,width:self.editProfileView.width,height:ScreenHeight-self.contentScrollview.y-self.profileView.height-5-26)
-                    self.editProfileContentView.height = self.editProfileView.height-30
                    
             },
                 completion: { Void in()
@@ -1219,7 +1219,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, Sett
         self.pickerContainerView.frame = CGRect(x:0,y:UIScreen.main.bounds.size.height,width:UIScreen.main.bounds.size.width,height:220);
         
         self.editProfileView.frame = CGRect(x:5,y:self.contentScrollview.y+self.profileView.height+5,width:self.editProfileView.width,height:ScreenHeight-self.contentScrollview.y-self.profileView.height-5-26)
-        self.editProfileContentView.height = self.editProfileView.height-30
         
         self.cancelBtn.isHidden = true
         self.saveBtn.isHidden = true
