@@ -10,6 +10,7 @@
 #import "HWCameraManager.h"
 
 #import "UIView+MJ.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import <GPUImage/GPUImage.h>
 #import <CommonCrypto/CommonCrypto.h>

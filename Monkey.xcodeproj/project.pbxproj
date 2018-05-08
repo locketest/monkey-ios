@@ -12,8 +12,19 @@
 		1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76B194206A46560044AC7F /* RealmVideoCall.swift */; };
 		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD655482046B2A900CAA2D5 /* Configs.swift */; };
+		340BBCE2209B21FD003003BD /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340BBCE1209B21FD003003BD /* SettingModel.swift */; };
+		340BBCE4209B23A1003003BD /* SettingBasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340BBCE3209B23A1003003BD /* SettingBasicCell.swift */; };
+		340BBCEA209B2A23003003BD /* SettingProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340BBCE9209B2A23003003BD /* SettingProfileCell.swift */; };
+		340BBCEC209B304B003003BD /* SettingImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340BBCEB209B304B003003BD /* SettingImageCell.swift */; };
+		340BBCEE209B3275003003BD /* SettingButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340BBCED209B3275003003BD /* SettingButtonCell.swift */; };
+		340BBD16209C40D5003003BD /* SettingHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340BBD15209C40D5003003BD /* SettingHeadView.swift */; };
+		340BBD19209C510A003003BD /* SettingEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340BBD18209C510A003003BD /* SettingEditViewController.swift */; };
+		340BBD1B209C6C06003003BD /* SettingCancelSaveCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340BBD1A209C6C06003003BD /* SettingCancelSaveCell.swift */; };
+		340BBD1D209C6E32003003BD /* SettingEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340BBD1C209C6E32003003BD /* SettingEditCell.swift */; };
 		34B7F7DB20898CCA00A6B7B2 /* UIView+MJ.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */; };
 		34B7F7DC20898CCA00A6B7B2 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */; };
+		34E1F4D42099BBD2004FB237 /* SettingMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E1F4D32099BBD2004FB237 /* SettingMainViewController.swift */; };
+		34E1F4D72099E062004FB237 /* Setting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34E1F4D62099E062004FB237 /* Setting.xib */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
 		5D419F63CE951F23C4C7D274 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */; };
 		8435C2E11F12EE6600C80AC6 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2E01F12EE6600C80AC6 /* ChatViewController.swift */; };
@@ -239,10 +250,21 @@
 		1BD655482046B2A900CAA2D5 /* Configs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE97C1F3FCD83F9563287C4 /* Pods-Monkey.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.production.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.production.xcconfig"; sourceTree = "<group>"; };
+		340BBCE1209B21FD003003BD /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
+		340BBCE3209B23A1003003BD /* SettingBasicCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingBasicCell.swift; sourceTree = "<group>"; };
+		340BBCE9209B2A23003003BD /* SettingProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingProfileCell.swift; sourceTree = "<group>"; };
+		340BBCEB209B304B003003BD /* SettingImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingImageCell.swift; sourceTree = "<group>"; };
+		340BBCED209B3275003003BD /* SettingButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingButtonCell.swift; sourceTree = "<group>"; };
+		340BBD15209C40D5003003BD /* SettingHeadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingHeadView.swift; sourceTree = "<group>"; };
+		340BBD18209C510A003003BD /* SettingEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingEditViewController.swift; sourceTree = "<group>"; };
+		340BBD1A209C6C06003003BD /* SettingCancelSaveCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCancelSaveCell.swift; sourceTree = "<group>"; };
+		340BBD1C209C6E32003003BD /* SettingEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingEditCell.swift; sourceTree = "<group>"; };
 		34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJ.m"; sourceTree = "<group>"; };
 		34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		34B7F7D920898CC900A6B7B2 /* UIView+MJ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJ.h"; sourceTree = "<group>"; };
 		34B7F7DA20898CC900A6B7B2 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
+		34E1F4D32099BBD2004FB237 /* SettingMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingMainViewController.swift; sourceTree = "<group>"; };
+		34E1F4D62099E062004FB237 /* Setting.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Setting.xib; sourceTree = "<group>"; };
 		36BDAAEC1AB6615D506ADC62 /* Pods-Monkey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.release.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.release.xcconfig"; sourceTree = "<group>"; };
 		79CF9C670055FE2BC0618C68 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8435C2E01F12EE6600C80AC6 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
@@ -514,6 +536,38 @@
 			name = Manager;
 			sourceTree = "<group>";
 		};
+		340BBCDE209B2098003003BD /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				34E1F4D32099BBD2004FB237 /* SettingMainViewController.swift */,
+				340BBD18209C510A003003BD /* SettingEditViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		340BBCDF209B20A9003003BD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				340BBCE1209B21FD003003BD /* SettingModel.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		340BBCE0209B20B7003003BD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				34E1F4D62099E062004FB237 /* Setting.xib */,
+				340BBCE3209B23A1003003BD /* SettingBasicCell.swift */,
+				340BBCE9209B2A23003003BD /* SettingProfileCell.swift */,
+				340BBCEB209B304B003003BD /* SettingImageCell.swift */,
+				340BBCED209B3275003003BD /* SettingButtonCell.swift */,
+				340BBD15209C40D5003003BD /* SettingHeadView.swift */,
+				340BBD1A209C6C06003003BD /* SettingCancelSaveCell.swift */,
+				340BBD1C209C6E32003003BD /* SettingEditCell.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		4CFD1997C021F7E7A16B61BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -703,6 +757,9 @@
 		8BA4D6E01E2366930066776A /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				340BBCDE209B2098003003BD /* Controllers */,
+				340BBCDF209B20A9003003BD /* Models */,
+				340BBCE0209B20B7003003BD /* Views */,
 				8BE02A451EE9FBC7004CF000 /* Settings.storyboard */,
 				8BA4D6DE1E2362240066776A /* SettingsViewController.swift */,
 				8B8460D51EB3338800D54DF3 /* SettingsTextFieldTableViewCell.swift */,
@@ -1124,6 +1181,7 @@
 				8BC4BA501E1B617500891566 /* fail.mp3 in Resources */,
 				8B3A78761DB2F87C00FA68A7 /* score.mp3 in Resources */,
 				D4656C631F4B961800966C6D /* onboarding-2.gif in Resources */,
+				34E1F4D72099E062004FB237 /* Setting.xib in Resources */,
 				8BE02A441EE9FB7E004CF000 /* Chat.storyboard in Resources */,
 				8BDFD97E1E6C47A7009E5EE4 /* message.wav in Resources */,
 				8B6EB5131DB0817F0051C8D2 /* Main.storyboard in Resources */,
@@ -1243,6 +1301,7 @@
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyGif/SwiftyGif.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
@@ -1267,6 +1326,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyGif.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
@@ -1289,9 +1349,11 @@
 				D1B79CF9205FE39A00F209B4 /* RealmPhoneAuth.swift in Sources */,
 				8435C2EE1F1443F200C80AC6 /* FriendsViewController.swift in Sources */,
 				D47833E21F2BF276007F37DB /* NotificationManager.swift in Sources */,
+				340BBCE2209B21FD003003BD /* SettingModel.swift in Sources */,
 				8B6A57A21EAEBF3E00136311 /* JSONAPI.swift in Sources */,
 				D192A3E5202ACE5E00791002 /* TextChatViewController+Reporting.swift in Sources */,
 				D1B79D382060DACB00F209B4 /* IFInkwellFilter.m in Sources */,
+				340BBCE4209B23A1003003BD /* SettingBasicCell.swift in Sources */,
 				8BFD6D681EFB280D002C9F9C /* EffectsCoordinator.swift in Sources */,
 				8BE02A4C1EEA42A2004CF000 /* SwipeableTransitionSlideAnimator.swift in Sources */,
 				8435C2EA1F14018100C80AC6 /* FriendsViewModel.swift in Sources */,
@@ -1338,10 +1400,12 @@
 				D192A3E7202AD1CE00791002 /* MatchViewControllerProtocol.swift in Sources */,
 				8B3A787B1DB32ABF00FA68A7 /* EmojiLabel.swift in Sources */,
 				C0AD96BA1F6721A9007932AF /* RealmFriendship.swift in Sources */,
+				34E1F4D42099BBD2004FB237 /* SettingMainViewController.swift in Sources */,
 				8B3A787D1DB32CB000FA68A7 /* SoundPlayer.swift in Sources */,
 				D4C767A51F689C6E002606C6 /* RealmSnapcode.swift in Sources */,
 				1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */,
 				D1B79D3A2060DACB00F209B4 /* IFXproIIFilter.m in Sources */,
+				340BBD19209C510A003003BD /* SettingEditViewController.swift in Sources */,
 				8B19B6761EBD5D9000493A3A /* EditProfilePopupViewController.swift in Sources */,
 				D4656C4D1F49F98700966C6D /* PermissionViewController.swift in Sources */,
 				1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */,
@@ -1350,12 +1414,14 @@
 				D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */,
 				8BC903291EBE7012004B46D8 /* PopupTransitionPresentNewPopupAnimator.swift in Sources */,
 				8BBE244B1DC1B86B00F63CED /* LoadingTextLabel.swift in Sources */,
+				340BBCEE209B3275003003BD /* SettingButtonCell.swift in Sources */,
 				8B6EB5101DB0817F0051C8D2 /* EditAccountViewController.swift in Sources */,
 				D17CE989200A1186002F4F9D /* Analytics.swift in Sources */,
 				8BB8958A1DBDB09F00FC5E53 /* Chat.swift in Sources */,
 				8B6A579E1EAE9AE300136311 /* JSONAPIObject.swift in Sources */,
 				8BE491301E86C39A002E9D78 /* GenderButton.swift in Sources */,
 				8B7DC74E1EF7200500A3F966 /* SwipeablePresentationController.swift in Sources */,
+				340BBD16209C40D5003003BD /* SettingHeadView.swift in Sources */,
 				D4F35BCC1F5AF564003D3902 /* AsyncCarouselImageView.swift in Sources */,
 				8B7DC74C1EF5CF9000A3F966 /* ChannelsTableViewCell.swift in Sources */,
 				8B8460D61EB3338800D54DF3 /* SettingsTextFieldTableViewCell.swift in Sources */,
@@ -1367,6 +1433,7 @@
 				8B46EAEC1E8770360069C7D7 /* Colors.swift in Sources */,
 				D1B79CF7205FDD0500F209B4 /* FilterViewController.swift in Sources */,
 				34B7F7DC20898CCA00A6B7B2 /* UIView+Extension.m in Sources */,
+				340BBCEC209B304B003003BD /* SettingImageCell.swift in Sources */,
 				C01873711F4F2B92008C8790 /* InstagramPopupViewController.swift in Sources */,
 				8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */,
 				8BA5D3561F57263900F732BF /* InputLabel.swift in Sources */,
@@ -1400,10 +1467,12 @@
 				C0197E371F60A435005F121A /* RealmBlock.swift in Sources */,
 				D1B79D322060DACB00F209B4 /* IFRiseFilter.m in Sources */,
 				D1B79CFB205FE3BF00F209B4 /* RealmMatchUser.swift in Sources */,
+				340BBD1B209C6C06003003BD /* SettingCancelSaveCell.swift in Sources */,
 				8435C2E81F13DBBC00C80AC6 /* ChatViewModel.swift in Sources */,
 				8BC95FFA1DF626DD00710628 /* WelcomeViewController.swift in Sources */,
 				C0BDAF5B1F4F51D500FA2F38 /* KeypadButton.swift in Sources */,
 				8B7C19361DB15A6F002FA6C9 /* AuthViewController.swift in Sources */,
+				340BBCEA209B2A23003003BD /* SettingProfileCell.swift in Sources */,
 				8B52F1721EBF6726008BD779 /* VerifyBirthdayPopupViewController.swift in Sources */,
 				8BE35E2C1DB9DD93002049B5 /* BannedViewController.swift in Sources */,
 				D1B79D3B2060DACB00F209B4 /* IFLordKelvinFilter.m in Sources */,
@@ -1422,6 +1491,7 @@
 				8B7C193A1DB17967002FA6C9 /* MainViewController.swift in Sources */,
 				8B6DC3351DB4978A004F787E /* Environment.swift in Sources */,
 				D1B79D2D2060DACB00F209B4 /* IFBrannanFilter.m in Sources */,
+				340BBD1D209C6E32003003BD /* SettingEditCell.swift in Sources */,
 				8BE491321E875E3B002E9D78 /* AgePickerView.swift in Sources */,
 				8499A58C1E86DED80088D0D2 /* TapticFeedback.swift in Sources */,
 				C0DAAB141F538C5300739F42 /* RealmInstagramPhoto.swift in Sources */,

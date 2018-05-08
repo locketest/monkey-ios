@@ -1,8 +1,8 @@
 PODS:
   - AccountKit (4.31.0)
-  - Adjust (4.12.3):
-    - Adjust/Core (= 4.12.3)
-  - Adjust/Core (4.12.3)
+  - Adjust (4.13.0):
+    - Adjust/Core (= 4.13.0)
+  - Adjust/Core (4.13.0)
   - Alamofire (4.3.0)
   - Amplitude-iOS (4.2.0)
   - Bolts (1.9.0):
@@ -19,7 +19,7 @@ PODS:
   - DeviceKit (1.7.0)
   - Fabric (1.7.6)
   - FBNotifications (1.0.1)
-  - FBSDKCoreKit (4.32.0):
+  - FBSDKCoreKit (4.33.0):
     - Bolts (~> 1.7)
   - Firebase/Core (4.13.0):
     - FirebaseAnalytics (= 4.2.0)
@@ -76,13 +76,16 @@ PODS:
     - ObjectMapper
     - ObjectMapperAdditions/Core
     - RealmSwift
-  - OpenTok (2.13.0)
+  - OpenTok (2.14.0)
   - Protobuf (3.5.0)
   - Realm (3.5.0):
     - Realm/Headers (= 3.5.0)
   - Realm/Headers (3.5.0)
   - RealmSwift (3.5.0):
     - Realm (= 3.5.0)
+  - SDWebImage (4.3.3):
+    - SDWebImage/Core (= 4.3.3)
+  - SDWebImage/Core (4.3.3)
   - Starscream (2.1.1)
   - SwiftyGif (4.1.0)
   - SwiftyJSON (4.0.0)
@@ -106,6 +109,7 @@ DEPENDENCIES:
   - ObjectMapperAdditions/Realm (~> 4.1)
   - OpenTok
   - RealmSwift
+  - SDWebImage (~> 4.3.3)
   - Starscream (~> 2.1.1)
   - SwiftyGif
   - SwiftyJSON (~> 4.0.0)
@@ -140,6 +144,7 @@ SPEC REPOS:
     - Protobuf
     - Realm
     - RealmSwift
+    - SDWebImage
     - Starscream
     - SwiftyGif
     - SwiftyJSON
@@ -156,7 +161,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AccountKit: f3e48047e6fb1c433dff37c61158fd32bbc482cf
-  Adjust: 22d701f72be3457e9f4f7c18ad4aab9436e0ef56
+  Adjust: 8f204c1005d6635e7c931c6a2cb2f881965bf478
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
   Amplitude-iOS: 45f10ac763db6f9ddfa06f2e4d63ed5f8d3c7bf6
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
@@ -165,7 +170,7 @@ SPEC CHECKSUMS:
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
-  FBSDKCoreKit: 55d7f2ac45d9c4b9b6119f4e43900fe84b9b7b1b
+  FBSDKCoreKit: 572b047a7e029bc44542bcf8a59414e7ff2b543e
   Firebase: 5ec5e863d269d82d66b4bf56856726f8fb8f0fb3
   FirebaseABTesting: d07d0ee833b842d5153549e4c7e2e2cb1c23a3f9
   FirebaseAnalytics: 7ef69e76a5142f643aeb47c780e1cdce4e23632e
@@ -180,14 +185,15 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
   ObjectMapperAdditions: db4243e10ebd9abf7e5e7938e4b0a4bbfd840980
-  OpenTok: 9fa8d108284d751f284bf294a91c20529bde7df6
+  OpenTok: f4c0f42fd2e4e4d2682b12dcb94313aa88558e14
   Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
   Realm: 0378021c424e4e2bd6a0e63b27881e929d9b9ad1
   RealmSwift: 3322562622fda2ad596985ead4d8d8be30cf838c
+  SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftyGif: d36c6dfb52e2ca1e48fe349d225f50ec4123ec85
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
-PODFILE CHECKSUM: f0b69a9aac4289df1fb1a1fd732b019b2854f3f1
+PODFILE CHECKSUM: b849bcf06c3b0a0e8abe96e7ddd3bc65ee0e933f
 
 COCOAPODS: 1.5.0

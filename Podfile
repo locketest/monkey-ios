@@ -32,6 +32,7 @@ target 'Monkey' do
 	pod 'ObjectMapperAdditions/Realm', '~> 4.1'
 	pod 'ObjectMapper', '~> 3.1'
     pod 'SwiftyJSON', '~> 4.0.0'
+    pod 'SDWebImage', '~> 4.3.3'
 	
 	pod 'MMSProfileImagePicker'
 	pod 'GPUImage', :git => 'https://github.com/holla-world/GPUImage.git', :branch => 'master'
