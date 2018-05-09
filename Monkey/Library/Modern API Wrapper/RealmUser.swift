@@ -22,9 +22,8 @@ class RealmUser: JSONAPIObject, JSONAPIObjectProtocol {
     let seconds_in_app = RealmOptional<Int>()
     let channels = List<RealmChannel>()
     let bananas = RealmOptional<Int>()
-    let facebook_friends_invited = RealmOptional<Int>()
-    let is_snapcode_uploaded = RealmOptional<Bool>()
 	let is_banned = RealmOptional<Bool>()
+	
     dynamic var gender: String?
     dynamic var show_gender: String?
     dynamic var address: String?
@@ -38,7 +37,7 @@ class RealmUser: JSONAPIObject, JSONAPIObjectProtocol {
     dynamic var birth_date: NSDate?
     dynamic var updated_at: NSDate?
     dynamic var created_at: NSDate?
-    dynamic var tag: RealmTag?
+	
     dynamic var last_online_at: NSDate?
     dynamic var instagram_account: RealmInstagramAccount?
 	
@@ -57,10 +56,8 @@ class RealmUser: JSONAPIObject, JSONAPIObjectProtocol {
         case address(String?)
         case first_name(String?)
         case birth_date(NSDate?)
-        case tag(RealmTag?)
         case channels(List<RealmChannel>)
         case seconds_in_app(Int?)
-        case facebook_friends_invited(Int?)
 		case is_banned(Bool?)
     }
 	
@@ -107,13 +104,6 @@ class RealmUser: JSONAPIObject, JSONAPIObjectProtocol {
                 attributesJSON["first_name"] = first_name ?? NSNull()
             case .birth_date(let birth_date):
                 attributesJSON["birth_date"] = birth_date?.iso8601 ?? NSNull()
-            case .tag(let tag):
-                relationshipsJSON["tag"] = tag == nil ? NSNull() : [
-                    "data": [
-                        "type": "tags",
-                        "id": tag!.tag_id, // Safe due to nil check above.
-                    ]
-                ]
             case .channels(let channels):
                 relationshipsJSON["channels"] = [
                     "data": Array(channels).map { (channel) in
@@ -125,12 +115,9 @@ class RealmUser: JSONAPIObject, JSONAPIObjectProtocol {
                 ]
             case .seconds_in_app(let seconds_in_app):
                 attributesJSON["seconds_in_app"] = seconds_in_app ?? NSNull()
-            case .facebook_friends_invited(let friends_invited): 
-                attributesJSON["facebook_friends_invited"] = friends_invited ?? NSNull()
 			case .is_banned(let is_banned):
 				attributesJSON["is_banned"] = is_banned ?? false
             }
-            
         }
 		
         JSONAPIRequest(url: "\(Environment.baseURL)/api/\(RealmUser.api_version)/\(RealmUser.requst_subfix)/\(user_id)", method: .patch, parameters: [

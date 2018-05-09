@@ -7,15 +7,15 @@
 //
 
 import UIKit
-import MMSProfileImagePicker
 import Alamofire
+import CropViewController
 
 /**
  Contains a button that when tapped, allows user to choose between Camera/Photo Library to set a profile photo. Once cropped and saved, the button uploads and displays the profile photo.
 
  To use, simply set the `presentingViewController` property and place where desired.
  */
-@IBDesignable class ProfilePhotoButtonView: UIView, MMSProfileImagePickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+@IBDesignable class ProfilePhotoButtonView: UIView {
     weak var delegate: ProfilePhotoButtonViewDelegate?
 
     /// When tapped, launches action sheet for Camera or Photo Library
@@ -69,16 +69,16 @@ import Alamofire
             imageView.isExclusiveTouch = false
             self.addSubview(imageView)
 
-            self.addConstraints([
-                // Set width to height
-                NSLayoutConstraint(item: imageView, attribute: .width, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 1.0, constant: 0.0),
-                // Center X
-                NSLayoutConstraint(item: imageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0),
-                // Pin top side
-                NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 0.0),
-                // Equal Height
-                NSLayoutConstraint(item: imageView, attribute: .height, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 1.0, constant: 0)
-                ])
+			self.addConstraints([
+				// Set width to height
+				NSLayoutConstraint(item: imageView, attribute: .width, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 1.0, constant: 0.0),
+				// Center X
+				NSLayoutConstraint(item: imageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0),
+				// Pin top side
+				NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 0.0),
+				// Equal Height
+				NSLayoutConstraint(item: imageView, attribute: .height, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 1.0, constant: 0)
+				])
 
         }
     }
@@ -98,9 +98,6 @@ import Alamofire
 
     /// Selected profile image, or previously set profile image if available from server.
     var profileImage : UIImage?
-
-    /// The picker class that manages photo selection and cropping
-    var profilePicker : MMSProfileImagePicker!
 
     func uploadProfileImage(callback: @escaping () -> Void) {
         guard let uploadURL = APIController.shared.currentUser?.profile_photo_upload_url else {
@@ -172,39 +169,19 @@ import Alamofire
         self.addPhotoButton.addSubview(imageView)
     }
 
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
-//        self.presentingViewController?.dismiss(animated: true, completion: nil)
-    }
-
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        self.profilePicker.presentEditScreen(self.imagePicker!, with: info[UIImagePickerControllerOriginalImage] as! UIImage)
-    }
-
-    var imagePicker : UIImagePickerController?
-
-
     /** Uploads the profile photo selected and logs how the photo was selected (currently from the photo button, or the menu option).
      - Parameter from: how the user initiated setting a profile photo
      */
     func setProfilePhoto() {
 
-        profilePicker = MMSProfileImagePicker()
-        profilePicker.delegate = self
-
         let controller = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let camera = UIAlertAction(title: "Camera", style: .default) { (action) in
-
-            self.imagePicker =  UIImagePickerController()
-            self.imagePicker?.delegate = self
-            self.imagePicker?.sourceType = .camera
-            self.presentingViewController?.present(self.imagePicker!, animated: true, completion: nil)
-
+			self.showPickerOption()
         }
         controller.addAction(camera)
 
         let library = UIAlertAction(title: "Photo Library", style: .default) { (action) in
-            self.profilePicker.select(fromPhotoLibrary: self.presentingViewController!)
+			self.showPickerOption(sourceType: .photoLibrary)
         }
         controller.addAction(library)
 
@@ -218,36 +195,76 @@ import Alamofire
         setProfilePhoto()
     }
 
-    func mmsImagePickerControllerDidCancel(_ picker: MMSProfileImagePicker) {
-//        picker.dismiss(animated: true, completion: nil)
-        self.presentingViewController?.dismiss(animated: true, completion: nil)
-    }
-
     override func layoutSubviews() {
         super.layoutSubviews()
         self.cachedImageView?.layer.cornerRadius = self.bounds.height / 2
     }
-
-    /**
-     Called by profile picker controller when profile image has been selected. Updates profile image UI and uploads to server.
-     - Parameters:
-     - picker: the profile picker that selected the image
-     - info: dictionary containing the original and cropped image. `UIImagePickerControllerEditedImage` key is the one we use.
-     */
-    func mmsImagePickerController(_ picker: MMSProfileImagePicker, didFinishPickingMediaWithInfo info: [String : Any]) {
-        picker.dismiss(animated: false, completion: nil)
-        imagePicker?.dismiss(animated: false, completion: nil)
-        if let image = info["UIImagePickerControllerEditedImage"] as? UIImage {
-            setProfile(image: image)
-            self.cachedImageView?.removeFromSuperview()
-            self.delegate?.profilePhotoButtonView(self, selectedImage: image)
-        } else {
-            print("Error: could not extract profile image after selection.")
-        }
-
-        picker.dismiss(animated: true, completion: nil)
-    }
 }
+
+extension ProfilePhotoButtonView: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+	
+	func showPickerOption(sourceType: UIImagePickerControllerSourceType = .camera) {
+		let cameraImagePicker = UIImagePickerController()
+		cameraImagePicker.delegate = self
+		cameraImagePicker.sourceType = sourceType
+		cameraImagePicker.allowsEditing = false
+		self.presentingViewController?.present(cameraImagePicker, animated: true, completion: nil)
+	}
+	
+	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+		picker.dismiss(animated: true, completion: nil)
+	}
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+		if let selectImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+			self.showImageProcess(handle: selectImage, from: picker)
+		}else {
+			picker.dismiss(animated: true, completion: nil)
+		}
+	}
+}
+
+extension ProfilePhotoButtonView: CropViewControllerDelegate {
+	func showImageProcess(handle: UIImage, from: UINavigationController) {
+		let cropViewController = CropViewController.init(croppingStyle: .circular, image: handle)
+		cropViewController.delegate = self;
+		cropViewController.rotateButtonsHidden = true;
+		
+		cropViewController.title = "Move and Scale";
+		cropViewController.doneButtonTitle = "Choose";
+		cropViewController.cancelButtonTitle = "Cacel";
+		
+		from.pushViewController(cropViewController, animated: true)
+	}
+	/**
+	Called by profile picker controller when profile image has been selected. Updates profile image UI and uploads to server.
+	- Parameters:
+	- picker: the profile picker that selected the image
+	- info: dictionary containing the original and cropped image. `UIImagePickerControllerEditedImage` key is the one we use.
+	*/
+	func cropViewController(_ cropViewController: CropViewController, didFinishCancelled cancelled: Bool) {
+		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
+	}
+	func cropViewController(_ cropViewController: CropViewController, didCropImageToRect rect: CGRect, angle: Int) {
+		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
+	}
+	func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
+	}
+	func cropViewController(_ cropViewController: CropViewController, didCropToCircularImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
+	}
+	
+	
+//	if let image = info["UIImagePickerControllerEditedImage"] as? UIImage {
+//		setProfile(image: image)
+//		self.cachedImageView?.removeFromSuperview()
+//		self.delegate?.profilePhotoButtonView(self, selectedImage: image)
+//	} else {
+//	print("Error: could not extract profile image after selection.")
+//	}
+}
+
 
 protocol ProfilePhotoButtonViewDelegate: class {
     func profilePhotoButtonView(_ profilePhotoButtonView: ProfilePhotoButtonView, selectedImage: UIImage)

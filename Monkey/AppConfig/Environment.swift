@@ -11,12 +11,9 @@ struct Environment {
         /*
          If you add a value here, update "allValues" below!!
          */
-        case local = "Local"
         case sandbox = "Sandbox"
-        case development = "Development"
-        case production = "Production"
         case release = "Release"
-        static let allValues = [local, development, sandbox, production, release]
+        static let allValues = [sandbox, release]
     }
     // static let version = 17 - last v1
     // static let version = 18 - unreleased for bugs
@@ -38,75 +35,38 @@ struct Environment {
     // static let version = 34 // 2.4.1
     // static let version = 35 // 2.4.2, 2.4.3, 2.4.4, 2.4.5
     // static let version = 36 // 2.4.6
-	static let version = 37 // 2.4.7, 2.4.8, 2.4.9, 2.5.0
+	// static let version = 37 // 2.4.7 ~ 2.5.7
+	static let version = 38 // 2.5.8
 
+	static let bundleId = "cool.monkey.ios"
     static var environment: ENV {
         let envString = (Bundle.main.object(forInfoDictionaryKey: "Configuration") as? String ?? "").lowercased()
-        return ENV.allValues.first { $0.rawValue.lowercased().contains(envString) } ?? .development
+        return ENV.allValues.first { $0.rawValue.lowercased().contains(envString) } ?? .sandbox
     }
     static var baseURL: String {
         switch self.environment {
-        case .local: return "https://ngrok.monkey.engineering:21016"
         case .sandbox: return "http://test.monkey.cool"
-        case .development: return "https://monkey-api-development.monkey.engineering"
-        case .production: return "https://api.monkey.cool"
         case .release: return "https://api.monkey.cool"
         }
     }
     static var socketURL: String {
         switch self.environment {
-        case .local: return "wss://ngrok.monkey.engineering:21016/api/v2.0/sockets/websocket"
         case .sandbox: return "ws://test.monkey.cool/api/v2.0/sockets/websocket"
-        case .development: return "wss://monkey-api-development.monkey.engineering/api/v2.0/sockets/websocket"
-        case .production: return "wss://ws.monkey.cool/api/v2.0/sockets/websocket"
         case .release: return "wss://ws.monkey.cool/api/v2.0/sockets/websocket"
         }
     }
-    static var bundleId: String {
-        switch self.environment {
-        case .local: return "cool.monkey.ios-development"
-        case .sandbox: return "cool.monkey.ios-sandbox"
-        case .development: return "cool.monkey.ios-development"
-        case .production: return "cool.monkey.ios-production"
-        case .release: return "cool.monkey.ios"
-        }
-    }
-    #if REALM_SYNC
-    static var realmSyncProvider: String {
-        switch self.environment {
-        case .local: return "custom/jwt_development"
-        case .sandbox: return "custom/jwt_development"
-        case .development: return "custom/jwt_development"
-        case .production: return "custom/jwt"
-        case .release: fatalError("Realm Sync is not available in release.")
-        }
-    }
-    // connect to realm://realm-object-server.monkey.cool:9080
-    static let realmSyncServerURL = "https://realm-object-server.monkey.cool:9443"
-    static let defaultRealmURL = "realms://realm-object-server.monkey.cool:9443/~/default"
-    #endif
-	
 	static var amplitudeKey: String {
 		switch self.environment {
-		case .production, .release: return "a7f21c75b22fc7cd2e054da19f629870"
-		default: return "04f72fae8a9c614c47cc38e822778a36"
+		case .sandbox: return "04f72fae8a9c614c47cc38e822778a36"
+		case .release: return "a7f21c75b22fc7cd2e054da19f629870"
 		}
 	}
     
     static let adjustToken = "w8wlqq6li0w0"
-
-    static var firebaseConfigurationPath: String {
-        switch self.environment {
-        case .production, .release: return Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")!
-        default: return Bundle.main.path(forResource: "GoogleService-Info-Dev", ofType: "plist")!
-        }
-    }
-    
     static var deeplink_source : String {
         get {
             return UserDefaults.standard.string(forKey: "kDeepLinkSourceValue") ?? ""
         }
-        
         set {
             UserDefaults.standard.set(newValue, forKey: "kDeepLinkSourceValue")
         }

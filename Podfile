@@ -14,25 +14,25 @@ abstract_target 'Monkey' do
 	pod 'Firebase/Messaging'
 	
 	pod 'Amplitude-iOS'
+	pod 'Adjust'
+	
 	pod 'Fabric'
 	pod 'Crashlytics'
-    pod 'Adjust'
 	
-	pod 'SwiftyGif'
-	pod 'Alamofire', '~> 4.3.0'
-	pod 'Starscream', '~> 2.1.1'
-	pod 'Branch', '~> 0.17.10'
+	pod 'Kingfisher'
+	pod 'DeviceKit'
+	pod 'Starscream'
+	pod 'CropViewController'
+	
 	pod 'RealmSwift'
-	pod 'ObjectMapperAdditions/Realm', '~> 4.1'
+	pod 'Alamofire'
 	pod 'ObjectMapper', '~> 3.1'
-    pod 'SwiftyJSON', '~> 4.0.0'
-    pod 'SDWebImage', '~> 4.3.3'
-	
-	pod 'MMSProfileImagePicker'
-	pod 'GPUImage', :git => 'https://github.com/holla-world/GPUImage.git', :branch => 'master'
+	pod 'AlamofireObjectMapper', '~> 5.0'
+	pod 'ObjectMapperAdditions/Realm', '~> 4.1'
 	
 	pod 'OpenTok'
-	pod 'DeviceKit', '~> 1.0'
+	pod 'GPUImage', :git => 'https://github.com/holla-world/GPUImage.git', :branch => 'master'
+	
 	
 	target 'Release' do
 	end

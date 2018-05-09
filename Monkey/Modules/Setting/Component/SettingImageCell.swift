@@ -77,10 +77,9 @@ class SettingImageCell: UITableViewCell {
     
     func alertKeyAndVisibleFunc(alert:UIAlertController) {
         let alertWindow = UIWindow(frame: UIScreen.main.bounds)
-        alertWindow.rootViewController = AlertViewController()
+        alertWindow.rootViewController = MonkeyViewController()
         alertWindow.windowLevel = UIWindowLevelAlert
         alertWindow.makeKeyAndVisible()
         alertWindow.rootViewController?.present(alert, animated: true, completion: nil)
     }
-
 }

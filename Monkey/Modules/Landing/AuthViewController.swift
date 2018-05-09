@@ -36,10 +36,20 @@ class AuthViewController: UIViewController {
 		guard self.isPresentingErrorCallbacks.count == 0 else {
 			return // Will be called when error dismissed.
 		}
-		RealmDataController.shared.setupRealm(presentingErrorsOnViewController: self) {
+		
+		RealmDataController.shared.setupRealm { (setupError: APIError?) in
+			if let apiError = setupError {
+				let alertController = apiError.toAlert(onRetry: { (UIAlertAction) in
+					self.startAuth()
+				})
+				
+				self.present(alertController, animated: true, completion: nil)
+				return
+			}
+			
 			if APIController.authorization == nil {
 				// 未登录，跳转到登录
-                    self.onboardingContainerView.removeFromSuperview()
+				self.onboardingContainerView.removeFromSuperview()
 				DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.1), execute: {
 					let vc = self.storyboard!.instantiateViewController(withIdentifier: "welcomeVC")
 					vc.modalTransitionStyle = .crossDissolve
@@ -114,7 +124,7 @@ class AuthViewController: UIViewController {
 			print("Error: Current user should be defined by now.")
 			return
 		}
-		currentUser.reload {[weak currentUser] (error: APIError?) in
+		currentUser.reload { (error: APIError?) in
 			guard error == nil else {
 				if error!.status == "401" {
 					return self.resetToWelcome()
@@ -125,64 +135,7 @@ class AuthViewController: UIViewController {
 				return
 			}
 			
-			// FIXME: the current user object may be nil , the func will not execute when it is nil
-			if let is_snapcode_uploaded = currentUser?.is_snapcode_uploaded.value {
-				if is_snapcode_uploaded == false {
-					self.fetchAndUploadSnapcode()
-				}
-			}
-			print("Reloaded current user")
 			completion()
-		}
-	}
-	
-	
-	/// Fetches the snapcode fom the server then passes it to create a RealmSnapcode
-	func fetchAndUploadSnapcode() {
-		guard APIController.shared.currentExperiment?.enable_snapcodes.value == true else {
-			return
-		}
-		
-		guard let snapchatUsername = APIController.shared.currentUser?.snapchat_username else {
-			return
-		}
-		
-		let requestURL = "https://feelinsonice-hrd.appspot.com/web/deeplink/snapcode?username=\(snapchatUsername)&type=SVG&bitmoji=enable"
-		
-		Alamofire.request(requestURL, method: .get, parameters: nil).responseString { (response) in
-			if let error = response.error {
-				print("Error getting snapcode: \(error)")
-				return
-			}
-			
-			guard let resultString = response.result.value else {
-				return
-			}
-			
-			self.createSnapcode(svgString: resultString, snapchatUsername: snapchatUsername)
-		}
-	}
-	
-	/// Creates a RealmSnapcode with the passed string
-	///
-	/// - Parameter svgString: snapcode svg string
-	func createSnapcode(svgString:String, snapchatUsername:String) {
-		let parameters:[String:Any] = [
-			"data":[
-				"type":"snapcodes",
-				"attributes":[
-					"svg":svgString,
-					"snapchat_username":snapchatUsername
-				]
-			]
-		]
-		RealmSnapcode.create(parameters: parameters) { (result: JSONAPIResult<[RealmSnapcode]>) in
-			switch result {
-			case .success(_):
-				print("Snapcode uploaded")
-			case .error(let error):
-				error.log()
-			}
 		}
 	}
 	
@@ -193,7 +146,7 @@ class AuthViewController: UIViewController {
 				return
 			}
 			APIController.authorization = nil
-			SyncUser.current?.logOut()
+			
 			UserDefaults.standard.removeObject(forKey: "user_id")
 			Apns.update(callback: nil)
 			// This is okay because it should currently only happen when switching between servers. however, in the future it could happen if we invalidate old logins so eventually recovery should be possible.
@@ -201,31 +154,21 @@ class AuthViewController: UIViewController {
 				print("INVALID SESSION: Reset to welcome screen")
 			})
 		}
-		
 	}
 	
 	func updateExperiments(completion: @escaping () -> Void) {
-		//        RealmExperiment.fetch(id: APIController.shared.appVersion, completion: { (error: APIError?, experiment: RealmExperiment?) in
-		//            guard error == nil else {
-		//                if error!.status == "401" {
-		//                    return
-		//                }
-		//                self.show(error: error!) {
-		//                    self.updateExperiments(completion: completion)
-		//                }
-		//                return
-		//            }
-		//            print("Updated experiments")
-		//            completion()
-		//        })
-		
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/experiments/\(APIController.shared.appVersion)", parameters: [:], options: [
 			.header("Authorization", APIController.authorization),
 			.header("lang", APIController.shared.languageString),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(let error):
-					print(error)
+					if error.status == "401" {
+						return
+					}
+					self.show(error: error) {
+						self.updateExperiments(completion: completion)
+					}
 					return
 				case .success(let jsonAPIDocument):
 					RealmDataController.shared.apply(jsonAPIDocument) { (result) in

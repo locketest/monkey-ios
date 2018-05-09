@@ -191,9 +191,6 @@ static inline void dispatch_async_on_main_queue(void (^block)(void)) {
 	}
 	
 	KeyboardTransition transition = [KeyboardManager transitionFromKeyboardNoti:keyboardWillShowNoti];
-	if (transition.toFrame.size.height <= 0) {
-		return;
-	}
 	
 	dispatch_async_on_main_queue(^{
 		[self.keyboardObservers enumerateObjectsUsingBlock:^(KeyboardObserverContainer * _Nonnull obj, BOOL * _Nonnull stop) {
@@ -210,9 +207,7 @@ static inline void dispatch_async_on_main_queue(void (^block)(void)) {
 	}
 	
 	KeyboardTransition transition = [KeyboardManager transitionFromKeyboardNoti:keyboardWillDismissNoti];
-	if (transition.toFrame.size.height <= 0) {
-		return;
-	}
+	
 	dispatch_async_on_main_queue(^{
 		[self.keyboardObservers enumerateObjectsUsingBlock:^(KeyboardObserverContainer * _Nonnull obj, BOOL * _Nonnull stop) {
 			if (obj.keyboardDismissActionBlock) {
@@ -228,9 +223,7 @@ static inline void dispatch_async_on_main_queue(void (^block)(void)) {
 	}
 	
 	KeyboardTransition transition = [KeyboardManager transitionFromKeyboardNoti:keyboardWillChangeFrameNoti];
-	if (transition.toFrame.size.height <= 0) {
-		return;
-	}
+	
 	dispatch_async_on_main_queue(^{
 		[self.keyboardObservers enumerateObjectsUsingBlock:^(KeyboardObserverContainer * _Nonnull obj, BOOL * _Nonnull stop) {
 			if (obj.keyboardFrameChangeActionBlock) {
@@ -239,8 +232,6 @@ static inline void dispatch_async_on_main_queue(void (^block)(void)) {
 		}];
 	});
 }
-
-
 
 @end
 

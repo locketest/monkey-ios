@@ -18,19 +18,14 @@ class RealmDataController: NSObject {
     let backgroundQueue = DispatchQueue(label: "cool.monkey.ios.realm-data-controller-background-queue")
     let realmObjectClasses:[RealmObjectProtocol.Type] = [
         RealmExperiment.self,
+		RealmUser.self,
+		RealmChannel.self,
         RealmMessage.self,
-        RealmUser.self,
         RealmFriendship.self,
-        RealmRelationship.self, // reference has to be kept until (https://github.com/realm/realm-cocoa/issues/3686) is fixed
-        RealmTag.self,
-        RealmChannel.self,
-        RealmCall.self,
-		RealmPhoneAuth.self,
+		RealmInstagramPhoto.self,
         RealmInstagramAccount.self,
-        RealmInstagramPhoto.self,
-        RealmBlock.self,
-		RealmMatchedUser.self,
-        RealmVideoCall.self,
+		RealmCall.self,
+		RealmVideoCall.self,
 		RealmMatchInfo.self,
 		RealmMatchEvent.self,
         ]
@@ -38,15 +33,20 @@ class RealmDataController: NSObject {
 	/**
 	Called once durring app start. Continues to try and create RealmDataController.realm and calls completion after that succeeds.
 	*/
-	func setupRealm(presentingErrorsOnViewController viewController: UIViewController, completion: @escaping () -> Void) {
+	func setupRealm(completion: @escaping (_ error: APIError?) -> Void) {
 		guard let objectTypes = self.realmObjectClasses as? [Object.Type] else {
 			print("Error: failed to set up Realm because could not caste as Object.type")
+			return
+		}
+		
+		guard mainRealm == nil else {
+			completion(nil)
 			return
 		}
 
 		let config = Realm.Configuration(
 			syncConfiguration: nil,
-			schemaVersion: 19,
+			schemaVersion: 20,
 			migrationBlock: { migration, oldSchemaVersion in
 				if oldSchemaVersion < 1 {
 					// Nothing to do!
@@ -132,6 +132,7 @@ class RealmDataController: NSObject {
 					// Something to do!
 					/*
 					RealmRelationship -> RealmFriendship
+					RealmRelationship.self, // reference has to be kept until (https://github.com/realm/realm-cocoa/issues/3686) is fixed
 					*/
 					migration.deleteData(forType: "RealmRelationship")
 				}
@@ -177,20 +178,33 @@ class RealmDataController: NSObject {
 					// Realm will automatically detect new properties and removed properties
 					// And will update the schema on disk automatically
 				}
+				if oldSchemaVersion < 20 {
+					// Something to do!
+					/*
+					Delete
+					
+					RealmTag.self,
+					RealmPhoneAuth.self,
+					RealmBlock.self,
+					RealmMatchedUser.self,
+					
+					- Property 'RealmUser.tag' has been deleted
+					*/
+					migration.deleteData(forType: "RealmTag")
+					migration.deleteData(forType: "RealmBlock")
+					migration.deleteData(forType: "RealmPhoneAuth")
+					migration.deleteData(forType: "RealmMatchedUser")
+				}
         }, objectTypes: objectTypes)
         Realm.Configuration.defaultConfiguration = config
         do {
             self.mainRealm = try Realm()
-            completion()
+            completion(nil)
         } catch let error {
             self.mainRealm = nil
             let apiError = RealmDataController.parse(error: error)
-            let alertController = apiError.toAlert(onRetry: { (UIAlertAction) in
-                self.setupRealm(presentingErrorsOnViewController: viewController, completion: completion)
-            })
-
-            viewController.present(alertController, animated: true, completion: nil)
             apiError.log()
+			completion(apiError)
         }
     }
 
@@ -207,56 +221,32 @@ class RealmDataController: NSObject {
     }
 
     /**
-     Attempts to load user information from UserDefaults and creates a new Realm user.
-     */
-    func migrateCurrentUserFromUserDefaults(completion: @escaping (_ error: APIError?) -> Void) {
-        DispatchQueue.main.async {
-            guard let realm = self.mainRealm else {
-                completion(.realmNotInitialized)
-                return
-            }
-            do {
-                let user = RealmUser()
-                user.gender = UserDefaults.standard.string(forKey: "gender")
-                user.show_gender = UserDefaults.standard.string(forKey: "show_gender")
-                user.age.value = UserDefaults.standard.value(forKey: "age") as? Int
-                user.snapchat_username = UserDefaults.standard.string(forKey: "snapchat_username")
-                user.user_id = UserDefaults.standard.string(forKey: "user_id")
-                try realm.write() {
-                    realm.add(user)
-                    UserDefaults.standard.removeObject(forKey: "age")
-                    UserDefaults.standard.removeObject(forKey: "gender")
-                    UserDefaults.standard.removeObject(forKey: "show_gender")
-                    UserDefaults.standard.removeObject(forKey: "snapchat_username")
-                }
-                completion(nil)
-            } catch(let error) {
-                print("Error: ", error)
-                completion(.unableToSave)
-            }
-        }
-    }
-    /**
      Clears the entire Realm store.
      Used for resetting the app when user signs out so data doesn't persist from another account.
      */
     func deleteAllData(completion: @escaping (_ error: APIError?) -> Void) {
-        DispatchQueue.main.async {
-            guard let realm = self.mainRealm else {
-                return completion(.realmNotInitialized)
-            }
-            do {
-                try realm.write {
-                    realm.deleteAll()
-                    SyncUser.current?.logOut()
-                }
-                completion(nil)
-            } catch(let error) {
-                print("Error: ", error)
-                completion(.unableToSave)
-            }
-        }
+		self.backgroundQueue.async {
+			guard let realm = self.mainRealm else {
+				return DispatchQueue.main.async {
+					completion(.realmNotInitialized)
+				}
+			}
+			do {
+				try realm.write {
+					realm.deleteAll()
+				}
+				DispatchQueue.main.async {
+					completion(nil)
+				}
+			} catch(let error) {
+				print("Error: ", error)
+				DispatchQueue.main.async {
+					completion(.unableToSave)
+				}
+			}
+		}
     }
+	
     /// Parses a JSONAPIDocument and updates the Realm with it's data. This includes object creation, modification, and deletion.
     ///
     /// - Parameters:
@@ -274,17 +264,34 @@ class RealmDataController: NSObject {
                 var newObjects = [JSONAPIObject]()
                 try realm.write() {
                     // If items were deleted by a delete request (usually 1 to 1 relationships), delete them from the Realm.
-                    try jsonAPIDocument.deleted?.forEach { try self.deleteResourceWithResourceIdentifier($0) }
+                    try jsonAPIDocument.deleted?.forEach {
+						try self.deleteResourceWithResourceIdentifier($0)
+					}
+					
                     // Parse the response as a single resource
-                    try jsonAPIDocument.dataResource.then { newObjects.append(try self.parseJSONAPIResource($0)) }
+                    try jsonAPIDocument.dataResource.then {
+						if let jsonAPIObject = try self.parseJSONAPIResource($0) {
+							newObjects.append(jsonAPIObject)
+						}
+					}
+					
                     // If the above failed, parse the response as an array of resources
-                    try jsonAPIDocument.dataResourceCollection?.forEach { newObjects.append(try self.parseJSONAPIResource($0)) }
+                    try jsonAPIDocument.dataResourceCollection?.forEach {
+						if let jsonAPIObject = try self.parseJSONAPIResource($0) {
+							newObjects.append(jsonAPIObject)
+						}
+					}
+					
                     // If some items were included, lets parse those too.
                     try jsonAPIDocument.included?.forEach {
                         try self.parseJSONAPIResource($0)
                     }
                 }
-                let threadSafeNewObjects = newObjects.map { ThreadSafeReference(to: $0) }
+				
+                let threadSafeNewObjects = newObjects.map {
+					ThreadSafeReference(to: $0)
+				}
+				
                 DispatchQueue.main.async {
                     var newObjects = [JSONAPIObject]()
                     threadSafeNewObjects.forEach { (threadSafeReference) in
@@ -336,9 +343,11 @@ class RealmDataController: NSObject {
     ///   - jsonAPIResource: The resource to insert or update the realm with.
     /// - Returns: The new or updated Realm object.
     /// - Throws: An Error of type `APIError` when parsing fails.
-    @discardableResult private func parseJSONAPIResource(_ jsonAPIResource:JSONAPIResource) throws -> JSONAPIObject {
-        let realm = try Realm()
-        let resourceRealmObjectClass = try self.classForResourceIdentifier(jsonAPIResource)
+    @discardableResult private func parseJSONAPIResource(_ jsonAPIResource:JSONAPIResource) throws -> JSONAPIObject? {
+		guard let resourceRealmObjectClass = try self.classForResourceIdentifier(jsonAPIResource) else {
+			return nil
+		}
+		
         guard let primaryKey = resourceRealmObjectClass.primaryKey() else {
             throw APIError(code: "-1", status: nil, message: "All JSONAPIObjects must have a primary key.")
         }
@@ -346,7 +355,8 @@ class RealmDataController: NSObject {
             throw APIError(code: "-1", status: nil, message: "Resource missing an ID.")
         }
 
-        var value:[String:Any] = jsonAPIResource.attributes ?? [:]
+		let realm = try Realm()
+        var value:[String: Any] = jsonAPIResource.attributes ?? [:]
 
         try jsonAPIResource.relationships?.forEach { (relationshipKey, relationshipValue) in
             let properties = resourceRealmObjectClass.sharedSchema()?.properties
@@ -390,23 +400,27 @@ class RealmDataController: NSObject {
      */
     private func deleteResourceWithResourceIdentifier(_ resourceIdentifier: JSONAPIResourceIdentifier) throws {
         let realm = try Realm()
-        let jsonAPIObject = try getOrCreateRealmObjectForResourceIdentifier(resourceIdentifier)
-        realm.delete(jsonAPIObject)
+		if let jsonAPIObject = try getOrCreateRealmObjectForResourceIdentifier(resourceIdentifier) {
+			realm.delete(jsonAPIObject)
+		}
     }
     /// Returns the Realm JSONAPIObject class for the provided resource identifier.
     ///
     /// - Parameter resourceIdentifier: The resource identifier to find a class for.
     /// - Returns: The class for the provided resource identifier
     /// - Throws: An Error of type `APIError` when a class can not be found for the provided resource identifier
-    private func classForResourceIdentifier(_ resourceIdentifier: JSONAPIResourceIdentifier) throws -> JSONAPIObject.Type {
+    private func classForResourceIdentifier(_ resourceIdentifier: JSONAPIResourceIdentifier) throws -> JSONAPIObject.Type? {
         guard let resourceType = resourceIdentifier.type else {
-            throw APIError(message: "Error: Resource missing type attribute.")
+			return nil
+//            throw APIError(message: "Error: Resource missing type attribute.")
         }
         guard let resourceClass = self.realmObjectClasses.first(where: { $0.type == resourceType }) else {
-            throw APIError(message: "Error: No realm object class exists for the provided type.")
+			return nil
+//            throw APIError(message: "Error: No realm object class exists for the provided type.")
         }
         guard let resourceRealmObjectClass = resourceClass as? JSONAPIObject.Type else {
-            throw APIError(message: "Error: A class conforms to JSONAPIObjectProtocol but does not inherit from JSONAPIObject.")
+			return nil
+//            throw APIError(message: "Error: A class conforms to JSONAPIObjectProtocol but does not inherit from JSONAPIObject.")
         }
         return resourceRealmObjectClass
     }
@@ -417,20 +431,25 @@ class RealmDataController: NSObject {
     ///   - resourceIdentifier: The resource identifier of the object to get from the realm.
     /// - Returns: The new (or found) JSONAPIObject for the provided resource identifier.
     /// - Throws: An Error of type `APIError` when the resouce identifier is improperly formatted.
-    private func getOrCreateRealmObjectForResourceIdentifier(_ resourceIdentifier: JSONAPIResourceIdentifier) throws -> JSONAPIObject {
-        let realm = try Realm()
+    private func getOrCreateRealmObjectForResourceIdentifier(_ resourceIdentifier: JSONAPIResourceIdentifier) throws -> JSONAPIObject? {
         guard let protocolForRelationship = self.realmObjectClasses.first(where: { $0.type == resourceIdentifier.type }) else {
-            throw APIError(message: "A model was not found for the given relationship, please add the model to RealmDataController.")
+			return nil
+//            throw APIError(message: "A model was not found for the given relationship, please add the model to RealmDataController.")
         }
         guard let classForRelationship = protocolForRelationship as? JSONAPIObject.Type else {
-            throw APIError(message: "A model does not conform to JSONAPIObject.")
+			return nil
+//            throw APIError(message: "A model does not conform to JSONAPIObject.")
         }
         guard let primaryKeyString = classForRelationship.sharedSchema()?.primaryKeyProperty?.name else {
-            throw APIError(message: "A model is missing a primary key.")
+			return nil
+//            throw APIError(message: "A model is missing a primary key.")
         }
         guard let relationshipId = resourceIdentifier.id else {
-            throw APIError(message: "A relationship is missing an id.")
+			return nil
+//			throw APIError(message: "A relationship is missing an id.")
         }
+		
+		let realm = try Realm()
         return realm.create(classForRelationship, value: [
             primaryKeyString: relationshipId,
             ], update: true)

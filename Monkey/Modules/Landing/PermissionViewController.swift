@@ -7,9 +7,9 @@
 //
 
 import UIKit
-import SwiftyGif
-import CoreLocation
 import Alamofire
+import Kingfisher
+import CoreLocation
 import UserNotifications
 
 class PermissionViewController: UIViewController, CLLocationManagerDelegate {
@@ -21,7 +21,7 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
     /// The UILabel at the top of the screen, representing what permission we are currently asking for
     @IBOutlet var permissionLabel:UILabel!
     /// The UIImageView, located in its container, that shows the animated GIF for each permission.
-    @IBOutlet var imageView:UIImageView!
+    @IBOutlet var imageView: AnimatedImageView!
     /// The sole child of the VC's superview. Houses all subviews and is used to animate subviews
     /// over the superview background color when presenting or dismissing
     @IBOutlet weak var containerView: UIView!
@@ -65,26 +65,14 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
     /// The currently represented permission type (which decides which content is displayed & what happens when the permission button is pressed), defaults to microphone, is the presenting view controllers responsibility to set the correct permission before presentation
     var permissionType:PermissionType = .microphone
     
-    /// GifManager that manages the display and memory allocation for each GIF within our imageview
-    let gifManager = SwiftyGifManager(memoryLimit:30)
-    /// The image that we are currently displaying, instantiated at runtime
-    var gif:UIImage?
-    
     /// The content that is to be displayed, which is created based on the PermissionType
     var permissionContent:PermissionContent? {
         didSet {
-            
             // update content
-            self.gif = UIImage(gifName: self.permissionContent?.gifName ?? "")
             self.permissionLabel.text = self.permissionContent?.titleText ?? ""
             self.permissionButton.setTitle(self.permissionContent?.buttonText ?? "", for: .normal)
             self.permissionButton.emoji = self.permissionContent?.emojiString ?? ""
-            
-            guard let gifImage = self.gif else {
-                return
-            }
-            
-            self.imageView.setGifImage(gifImage, manager: self.gifManager)
+            self.imageView.kf.setImage(with: Bundle.main.url(forResource: self.permissionContent?.gifName, withExtension: "gif"))
         }
     }
     
@@ -103,6 +91,7 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+		self.imageView.startAnimating()
         UIView.animate(
             withDuration: transitionTime,
             delay: transitionDelay,
@@ -113,6 +102,11 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
                 self.view.layoutIfNeeded()
         })
     }
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		self.imageView.stopAnimating()
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

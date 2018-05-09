@@ -15,7 +15,7 @@
         <!--Auth View Controller-->
         <scene sceneID="ivU-ih-IB3">
             <objects>
-                <viewController storyboardIdentifier="authVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="uTr-4E-JMI" customClass="AuthViewController" customModule="Release" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="authVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="uTr-4E-JMI" customClass="AuthViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="XMt-zU-tTP">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -44,7 +44,7 @@
         <!--Welcome View Controller-->
         <scene sceneID="MD2-qF-q0w">
             <objects>
-                <viewController storyboardIdentifier="welcomeVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Yof-0h-XrG" customClass="WelcomeViewController" customModule="Release" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="welcomeVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Yof-0h-XrG" customClass="WelcomeViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hWM-97-iXR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -52,12 +52,12 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wHu-jB-PwC">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gb2-8Q-lVH" customClass="ConfettiView" customModule="Release" customModuleProvider="target">
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gb2-8Q-lVH" customClass="ConfettiView" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </view>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yNH-Yi-tg9" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yNH-Yi-tg9" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="20" y="551" width="335" height="56"/>
                                         <color key="backgroundColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
@@ -136,7 +136,7 @@
         <!--Edit Account View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="editAccountVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="EditAccountViewController" customModule="Release" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="editAccountVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="EditAccountViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -162,7 +162,7 @@
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QBt-uU-brn" userLabel="Text Field Container View">
                                                         <rect key="frame" x="20" y="0.0" width="335" height="235"/>
                                                         <subviews>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kZa-Ul-mFd" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kZa-Ul-mFd" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="0.0" width="335" height="48"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.34999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="😊" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HeV-Pf-XaY">
@@ -175,7 +175,7 @@
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
-                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="First Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uf2-A8-4CI" customClass="MakeTextFieldGreatAgain" customModule="Release" customModuleProvider="target">
+                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="First Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uf2-A8-4CI" customClass="MakeTextFieldGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                         <rect key="frame" x="45" y="0.0" width="282" height="48"/>
                                                                         <color key="tintColor" red="1" green="0.98823529409999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -204,7 +204,7 @@
                                                                     </userDefinedRuntimeAttribute>
                                                                 </userDefinedRuntimeAttributes>
                                                             </view>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pd4-q2-6nW" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pd4-q2-6nW" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="62" width="335" height="48"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.34999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👻" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jGa-ac-pdf">
@@ -217,7 +217,7 @@
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
-                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Snapchat Username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g8c-2Z-kne" customClass="UsernameTextField" customModule="Release" customModuleProvider="target">
+                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Snapchat Username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g8c-2Z-kne" customClass="UsernameTextField" customModule="Monkey" customModuleProvider="target">
                                                                         <rect key="frame" x="45" y="0.5" width="282" height="48"/>
                                                                         <color key="tintColor" red="1" green="0.98823529409999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -246,7 +246,7 @@
                                                                     </userDefinedRuntimeAttribute>
                                                                 </userDefinedRuntimeAttributes>
                                                             </view>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b9F-SL-QfR" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b9F-SL-QfR" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="124" width="335" height="48"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.34999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🎂" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qfe-S9-ZRG">
@@ -259,7 +259,7 @@
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
-                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Birthday" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zN1-f4-PuK" customClass="MakeTextFieldGreatAgain" customModule="Release" customModuleProvider="target">
+                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Birthday" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zN1-f4-PuK" customClass="MakeTextFieldGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                         <rect key="frame" x="45" y="0.0" width="282" height="48"/>
                                                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <gestureRecognizers/>
@@ -301,7 +301,7 @@
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ggW-0T-4x1">
                                                         <rect key="frame" x="20" y="187" width="335" height="48"/>
                                                         <subviews>
-                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D37-ss-bOD" customClass="SelectableButton" customModule="Release" customModuleProvider="target">
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D37-ss-bOD" customClass="SelectableButton" customModule="Monkey" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="0.0" width="162" height="48"/>
                                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
@@ -323,7 +323,7 @@
                                                                     <action selector="selectFemaleGender:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iiP-xA-4JT"/>
                                                                 </connections>
                                                             </button>
-                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SYE-g6-Bu9" customClass="SelectableButton" customModule="Release" customModuleProvider="target">
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SYE-g6-Bu9" customClass="SelectableButton" customModule="Monkey" customModuleProvider="target">
                                                                 <rect key="frame" x="173" y="0.0" width="162" height="48"/>
                                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
@@ -374,7 +374,7 @@
                                                     <constraint firstItem="pd4-q2-6nW" firstAttribute="leading" secondItem="mwW-8I-OXK" secondAttribute="leading" constant="20" id="kRy-pq-Qtl"/>
                                                 </constraints>
                                             </view>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uLE-iv-Ytl" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uLE-iv-Ytl" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="20" y="352" width="335" height="56"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -452,7 +452,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jNx-Al-Tg2" userLabel="Picker Sub Container View">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="219"/>
                                         <subviews>
-                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="R91-4S-uPk" customClass="BirthdatePicker" customModule="Release" customModuleProvider="target">
+                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="R91-4S-uPk" customClass="BirthdatePicker" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="4" width="375" height="215"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <date key="date" timeIntervalSinceReferenceDate="515860474.20090699">
@@ -527,21 +527,21 @@
         <!--Main View Controller-->
         <scene sceneID="KKK-yK-Tob">
             <objects>
-                <viewController storyboardIdentifier="mainVC" id="TT7-O9-9zR" customClass="MainViewController" customModule="Release" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="N5m-MM-8GO" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                <viewController storyboardIdentifier="mainVC" id="TT7-O9-9zR" customClass="MainViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="N5m-MM-8GO" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e3d-za-UK6" customClass="ColorGradientView" customModule="Release" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e3d-za-UK6" customClass="ColorGradientView" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZLF-OB-nU9">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                         <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBC-65-2jJ" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBC-65-2jJ" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="65" y="250" width="246" height="177"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌🍌🐒" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wQB-BV-u1O" customClass="LoadingTextLabel" customModule="Release" customModuleProvider="target">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌🍌🐒" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wQB-BV-u1O" customClass="LoadingTextLabel" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="0.0" width="246" height="48"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                                         <nil key="textColor"/>
@@ -604,7 +604,7 @@ by 5 teenagers in NYC?</string>
                                                     <constraint firstItem="wQB-BV-u1O" firstAttribute="centerX" secondItem="kBC-65-2jJ" secondAttribute="centerX" id="ziH-FY-qbY"/>
                                                 </constraints>
                                             </view>
-                                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="psw-iu-AsM" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="psw-iu-AsM" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="315" y="607" width="40" height="40"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="8c6-dc-QZS"/>
@@ -615,7 +615,7 @@ by 5 teenagers in NYC?</string>
                                                     <action selector="settingsButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="VoW-WL-4Lr"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IDy-13-zRY" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IDy-13-zRY" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="20" y="607" width="40" height="40"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="2F7-7e-T37"/>
@@ -626,7 +626,7 @@ by 5 teenagers in NYC?</string>
                                                     <action selector="chatButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="3S4-15-MOK"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0hd-FL-4Jc" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0hd-FL-4Jc" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="20" y="40" width="40" height="40"/>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.30102204623287671" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
@@ -642,7 +642,7 @@ by 5 teenagers in NYC?</string>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="Ulj-5R-07I">
                                                 <rect key="frame" x="40" y="647" width="295" height="0.0"/>
                                                 <subviews>
-                                                    <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SSL-hy-Vte" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                                    <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SSL-hy-Vte" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="-40" y="-647" width="140" height="56"/>
                                                         <color key="backgroundColor" red="0.50196081400000003" green="0.0" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                                         <constraints>
@@ -666,7 +666,7 @@ by 5 teenagers in NYC?</string>
                                                             <action selector="skipButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="oOp-WT-wMM"/>
                                                         </connections>
                                                     </button>
-                                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QMF-mv-VbF" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QMF-mv-VbF" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="-40" y="-647" width="140" height="56"/>
                                                         <color key="backgroundColor" red="0.57952511309999999" green="0.21596130729999999" blue="0.99958437680000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>
@@ -693,7 +693,7 @@ by 5 teenagers in NYC?</string>
                                                     <constraint firstItem="QMF-mv-VbF" firstAttribute="width" secondItem="SSL-hy-Vte" secondAttribute="width" id="tUq-GI-0pd"/>
                                                 </constraints>
                                             </stackView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2CN-Mj-9Gg" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2CN-Mj-9Gg" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="164" y="607" width="46" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="46" id="60m-Fq-c6U"/>
@@ -713,10 +713,10 @@ by 5 teenagers in NYC?</string>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5GL-k1-GiO" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5GL-k1-GiO" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="281" y="34" width="74" height="40"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J2Q-bn-iTj" customClass="EmojiLabel" customModule="Release" customModuleProvider="target">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J2Q-bn-iTj" customClass="EmojiLabel" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="14" y="5" width="28" height="30"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="28" id="1ti-El-BZe"/>
@@ -752,7 +752,7 @@ by 5 teenagers in NYC?</string>
                                                     <action selector="bananaButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="24G-rR-Iih"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W2d-kQ-BTg" customClass="MatchModeSwitch" customModule="Release" customModuleProvider="target">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W2d-kQ-BTg" customClass="MatchModeSwitch" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="249" y="80" width="106" height="40"/>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29999999999999999" colorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -763,7 +763,7 @@ by 5 teenagers in NYC?</string>
                                                     <action selector="matchModeChanged:" destination="TT7-O9-9zR" eventType="touchUpInside" id="3wY-Fp-jL3"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="11l-nC-hLe" customClass="SmallYellowButton" customModule="Release" customModuleProvider="target">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="11l-nC-hLe" customClass="SmallYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="213" y="126" width="142" height="78.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👦🏼" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CUV-pr-RsE">
@@ -778,7 +778,7 @@ by 5 teenagers in NYC?</string>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zBt-xd-eGR" customClass="MonkeySwitch" customModule="Release" customModuleProvider="target">
+                                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zBt-xd-eGR" customClass="MonkeySwitch" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="90" y="6" width="42" height="30"/>
                                                         <color key="backgroundColor" red="0.44995594024658203" green="0.072316683828830719" blue="0.78099358081817627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>
@@ -1009,7 +1009,7 @@ by 5 teenagers in NYC?</string>
         <!--Call View Controller-->
         <scene sceneID="P9s-Af-lzT">
             <objects>
-                <viewController storyboardIdentifier="callVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="zTu-EK-AVb" customClass="CallViewController" customModule="Release" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="callVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="zTu-EK-AVb" customClass="CallViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uWV-k0-edZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1017,7 +1017,7 @@ by 5 teenagers in NYC?</string>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jnj-Bx-OWp">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9JE-LS-ZES" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9JE-LS-ZES" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="295" y="28" width="57" height="57"/>
                                         <color key="backgroundColor" red="1" green="0.20000000000000001" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
@@ -1033,7 +1033,7 @@ by 5 teenagers in NYC?</string>
                                             <action selector="report:" destination="zTu-EK-AVb" eventType="touchUpInside" id="9hH-Na-PKx"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lbf-rk-Za8" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lbf-rk-Za8" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="197" y="591" width="140" height="56"/>
                                         <color key="backgroundColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
@@ -1055,7 +1055,7 @@ by 5 teenagers in NYC?</string>
                                             <action selector="addSnapchat:" destination="zTu-EK-AVb" eventType="touchUpInside" id="K60-9X-oPd"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mbV-Rf-K1k" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mbV-Rf-K1k" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="40" y="591" width="140" height="56"/>
                                         <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
@@ -1080,7 +1080,7 @@ by 5 teenagers in NYC?</string>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VEb-nB-ntL">
                                         <rect key="frame" x="39.5" y="591" width="140" height="56"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CE7-Gb-XVj" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CE7-Gb-XVj" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="140" height="56"/>
                                                 <color key="backgroundColor" red="0.29803921570000003" green="0.2784313725" blue="0.97647058819999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
@@ -1111,7 +1111,7 @@ by 5 teenagers in NYC?</string>
                                             <constraint firstAttribute="trailing" secondItem="CE7-Gb-XVj" secondAttribute="trailing" id="Mbw-SA-M5x"/>
                                         </constraints>
                                     </view>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GZI-MZ-WGI" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GZI-MZ-WGI" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="118" y="591" width="140" height="56"/>
                                         <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
@@ -1133,7 +1133,7 @@ by 5 teenagers in NYC?</string>
                                             <action selector="endCall:" destination="zTu-EK-AVb" eventType="touchUpInside" id="Ujx-Fl-CGr"/>
                                         </connections>
                                     </button>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aa2-H7-j91" customClass="StatusCornerView" customModule="Release" customModuleProvider="target">
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aa2-H7-j91" customClass="StatusCornerView" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="22" y="28" width="103" height="179"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="275-Qy-Cfr">
@@ -1166,7 +1166,7 @@ by 5 teenagers in NYC?</string>
                                                     <constraint firstAttribute="height" constant="40" id="szD-s7-2vo"/>
                                                 </constraints>
                                             </view>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6HH-kE-4eE" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6HH-kE-4eE" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="7dt-5C-Njs"/>
@@ -1202,7 +1202,7 @@ by 5 teenagers in NYC?</string>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:05" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zyO-0X-txp" customClass="CountingLabel" customModule="Release" customModuleProvider="target">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:05" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zyO-0X-txp" customClass="CountingLabel" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="46" y="5" width="44" height="33"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1295,7 +1295,7 @@ by 5 teenagers in NYC?</string>
         <!--Text Chat View Controller-->
         <scene sceneID="OKT-wq-mFi">
             <objects>
-                <viewController storyboardIdentifier="textModeVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="YH2-9W-ewk" customClass="TextChatViewController" customModule="Release" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="textModeVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="YH2-9W-ewk" customClass="TextChatViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ueK-Pl-gBe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1306,7 +1306,7 @@ by 5 teenagers in NYC?</string>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WfL-7m-atb">
                                         <rect key="frame" x="158" y="24" width="60" height="184"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gbM-wz-G23" customClass="SmallYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gbM-wz-G23" customClass="SmallYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
@@ -1324,7 +1324,7 @@ by 5 teenagers in NYC?</string>
                                                     <action selector="unMute:" destination="YH2-9W-ewk" eventType="touchUpInside" id="ybU-kN-Nil"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EQc-XZ-wYk" customClass="SmallYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EQc-XZ-wYk" customClass="SmallYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="62" width="60" height="60"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
@@ -1342,7 +1342,7 @@ by 5 teenagers in NYC?</string>
                                                     <action selector="addSnapchat:" destination="YH2-9W-ewk" eventType="touchUpInside" id="z8E-hu-Qij"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-pL-oz1" customClass="SmallYellowButton" customModule="Release" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-pL-oz1" customClass="SmallYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="124" width="60" height="60"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
@@ -1405,7 +1405,7 @@ by 5 teenagers in NYC?</string>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ws-HS-mh5" userLabel="Input Container View">
                                         <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                         <subviews>
-                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sx0-yh-cxx" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sx0-yh-cxx" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="8" y="8" width="359" height="28"/>
                                                 <subviews>
                                                     <textView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="1mZ-3E-8Mi">
@@ -1450,7 +1450,7 @@ by 5 teenagers in NYC?</string>
                                             <constraint firstItem="Sx0-yh-cxx" firstAttribute="top" secondItem="6Ws-HS-mh5" secondAttribute="top" constant="8" id="jeB-YO-hRy"/>
                                         </constraints>
                                     </view>
-                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uCy-lG-wjf" customClass="SmallYellowButton" customModule="Release" customModuleProvider="target">
+                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uCy-lG-wjf" customClass="SmallYellowButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="323" y="28" width="40" height="40"/>
                                         <color key="backgroundColor" red="1" green="0.20000000000000001" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
@@ -1577,7 +1577,7 @@ by 5 teenagers in NYC?</string>
         <!--Permission View Controller-->
         <scene sceneID="qfg-d6-I7j">
             <objects>
-                <viewController storyboardIdentifier="permVC" id="T9J-Hu-dLv" customClass="PermissionViewController" customModule="Release" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="permVC" id="T9J-Hu-dLv" customClass="PermissionViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Te3-NU-CwU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1594,7 +1594,7 @@ by 5 teenagers in NYC?</string>
                                         <color key="textColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fMU-88-8TJ" customClass="SelectableButton" customModule="Release" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fMU-88-8TJ" customClass="SelectableButton" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="20" y="591" width="335" height="56"/>
                                         <color key="backgroundColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
@@ -1618,13 +1618,13 @@ by 5 teenagers in NYC?</string>
                                             <action selector="displayPermissionAlertWithSender:" destination="T9J-Hu-dLv" eventType="touchUpInside" id="ZTr-WM-gAE"/>
                                         </connections>
                                     </button>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gIm-jX-J1W" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gIm-jX-J1W" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                         <rect key="frame" x="16" y="73" width="343" height="518"/>
                                         <subviews>
-                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hpt-6m-Zsq" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hpt-6m-Zsq" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="4" y="0.0" width="335" height="498"/>
                                                 <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="3.gif" translatesAutoresizingMaskIntoConstraints="NO" id="Sm2-1h-RqF">
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="3.gif" translatesAutoresizingMaskIntoConstraints="NO" id="Sm2-1h-RqF" customClass="AnimatedImageView" customModule="Kingfisher">
                                                         <rect key="frame" x="0.0" y="0.0" width="335" height="498"/>
                                                     </imageView>
                                                 </subviews>
@@ -1703,7 +1703,7 @@ by 5 teenagers in NYC?</string>
         <!--Edit Account View Controller-->
         <scene sceneID="fJk-G3-1b7">
             <objects>
-                <viewController storyboardIdentifier="editAccountSmallVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="IXB-da-AOf" customClass="EditAccountViewController" customModule="Release" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="editAccountSmallVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="IXB-da-AOf" customClass="EditAccountViewController" customModule="Monkey" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FE7-2l-BEE">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1738,7 +1738,7 @@ by 5 teenagers in NYC?</string>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cy7-v3-cBD" userLabel="Text Field Container View">
                                                                         <rect key="frame" x="20" y="31" width="280" height="113"/>
                                                                         <subviews>
-                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8xZ-W5-ijU" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8xZ-W5-ijU" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="280" height="48"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.34999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="😊" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sot-vI-Pxn">
@@ -1747,7 +1747,7 @@ by 5 teenagers in NYC?</string>
                                                                                         <nil key="textColor"/>
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
-                                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="First Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mJH-RH-xqO" customClass="MakeTextFieldGreatAgain" customModule="Release" customModuleProvider="target">
+                                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="First Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mJH-RH-xqO" customClass="MakeTextFieldGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                                         <rect key="frame" x="45" y="0.0" width="227" height="48"/>
                                                                                         <color key="tintColor" red="1" green="0.98823529409999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1776,7 +1776,7 @@ by 5 teenagers in NYC?</string>
                                                                                     </userDefinedRuntimeAttribute>
                                                                                 </userDefinedRuntimeAttributes>
                                                                             </view>
-                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZXp-Gh-1Nb" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZXp-Gh-1Nb" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                                 <rect key="frame" x="0.0" y="62" width="280" height="48"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.34999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👻" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5Q-Kc-Ctm">
@@ -1785,7 +1785,7 @@ by 5 teenagers in NYC?</string>
                                                                                         <nil key="textColor"/>
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
-                                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Snapchat Username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="UHc-aD-dsB" customClass="UsernameTextField" customModule="Release" customModuleProvider="target">
+                                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Snapchat Username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="UHc-aD-dsB" customClass="UsernameTextField" customModule="Monkey" customModuleProvider="target">
                                                                                         <rect key="frame" x="45" y="0.0" width="227" height="48"/>
                                                                                         <color key="tintColor" red="1" green="0.98823529409999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1861,7 +1861,7 @@ by 5 teenagers in NYC?</string>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="0.25" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dLO-op-U2g" customClass="MakeUIViewGreatAgain" customModule="Release" customModuleProvider="target">
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dLO-op-U2g" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                 <rect key="frame" x="20" y="120" width="280" height="48"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.34999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🎂" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pH2-nc-4gy">
@@ -1870,7 +1870,7 @@ by 5 teenagers in NYC?</string>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
-                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Birthday" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4x0-bk-REa" customClass="MakeTextFieldGreatAgain" customModule="Release" customModuleProvider="target">
+                                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Birthday" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4x0-bk-REa" customClass="MakeTextFieldGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                                         <rect key="frame" x="45" y="0.0" width="227" height="48"/>
                                                                         <color key="tintColor" red="1" green="0.98823529409999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1902,7 +1902,7 @@ by 5 teenagers in NYC?</string>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pj1-bA-vwH">
                                                                 <rect key="frame" x="20" y="183" width="280" height="48"/>
                                                                 <subviews>
-                                                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2j6-3h-IAn" customClass="SelectableButton" customModule="Release" customModuleProvider="target">
+                                                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2j6-3h-IAn" customClass="SelectableButton" customModule="Monkey" customModuleProvider="target">
                                                                         <rect key="frame" x="0.0" y="0.0" width="135" height="48"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1925,7 +1925,7 @@ by 5 teenagers in NYC?</string>
                                                                             <action selector="selectFemaleGender:" destination="IXB-da-AOf" eventType="touchUpInside" id="Lmt-we-CIL"/>
                                                                         </connections>
                                                                     </button>
-                                                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wie-HE-evx" customClass="SelectableButton" customModule="Release" customModuleProvider="target">
+                                                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wie-HE-evx" customClass="SelectableButton" customModule="Monkey" customModuleProvider="target">
                                                                         <rect key="frame" x="146" y="0.0" width="135" height="48"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
@@ -2005,7 +2005,7 @@ by 5 teenagers in NYC?</string>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c2h-09-4HC" userLabel="Picker Sub Container View">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="220"/>
                                         <subviews>
-                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="9Hk-2h-UiH" customClass="BirthdatePicker" customModule="Release" customModuleProvider="target">
+                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="9Hk-2h-UiH" customClass="BirthdatePicker" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="4" width="320" height="216"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <date key="date" timeIntervalSinceReferenceDate="515860474.20090699">
@@ -2033,7 +2033,7 @@ by 5 teenagers in NYC?</string>
                                     <constraint firstItem="c2h-09-4HC" firstAttribute="top" secondItem="Mv5-To-bGf" secondAttribute="top" id="tor-vU-kYV"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LNH-Kh-WEh" customClass="BigYellowButton" customModule="Release" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LNH-Kh-WEh" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="20" y="262" width="280" height="56"/>
                                 <color key="backgroundColor" red="1" green="1" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>

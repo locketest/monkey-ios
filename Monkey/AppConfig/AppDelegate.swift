@@ -9,9 +9,7 @@
 
 import UIKit
 import Fabric
-import Branch
 import RealmSwift
-import SwiftyJSON
 import Realm
 import Crashlytics
 import Firebase
@@ -33,11 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			Achievements.shared.promptedNotifications = true
 		}
         
-		
-		FirebaseApp.configure(options: FirebaseOptions.init(contentsOfFile: Environment.firebaseConfigurationPath)!)
 		FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-		Fabric.with([Branch.self, Crashlytics.self])
-		Branch.getInstance().initSession(launchOptions: launchOptions)
+		FirebaseApp.configure()
+		Fabric.with([Crashlytics.self])
 		Messaging.messaging().delegate = self
 		RemoteConfigManager.shared.fetchLatestConfig()
 		AnaliticsCenter.logLaunchApp()
@@ -76,7 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             self.openWithDeeplinkURL(url: userActivity.webpageURL?.absoluteString)
         }
-		return Branch.getInstance().continue(userActivity)
+		return true
 	}
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {

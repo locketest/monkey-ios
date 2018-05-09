@@ -18,7 +18,6 @@
 import UIKit
 import Alamofire
 import Social
-import SwiftyJSON
 import MediaPlayer
 import RealmSwift
 import MessageUI
@@ -68,7 +67,7 @@ public let BananaAlertDataTag = "BananaAlertData" // Adjust promotion link下载
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
-class MainViewController: SwipeableViewController, UITextFieldDelegate, SettingsHashtagCellDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate,MonkeySocketChatMessageDelegate {
+class MainViewController: SwipeableViewController, UITextFieldDelegate, CLLocationManagerDelegate, MFMessageComposeViewControllerDelegate, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate, MonkeySocketChatMessageDelegate {
      func webSocketDidRecieveVideoCall(videoCall: Any, data: [String : Any]) {
           if self.chatSession != nil {
                
@@ -669,22 +668,22 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
      
      func handleBananaAlertFunc() {
           
-          let bananaAlertData = JSON(UserDefaults.standard.value(forKey: BananaAlertDataTag) ?? "")
-          
-          guard (bananaAlertData.dictionaryValue["is_used"]?.bool) != nil else {
-               print("is_used is nil")
-               return
-          }
-          
-          if bananaAlertData.dictionaryValue["is_used"]!.boolValue {
-               
-               let alertController = UIAlertController(title: bananaAlertData.dictionaryValue["text"]?.stringValue, message: nil, preferredStyle: .alert)
-               alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: nil))
-               
-               DispatchQueue.main.async {
-                    self.present(alertController, animated: true, completion: nil)
-               }
-          }
+//          let bananaAlertData = JSON(UserDefaults.standard.value(forKey: BananaAlertDataTag) ?? "")
+//          
+//          guard (bananaAlertData.dictionaryValue["is_used"]?.bool) != nil else {
+//               print("is_used is nil")
+//               return
+//          }
+//          
+//          if bananaAlertData.dictionaryValue["is_used"]!.boolValue {
+//               
+//               let alertController = UIAlertController(title: bananaAlertData.dictionaryValue["text"]?.stringValue, message: nil, preferredStyle: .alert)
+//               alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: nil))
+//               
+//               DispatchQueue.main.async {
+//                    self.present(alertController, animated: true, completion: nil)
+//               }
+//          }
      }
      
 	func loadBananaData(isNotificationBool:Bool) {
@@ -696,23 +695,22 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, Settings
 					error.log()
 				case .success(let jsonAPIDocument):
 					
-					let json = JSON(jsonAPIDocument.dataResource?.json as Any)
-					//                         print("*** json = \(json)")
-					
-					self.yesterdayString = json["me"].dictionaryValue["yesterday"]!.intValue.description
-					
-					self.addTimeString = json["redeem"].dictionaryValue["add_time"]!.intValue.description
-					self.addFriendString = json["redeem"].dictionaryValue["add_friend"]!.intValue.description
-					
-					self.equivalentString = json["promotion"].string ?? ""
-					
-                    if let currentUser = APIController.shared.currentUser {
-                         self.bananaCountLabel.text = currentUser.bananas.value!.description
-                    }
-					
-					if isNotificationBool || (UserDefaults.standard.value(forKey: KillAppBananaNotificationTag) as! String) != "" {
-						self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!, isNotificationBool:isNotificationBool)
-					}
+					let json = jsonAPIDocument.dataResource?.json
+//
+//					self.yesterdayString = json["me"].dictionaryValue["yesterday"]!.intValue.description
+//
+//					self.addTimeString = json["redeem"].dictionaryValue["add_time"]!.intValue.description
+//					self.addFriendString = json["redeem"].dictionaryValue["add_friend"]!.intValue.description
+//
+//					self.equivalentString = json["promotion"].string ?? ""
+//
+//                    if let currentUser = APIController.shared.currentUser {
+//                         self.bananaCountLabel.text = currentUser.bananas.value!.description
+//                    }
+//
+//					if isNotificationBool || (UserDefaults.standard.value(forKey: KillAppBananaNotificationTag) as! String) != "" {
+//						self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!, isNotificationBool:isNotificationBool)
+//					}
 				}
 		}
 		

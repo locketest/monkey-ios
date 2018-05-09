@@ -3,7 +3,10 @@ PODS:
   - Adjust (4.13.0):
     - Adjust/Core (= 4.13.0)
   - Adjust/Core (4.13.0)
-  - Alamofire (4.3.0)
+  - Alamofire (4.7.2)
+  - AlamofireObjectMapper (5.0.0):
+    - Alamofire (~> 4.1)
+    - ObjectMapper (~> 3.0)
   - Amplitude-iOS (4.2.0)
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
@@ -11,11 +14,9 @@ PODS:
   - Bolts/AppLinks (1.9.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
-  - Branch (0.17.10):
-    - Branch/Core (= 0.17.10)
-  - Branch/Core (0.17.10)
   - Crashlytics (3.10.1):
     - Fabric (~> 1.7.5)
+  - CropViewController (2.3.6)
   - DeviceKit (1.7.0)
   - Fabric (1.7.6)
   - FBNotifications (1.0.1)
@@ -61,9 +62,7 @@ PODS:
   - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
     - GoogleToolboxForMac/Defines (= 2.1.4)
   - GPUImage (0.1.71)
-  - MMSCameraViewController (1.2.1)
-  - MMSProfileImagePicker (1.5.1):
-    - MMSCameraViewController (~> 1.2.1)
+  - Kingfisher (4.7.0)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
@@ -83,46 +82,40 @@ PODS:
   - Realm/Headers (3.5.0)
   - RealmSwift (3.5.0):
     - Realm (= 3.5.0)
-  - SDWebImage (4.3.3):
-    - SDWebImage/Core (= 4.3.3)
-  - SDWebImage/Core (4.3.3)
-  - Starscream (2.1.1)
-  - SwiftyGif (4.1.0)
-  - SwiftyJSON (4.0.0)
+  - Starscream (3.0.5)
 
 DEPENDENCIES:
   - AccountKit
   - Adjust
-  - Alamofire (~> 4.3.0)
+  - Alamofire
+  - AlamofireObjectMapper (~> 5.0)
   - Amplitude-iOS
-  - Branch (~> 0.17.10)
   - Crashlytics
-  - DeviceKit (~> 1.0)
+  - CropViewController
+  - DeviceKit
   - Fabric
   - FBNotifications
   - FBSDKCoreKit
   - Firebase/Messaging
   - Firebase/RemoteConfig
   - GPUImage (from `https://github.com/holla-world/GPUImage.git`, branch `master`)
-  - MMSProfileImagePicker
+  - Kingfisher
   - ObjectMapper (~> 3.1)
   - ObjectMapperAdditions/Realm (~> 4.1)
   - OpenTok
   - RealmSwift
-  - SDWebImage (~> 4.3.3)
-  - Starscream (~> 2.1.1)
-  - SwiftyGif
-  - SwiftyJSON (~> 4.0.0)
+  - Starscream
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - AccountKit
     - Adjust
     - Alamofire
+    - AlamofireObjectMapper
     - Amplitude-iOS
     - Bolts
-    - Branch
     - Crashlytics
+    - CropViewController
     - DeviceKit
     - Fabric
     - FBNotifications
@@ -135,8 +128,7 @@ SPEC REPOS:
     - FirebaseMessaging
     - FirebaseRemoteConfig
     - GoogleToolboxForMac
-    - MMSCameraViewController
-    - MMSProfileImagePicker
+    - Kingfisher
     - nanopb
     - ObjectMapper
     - ObjectMapperAdditions
@@ -144,10 +136,7 @@ SPEC REPOS:
     - Protobuf
     - Realm
     - RealmSwift
-    - SDWebImage
     - Starscream
-    - SwiftyGif
-    - SwiftyJSON
 
 EXTERNAL SOURCES:
   GPUImage:
@@ -162,11 +151,12 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AccountKit: f3e48047e6fb1c433dff37c61158fd32bbc482cf
   Adjust: 8f204c1005d6635e7c931c6a2cb2f881965bf478
-  Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
+  Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
+  AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
   Amplitude-iOS: 45f10ac763db6f9ddfa06f2e4d63ed5f8d3c7bf6
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  Branch: 29745957de17eb5973627f4c7720bd0eb390fd45
   Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
+  CropViewController: e6d4bd512d15a1709e9ddf71fe7d98ffd05dda0f
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
@@ -180,8 +170,7 @@ SPEC CHECKSUMS:
   FirebaseRemoteConfig: 3e95fb7c072308492e85fa41d59d38b3d6fd2372
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   GPUImage: f6034f21f92df6171520f604226ae64b90b35911
-  MMSCameraViewController: 70e128c8398686e323645e032aa8d1ea2b0cb54a
-  MMSProfileImagePicker: 46b3640a9d9c97ecf711e514cefdc53a2aac21e1
+  Kingfisher: da6b005aa96d37698e3e4f1ccfe96a5b9bbf27d6
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
   ObjectMapperAdditions: db4243e10ebd9abf7e5e7938e4b0a4bbfd840980
@@ -189,11 +178,8 @@ SPEC CHECKSUMS:
   Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
   Realm: 0378021c424e4e2bd6a0e63b27881e929d9b9ad1
   RealmSwift: 3322562622fda2ad596985ead4d8d8be30cf838c
-  SDWebImage: de4d90b5bff3571eae7bd16202b1f43135409fa5
-  Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
-  SwiftyGif: d36c6dfb52e2ca1e48fe349d225f50ec4123ec85
-  SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
+  Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
 
-PODFILE CHECKSUM: b610e7cd76a0bd41ddd557c2495ad160b2252f8d
+PODFILE CHECKSUM: 4be9162fab077c79f04db2d12f676e81cdb9fee8
 
 COCOAPODS: 1.5.0

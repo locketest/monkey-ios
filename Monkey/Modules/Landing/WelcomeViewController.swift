@@ -100,7 +100,7 @@ class WelcomeViewController: MonkeyViewController {
             parameters["source"] = Environment.deeplink_source
         }
 		
-        JSONAPIRequest(url:"\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/auth/accountkit", method:.post, parameters:parameters, options:[
+        JSONAPIRequest(url:"\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/auth/accountkit", method: .post, parameters: parameters, options: [
             .header("version", APIController.shared.appVersion),
             .header("lang", APIController.shared.languageString),
             .header("device", "ios"),
@@ -120,7 +120,7 @@ class WelcomeViewController: MonkeyViewController {
 						return
 					}
 					
-					RealmDataController.shared.apply(jsonAPIDocument) { (result) in
+					RealmDataController.shared.apply(JSONAPIDocument.init(json: user)) { (result) in
 						switch result {
 						case .error( _):
 							NSLog("error login")
@@ -132,8 +132,7 @@ class WelcomeViewController: MonkeyViewController {
 							APIController.authorization = authorization
 							AnaliticsCenter.loginAccount()
 							UserDefaults.standard.set(user_id, forKey: "user_id")
-                            
-                            UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
+						UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
 							
 							Apns.update(callback: nil)
 							self.dismiss(animated: false, completion: nil)
