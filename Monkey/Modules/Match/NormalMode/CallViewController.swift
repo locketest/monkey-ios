@@ -36,6 +36,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 	@IBOutlet weak var skipButton: BigYellowButton!
 	@IBOutlet weak var skipButtonContainerView: UIView!
 	@IBOutlet var endCallButton: BigYellowButton!
+    @IBOutlet weak var instagramPopupButton: BigYellowButton!
     @IBOutlet weak var statusCornerView: UIView!
     @IBOutlet weak var publisherContainerView: UIView!
     @IBOutlet weak var containerView: UIView!
@@ -54,6 +55,8 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     @IBOutlet weak var cameraPositionButton: UIButton!
     static var lastScreenShotTime:TimeInterval = 0
     var currentMatchPastTime:TimeInterval = 0
+    
+    var isLinkInstagramBool = false
     
     var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧"
     let truthOrDareView = TruthOrDareView.instanceFromNib()
@@ -170,6 +173,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         self.endCallButton.isHidden = true
 		self.skipButton.isHidden = true
 		self.skipButtonContainerView.isHidden = true
+        self.handleInstagramPopupBtnHiddenFunc(isHidden: self.endCallButton.isHidden)
 		
         self.clockLabel.delegate = self
 		self.clockLabelBackgroundView.layer.cornerRadius = 20
@@ -183,6 +187,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
             self.addMinuteButton.isHidden = true
             self.snapchatButton.isHidden = true
             self.endCallButton.isHidden = false
+            self.handleInstagramPopupBtnHiddenFunc(isHidden: self.endCallButton.isHidden)
         }
 		
 		if self.chatSession?.matchMode == .EventMode {
@@ -225,6 +230,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 		self.cameraPositionButton.isHidden = true
 		self.cameraPositionButton.backgroundColor = UIColor.clear
         let realm = try? Realm()
+        self.isLinkInstagramBool = self.chatSession?.realmCall?.user?.instagram_account == nil ? false : true
         var callUserID = self.chatSession?.realmCall?.user?.user_id
         if callUserID == nil {
             callUserID = self.chatSession?.realmVideoCall?.initiator?.user_id
@@ -243,6 +249,10 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 			self.clockTimeIcon.isHidden = true
 			self.clockLabelBackgroundView.isHidden = true
 		}
+    }
+    
+    func handleInstagramPopupBtnHiddenFunc(isHidden:Bool) {
+        self.instagramPopupButton.isHidden = self.isLinkInstagramBool ? isHidden : true
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -290,6 +300,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         
         if self.chatSession?.friendMatched == true {
             self.endCallButton.isHidden = false
+            self.handleInstagramPopupBtnHiddenFunc(isHidden: self.endCallButton.isHidden)
         }else if self.chatSession?.matchMode == .EventMode {
             self.skipButton.isHidden = false
             self.snapchatButton.isHidden = false
@@ -403,6 +414,16 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 		}
     }
 	
+    @IBAction func alertInstagramPopupVcFunc(_ sender: BigYellowButton) {
+        
+        let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as! InstagramPopupViewController
+        
+        instagramVC.userId = self.chatSession?.realmCall?.user?.user_id
+        instagramVC.followMyIGTagBool = false
+        
+        self.present(instagramVC, animated: true)
+    }
+    
     @IBAction func endCall(_ sender: BigYellowButton) {
         self.endCallButton.isEnabled = false
         self.endCallButton.layer.opacity = 0.5
@@ -478,6 +499,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 					self.endCallButton.isHidden = false
 					self.skipButton.isHidden = true
 					self.skipButton.isEnabled = false
+                    self.handleInstagramPopupBtnHiddenFunc(isHidden: self.endCallButton.isHidden)
 				}
 			}
 		}else {
@@ -489,6 +511,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 			self.endCallButton.isHidden = false
 			self.skipButton.isHidden = true
 			self.skipButton.isEnabled = false
+            self.handleInstagramPopupBtnHiddenFunc(isHidden: self.endCallButton.isHidden)
 		}
 		self.clockLabelBackgroundView.isHidden = false
         self.cameraPositionButton.isHidden = false

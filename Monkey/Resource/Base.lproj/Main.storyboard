@@ -1230,6 +1230,23 @@ by 5 teenagers in NYC?</string>
                                             <constraint firstItem="cPn-Fz-DTH" firstAttribute="leading" secondItem="bgY-Ht-n30" secondAttribute="leading" constant="8" id="zxD-mx-v2c"/>
                                         </constraints>
                                     </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9aS-jR-vDt" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                        <rect key="frame" x="162.5" y="531" width="50" height="50"/>
+                                        <color key="backgroundColor" red="0.78431372549019607" green="0.78431372549019607" blue="0.78431372549019607" alpha="0.083331622494366195" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="Goc-RT-CDn"/>
+                                            <constraint firstAttribute="width" secondItem="9aS-jR-vDt" secondAttribute="height" multiplier="1:1" id="hF6-Qn-9BD"/>
+                                        </constraints>
+                                        <state key="normal" title="🌄"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="25"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="alertInstagramPopupVcFunc:" destination="zTu-EK-AVb" eventType="touchUpInside" id="8hr-lw-zWe"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="VEb-nB-ntL" secondAttribute="bottom" constant="20" id="3Ix-4l-1oo"/>
@@ -1242,6 +1259,8 @@ by 5 teenagers in NYC?</string>
                                     <constraint firstItem="GZI-MZ-WGI" firstAttribute="centerX" secondItem="jnj-Bx-OWp" secondAttribute="centerX" id="Ujt-4I-bqJ"/>
                                     <constraint firstItem="bgY-Ht-n30" firstAttribute="trailing" secondItem="aa2-H7-j91" secondAttribute="trailing" id="XEC-rp-fCB"/>
                                     <constraint firstAttribute="bottom" secondItem="GZI-MZ-WGI" secondAttribute="bottom" constant="20" id="atc-8V-862"/>
+                                    <constraint firstItem="9aS-jR-vDt" firstAttribute="centerX" secondItem="jnj-Bx-OWp" secondAttribute="centerX" id="eHN-sI-vla"/>
+                                    <constraint firstItem="lbf-rk-Za8" firstAttribute="top" secondItem="9aS-jR-vDt" secondAttribute="bottom" constant="10" id="jtR-f9-PAy"/>
                                     <constraint firstItem="mbV-Rf-K1k" firstAttribute="centerX" secondItem="jnj-Bx-OWp" secondAttribute="centerX" constant="-78" id="kPX-tt-wZE"/>
                                     <constraint firstItem="aa2-H7-j91" firstAttribute="top" secondItem="jnj-Bx-OWp" secondAttribute="top" constant="28" id="lER-Nk-H2I"/>
                                     <constraint firstItem="lbf-rk-Za8" firstAttribute="centerX" secondItem="jnj-Bx-OWp" secondAttribute="centerX" constant="79" id="lON-Tc-vss"/>
@@ -1275,6 +1294,7 @@ by 5 teenagers in NYC?</string>
                         <outlet property="containerView" destination="jnj-Bx-OWp" id="Gcr-Kh-Pde"/>
                         <outlet property="endCallButton" destination="GZI-MZ-WGI" id="PHw-qb-3cC"/>
                         <outlet property="filterButton" destination="6HH-kE-4eE" id="bWf-zj-3qV"/>
+                        <outlet property="instagramPopupButton" destination="9aS-jR-vDt" id="286-wO-RRt"/>
                         <outlet property="policeButton" destination="9JE-LS-ZES" id="vWP-cb-HM4"/>
                         <outlet property="policeButtonWidth" destination="QvL-sR-8bT" id="hkO-7h-KOn"/>
                         <outlet property="publisherContainerView" destination="275-Qy-Cfr" id="hNw-dT-aRv"/>
@@ -1360,6 +1380,24 @@ by 5 teenagers in NYC?</string>
                                                     <action selector="endCall:" destination="YH2-9W-ewk" eventType="touchUpInside" id="ckB-0l-Ii8"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q86-vA-gl9" customClass="SmallYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="62" width="60" height="60"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="60" id="DdV-Lg-yT0"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                                <state key="normal" title="IG">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="🌄"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="roundedSquare" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="alertInstagramPopupVcFunc:" destination="YH2-9W-ewk" eventType="touchUpInside" id="YwC-nR-GDd"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
@@ -1367,12 +1405,15 @@ by 5 teenagers in NYC?</string>
                                             <constraint firstAttribute="trailing" secondItem="NJk-pL-oz1" secondAttribute="trailing" id="17l-aV-JhZ"/>
                                             <constraint firstItem="EQc-XZ-wYk" firstAttribute="top" secondItem="gbM-wz-G23" secondAttribute="bottom" constant="2" id="5lB-hM-taC"/>
                                             <constraint firstAttribute="width" constant="60" id="69H-2v-Bvj"/>
+                                            <constraint firstItem="q86-vA-gl9" firstAttribute="leading" secondItem="WfL-7m-atb" secondAttribute="leading" id="DjQ-Oz-dVb"/>
                                             <constraint firstItem="gbM-wz-G23" firstAttribute="top" secondItem="WfL-7m-atb" secondAttribute="top" id="QGJ-FB-Gjh"/>
                                             <constraint firstItem="NJk-pL-oz1" firstAttribute="top" secondItem="EQc-XZ-wYk" secondAttribute="bottom" constant="2" id="SUn-Hq-XvI"/>
                                             <constraint firstItem="gbM-wz-G23" firstAttribute="leading" secondItem="WfL-7m-atb" secondAttribute="leading" id="WsR-w3-aQ7"/>
                                             <constraint firstItem="NJk-pL-oz1" firstAttribute="leading" secondItem="WfL-7m-atb" secondAttribute="leading" id="Y7k-GN-n13"/>
+                                            <constraint firstAttribute="trailing" secondItem="q86-vA-gl9" secondAttribute="trailing" id="ZjZ-dd-mzG"/>
                                             <constraint firstAttribute="trailing" secondItem="EQc-XZ-wYk" secondAttribute="trailing" id="dmq-3r-fbB"/>
                                             <constraint firstAttribute="trailing" secondItem="gbM-wz-G23" secondAttribute="trailing" id="eGB-k7-hOV"/>
+                                            <constraint firstItem="NJk-pL-oz1" firstAttribute="top" secondItem="q86-vA-gl9" secondAttribute="bottom" constant="2" id="gsb-1M-82H"/>
                                             <constraint firstItem="EQc-XZ-wYk" firstAttribute="leading" secondItem="WfL-7m-atb" secondAttribute="leading" id="qKs-bH-khE"/>
                                         </constraints>
                                     </view>
@@ -1556,6 +1597,7 @@ by 5 teenagers in NYC?</string>
                         <outlet property="inputContainerView" destination="6Ws-HS-mh5" id="zJE-Jw-d04"/>
                         <outlet property="inputContainerViewBottomConstraint" destination="3Wz-Uh-Yag" id="VVB-pq-QxE"/>
                         <outlet property="inputHeightConstraint" destination="MNb-DF-y6C" id="9iu-GV-7JK"/>
+                        <outlet property="instagramPopupButton" destination="q86-vA-gl9" id="Jll-Mz-bLF"/>
                         <outlet property="placeholderTextLabel" destination="ItF-VI-6rl" id="TzU-en-ylH"/>
                         <outlet property="policeButton" destination="uCy-lG-wjf" id="spC-3N-e54"/>
                         <outlet property="policeButtonTopConstraint" destination="fEg-2M-8KA" id="2d3-hn-y8z"/>

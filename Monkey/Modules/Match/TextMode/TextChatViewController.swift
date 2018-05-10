@@ -16,6 +16,7 @@ class TextChatViewController: MonkeyViewController {
 	@IBOutlet weak var policeButton: SmallYellowButton!
 	@IBOutlet weak var soundButton: SmallYellowButton!
 	@IBOutlet weak var friendButton: SmallYellowButton!
+    @IBOutlet weak var instagramPopupButton: SmallYellowButton!
 	@IBOutlet weak var endCallButton: SmallYellowButton!
 	@IBOutlet weak var publisherContainerView: UIView!
 	weak var remoteStreamView: UIView?
@@ -49,6 +50,8 @@ class TextChatViewController: MonkeyViewController {
 	weak var callDelegate: CallViewControllerDelegate?
 	var soundPlayer = SoundPlayer.shared
 	var eras = "👂"
+    
+    var isLinkInstagramBool = false
     
     var commonTree:RealmChannel?
 	
@@ -125,6 +128,7 @@ class TextChatViewController: MonkeyViewController {
 		self.soundButton.isHidden = true
 		self.friendButton.isHidden = true
 		self.endCallButton.isHidden = true
+        self.instagramPopupButton.isHidden = true
 		
 		self.textInputView.delegate = self
 		self.textInputView.layer.masksToBounds = true
@@ -208,6 +212,12 @@ class TextChatViewController: MonkeyViewController {
 				self.endCallButton.alpha = 1
 			})
 		}
+        
+        self.isLinkInstagramBool = self.chatSession?.realmCall?.user?.instagram_account == nil ? false : true
+    }
+    
+    func handleInstagramPopupBtnHiddenFunc(isHidden:Bool) {
+        self.instagramPopupButton.isHidden = self.isLinkInstagramBool ? isHidden : true
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -224,7 +234,12 @@ class TextChatViewController: MonkeyViewController {
 		
 		self.isPublisherViewEnlarged = false
 		self.soundButton.isHidden = false
-		self.friendButton.isHidden = false
+        
+        if let friendMatchedBool = self.chatSession?.friendMatched {
+            self.friendButton.isHidden = friendMatchedBool
+        }
+        
+        self.handleInstagramPopupBtnHiddenFunc(isHidden: !self.friendButton.isHidden)
 		
 		let streamViewWidth = (self.containerView.frame.size.width - 60 - 4 * 4) / 2
 		UIView.animate(withDuration: 0.3) {
@@ -258,6 +273,16 @@ class TextChatViewController: MonkeyViewController {
 			self.policeButton.alpha = 0
 		})
 	}
+    
+    @IBAction func alertInstagramPopupVcFunc(_ sender: SmallYellowButton) {
+        
+        let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as! InstagramPopupViewController
+        
+        instagramVC.userId = self.chatSession?.realmCall?.user?.user_id
+        instagramVC.followMyIGTagBool = false
+        
+        self.present(instagramVC, animated: true)
+    }
 	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 		self.stopEditing()
@@ -523,11 +548,12 @@ extension TextChatViewController: MatchViewControllerProtocol {
     }
     
 	internal func friendMatched(in chatSession: ChatSession?) {
-		if let currentChatSession = chatSession {
+		if let _ = chatSession {
 			Achievements.shared.snapchatMatches += 1
 			self.celebrateAddFriend()
 		}else {
-			self.addFriendButtonHeightConstraint.constant = 0
+            self.addFriendButtonHeightConstraint.constant = self.isLinkInstagramBool ? 60 : 0
+            self.instagramPopupButton.isHidden = !self.isLinkInstagramBool
 			self.view.setNeedsLayout()
 		}
 		
@@ -587,7 +613,10 @@ extension TextChatViewController: MatchViewControllerProtocol {
 		}
 		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
 			if self.chatSession?.status == .connected {
-				self.addFriendButtonHeightConstraint.constant = 0
+                // 如果link 了 Instagram，添加好友后约束不变，否则高度约束变为0，sound按钮下掉
+				self.addFriendButtonHeightConstraint.constant = self.isLinkInstagramBool ? 60 : 0
+                // pop按钮显示与否就跟link的状态一样，与上也有一定关联
+                self.instagramPopupButton.isHidden = !self.isLinkInstagramBool
 				self.view.setNeedsLayout()
 			}
 		}
@@ -653,6 +682,7 @@ extension TextChatViewController: MatchViewControllerProtocol {
 		self.policeButton.isHidden = false
 		self.soundButton.isHidden = false
 		self.friendButton.isHidden = false
+        self.handleInstagramPopupBtnHiddenFunc(isHidden: !self.friendButton.isHidden)
 		if self.endCallButton.isEnabled {
 			self.endCallButton.isHidden = false
 		}

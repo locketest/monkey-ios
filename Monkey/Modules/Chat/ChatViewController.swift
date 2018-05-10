@@ -374,7 +374,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
             instagramVC.friendshipId = friendshipId
             instagramVC.userId = friendship.user?.user_id
-            instagramVC.isMonkeyKingBool = self.isMonkeyKingBool
+            instagramVC.isMonkeyKingBool = self.isMonkeyKingBool!
             
             self.present(instagramVC, animated: true, completion: {
                 self.initialLongPressLocation = locationPoint

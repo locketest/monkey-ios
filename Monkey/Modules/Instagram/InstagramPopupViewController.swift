@@ -8,6 +8,10 @@
 
 import UIKit
 import RealmSwift
+import SwiftyJSON
+
+// photosId为预留字段，暂未用上
+typealias PhotoIdAndUrlTuple = (photosId:String, photoUrl:String)
 
 class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate {
     /// The user's Monkey profile pic
@@ -17,7 +21,11 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     /// The label below nameLabel, currently displays location
     @IBOutlet var locationLabel: UILabel!
     /// The image view that async loads all the images, then cycles between them with taps
-    @IBOutlet var instagramImageView: AsyncCarouselImageView!
+//    @IBOutlet var instagramImageView: AsyncCarouselImageView!
+    /// The instagramPhoto background view
+    @IBOutlet var instagramPhotosBgView: UIView!
+    /// The instagramPhoto background view height constraint
+    @IBOutlet var instagramPhotosHeightConstraint: NSLayoutConstraint!
     /// A overlay used for displaying a tutorial overlay on first display ever
     @IBOutlet var overlayView: UIView!
     /// An emoji label behind the image used for either loading, or no instagram linked messages
@@ -39,7 +47,9 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     /// The realm user for the popup. Only passed if no instagram account is linked to be used as a backup data source for UI elements
     /// Implemented as a getter for thread safety
     
-    var isMonkeyKingBool : Bool?
+    var isMonkeyKingBool = false
+    
+    var followMyIGTagBool = true
     
     let ButtonBgColor = UIColor(red: 107 / 255, green: 68 / 255, blue: 1, alpha: 0.07)
  
@@ -106,19 +116,25 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     override func viewDidLoad() {
         super.viewDidLoad()
         let instagramAccount = self.user?.instagram_account
+        
         if instagramAccount == nil {
             self.backgroundEmojiLabel.text = "😢"
             self.nameLabel.text = self.user?.first_name ?? self.user?.username ?? ""
-            if let age = self.user?.age.value {
-                self.nameLabel.text?.append(" \(age) \(self.isMonkeyKingBool! ? "" : (self.user?.gender == "female" ? "👩":"👱"))")
+            
+            if !self.isMonkeyKingBool {
+                if let age = self.user?.age.value {
+                    self.nameLabel.text?.append(" \(age) \(self.user?.gender == "female" ? "👩":"👱")")
+                }
+                
+                self.locationLabel.text = self.user?.location ?? ""
             }
-            self.locationLabel.text = self.user?.location ?? ""
+            
             self.profileImageView.url = self.user?.profile_photo_url
             self.backgroundTextView.text = "Instagram not linked"
             
         } else if !Achievements.shared.shownInstagramTutorial {
-            self.overlayView.isHidden = false
-            self.instagramImageView.image = #imageLiteral(resourceName: "InstagramTutorialPlaceholder")
+//            self.overlayView.isHidden = false
+//            self.instagramImageView.image = #imageLiteral(resourceName: "InstagramTutorialPlaceholder")
         }
         
         self.setupFriendOptionsSheet()
@@ -126,16 +142,115 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         
         self.setLabelsAndImages(using: instagramAccount)
         
-        self.handleMonkeyKingFunc()
+        self.handleBtnStateFunc()
+        
+        self.initData()
     }
     
-    func handleMonkeyKingFunc() {
+    func initData() {
+        
+        if let accountId = user?.instagram_account?.instagram_account_id {
+            JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/instagram_accounts/\(accountId)", options: [
+                .header("Authorization", APIController.authorization)
+                ]).addCompletionHandler { (response) in
+                    switch response {
+                    case .error(let error):
+                        print(error)
+                    case .success(let jsonAPIDocument):
+                        
+                        if let includes = jsonAPIDocument.included {
+                            
+                            var dataTupleArray : [PhotoIdAndUrlTuple]! = []
+                            
+                            if includes.count > 0 {
+                                for (index, include) in includes.enumerated() {
+                                    if index < (self.followMyIGTagBool ? 8 : 9) { // 如果最后一张图是followMyIG，前面最多显示八张，否则最多显示九张
+                                        dataTupleArray.append((photosId: include.id!, photoUrl: include.attributes!["standard_resolution_image_url"]! as! String))
+                                    } else { break } // 避免图片过多虽然没有添加图片但循环还是在继续
+                                }
+                                
+                                if self.followMyIGTagBool {
+                                    dataTupleArray.append((photosId: "", photoUrl: ""))
+                                }
+                                
+                                self.addInstagramPhotosFunc(dataTupleArray: dataTupleArray)
+                            } else {
+                                self.instagramPhotosHeightConstraint.constant = 0
+                            }
+                        }
+                    }
+            }
+        }
+    }
+    
+    func addInstagramPhotosFunc(dataTupleArray:[PhotoIdAndUrlTuple]) {
+        
+        if dataTupleArray.count > 0 {
+
+            let Padding : CGFloat = 2 // 控件之间的间距
+
+            let Margin : CGFloat = 5 // 边上控件距父控件间距
+            
+            let totleColumns : CGFloat = 3 // 每行要显示的列数
+
+            let imageButtonW : CGFloat = (self.instagramPhotosBgView.width - Margin * 2 - Padding * (totleColumns - 1)) / totleColumns
+            let imageButtonH : CGFloat = imageButtonW
+
+            for (index, value) in dataTupleArray.enumerated() {
+
+                let imageButton = UIButton()
+
+                let row = index / Int(totleColumns) // 行号等于索引除以每行要显示的列数
+                let col = index % Int(totleColumns) // 列号等于索引对每行要显示的列数取摸
+
+                let imageButtonX : CGFloat = Margin + CGFloat(col) * (imageButtonW + Padding)
+                let imageButtonY : CGFloat = CGFloat(row) * (imageButtonH + Padding)
+                
+                imageButton.layer.cornerRadius = 5
+                imageButton.layer.masksToBounds = true
+                imageButton.adjustsImageWhenHighlighted = false
+                
+                if value.photoUrl == "" {
+                    imageButton.setImage(UIImage(named: "followMyIGBtn"), for: .normal)
+                    imageButton.addTarget(self, action: #selector(followMyIGClickFunc), for: .touchUpInside)
+                } else {
+                    imageButton.sd_setImage(with: URL(string: value.photoUrl), for: .normal, placeholderImage: UIImage(named: "insDefultImg")!, options: SDWebImageOptions.allowInvalidSSLCertificates, completed: nil)
+                }
+                
+                imageButton.frame = CGRect(x: imageButtonX, y: imageButtonY, width: imageButtonW, height: imageButtonH)
+
+                self.instagramPhotosBgView.addSubview(imageButton)
+            }
+
+            self.instagramPhotosHeightConstraint.constant = (imageButtonH + Padding) * CGFloat(self.countTotalCol(total: dataTupleArray.count, columns: Int(totleColumns)))
+        }
+    }
+    
+    func followMyIGClickFunc(sender:UIButton) {
+        
+        var instagramURL : URL!
+        
+        let isInstagramInstalledBool = UIApplication.shared.canOpenURL(URL(string: "instagram://location?id=1")!)
+        
+        if let accountId = user?.instagram_account?.instagram_account_id {
+            
+            if isInstagramInstalledBool {
+                instagramURL = URL(string: "instagram://user?username=\(accountId)")
+            } else {
+                instagramURL = URL(string: "http://instagram.com/\(accountId)")
+            }
+            
+            UIApplication.shared.openURL(instagramURL)
+        }
+    }
+    
+    func handleBtnStateFunc() {
         
         self.purpleUpButton.isHidden = true
 
         self.snapchatButton.backgroundColor = ButtonBgColor
         
-        if self.isMonkeyKingBool! {
+        if self.isMonkeyKingBool {
             self.locationLabel.text = ""
             self.unfriendButton.isHidden = true
             self.snapchatButtonTraillingConstraint.constant = 9
@@ -143,6 +258,27 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
             self.unfriendButton.isHidden = false
             self.unfriendButton.backgroundColor = ButtonBgColor
            self.snapchatButtonTraillingConstraint.constant = 62
+        }
+        
+        // text、chat页面弹出pop时不显示这俩按钮，此逻辑跟monkey king无关
+        if !self.followMyIGTagBool {
+            self.unfriendButton.isHidden = true
+            self.snapchatButton.isHidden = true
+        }
+    }
+    
+    /*
+     *  计算列数，传入总数和每行需要显示的列数
+     */
+    func countTotalCol(total:Int, columns:Int) -> Int {
+        if total > columns {
+            if total % columns == 0 {
+                return total / columns
+            } else {
+                return total / columns + 1
+            }
+        } else {
+            return 1
         }
     }
     
@@ -159,7 +295,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     
     @IBAction func snapchatBtnClickFunc(_ sender: BigYellowButton) {
         
-        guard let username = friendship?.user?.username else {
+        guard let username = user?.snapchat_username else {
             print("Error: could not get snapchat username to add")
             return
         }
@@ -204,7 +340,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
             if let age = self.user?.age.value {
                 self.nameLabel.text?.append(", \(age)")
             }
-            self.locationLabel.text = instagramAccount.user?.location ?? ""
+            self.locationLabel.text = self.isMonkeyKingBool ? "" : instagramAccount.user?.location ?? ""
             self.instagramPhotos = instagramAccount.instagram_photos
             self.profileImageView.url = self.user?.profile_photo_url
             self.setEmojisForChannelButtons(self.user)
@@ -217,7 +353,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
                 }
                 urls.append(url)
             })
-            self.instagramImageView.loadURLs(urls)
+//            self.instagramImageView.loadURLs(urls)
             
             guard let firstPhoto = self.instagramPhotos?.first else {
                 print("User has no instagram photos")
@@ -239,7 +375,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         if let age = self.user?.age.value {
             self.nameLabel.text?.append(", \(age)")
         }
-        self.locationLabel.text = instagramAccount.user?.location ?? ""
+        self.locationLabel.text = self.isMonkeyKingBool ? "" : instagramAccount.user?.location ?? ""
         self.profileImageView.url = self.user?.profile_photo_url
         
         reloadInstagramAccount(instagramAccount)
@@ -388,12 +524,12 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         
         if !Achievements.shared.shownInstagramTutorial {
             self.overlayView.isHidden = true
-            self.instagramImageView.next()
+//            self.instagramImageView.next()
             Achievements.shared.shownInstagramTutorial = true
             return
         }
         
-        self.instagramImageView.next()
+//        self.instagramImageView.next()
         
         guard let displayingPhoto = self.displayingInstagramPhoto else {
             print("Error: Attempting to switch instagram photo before we are ready")
@@ -526,6 +662,6 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     }
     
     deinit {
-        self.instagramImageView.cancel()
+//        self.instagramImageView.cancel()
     }
 }
