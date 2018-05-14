@@ -7,13 +7,21 @@
 //
 
 import Foundation
+import ObjectMapper
 import RealmSwift
 import Alamofire
 
-class RealmExperiment: JSONAPIObject, JSONAPIObjectProtocol {
-    static let type = "experiments"
-	static let requst_subfix = RealmExperiment.type
-	static let api_version = APIController.shared.apiVersion
+class RealmExperiment: MonkeyModel {
+	
+	override class var type: String {
+		return ApiType.Experiment.rawValue
+	}
+	override class func primaryKey() -> String {
+		return "experiment_id"
+	}
+	override class var requst_subfix: String {
+		return "\(self.type)/\(APIController.shared.appVersion)"
+	}
     
     /// The user_id that authenticated the request for this Experiment.
     dynamic var experiment_id: String?
@@ -145,8 +153,8 @@ class RealmExperiment: JSONAPIObject, JSONAPIObjectProtocol {
 	dynamic var monkeychat_link:String?
     dynamic var mc_invite_desc:String?
     dynamic var mc_invite_btn_pos_text:String?
-    
-    override static func primaryKey() -> String {
-        return "experiment_id"
-    }
+	
+	required convenience init?(map: Map) {
+		self.init()
+	}
 }

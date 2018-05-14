@@ -12,7 +12,7 @@ import Alamofire
 // MARK: -
 
 /// A dictionary of parameters to apply to a `URLRequest`.
-public typealias Parameters = [String: Any]
+//public typealias Parameters = [String: Any]
 
 class MKNetworkHelper {
     @discardableResult

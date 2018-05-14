@@ -11,34 +11,38 @@ import AddressBookUI
 import Contacts
 
 /// Extension for location methods
-extension MainViewController {
+extension MainViewController: CLLocationManagerDelegate {
+	
+	static var locationUpdated = false
+	static var locationManager = CLLocationManager()
     
-    func requestLocationPermissionIfUnavailable() {
+    static func requestLocationPermissionIfUnavailable() {
         guard CLLocationManager.authorizationStatus() == .notDetermined else {
             // Location services already enabled (likely during onboarding).
             return
         }
-        self.locationManager.requestWhenInUseAuthorization()
+        MainViewController.locationManager.requestWhenInUseAuthorization()
     }
     /**
      Attempts to sync location information to current user
      */
     func startUpdatingLocation() {
         if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-            locationManager.startUpdatingLocation()
+            MainViewController.locationManager.delegate = self
+            MainViewController.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+            MainViewController.locationManager.startUpdatingLocation()
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else {
+		guard let location = locations.last, MainViewController.locationUpdated == false else {
             return
         }
+		MainViewController.locationUpdated = true
         manager.stopUpdatingLocation()
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
-        reverseGeocode(latitude: latitude, longitude: longitude){(address) in
+        reverseGeocode(latitude: latitude, longitude: longitude){ (address) in
             guard let address = address else {
                 print("Failed to convert location to address")
                 return
@@ -49,7 +53,10 @@ extension MainViewController {
                 .address(address),
             ]
             APIController.shared.currentUser?.update(attributes: attributes, completion: {(error) in
-                error?.log()
+				if let error = error {
+					error.log()
+					MainViewController.locationUpdated = false
+				}
             })
         }
     }

@@ -41,7 +41,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
             }
         }
     }
-    
+
     var socketConnectStatus: SocketConnectStatus {
         get {
             if (self.webSocket.isConnected){
@@ -105,16 +105,17 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
         }
     }
 
-	
+
 	internal func websocketDidConnect(socket: WebSocketClient) {
 		print("websocketDidConnect \(webSocket)")
 		guard let authorization = APIController.authorization else {
 			return // Signed out.
 		}
-		
+
 		self.currentFriendshipsJSONAPIRequest?.cancel()
 		self.currentFriendshipsJSONAPIRequest = RealmFriendship.fetchAll { (result: JSONAPIResult<[RealmFriendship]>) in
 			switch result {
+                
 			case .success(let friendships):
 				let realm = try? Realm()
 				guard let storedFriendships = realm?.objects(RealmFriendship.self) else {
@@ -138,7 +139,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 				error.log(context: "RealmFriendship sync failed")
 			}
 		}
-		
+
 		self.currentMessagesJSONAPIRequest?.cancel()
 		self.currentMessagesJSONAPIRequest = RealmMessage.fetchAll { (result: JSONAPIResult<[RealmMessage]>) in
 			switch result {
@@ -148,7 +149,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 				error.log(context: "RealmMessage sync failed")
 			}
 		}
-		
+
 		self.webSocket.write(string: [0, "authorization",[
 			"authorization": authorization,
 			"last_data_received_at": Date().iso8601,
@@ -261,7 +262,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
                             call.initiator = realmUsr
 //                            call.status = "WAITING"
                             try! realm.commitWrite()
-                            
+
                             self.delegate?.webSocketDidRecieveVideoCall(videoCall: call, data: data)
                         }
                 }else if(channel == "chat"){
@@ -272,12 +273,12 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
             // Nothing really needs to happen here. The data goes into realm and the notification blocks update the UI.
         }
     }
-	
+
 	internal func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
 		print("websocketDidReceiveData \(data)")
 	}
 
-	
+
 	internal func websocketDidReceivePong(socket: WebSocketClient, data: Data?) {
 		print("websocketDidReceivePong \(String(describing: data)))")
 	}
@@ -288,7 +289,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
         messageId += 1
         self.write(string: data.toJSON, completion: nil)
     }
-	
+
     private func write(string: String, completion: (() -> ())?) {
         guard self.isAuthorized else {
             print("Queuing message: \(string.trunc(length: 100))")
@@ -298,7 +299,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
         print("Writing message: \(string.trunc(length: 100))")
         self.webSocket.write(string: string, completion: completion)
     }
-	
+
     private func didReceive(error: Error) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
             if self.isEnabled {
@@ -315,7 +316,7 @@ public protocol MonkeySocketDelegate: class {
 }
 
 public protocol MonkeySocketChatMessageDelegate: class{
-    func webScoketDidRecieveChatMessage(data:[String:Any])
+    func webScoketDidRecieveChatMessage(data:[String: Any])
     func webSocketNeedUpdateFriendList()
 }
 

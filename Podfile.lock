@@ -22,15 +22,15 @@ PODS:
   - FBNotifications (1.0.1)
   - FBSDKCoreKit (4.33.0):
     - Bolts (~> 1.7)
-  - Firebase/Core (5.0.0):
+  - Firebase/Core (5.0.1):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 5.0.0)
-  - Firebase/CoreOnly (5.0.0):
-    - FirebaseCore (= 5.0.0)
-  - Firebase/Messaging (5.0.0):
+  - Firebase/CoreOnly (5.0.1):
+    - FirebaseCore (= 5.0.1)
+  - Firebase/Messaging (5.0.1):
     - Firebase/CoreOnly
     - FirebaseMessaging (= 3.0.0)
-  - Firebase/RemoteConfig (5.0.0):
+  - Firebase/RemoteConfig (5.0.1):
     - Firebase/Core
     - FirebaseRemoteConfig (= 3.0.0)
   - FirebaseABTesting (2.0.0):
@@ -41,7 +41,7 @@ PODS:
     - FirebaseInstanceID (~> 3.0)
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - nanopb (~> 0.3)
-  - FirebaseCore (5.0.0):
+  - FirebaseCore (5.0.1):
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
   - FirebaseInstanceID (3.0.0):
     - FirebaseCore (~> 5.0)
@@ -63,7 +63,7 @@ PODS:
   - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
     - GoogleToolboxForMac/Defines (= 2.1.4)
   - GPUImage (0.1.71)
-  - Kingfisher (4.7.0)
+  - Kingfisher (4.8.0)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
@@ -162,16 +162,16 @@ SPEC CHECKSUMS:
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
   FBSDKCoreKit: 572b047a7e029bc44542bcf8a59414e7ff2b543e
-  Firebase: 4bd804448ab2596794698773d41520a0af101e65
+  Firebase: d6861c2059d8c32d1e6dd8932e22ada346d90a3a
   FirebaseABTesting: 1f50b8d50f5e3469eea54e7463a7b7fe221d1f5e
   FirebaseAnalytics: 19812b49fa5f283dd6b23edf8a14b5d477029ab8
-  FirebaseCore: e46e4babb9de298fb2f736958edcc6da1dc60d73
+  FirebaseCore: cafc814b2d84fc8733f09e653041cc2165332ad7
   FirebaseInstanceID: 83e0040351565df711a5db3d8ebe5ea21aca998a
   FirebaseMessaging: f2360a966ecfb0d14facf0fbdf306efc2df0ddbe
   FirebaseRemoteConfig: 3c57e4644bd6976b671ae0b725cd709f198bd1f5
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   GPUImage: f6034f21f92df6171520f604226ae64b90b35911
-  Kingfisher: da6b005aa96d37698e3e4f1ccfe96a5b9bbf27d6
+  Kingfisher: 976d828df2b24834c6a3f2fc4d82cdbd26552be1
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
   ObjectMapperAdditions: db4243e10ebd9abf7e5e7938e4b0a4bbfd840980

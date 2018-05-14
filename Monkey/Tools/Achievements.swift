@@ -25,17 +25,22 @@ public enum MatchMode: String {
 			self = .VideoMode
 		}
 	}
-	
+
 	case VideoMode = "1"
 	case TextMode = "2"
 	case EventMode = "3"
+}
+
+enum MatchingMode: String {
+	case discover = "discover"
+	case friends = "friends"
 }
 
 class Achievements {
 	static let shared = Achievements()
 	private init() {}
 	private let defaults = UserDefaults.standard
-	
+
 	// No longer used but may be saved to user devices
 	/*
 	var loggedInWithFacebook: Bool {
@@ -46,7 +51,7 @@ class Achievements {
 			return defaults.bool(forKey: "logged_in_with_facebook") == true
 		}
 	}
-	
+
 	var skippedFacebook: Bool {
 		set {
 			defaults.set(newValue, forKey: "skipped_facebook")
@@ -228,6 +233,14 @@ class Achievements {
 			return defaults.bool(forKey: "invited_friends") == true
 		}
 	}
+	var authorizedFacebookForBonusBananas: Bool {
+		set {
+			defaults.set(newValue, forKey: "authorized_facebook_for_bonus_bananas")
+		}
+		get {
+			return defaults.bool(forKey: "authorized_facebook_for_bonus_bananas") == true
+		}
+	}
 	*/
 	/// User has tapped on tutorial for instagramPopupVC
 	var shownInstagramTutorial: Bool {
@@ -238,7 +251,7 @@ class Achievements {
 			return defaults.bool(forKey: "shown_instagram_tutorial") == true
 		}
 	}
-	
+
 	/// User has grantedPermission before
 	var grantedPermissionsV1: Bool {
 		set {
@@ -336,14 +349,14 @@ class Achievements {
 			return defaults.bool(forKey: "is_onboarding_explain_they_add_time_popup_completed") == true
 		}
 	}
-//	var authorizedFacebookForBonusBananas: Bool {
-//		set {
-//			defaults.set(newValue, forKey: "authorized_facebook_for_bonus_bananas")
-//		}
-//		get {
-//			return defaults.bool(forKey: "authorized_facebook_for_bonus_bananas") == true
-//		}
-//	}
+	var deeplink_source : String {
+		set {
+			defaults.set(newValue, forKey: "kDeepLinkSourceValue")
+		}
+		get {
+			return defaults.string(forKey: "kDeepLinkSourceValue") ?? ""
+		}
+	}
 	var registerTime: TimeInterval {
 		set {
 			defaults.set(newValue, forKey: "MonkeyUserRegisterTime")
@@ -362,7 +375,7 @@ class Achievements {
 			if let selectMatchMode = defaults.string(forKey: "MonkeySelectMatchMode") {
 				matchMode = MatchMode.init(string: selectMatchMode)
 				if matchMode == .VideoMode {
-					
+
 				}else if matchMode == .TextMode {
 					if RemoteConfigManager.shared.text_chat_mode == false {
 						// 如果 text_mode 没有打开
@@ -370,10 +383,10 @@ class Achievements {
 						matchMode = .VideoMode
 					}
 				}else {
-					
+
 				}
 			}
-			
+
 			return matchMode
 		}
 	}
@@ -412,11 +425,11 @@ class Achievements {
 			return defaults.string(forKey: "MonkeySelectFilter") ?? "Normal"
 		}
 	}
-	
+
 	/// app group
 	static let identifier: String = "group.monkey.ios"
 	private let groupDefaults: UserDefaults = UserDefaults.init(suiteName: "group.monkey.ios") ?? shared.defaults
-	
+
 	var group_authorization: String? {
 		set {
 			groupDefaults.set(newValue, forKey: "Monkey_authorization")

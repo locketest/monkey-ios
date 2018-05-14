@@ -34,19 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 		FirebaseApp.configure()
 		Fabric.with([Crashlytics.self])
-		Messaging.messaging().delegate = self
 		RemoteConfigManager.shared.fetchLatestConfig()
 		AnaliticsCenter.logLaunchApp()
-		
-		window?.layer.cornerRadius = 4
-		window?.layer.masksToBounds = true
-		
-		if window?.rootViewController == nil {
-			let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-			let mainVC = mainStoryboard.instantiateInitialViewController()
-			
-			window?.rootViewController = mainVC
-		}
 		
 		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as? [AnyHashable : Any] {
 			handleNotification(application: application, userInfo: userInfo)
@@ -101,12 +90,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		FBSDKAppEvents.activateApp()
 		
 		userEnteredAt = Date()
-		APIController.shared.currentUser?.reload(completion: { (error: APIError?) in
-			guard error == nil else {
-				// we are doing nothing w error currently, yolo
-				return
-			}
-		})
 	}
 	
 	func applicationDidEnterBackground(_ application: UIApplication) {
@@ -273,7 +256,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			let deepLink = DeepLink(destination: destination, specifier: specifier, parameters: parameters)
 			
 			if deepLink.destination == .authorize {
-				FBSDKApplicationDelegate.sharedInstance().application(UIApplication.shared, open: url, sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as! String!, annotation: options[UIApplicationOpenURLOptionsKey.annotation])
+				FBSDKApplicationDelegate.sharedInstance().application(UIApplication.shared, open: url, sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String, annotation: options[UIApplicationOpenURLOptionsKey.annotation])
 				return true
 			}
 			
@@ -284,11 +267,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			
 			while let presentedViewController = topController.presentedViewController {
 				topController = presentedViewController
-			}
-			
-			if let authVC = topController as? AuthViewController { // triggered on cold launch
-				authVC.linkOnCompletion = deepLink
-				return true
 			}
 			
 			// for consistent navigations we're going to dismiss VC's above mainVC (for handling backgrounded); cold launch will already be handled above
@@ -370,22 +348,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
     
-    func openWithDeeplinkURL(url:String?) {
-        if let urlStr = url,
-            let urlCom = NSURLComponents.init(string: urlStr){
-            let queryDict = urlCom.queryDict()
-            
-            if let urlobj = URL.init(string: urlStr) {
-                Adjust.appWillOpen(urlobj)
-            }
-            
-            if (urlCom.scheme == "monkey" || urlCom.host == "join.monkey.cool"),
-                let sourceStr = queryDict["source"] ,
-                sourceStr.count != 0{
-                Environment.deeplink_source = sourceStr
-            }
-        }
-    }
+	func openWithDeeplinkURL(url:String?) {
+		if let urlStr = url,
+			let urlCom = NSURLComponents.init(string: urlStr){
+			let queryDict = urlCom.queryDict()
+			
+			if let urlobj = URL.init(string: urlStr) {
+				Adjust.appWillOpen(urlobj)
+			}
+			
+			if (urlCom.scheme == "monkey" || urlCom.host == "join.monkey.cool"),
+				let sourceStr = queryDict["source"] ,
+				sourceStr.count != 0 {
+				Achievements.shared.deeplink_source = sourceStr
+			}
+		}
+	}
 }
 
 extension AppDelegate: MessagingDelegate {

@@ -10,14 +10,13 @@ import UIKit
 import Alamofire
 import RealmSwift
 
-class AuthViewController: UIViewController {
+class AuthViewController: MonkeyViewController {
 	
-	var linkOnCompletion: DeepLink?
 	@IBOutlet var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet var onboardingContainerView: UIView!
+	@IBOutlet var onboardingContainerView: UIView!
 	
 	/// When true, don't present a new VC on viewDidAppear
-	var isPresentingErrorCallbacks = [() -> Void]()
+	var presentingErrorCallback: (() -> Void)?
 	
 	private var currentAppVersionIsSupported: Bool {
 		guard let minimumAppVersion = APIController.shared.currentExperiment?.minimum_version.value else {
@@ -27,29 +26,39 @@ class AuthViewController: UIViewController {
 		return minimumAppVersion <= Environment.version
 	}
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+//		guard self.onboardingContainerView.superview == nil else {
+//			return
+//		}
+//		self.view.addSubview(self.onboardingContainerView)
+	}
+	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		self.startAuth()
 	}
 	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		self.onboardingContainerView.removeFromSuperview()
+	}
+	
 	func startAuth() {
-		guard self.isPresentingErrorCallbacks.count == 0 else {
+		guard self.presentingErrorCallback == nil else {
 			return // Will be called when error dismissed.
 		}
 		
 		RealmDataController.shared.setupRealm { (setupError: APIError?) in
 			if let apiError = setupError {
-				let alertController = apiError.toAlert(onRetry: { (UIAlertAction) in
+				self.show(error: apiError, onRetry: {
 					self.startAuth()
 				})
-				
-				self.present(alertController, animated: true, completion: nil)
 				return
 			}
-			
+		
 			if APIController.authorization == nil {
 				// 未登录，跳转到登录
-				self.onboardingContainerView.removeFromSuperview()
 				DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.1), execute: {
 					let vc = self.storyboard!.instantiateViewController(withIdentifier: "welcomeVC")
 					vc.modalTransitionStyle = .crossDissolve
@@ -95,17 +104,18 @@ class AuthViewController: UIViewController {
 				return
 			}
 			
+			// 存储用户资料到共享 app groups 存储区
+			Achievements.shared.group_first_name = currentUser.first_name;
+			Achievements.shared.group_username = currentUser.username;
+			Achievements.shared.group_user_id = currentUser.user_id;
+			Achievements.shared.group_birth_date = currentUser.birth_date?.timeIntervalSince1970;
+			Achievements.shared.group_gender = currentUser.gender;
+			Achievements.shared.group_profile_photo = currentUser.profile_photo_url;
+			
 			// 如果资料不全
-			if currentUser.isCompleteProfile {
+			if currentUser.isCompleteProfile() {
 				APIController.trackCodeVerifyIfNeed(result: true, isProfileComp: true)
 				
-				// 存储用户资料到共享 app groups 存储区
-				Achievements.shared.group_first_name = currentUser.first_name;
-				Achievements.shared.group_username = currentUser.username;
-				Achievements.shared.group_user_id = currentUser.user_id;
-				Achievements.shared.group_birth_date = currentUser.birth_date?.timeIntervalSince1970;
-				Achievements.shared.group_gender = currentUser.gender;
-				Achievements.shared.group_profile_photo = currentUser.profile_photo_url;
 			}else {
 				APIController.trackCodeVerifyIfNeed(result: true, isProfileComp: false)
 				
@@ -122,20 +132,22 @@ class AuthViewController: UIViewController {
 	func reloadCurrentUser(completion: @escaping () -> Void) {
 		guard let currentUser = APIController.shared.currentUser else {
 			print("Error: Current user should be defined by now.")
+			completion()
 			return
 		}
 		currentUser.reload { (error: APIError?) in
-			guard error == nil else {
-				if error!.status == "401" {
-					return self.resetToWelcome()
+			if let error = error {
+				if error.status == "401" {
+					self.resetToWelcome()
+					completion()
+				}else {
+					self.show(error: error) {
+						self.reloadCurrentUser(completion: completion)
+					}
 				}
-				self.show(error: error!) {
-					self.reloadCurrentUser(completion: completion)
-				}
-				return
+			}else {
+				completion()
 			}
-			
-			completion()
 		}
 	}
 	
@@ -146,42 +158,28 @@ class AuthViewController: UIViewController {
 				return
 			}
 			APIController.authorization = nil
-			
 			UserDefaults.standard.removeObject(forKey: "user_id")
-			Apns.update(callback: nil)
 			// This is okay because it should currently only happen when switching between servers. however, in the future it could happen if we invalidate old logins so eventually recovery should be possible.
 			self.presentedViewController?.dismiss(animated: true, completion: {
 				print("INVALID SESSION: Reset to welcome screen")
 			})
+			if let presentedViewController = self.presentedViewController {
+				presentedViewController.dismiss(animated: true, completion: nil)
+			}else {
+				self.startAuth()
+			}
 		}
 	}
 	
 	func updateExperiments(completion: @escaping () -> Void) {
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/experiments/\(APIController.shared.appVersion)", parameters: [:], options: [
-			.header("Authorization", APIController.authorization),
-			.header("lang", APIController.shared.languageString),
-			]).addCompletionHandler { (response) in
-				switch response {
-				case .error(let error):
-					if error.status == "401" {
-						return
-					}
-					self.show(error: error) {
-						self.updateExperiments(completion: completion)
-					}
-					return
-				case .success(let jsonAPIDocument):
-					RealmDataController.shared.apply(jsonAPIDocument) { (result) in
-						switch result {
-						case .error(let error):
-							print(error)
-							return
-						case .success(let newObjects):
-							print(newObjects.first!)
-							completion()
-						}
-					}
-				}
+		RealmExperiment.create { (result: JSONAPIResult<RealmExperiment>) in
+			switch result {
+			case .error(let error):
+				print(error)
+			case .success(let newObject):
+				print(newObject)
+			}
+			completion()
 		}
 	}
 	
@@ -191,15 +189,14 @@ class AuthViewController: UIViewController {
 	- parameter error: The error to show.
 	*/
 	func show(error: APIError, onRetry: @escaping () -> Void) {
-		guard self.isPresentingErrorCallbacks.count == 0 else {
-			self.isPresentingErrorCallbacks.append(onRetry)
+		guard self.presentingErrorCallback == nil else {
 			return
 		}
+		self.presentingErrorCallback = onRetry
 		let errorAlert = error.toAlert(onRetry: { (action) in
-			while self.isPresentingErrorCallbacks.count != 0 {
-				self.isPresentingErrorCallbacks.removeFirst()()
-			}
+			onRetry()
 		})
+		
 		guard let presentedViewController = self.presentedViewController else {
 			self.present(errorAlert, animated: true, completion: nil)
 			return
@@ -215,28 +212,17 @@ class AuthViewController: UIViewController {
 	func nextVC() {
 		self.activityIndicator.stopAnimating()
 		
-		AnaliticsCenter.loginAccount()
-		
-		// Ensure version is supported
+		// Ensure version is supported. Other experiments values have been stored for use later as necessary.
 		guard self.currentAppVersionIsSupported else {
-			print("Running unsupported version of Monkey")
+			print("Running unsupported version of Monkey discovered through experiments refresh.")
 			self.showUnsupportedVersionErrorAlert()
 			return
 		}
-		if APIController.shared.currentUser?.gender == nil {
-			if (self.view.window?.frame.height ?? 0.0) < 667.0 {
-				self.present((self.storyboard!.instantiateViewController(withIdentifier: "editAccountSmallVC")), animated: false, completion: nil)
-			} else {
-				self.present((self.storyboard!.instantiateViewController(withIdentifier: "editAccountVC")), animated: false, completion: nil)
-			}
-		} else if APIController.shared.currentUser?.snapchat_username == nil {
-			if (self.view.window?.frame.height ?? 0.0) < 667.0 {
-				self.present((self.storyboard!.instantiateViewController(withIdentifier: "editAccountSmallVC")), animated: false, completion: nil)
-			} else {
-				self.present((self.storyboard!.instantiateViewController(withIdentifier: "editAccountVC")), animated: false, completion: nil)
-			}        } else if !Achievements.shared.grantedPermissionsV2 {
+		
+		AnaliticsCenter.loginAccount()
+		
+		if Achievements.shared.grantedPermissionsV2 == false {
 			let permissionsVC = self.storyboard!.instantiateViewController(withIdentifier: "permVC")
-			
 			self.present(permissionsVC, animated: false)
 		} else {
 			// Finish setting up and launching app and initial view controller
@@ -253,7 +239,10 @@ class AuthViewController: UIViewController {
 	private func showUnsupportedVersionErrorAlert() {
 		let unsuportedVersionAlert = UIAlertController(title: "Unsupported Version", message: "You need to update the app to keep using Monkey.", preferredStyle: .alert)
 		unsuportedVersionAlert.addAction(UIAlertAction.init(title: "update", style: UIAlertActionStyle.default, handler: { (_) in
-			self.openURL(Environment.MonkeyAppStoreUrl)
+			guard let url = URL(string: Environment.MonkeyAppStoreUrl) else {
+				return
+			}
+			UIApplication.shared.openURL(url)
 		}));
 		guard let presentedViewController = self.presentedViewController else {
 			self.present(unsuportedVersionAlert, animated: true, completion: nil)
@@ -264,13 +253,6 @@ class AuthViewController: UIViewController {
 		})
 	}
 	
-	func openURL(_ urlString: String)
-	{
-		guard let url = URL(string: urlString) else {
-			return
-		}
-		UIApplication.shared.openURL(url)
-	}
 	/// Should be called when ready to open the mainVC after launch setup is complete. Also manages opening to chat if necessary and beginning the background experiments update.
 	func finishLaunchSetup() {
 		NotificationCenter.default.removeObserver(self)
@@ -279,48 +261,7 @@ class AuthViewController: UIViewController {
 				print("Error: No main VC to present")
 				return
 			}
-			self.present(mainVC, animated: false, completion: {
-				// Ensure version is supported. Other experiments values have been stored for use later as necessary.
-				guard self.currentAppVersionIsSupported else {
-					print("Running unsupported version of Monkey discovered through experiments refresh.")
-					self.showUnsupportedVersionErrorAlert()
-					return
-				}
-				
-				// Process pending deep link
-				if self.linkOnCompletion != nil {
-					guard let destination = self.linkOnCompletion?.destination else {
-						return
-					}
-					
-					let specifier = self.linkOnCompletion?.specifier
-					let options = self.linkOnCompletion?.parameters
-					
-					var viewControllerToPresent:UIViewController! = mainVC.swipableViewControllerToPresentOnLeft!
-					
-					switch destination {
-					case .chat, .messages:
-						viewControllerToPresent = mainVC.swipableViewControllerToPresentOnLeft!
-						
-						if let friendsViewController = viewControllerToPresent as? FriendsViewController {
-							friendsViewController.initialConversation = specifier
-							friendsViewController.initialConversationOptions = options
-						}
-						
-					case .trees:
-						viewControllerToPresent = mainVC.swipableViewControllerToPresentOnRight!
-					case .settings:
-						viewControllerToPresent = mainVC.swipableViewControllerToPresentOnBottom!
-					default:
-						break
-					}
-					
-					mainVC.present(viewControllerToPresent, animated: true, completion: nil)
-				}
-			})
+			self.present(mainVC, animated: false, completion:nil)
 		}
-	}
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return .lightContent
 	}
 }

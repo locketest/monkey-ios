@@ -8,21 +8,24 @@
 
 import UIKit
 import RealmSwift
+import ObjectMapper
 
-class RealmInstagramAccount: JSONAPIObject, JSONAPIObjectProtocol {
-    static let type = "instagram_accounts"
-	static let requst_subfix = RealmInstagramAccount.type
-	static let api_version = APIController.shared.apiVersion
+class RealmInstagramAccount: MonkeyModel {
+	
+	override class var type: String {
+		return ApiType.Instagram_accounts.rawValue
+	}
+	override static func primaryKey() -> String {
+		return "instagram_account_id"
+	}
 	
     let instagram_photos = List<RealmInstagramPhoto>()
 
     dynamic var instagram_account_id: String?
     dynamic var code: String?
     dynamic var username: String?
-
-    dynamic var user: RealmUser?
-    
-    override static func primaryKey() -> String {
-        return "instagram_account_id"
-    }
+	
+	required convenience init?(map: Map) {
+		self.init()
+	}
 }

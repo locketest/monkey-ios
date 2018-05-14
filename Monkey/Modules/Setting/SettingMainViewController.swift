@@ -325,8 +325,6 @@ extension SettingMainViewController : UITableViewDelegate, UITableViewDataSource
                 }
                 APIController.authorization = nil
                 UserDefaults.standard.removeObject(forKey: "user_id")
-                Apns.update(callback: nil)
-                
                 
                 let rootVC = self.view.window?.rootViewController
                 rootVC?.presentedViewController?.dismiss(animated: false, completion: {
@@ -388,7 +386,7 @@ extension SettingMainViewController {
             ]
         ]
         
-        RealmInstagramAccount.create(parameters: parameters) { [weak self] (result: JSONAPIResult<[RealmInstagramAccount]>) in
+		RealmInstagramAccount.create(method: .post, parameters: parameters) { [weak self] (result: JSONAPIResult<RealmInstagramAccount>) in
             switch result {
             case .success(_):
                 

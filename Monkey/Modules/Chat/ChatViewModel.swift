@@ -233,17 +233,17 @@ class ChatViewModel {
             ]
         ]
 
-        RealmVideoCall.customURLCreate(url: "\(Environment.baseURL)/api/v1.3/videocall",parameters: parameters) { (result:JSONAPIResult<[RealmVideoCall]>) in
-            switch result {
-            case .success(let callObjects):
-                callObjects.first.then { self.delegate?.processRecievedRealmCallFromServer(realmVideoCall: $0) }
-            case .error(let error):
-                // revert fade animation back to screen
-                // notify user call failed
-                error.log(context: "Create (POST) on an initiated call")
-                self.delegate?.callFailedBeforeInitializingChatSession()
-            }
-        }
+//        RealmVideoCall.customURLCreate(url: "\(Environment.baseURL)/api/v1.3/videocall",parameters: parameters) { (result:JSONAPIResult<[RealmVideoCall]>) in
+//            switch result {
+//            case .success(let callObjects):
+//                callObjects.first.then { self.delegate?.processRecievedRealmCallFromServer(realmVideoCall: $0) }
+//            case .error(let error):
+//                // revert fade animation back to screen
+//                // notify user call failed
+//                error.log(context: "Create (POST) on an initiated call")
+//                self.delegate?.callFailedBeforeInitializingChatSession()
+//            }
+//        }
         
         
     }

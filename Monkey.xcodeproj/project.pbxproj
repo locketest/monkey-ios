@@ -46,7 +46,6 @@
 		8B465FC71E3C196D0023CD74 /* tod_game.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8B465FC61E3C196D0023CD74 /* tod_game.wav */; };
 		8B46EAEA1E8767C00069C7D7 /* UsernameTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B46EAE91E8767C00069C7D7 /* UsernameTextField.swift */; };
 		8B46EAEC1E8770360069C7D7 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B46EAEB1E8770360069C7D7 /* Colors.swift */; };
-		8B6A579E1EAE9AE300136311 /* JSONAPIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6A579D1EAE9AE300136311 /* JSONAPIObject.swift */; };
 		8B6A57A01EAE9E6100136311 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6A579F1EAE9E6100136311 /* APIError.swift */; };
 		8B6A57A21EAEBF3E00136311 /* JSONAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6A57A11EAEBF3E00136311 /* JSONAPI.swift */; };
 		8B6DC3351DB4978A004F787E /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6DC3341DB4978A004F787E /* Environment.swift */; };
@@ -142,6 +141,12 @@
 		D1025CE920A1406C00557B64 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD620A1406C00557B64 /* SettingModel.swift */; };
 		D1025CEA20A1406C00557B64 /* SettingCancelSaveCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD720A1406C00557B64 /* SettingCancelSaveCell.swift */; };
 		D1025CEB20A1406C00557B64 /* SettingCancelSaveCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD720A1406C00557B64 /* SettingCancelSaveCell.swift */; };
+		D1025CED20A2E79F00557B64 /* ApiObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CEC20A2E79F00557B64 /* ApiObject.swift */; };
+		D1025CEE20A2E79F00557B64 /* ApiObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CEC20A2E79F00557B64 /* ApiObject.swift */; };
+		D1025CF020A2FD9900557B64 /* MonkeyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CEF20A2FD9900557B64 /* MonkeyModel.swift */; };
+		D1025CF120A2FD9900557B64 /* MonkeyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CEF20A2FD9900557B64 /* MonkeyModel.swift */; };
+		D1025CF420A35EF600557B64 /* MonkeyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CF320A35EF600557B64 /* MonkeyUser.swift */; };
+		D1025CF520A35EF600557B64 /* MonkeyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CF320A35EF600557B64 /* MonkeyUser.swift */; };
 		D105079F20034D5B0018A14F /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D105079E20034D5B0018A14F /* DateHelper.swift */; };
 		D10585ED20A04F5B00E63ADC /* onboarding-4.gif in Resources */ = {isa = PBXBuildFile; fileRef = D10585E920A04F5B00E63ADC /* onboarding-4.gif */; };
 		D10585EE20A04F5B00E63ADC /* onboarding-4.gif in Resources */ = {isa = PBXBuildFile; fileRef = D10585E920A04F5B00E63ADC /* onboarding-4.gif */; };
@@ -166,6 +171,8 @@
 		D192A3E7202AD1CE00791002 /* MatchViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E6202AD1CE00791002 /* MatchViewControllerProtocol.swift */; };
 		D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E8202ADF1000791002 /* SmallYellowButton.swift */; };
 		D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D192A3EB202B015A00791002 /* KeyboardManager.m */; };
+		D19D3B1720A4561F0028F69C /* RealmObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19D3B1620A4561E0028F69C /* RealmObject.swift */; };
+		D19D3B1820A4561F0028F69C /* RealmObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19D3B1620A4561E0028F69C /* RealmObject.swift */; };
 		D1A22A5320A03F8A004F0F05 /* TruthOrDare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B24D4C51E3197FB006EFCFA /* TruthOrDare.swift */; };
 		D1A22A5520A03F8A004F0F05 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2ED1F1443F200C80AC6 /* FriendsViewController.swift */; };
 		D1A22A5620A03F8A004F0F05 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47833E11F2BF276007F37DB /* NotificationManager.swift */; };
@@ -228,7 +235,6 @@
 		D1A22A9220A03F8A004F0F05 /* EditAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6EB50F1DB0817F0051C8D2 /* EditAccountViewController.swift */; };
 		D1A22A9320A03F8A004F0F05 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17CE988200A1185002F4F9D /* Analytics.swift */; };
 		D1A22A9420A03F8A004F0F05 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BB895891DBDB09F00FC5E53 /* Chat.swift */; };
-		D1A22A9520A03F8A004F0F05 /* JSONAPIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6A579D1EAE9AE300136311 /* JSONAPIObject.swift */; };
 		D1A22A9620A03F8A004F0F05 /* GenderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE4912F1E86C39A002E9D78 /* GenderButton.swift */; };
 		D1A22A9720A03F8A004F0F05 /* SwipeablePresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7DC74D1EF7200500A3F966 /* SwipeablePresentationController.swift */; };
 		D1A22A9820A03F8A004F0F05 /* AsyncCarouselImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4F35BCB1F5AF564003D3902 /* AsyncCarouselImageView.swift */; };
@@ -478,7 +484,6 @@
 		8B465FC61E3C196D0023CD74 /* tod_game.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tod_game.wav; sourceTree = "<group>"; };
 		8B46EAE91E8767C00069C7D7 /* UsernameTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsernameTextField.swift; sourceTree = "<group>"; };
 		8B46EAEB1E8770360069C7D7 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
-		8B6A579D1EAE9AE300136311 /* JSONAPIObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONAPIObject.swift; sourceTree = "<group>"; };
 		8B6A579F1EAE9E6100136311 /* APIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		8B6A57A11EAEBF3E00136311 /* JSONAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONAPI.swift; sourceTree = "<group>"; };
 		8B6DC3341DB4978A004F787E /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
@@ -569,6 +574,9 @@
 		D1025CD520A1406C00557B64 /* SettingMainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingMainViewController.swift; sourceTree = "<group>"; };
 		D1025CD620A1406C00557B64 /* SettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
 		D1025CD720A1406C00557B64 /* SettingCancelSaveCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCancelSaveCell.swift; sourceTree = "<group>"; };
+		D1025CEC20A2E79F00557B64 /* ApiObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiObject.swift; sourceTree = "<group>"; };
+		D1025CEF20A2FD9900557B64 /* MonkeyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeyModel.swift; sourceTree = "<group>"; };
+		D1025CF320A35EF600557B64 /* MonkeyUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeyUser.swift; sourceTree = "<group>"; };
 		D105079E20034D5B0018A14F /* DateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		D10585E920A04F5B00E63ADC /* onboarding-4.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "onboarding-4.gif"; sourceTree = "<group>"; };
 		D10585EA20A04F5B00E63ADC /* onboarding-2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "onboarding-2.gif"; sourceTree = "<group>"; };
@@ -593,6 +601,7 @@
 		D192A3E8202ADF1000791002 /* SmallYellowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallYellowButton.swift; sourceTree = "<group>"; };
 		D192A3EA202B015A00791002 /* KeyboardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardManager.h; sourceTree = "<group>"; };
 		D192A3EB202B015A00791002 /* KeyboardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardManager.m; sourceTree = "<group>"; };
+		D19D3B1620A4561E0028F69C /* RealmObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmObject.swift; sourceTree = "<group>"; };
 		D1A22B1E20A03F8A004F0F05 /* Sandbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sandbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeySwitch.swift; sourceTree = "<group>"; };
 		D1B79CF3205FA80800F209B4 /* UserOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserOptions.swift; sourceTree = "<group>"; };
@@ -801,6 +810,17 @@
 				D1025CCE20A1406B00557B64 /* SettingProfileCell.swift */,
 			);
 			path = Component;
+			sourceTree = "<group>";
+		};
+		D1025CF220A35EBD00557B64 /* Model Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				D1025CEC20A2E79F00557B64 /* ApiObject.swift */,
+				D19D3B1620A4561E0028F69C /* RealmObject.swift */,
+				D1025CEF20A2FD9900557B64 /* MonkeyModel.swift */,
+				D1025CF320A35EF600557B64 /* MonkeyUser.swift */,
+			);
+			path = "Model Wrapper";
 			sourceTree = "<group>";
 		};
 		D10585E120A04B5E00E63ADC /* AppConfig */ = {
@@ -1278,8 +1298,12 @@
 		D16C40A520A05ECA005424C9 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				D1025CF220A35EBD00557B64 /* Model Wrapper */,
 				D16C40A720A05EEF005424C9 /* Old API Wrapper */,
 				D16C40A620A05EE1005424C9 /* Modern API Wrapper */,
+				8B6A57A11EAEBF3E00136311 /* JSONAPI.swift */,
+				BF8C38B61E9A188E0089B313 /* RealmDataController.swift */,
+				8B6A579F1EAE9E6100136311 /* APIError.swift */,
 				1BD655482046B2A900CAA2D5 /* Configs.swift */,
 				8BAA4C711E5545AC0072F3F6 /* APIController.swift */,
 				1B3F79A1201831140069D473 /* APIController+UserCenter.swift */,
@@ -1290,12 +1314,8 @@
 		D16C40A620A05EE1005424C9 /* Modern API Wrapper */ = {
 			isa = PBXGroup;
 			children = (
-				BF8C38B61E9A188E0089B313 /* RealmDataController.swift */,
-				8B6A579D1EAE9AE300136311 /* JSONAPIObject.swift */,
-				8B6A57A11EAEBF3E00136311 /* JSONAPI.swift */,
-				8B6A579F1EAE9E6100136311 /* APIError.swift */,
-				8B6FC3E21EADAB6E00429964 /* RealmExperiment.swift */,
 				BF5258AF1E95D1F4002EA03F /* RealmUser.swift */,
+				8B6FC3E21EADAB6E00429964 /* RealmExperiment.swift */,
 				8B1769451ED16B98005EF8D4 /* RealmMessage.swift */,
 				8B7DC7471EF5C9E000A3F966 /* RealmChannel.swift */,
 				C06FBB511F3A559B00659489 /* RealmCall.swift */,
@@ -1882,6 +1902,7 @@
 				D1B79D5A20614F8200F209B4 /* GPUImageSixInputFilter.m in Sources */,
 				C0DAAB121F53816000739F42 /* RealmInstagramAccount.swift in Sources */,
 				8435C2E61F13D0FD00C80AC6 /* MessageTableViewCell.swift in Sources */,
+				D1025CED20A2E79F00557B64 /* ApiObject.swift in Sources */,
 				D1B79D2F2060DACB00F209B4 /* IFWaldenFilter.m in Sources */,
 				8B1769461ED16B98005EF8D4 /* RealmMessage.swift in Sources */,
 				8BEB20041EFC6067001AAC3C /* BackgroundColorGradientLayer.swift in Sources */,
@@ -1891,6 +1912,7 @@
 				D1B79CFF2060B52500F209B4 /* RealmFilter.swift in Sources */,
 				D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */,
 				8B19B6781EBD5F3D00493A3A /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */,
+				D1025CF020A2FD9900557B64 /* MonkeyModel.swift in Sources */,
 				D1B79D372060DACB00F209B4 /* IFToasterFilter.m in Sources */,
 				C0FC9E301F63106A00A813C5 /* ChannelLabelView.swift in Sources */,
 				C06FBB521F3A559B00659489 /* RealmCall.swift in Sources */,
@@ -1935,7 +1957,6 @@
 				8B6EB5101DB0817F0051C8D2 /* EditAccountViewController.swift in Sources */,
 				D17CE989200A1186002F4F9D /* Analytics.swift in Sources */,
 				8BB8958A1DBDB09F00FC5E53 /* Chat.swift in Sources */,
-				8B6A579E1EAE9AE300136311 /* JSONAPIObject.swift in Sources */,
 				8BE491301E86C39A002E9D78 /* GenderButton.swift in Sources */,
 				8B7DC74E1EF7200500A3F966 /* SwipeablePresentationController.swift in Sources */,
 				D4F35BCC1F5AF564003D3902 /* AsyncCarouselImageView.swift in Sources */,
@@ -1954,12 +1975,14 @@
 				8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */,
 				8BC260131E54122000B9CC16 /* Socket.swift in Sources */,
 				8435C2F01F144DA800C80AC6 /* FriendTableViewCell.swift in Sources */,
+				D19D3B1720A4561F0028F69C /* RealmObject.swift in Sources */,
 				848727B11E86B1AD00F13501 /* ConfettiView.swift in Sources */,
 				D1025CE420A1406C00557B64 /* SettingEditCell.swift in Sources */,
 				BF8C38B51E9A0B620089B313 /* MainViewController+Location.swift in Sources */,
 				D1B79D022060C94800F209B4 /* MonkeyFilterCell.swift in Sources */,
 				D1025CDC20A1406C00557B64 /* SettingImageCell.swift in Sources */,
 				8BE02A4A1EEA4187004CF000 /* SwipeableViewController.swift in Sources */,
+				D1025CF420A35EF600557B64 /* MonkeyUser.swift in Sources */,
 				D1B79D3C2060DACB00F209B4 /* IFLomofiFilter.m in Sources */,
 				8B7DC74A1EF5CADB00A3F966 /* ChannelsViewController.swift in Sources */,
 				D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */,
@@ -2042,6 +2065,7 @@
 				D1A22A5E20A03F8A004F0F05 /* GPUImageSixInputFilter.m in Sources */,
 				D1A22A5F20A03F8A004F0F05 /* RealmInstagramAccount.swift in Sources */,
 				D1A22A6020A03F8A004F0F05 /* MessageTableViewCell.swift in Sources */,
+				D1025CEE20A2E79F00557B64 /* ApiObject.swift in Sources */,
 				D1A22A6120A03F8A004F0F05 /* IFWaldenFilter.m in Sources */,
 				D1A22A6220A03F8A004F0F05 /* RealmMessage.swift in Sources */,
 				D1A22A6320A03F8A004F0F05 /* BackgroundColorGradientLayer.swift in Sources */,
@@ -2051,6 +2075,7 @@
 				D1A22A6920A03F8A004F0F05 /* RealmFilter.swift in Sources */,
 				D1A22A6A20A03F8A004F0F05 /* SmallYellowButton.swift in Sources */,
 				D1A22A6B20A03F8A004F0F05 /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */,
+				D1025CF120A2FD9900557B64 /* MonkeyModel.swift in Sources */,
 				D1A22A6C20A03F8A004F0F05 /* IFToasterFilter.m in Sources */,
 				D1A22A6D20A03F8A004F0F05 /* ChannelLabelView.swift in Sources */,
 				D1A22A6E20A03F8A004F0F05 /* RealmCall.swift in Sources */,
@@ -2095,7 +2120,6 @@
 				D1A22A9220A03F8A004F0F05 /* EditAccountViewController.swift in Sources */,
 				D1A22A9320A03F8A004F0F05 /* Analytics.swift in Sources */,
 				D1A22A9420A03F8A004F0F05 /* Chat.swift in Sources */,
-				D1A22A9520A03F8A004F0F05 /* JSONAPIObject.swift in Sources */,
 				D1A22A9620A03F8A004F0F05 /* GenderButton.swift in Sources */,
 				D1A22A9720A03F8A004F0F05 /* SwipeablePresentationController.swift in Sources */,
 				D1A22A9820A03F8A004F0F05 /* AsyncCarouselImageView.swift in Sources */,
@@ -2114,12 +2138,14 @@
 				D1A22AA420A03F8A004F0F05 /* PopupViewController.swift in Sources */,
 				D1A22AA620A03F8A004F0F05 /* Socket.swift in Sources */,
 				D1A22AA720A03F8A004F0F05 /* FriendTableViewCell.swift in Sources */,
+				D19D3B1820A4561F0028F69C /* RealmObject.swift in Sources */,
 				D1A22AA820A03F8A004F0F05 /* ConfettiView.swift in Sources */,
 				D1025CE520A1406C00557B64 /* SettingEditCell.swift in Sources */,
 				D1A22AA920A03F8A004F0F05 /* MainViewController+Location.swift in Sources */,
 				D1A22AAA20A03F8A004F0F05 /* MonkeyFilterCell.swift in Sources */,
 				D1025CDD20A1406C00557B64 /* SettingImageCell.swift in Sources */,
 				D1A22AAC20A03F8A004F0F05 /* SwipeableViewController.swift in Sources */,
+				D1025CF520A35EF600557B64 /* MonkeyUser.swift in Sources */,
 				D1A22AAD20A03F8A004F0F05 /* IFLomofiFilter.m in Sources */,
 				D1A22AAE20A03F8A004F0F05 /* ChannelsViewController.swift in Sources */,
 				D1A22AAF20A03F8A004F0F05 /* KeyboardManager.m in Sources */,

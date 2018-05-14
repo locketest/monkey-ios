@@ -10,21 +10,12 @@ import Foundation
 import RealmSwift
 import ObjectMapper
 import ObjectMapperAdditions
-//import ObjectMapper_Realm
 
-class RealmMatchEvent: JSONAPIObject, RealmObjectProtocol, Mappable {
-//	"created_at": "2018-04-27T11:16:59.879Z",
-//	"description": "description for event DB",
-//	"emoji": "😀",
-//	"end_time": 1522892445,
-//	"event_bio": "test bio",
-//	"icon": "http://data.monkey.cool/icons/Food.png",
-//	"id": 1,
-//	"is_active": true,
-//	"name": "EVENT_NAME3d",
-//	"start_time": 1515112533
+class RealmMatchEvent: MonkeyModel {
 	
-	static let type = "MatchEvent"
+	override class var type: String {
+		return ApiType.Match_event.rawValue
+	}
 	
 	dynamic var created_at: Date?
 	dynamic var start_time: Double = 0
@@ -43,15 +34,12 @@ class RealmMatchEvent: JSONAPIObject, RealmObjectProtocol, Mappable {
 		return !(current_time < start_time || current_time > end_time)
 	}
 	
-	override static func primaryKey() -> String {
-		return "id"
-	}
-	
 	required convenience init?(map: Map) {
 		self.init()
 	}
 	
-	func mapping(map: Map) {
+	override func mapping(map: Map) {
+		super.mapping(map: map)
 		created_at <- (map["created_at"], DateTransform())
 		start_time <- (map["start_time"], DoubleTransform())
 		end_time <- (map["end_time"], DoubleTransform())
@@ -66,23 +54,23 @@ class RealmMatchEvent: JSONAPIObject, RealmObjectProtocol, Mappable {
 	}
 }
 
-class RealmMatchInfo: JSONAPIObject, Mappable, RealmObjectProtocol {
-	static let type = "MatchInfo"
+class RealmMatchInfo: MonkeyModel {
+	
+	override class var type: String {
+		return ApiType.Match_info.rawValue
+	}
 	
 	var id = RealmMatchInfo.type
 	var convo_tips = List<String>()
 	var match_tips = List<String>()
 	dynamic var events: RealmMatchEvent?
 	
-	override static func primaryKey() -> String {
-		return "id"
-	}
-	
 	required convenience init?(map: Map) {
 		self.init()
 	}
 	
-	func mapping(map: Map) {
+	override func mapping(map: Map) {
+		super.mapping(map: map)
 		convo_tips <- (map["convo_tips"], RealmTypeCastTransform())
 		match_tips <- (map["match_tips"], RealmTypeCastTransform())
 		events <- map["events"]

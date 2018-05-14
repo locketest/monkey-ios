@@ -567,10 +567,6 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
             return
         }
 
-		if self.status == .connected && newStatus == .disconnecting {
-			self.loadingDelegate?.consumeFromConnected?()
-		}
-
         guard self.status != newStatus else {
             self.log(.warning, "Status is already \(newStatus)")
             return
@@ -656,8 +652,7 @@ class ChatSession: NSObject, OTSessionDelegate, OTSubscriberKitDelegate {
 			return
 		}
 		
-        if self.sessionStatus == .connected {
-			
+        if self.status == .connected {
 			var match_duration = 0
 			if let connectTime = connectTime {
 				match_duration = Int(Date().timeIntervalSince1970 - connectTime)
@@ -1085,7 +1080,7 @@ protocol ChatSessionCallDelegate: class {
 }
 
 protocol MessageHandler: class {
-    weak var chatSession: ChatSession? { get set }
+	var chatSession: ChatSession? { get set }
     var chatSessionMessagingPrefix: String { get }
     func chatSession(_ chatSession: ChatSession, received message: String, from connection: OTConnection, withType type: String)
     func chatSession(_ chatSession: ChatSession, statusChangedTo status: ChatSessionStatus)
@@ -1097,6 +1092,5 @@ protocol MessageHandler: class {
     func dismissCallViewController(for chatSession: ChatSession)
     func chatSession(_ chatSession: ChatSession, callEndedWithError error:Error?)
     @objc optional func warnConnectionTimeout(in chatSession: ChatSession)
-	@objc optional func consumeFromConnected()
     @objc optional func shouldShowConnectingStatus(in chatSession:ChatSession)
 }

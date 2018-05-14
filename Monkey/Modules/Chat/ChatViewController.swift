@@ -10,6 +10,7 @@ import UIKit
 import Foundation
 import RealmSwift
 import SafariServices
+import DeviceKit
 
 class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UITextViewDelegate, IncomingCallManagerDelegate {
     /// Table showing the conversation as chat bubbles
@@ -277,23 +278,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         alertController.addAction(UIAlertAction(title: "📲 Support", style: .default, handler: { (UIAlertAction) in
             self.openURL("https://monkey.canny.io/requests", inVC: true)
         }))
-        
-        /*
-        alertController.addAction(UIAlertAction(title: "👻 Follow Us Snapchat", style: .default, handler: { (UIAlertAction) in
-            if (UIApplication.shared.canOpenURL(URL(string:"snapchat://")!)) {
-                UIApplication.shared.openURL(URL(string: "snapchat://add/monkeyapp")!)
-            } else {
-                UIApplication.shared.openURL(URL(string: "http://snapchat.com/add/monkeyapp")!)
-            }
-        }))
-        alertController.addAction(UIAlertAction(title: "📸 Follow Us Instgram", style: .default, handler: { (UIAlertAction) in
-            if (UIApplication.shared.canOpenURL(URL(string:"instagram://")!)) {
-                UIApplication.shared.openURL(URL(string: "instagram://user?username=chatonmonkey")!)
-            } else {
-                self.openURL("http://instagram/chatonmonkey", inVC: true)
-            }
-        }))
-        */
         
         alertController.addAction(UIAlertAction(title: "🚑 Safety", style: .default, handler: { (UIAlertAction) in
             
@@ -652,17 +636,6 @@ extension ChatViewController: ChatSessionLoadingDelegate {
         }
 
         self.callButton.backgroundColor = Colors.white(0.06)
-
-//        if error != nil {
-//            print("Showing unknown error")
-//            let alert = UIAlertController(title: "Uh, oh!", message: "Something went wrong.", preferredStyle: UIAlertControllerStyle.alert)
-//            alert.addAction(UIAlertAction(title: "Try Again", style: .cancel, handler: {
-//                (UIAlertAction) in
-//                alert.dismiss(animated: true, completion: nil)
-//            }))
-//            self.present(alert, animated: true, completion: nil)
-//            return
-//        }
     }
 
     func dismissCallViewController(for chatSession:ChatSession) {
@@ -748,32 +721,7 @@ extension ChatViewController: ChatSessionLoadingDelegate {
 
     func acceptChat(chatId:String) {
         IncomingCallManager.shared.delegate = self
-
-        RealmCall.fetch(id: chatId) { [weak self] (error:APIError?, object:RealmCall?) in
-            guard error == nil else {
-                error?.log()
-                return
-            }
-
-            guard let responseCall = object else {
-                print("Error: no response object from RealmCall.fetch, also no error in API Request")
-                return
-            }
-
-            guard let chatId = responseCall.chat_id, let sessionId = responseCall.session_id, let userId = responseCall.initiator?.user_id, let token = responseCall.token else {
-                return
-            }
-
-            self?.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId,
-                                      chat: Chat(chat_id: chatId, first_name:responseCall.user?.first_name ?? "Your friend", profile_image_url:responseCall.user?.profile_photo_url, user_id:userId),
-                                      token: token, loadingDelegate: self!, isDialedCall: true)
-            self?.chatSession?.accept()
-            self?.callButton.isSpinning = true
-            self!.isMonkeyKingBool! ? (self!.profileActiveLabel.isHidden = true) : (self?.profileActiveLabel.text = "connecting...")
-            self?.pendingCallId = nil
-        }
     }
-
 }
 
 // MARK: -- Tableview Delegate & Data Source

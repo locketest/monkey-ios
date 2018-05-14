@@ -89,7 +89,6 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         self.swipableViewControllerToPresentOnLeft = nil
         self.checkDeepLink()
 		
-		self.showMonkeyChatWhenOpenChat();
         Socket.shared.chatMessageDelegate = self
     }
     
@@ -100,32 +99,6 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             Socket.shared.chatMessageDelegate = nil
         }
     }
-	
-	func showMonkeyChatWhenOpenChat() {
-		let showMonkeyChatOpenChatCount = UserDefaults.standard.integer(forKey: "MKShowMonkeyChatCountOpenChatChat")
-		let lastShowTime = UserDefaults.standard.double(forKey: "MKShowMonkeyChatTimeOpenChatChat")
-		let lastShowDate = Date.init(timeIntervalSince1970: lastShowTime)
-		let monkeychatScheme = URL.init(string: Environment.MonkeyChatScheme)
-		let monkeychatUrl = APIController.shared.currentExperiment?.monkeychat_link
-        let monkeychatDes = APIController.shared.currentExperiment?.mc_invite_desc ?? "Check out our new app Monkey Chat, it's awesome, just trust"
-        let monkeychatConfirm = APIController.shared.currentExperiment?.mc_invite_btn_pos_text ?? "Try it"
-		if monkeychatUrl != nil && showMonkeyChatOpenChatCount < 3 && lastShowDate.compare(.isToday) == false && UIApplication.shared.canOpenURL(monkeychatScheme!) == false {
-			UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "MKShowMonkeyChatTimeOpenChatChat")
-			UserDefaults.standard.set(showMonkeyChatOpenChatCount + 1, forKey: "MKShowMonkeyChatCountOpenChatChat")
-			UserDefaults.standard.synchronize()
-			
-			let controller = UIAlertController(title: nil, message: monkeychatDes, preferredStyle: .alert)
-			let monkeychat = UIAlertAction(title: monkeychatConfirm, style: .default) { (action) in
-				UIApplication.shared.openURL(URL.init(string: monkeychatUrl!)!)
-			}
-			controller.addAction(monkeychat)
-			
-			let cancel = UIAlertAction(title: "No trust", style: .cancel, handler: nil)
-			controller.addAction(cancel)
-			
-			present(controller, animated: true, completion: nil)
-		}
-	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

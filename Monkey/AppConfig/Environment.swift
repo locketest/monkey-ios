@@ -63,17 +63,6 @@ struct Environment {
 	}
     
     static let adjustToken = "w8wlqq6li0w0"
-    static var deeplink_source : String {
-        get {
-            return UserDefaults.standard.string(forKey: "kDeepLinkSourceValue") ?? ""
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "kDeepLinkSourceValue")
-        }
-    }
-	
 	static let MonkeyAppStoreUrl = "itms-apps://itunes.apple.com/app/id1165924249"
     static let MonkeyAppRateURL = "https://itunes.apple.com/us/app/id1165924249?action=write-review"
-	static let MonkeyChatAppStoreUrl = "itms-apps://itunes.apple.com/app/id1330119861"
-	static let MonkeyChatScheme = "monkeychat://"
 }

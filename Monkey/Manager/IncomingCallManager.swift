@@ -44,9 +44,9 @@ class IncomingCallManager {
     var skipCallIds:[String] = []
 	init() {
 		let realm = try? Realm()
-//		incomingCallNotificationToken = realm?.objects(RealmCall.self).observe({ [unowned self] (changes) in
-//			self.checkForIncomingCall()
-//		})
+		incomingCallNotificationToken = realm?.objects(RealmCall.self).observe({ [unowned self] (changes) in
+			self.checkForIncomingCall()
+		})
 	}
     
     func checkForIncomingCall() {

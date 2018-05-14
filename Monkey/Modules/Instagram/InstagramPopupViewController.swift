@@ -115,32 +115,10 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let instagramAccount = self.user?.instagram_account
-        
-        if instagramAccount == nil {
-            self.backgroundEmojiLabel.text = "😢"
-            self.nameLabel.text = self.user?.first_name ?? self.user?.username ?? ""
-            
-            if !self.isMonkeyKingBool {
-                if let age = self.user?.age.value {
-                    self.nameLabel.text?.append(" \(age) \(self.user?.gender == "female" ? "👩":"👱")")
-                }
-                
-                self.locationLabel.text = self.user?.location ?? ""
-            }
-            
-            self.profileImageView.url = self.user?.profile_photo_url
-            self.backgroundTextView.text = "Instagram not linked"
-            
-        } else if !Achievements.shared.shownInstagramTutorial {
-//            self.overlayView.isHidden = false
-//            self.instagramImageView.image = #imageLiteral(resourceName: "InstagramTutorialPlaceholder")
-        }
-        
+		
         self.setupFriendOptionsSheet()
-        self.setEmojisForChannelButtons(self.user)
         
-        self.setLabelsAndImages(using: instagramAccount)
+        self.setLabelsAndImages()
         
         self.handleBtnStateFunc()
         
@@ -148,7 +126,6 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     }
     
     func initData() {
-        
         if let accountId = user?.instagram_account?.instagram_account_id {
             JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/instagram_accounts/\(accountId)", options: [
                 .header("Authorization", APIController.authorization)
@@ -193,7 +170,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
             
             let totleColumns : CGFloat = 3 // 每行要显示的列数
 
-            let imageButtonW : CGFloat = (self.instagramPhotosBgView.width - Margin * 2 - Padding * (totleColumns - 1)) / totleColumns
+            let imageButtonW : CGFloat = (self.instagramPhotosBgView.frame.size.width - Margin * 2 - Padding * (totleColumns - 1)) / totleColumns
             let imageButtonH : CGFloat = imageButtonW
 
             for (index, value) in dataTupleArray.enumerated() {
@@ -214,8 +191,8 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
                     imageButton.setImage(UIImage(named: "followMyIGBtn"), for: .normal)
                     imageButton.addTarget(self, action: #selector(followMyIGClickFunc), for: .touchUpInside)
                 } else {
-                    imageButton.kf.setImage(with: ImageResource(downloadURL: URL(string: value.photoUrl)!), for: .normal, placeholder: UIImage(named: "insDefultImg")!, options: [.transition(.fade(0.5))], progressBlock: nil, completionHandler: nil)
-                }
+					imageButton.kf.setImage(with: URL(string: value.photoUrl), for: .normal, placeholder: UIImage(named: "insDefultImg")!)
+				}
                 
                 imageButton.frame = CGRect(x: imageButtonX, y: imageButtonY, width: imageButtonW, height: imageButtonH)
 
@@ -327,83 +304,22 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         }
     }
     
-    fileprivate func reloadInstagramAccount(_ instagramAccount: RealmInstagramAccount) {
-        instagramAccount.reload(completion: { [weak self] (error: APIError?) in
-            guard let `self` = self else { return }
-            guard error == nil else {
-                error?.log()
-                self.backgroundEmojiLabel.text = "😢"
-                self.backgroundTextView.text = "Instagram not linked"
-                return
-            }
-            self.nameLabel.text = instagramAccount.user?.first_name ?? instagramAccount.user?.username ?? "Your friend"
-            if let age = self.user?.age.value {
-                self.nameLabel.text?.append(", \(age)")
-            }
-            self.locationLabel.text = self.isMonkeyKingBool ? "" : instagramAccount.user?.location ?? ""
-            self.instagramPhotos = instagramAccount.instagram_photos
-            self.profileImageView.url = self.user?.profile_photo_url
-            self.setEmojisForChannelButtons(self.user)
-            
-            var urls:[URL] = []
-            
-            self.instagramPhotos?.forEach({ (photo) in
-                guard let url = URL(string:photo.standard_resolution_image_url!) else {
-                    return
-                }
-                urls.append(url)
-            })
-//            self.instagramImageView.loadURLs(urls)
-            
-            guard let firstPhoto = self.instagramPhotos?.first else {
-                print("User has no instagram photos")
-                self.backgroundEmojiLabel.text = "🙁"
-                self.backgroundTextView.text = "No photos to show"
-                return
-            }
-            self.displayingInstagramPhoto = firstPhoto
-        })
-    }
-    
-    func setLabelsAndImages(using account:RealmInstagramAccount?) {
-        guard let instagramAccount = account else {
-            return
-        }
-        
+    func setLabelsAndImages() {
         // if available, set values before we reload
-        self.nameLabel.text = instagramAccount.user?.first_name ?? instagramAccount.user?.username ?? ""
+		self.nameLabel.text = self.user?.first_name ?? self.user?.username ?? "Your friend"
         if let age = self.user?.age.value {
             self.nameLabel.text?.append(", \(age)")
         }
-        self.locationLabel.text = self.isMonkeyKingBool ? "" : instagramAccount.user?.location ?? ""
-        self.profileImageView.url = self.user?.profile_photo_url
-        
-        reloadInstagramAccount(instagramAccount)
-    }
-    
-    
-    /// Iterates through the channels the user is a part of and updates the emojis of the channel buttons
-    func setEmojisForChannelButtons(_ user:RealmUser?) {
-        
-//        guard let channels = user?.channels else {
-//            let firstChannel = self.channelStackView.arrangedSubviews[0] as? ChannelLabelView
-//            firstChannel?.emojiLabelText = "🍌"
-//
-//            // We don't use a for-each because we give a default value for the first channelView, and hide the rest
-//            for i in 1 ... channelStackView.arrangedSubviews.count - 1 {
-//                self.channelStackView.arrangedSubviews[i].isHidden = true
-//            }
-//            return
-//        }
-//
-//        for (index, view) in channelStackView.arrangedSubviews.enumerated() {
-//            if channels.count > index, let channelView = view as? ChannelLabelView, let emoji = channels[index].emoji {
-//                channelView.emojiLabelText = emoji
-//                continue
-//            }
-//            // if we don't continue above, we weren't able to set the emoji so hide the view
-//            view.isHidden = true
-//        }
+		
+		self.locationLabel.text = ""
+		guard isMonkeyKingBool == false else {
+			return
+		}
+		
+		self.locationLabel.text = self.user?.location
+		if self.user?.isAmerican() == true, let state = self.user?.state {
+			self.locationLabel.text = state
+		}
     }
     
     /// Sets up the friends option sheet if the user has a friendship.
@@ -450,14 +366,15 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
                     ]
                 ]
             ]
-            RealmBlock.create(parameters: parameters, completion: { (result: JSONAPIResult<[RealmBlock]>) in
-                switch result {
-                case .success(_):
-                    break
-                case .error(let error):
-                    error.log()
-                }
-            })
+			
+			RealmBlock.create(method: .post, parameters: parameters, completion: { (result: JSONAPIResult<RealmBlock>) in
+				switch result {
+				case .success(_):
+					break
+				case .error(let error):
+					error.log()
+				}
+			})
         })
         
         friendOptionsAlertSheetController.addAction(unfriendAction)

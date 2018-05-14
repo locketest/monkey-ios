@@ -27,6 +27,9 @@
                             <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w3T-gE-Pxx">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <connections>
+                                    <segue destination="VMl-F2-JEn" kind="embed" id="0IN-JS-gd1"/>
+                                </connections>
                             </containerView>
                         </subviews>
                         <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -34,12 +37,20 @@
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="ibA-5L-wze" id="P5z-Gq-at8"/>
-                        <outlet property="onboardingContainerView" destination="w3T-gE-Pxx" id="bYr-4C-ghp"/>
+                        <outlet property="onboardingContainerView" destination="w3T-gE-Pxx" id="fvn-Sf-MaT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dC8-pl-NQm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2852" y="20.239880059970016"/>
+        </scene>
+        <!--LaunchScreen-->
+        <scene sceneID="tTA-Qw-hIn">
+            <objects>
+                <viewControllerPlaceholder storyboardName="LaunchScreen" id="VMl-F2-JEn" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KTe-Hr-6JI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2852" y="481"/>
         </scene>
         <!--Welcome View Controller-->
         <scene sceneID="MD2-qF-q0w">
@@ -860,34 +871,6 @@ by 5 teenagers in NYC?</string>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a3U-LG-nPc">
-                                                <rect key="frame" x="20" y="508.5" width="335" height="47.5"/>
-                                                <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Trees updated! One 🌴 at a time = better matches, choose wisely 🐒" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3nR-QM-pkG">
-                                                        <rect key="frame" x="8" y="8" width="319" height="31.5"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="qeg-yg-Ccf"/>
-                                                        </constraints>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                        <color key="textColor" red="0.60392156860000001" green="0.60392156860000001" blue="0.60392156860000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                </subviews>
-                                                <color key="backgroundColor" red="0.29803921568627451" green="0.27843137254901962" blue="0.97647058823529409" alpha="0.29615261129999998" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="100" id="6Fy-5f-UfM"/>
-                                                    <constraint firstAttribute="trailing" secondItem="3nR-QM-pkG" secondAttribute="trailing" constant="8" id="GTs-Oo-fV5"/>
-                                                    <constraint firstItem="3nR-QM-pkG" firstAttribute="leading" secondItem="a3U-LG-nPc" secondAttribute="leading" constant="8" id="P7y-CT-scf"/>
-                                                    <constraint firstAttribute="bottom" secondItem="3nR-QM-pkG" secondAttribute="bottom" constant="8" id="uM9-Og-q7L"/>
-                                                    <constraint firstItem="3nR-QM-pkG" firstAttribute="top" secondItem="a3U-LG-nPc" secondAttribute="top" constant="8" id="y2F-VC-rIN"/>
-                                                </constraints>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                        <integer key="value" value="12"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds " value="YES"/>
-                                                </userDefinedRuntimeAttributes>
-                                            </view>
                                             <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6tQ-sH-Kem">
                                                 <rect key="frame" x="345" y="607" width="10" height="10"/>
                                                 <color key="backgroundColor" red="1" green="0.9882352941176471" blue="0.0039215686274509803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -912,8 +895,6 @@ by 5 teenagers in NYC?</string>
                                             <constraint firstAttribute="bottom" secondItem="2CN-Mj-9Gg" secondAttribute="bottom" constant="30" id="DUk-aP-Ab3"/>
                                             <constraint firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Ulj-5R-07I" secondAttribute="trailing" priority="995" constant="40" id="EOV-E3-60V"/>
                                             <constraint firstAttribute="bottom" secondItem="psw-iu-AsM" secondAttribute="bottom" constant="20" id="FCf-TC-v4E"/>
-                                            <constraint firstItem="4OG-VV-HHr" firstAttribute="top" secondItem="a3U-LG-nPc" secondAttribute="bottom" constant="20" id="GRF-Go-e6d"/>
-                                            <constraint firstItem="a3U-LG-nPc" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="GtU-UC-WNk"/>
                                             <constraint firstAttribute="trailing" secondItem="psw-iu-AsM" secondAttribute="trailing" constant="20" id="Hfz-gV-8Ij"/>
                                             <constraint firstItem="6tQ-sH-Kem" firstAttribute="leading" secondItem="psw-iu-AsM" secondAttribute="trailing" constant="-10" id="Krb-Xj-j6p"/>
                                             <constraint firstAttribute="trailing" secondItem="W2d-kQ-BTg" secondAttribute="trailing" constant="20" id="N48-kN-mgm"/>
@@ -924,7 +905,6 @@ by 5 teenagers in NYC?</string>
                                             <constraint firstAttribute="bottom" secondItem="Ulj-5R-07I" secondAttribute="bottom" constant="20" id="U4G-Le-GSm"/>
                                             <constraint firstItem="otb-Kx-f1J" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="Usm-YH-qfK"/>
                                             <constraint firstItem="Ulj-5R-07I" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="Yxw-6h-JqM"/>
-                                            <constraint firstAttribute="trailing" secondItem="a3U-LG-nPc" secondAttribute="trailing" constant="20" id="dPU-ms-999"/>
                                             <constraint firstAttribute="bottom" secondItem="IDy-13-zRY" secondAttribute="bottom" constant="20" id="eAX-wX-J8M"/>
                                             <constraint firstItem="IDy-13-zRY" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="guH-Zs-FDt"/>
                                             <constraint firstItem="W2d-kQ-BTg" firstAttribute="top" secondItem="5GL-k1-GiO" secondAttribute="bottom" constant="6" id="had-iN-n8z"/>
@@ -993,7 +973,6 @@ by 5 teenagers in NYC?</string>
                         <outlet property="matchModePopupTop" destination="oga-Gb-49Z" id="1gr-d4-4wu"/>
                         <outlet property="matchModeSwitch" destination="W2d-kQ-BTg" id="jXU-IK-xTz"/>
                         <outlet property="matchModeTip" destination="C6c-AE-7sk" id="acn-Qu-8gZ"/>
-                        <outlet property="newTipsRemindLabel" destination="a3U-LG-nPc" id="CDy-1E-v96"/>
                         <outlet property="pageViewIndicator" destination="Uh6-Lu-Kac" id="3L2-Up-F8D"/>
                         <outlet property="settingsButton" destination="psw-iu-AsM" id="BXU-cv-1A2"/>
                         <outlet property="skipButton" destination="SSL-hy-Vte" id="tcF-JJ-NtZ"/>
@@ -1666,7 +1645,7 @@ by 5 teenagers in NYC?</string>
                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hpt-6m-Zsq" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="4" y="0.0" width="335" height="498"/>
                                                 <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="3.gif" translatesAutoresizingMaskIntoConstraints="NO" id="Sm2-1h-RqF" customClass="AnimatedImageView" customModule="Kingfisher">
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Sm2-1h-RqF" customClass="AnimatedImageView" customModule="Kingfisher">
                                                         <rect key="frame" x="0.0" y="0.0" width="335" height="498"/>
                                                     </imageView>
                                                 </subviews>
@@ -2139,7 +2118,6 @@ by 5 teenagers in NYC?</string>
         </scene>
     </scenes>
     <resources>
-        <image name="3.gif" width="239" height="239"/>
         <image name="ArrowButton" width="47" height="30"/>
         <image name="FriendsButton" width="40" height="40"/>
         <image name="TreesButton" width="40" height="40"/>

@@ -67,27 +67,21 @@ class AnaliticsCenter {
 	
 	fileprivate class func prepereAmplitude() {
 		let isAuth = (APIController.authorization != nil)
-		let isLogin = (APIController.shared.currentUser?.user_id != nil)
+		let userId = UserDefaults.standard.string(forKey: "user_id")
 		Amplitude.shared.trackingSessionEvents = true
 		
-		if (isAuth && isLogin) {
-			Amplitude.shared.initializeApiKey(Environment.amplitudeKey, userId: APIController.shared.currentUser?.user_id)
+		if (isAuth && userId != nil) {
+			Amplitude.shared.initializeApiKey(Environment.amplitudeKey, userId: userId)
 		}else {
 			Amplitude.shared.initializeApiKey(Environment.amplitudeKey)
 		}
 	}
     
     fileprivate class func prepareAdjust() {
-        let envir = (Environment.environment == .sandbox) ? ADJEnvironmentSandbox : ADJEnvironmentProduction
-        let adjConf = ADJConfig.init(appToken: Environment.adjustToken, environment: envir)
+        let environment = (Environment.environment == .sandbox) ? ADJEnvironmentSandbox : ADJEnvironmentProduction
+        let adjConf = ADJConfig.init(appToken: Environment.adjustToken, environment: environment)
         adjConf?.logLevel = ADJLogLevelError
         Adjust.appDidLaunch(adjConf)
-        
-        let isAuth = (APIController.authorization != nil)
-        let isLogin = (APIController.shared.currentUser?.user_id != nil)
-        if (isAuth && isLogin) {
-            //
-        }
     }
 	
 	fileprivate class func setUserID() {

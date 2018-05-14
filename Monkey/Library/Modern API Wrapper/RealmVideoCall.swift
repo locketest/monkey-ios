@@ -7,12 +7,19 @@
 //
 
 import Foundation
+import ObjectMapper
 
-class RealmVideoCall: JSONAPIObject, JSONAPIObjectProtocol {
-    static let type = "videocall"
-    static let requst_subfix = "videocall"
-    static let api_version = "v1.3"
-    
+class RealmVideoCall: MonkeyModel {
+	override class var api_version: ApiVersion {
+		return ApiVersion.V13
+	}
+	override class var type: String {
+		return ApiType.Videocall.rawValue
+	}
+	override static func primaryKey() -> String {
+		return "chat_id"
+	}
+	
     dynamic var chat_id: String?
     
     dynamic var session_id: String?
@@ -25,8 +32,8 @@ class RealmVideoCall: JSONAPIObject, JSONAPIObjectProtocol {
     dynamic var user: RealmUser?
     dynamic var friendship: RealmFriendship?
     dynamic var initiator: RealmUser?
-    
-    override static func primaryKey() -> String {
-        return "chat_id"
-    }
+	
+	required convenience init?(map: Map) {
+		self.init()
+	}
 }

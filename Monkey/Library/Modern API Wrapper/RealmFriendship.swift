@@ -7,12 +7,16 @@
 //
 
 import RealmSwift
+import ObjectMapper
 
-class RealmFriendship: JSONAPIObject, JSONAPIObjectProtocol {
-    static let type = "friendships"
-	static let requst_subfix = RealmFriendship.type
-	static let api_version = APIController.shared.apiVersion
-    
+class RealmFriendship: MonkeyModel {
+	override class var type: String {
+		return ApiType.Friendships.rawValue
+	}
+	override static func primaryKey() -> String {
+		return "friendship_id"
+	}
+	
     dynamic var friendship_id: String?
     /// The other user
     dynamic var user: RealmUser?
@@ -42,11 +46,7 @@ class RealmFriendship: JSONAPIObject, JSONAPIObjectProtocol {
     let is_typing = RealmOptional<Bool>()
     /// Wether the other person is typing.
     let user_is_typing = RealmOptional<Bool>()
-    
-    override static func primaryKey() -> String {
-        return "friendship_id"
-    }
-    
+	
     enum Attribute {
         case last_message_read_at(NSDate?)
     }
@@ -65,7 +65,7 @@ class RealmFriendship: JSONAPIObject, JSONAPIObjectProtocol {
             }
         }
 		
-        JSONAPIRequest(url: "\(Environment.baseURL)/api/\(RealmFriendship.api_version)/\(RealmFriendship.requst_subfix)/\(friendshipId)", method: .patch, parameters: [
+        JSONAPIRequest(url: "\(Environment.baseURL)/api/\(RealmFriendship.api_version.rawValue)/\(RealmFriendship.requst_subfix)/\(friendshipId)", method: .patch, parameters: [
             "data": [
                 "id": friendshipId,
                 "type": RealmFriendship.type,
@@ -89,4 +89,7 @@ class RealmFriendship: JSONAPIObject, JSONAPIObjectProtocol {
                     }
         }
     }
+	required convenience init?(map: Map) {
+		self.init()
+	}
 }

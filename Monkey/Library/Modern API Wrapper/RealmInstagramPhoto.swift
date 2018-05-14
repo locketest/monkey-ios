@@ -7,18 +7,20 @@
 //
 
 import UIKit
+import ObjectMapper
 
-class RealmInstagramPhoto: JSONAPIObject, JSONAPIObjectProtocol {
-    static let type = "instagram_photos"
-	static let requst_subfix = RealmInstagramPhoto.type
-	static let api_version = APIController.shared.apiVersion
-    
+class RealmInstagramPhoto: MonkeyModel {
+	override class var type: String {
+		return ApiType.Instagram_photos.rawValue
+	}
+	override static func primaryKey() -> String {
+		return "instagram_photo_id"
+	}
+	
     dynamic var instagram_photo_id: String?
     dynamic var standard_resolution_image_url: String?
-    
-    dynamic var instagram_account: RealmInstagramAccount?
-    
-    override static func primaryKey() -> String {
-        return "instagram_photo_id"
-    }
+	
+	required convenience init?(map: Map) {
+		self.init()
+	}
 }

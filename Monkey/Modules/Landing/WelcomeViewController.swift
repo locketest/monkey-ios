@@ -96,8 +96,8 @@ class WelcomeViewController: MonkeyViewController {
 	
 	func validateAccountkitAuth(_ accountkit_token: String) {
 		var parameters = ["accountkit_token": accountkit_token]
-        if Environment.deeplink_source.count > 0 {
-            parameters["source"] = Environment.deeplink_source
+        if Achievements.shared.deeplink_source.count > 0 {
+            parameters["source"] = Achievements.shared.deeplink_source
         }
 		
         JSONAPIRequest(url:"\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/auth/accountkit", method: .post, parameters: parameters, options: [
@@ -112,7 +112,7 @@ class WelcomeViewController: MonkeyViewController {
 				NSLog("error login \(error)")
 			case .success(let jsonAPIDocument):
                 // clean deep link source
-                Environment.deeplink_source = ""
+                Achievements.shared.deeplink_source = ""
                 
 				if let attributes = jsonAPIDocument.dataResource?.json["attributes"] as? [String: String], let relationships = jsonAPIDocument.dataResource?.json["relationships"] as? [String: [String: [String: String]]] {
 					guard let token = attributes["token"], let user = relationships["user"], let user_data = user["data"], let user_id = user_data["id"] else {
@@ -132,7 +132,7 @@ class WelcomeViewController: MonkeyViewController {
 							APIController.authorization = authorization
 							AnaliticsCenter.loginAccount()
 							UserDefaults.standard.set(user_id, forKey: "user_id")
-						UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
+							UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
 							
 							Apns.update(callback: nil)
 							self.dismiss(animated: false, completion: nil)

@@ -7,17 +7,20 @@
 //
 
 import UIKit
+import ObjectMapper
 
-class RealmBlock: JSONAPIObject, JSONAPIObjectProtocol {
-    static let type = "blocks"
-	static let requst_subfix = RealmBlock.type
-	static let api_version = APIController.shared.apiVersion
-    
-    dynamic var block_id:String?
-    dynamic var blocked_user:RealmUser?
-    dynamic var created_at:NSDate?
-
-    override static func primaryKey() -> String {
-        return "block_id"
-    }
+class RealmBlock: MonkeyModel {
+	override class var type: String {
+		return ApiType.Blocks.rawValue
+	}
+	override static func primaryKey() -> String {
+		return "block_id"
+	}
+	
+    dynamic var block_id: String?
+    dynamic var created_at: NSDate?
+	
+	required convenience init?(map: Map) {
+		self.init()
+	}
 }

@@ -200,6 +200,7 @@ class TextChatViewController: MonkeyViewController {
 //		self.containerView.backgroundColor = UIColor.clear
 		self.containerView.isUserInteractionEnabled = true
 		self.containerView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(stopEditing)))
+		self.publisherContainerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(togglePublisherEffects)))
 		
 		// notification for dictation
 		NotificationCenter.default.addObserver(self, selector: #selector(changeInputMode(notification:)), name: .UITextInputCurrentInputModeDidChange, object: nil)
@@ -343,6 +344,14 @@ class TextChatViewController: MonkeyViewController {
 	@IBAction func endCall(_ sender: BigYellowButton) {
 		self.endCallButton.isEnabled = false
 		self.chatSession?.disconnect(.consumed)
+	}
+	
+	func togglePublisherEffects() {
+		if HWCameraManager.shared().pixellated == false {
+			HWCameraManager.shared().addPixellate()
+		} else {
+			HWCameraManager.shared().removePixellate()
+		}
 	}
     
     func setupCommonTree(){

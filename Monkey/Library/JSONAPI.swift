@@ -10,6 +10,8 @@ import Foundation
 import Alamofire
 
 typealias JSONAPIRequestCompletionHandler = (_ result: JSONAPIResult<JSONAPIDocument>) -> Void
+typealias JSONAPIRequestErrorHandler = (_ error: APIError?) -> Void
+public typealias RequestHeader = [String: String?]
 
 class JSONAPIRequest {
 	/// Enumerations that can be passed to a request options object to modify default request behaviour.
@@ -169,7 +171,7 @@ class JSONAPIError {
 	
 	- parameter json: The JSON data to base the struct off of.
 	*/
-	init(error: [String:Any]) {
+	init(error: [String: Any]) {
 		self.error = error
 	}
 	// error.status

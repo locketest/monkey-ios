@@ -7,11 +7,15 @@
 //
 
 import RealmSwift
+import ObjectMapper
 
-class RealmMessage: JSONAPIObject, JSONAPIObjectProtocol {
-    static let type = "messages"
-	static let requst_subfix = RealmMessage.type
-	static let api_version = APIController.shared.apiVersion
+class RealmMessage: MonkeyModel {
+	override class var type: String {
+		return ApiType.Messages.rawValue
+	}
+	override static func primaryKey() -> String {
+		return "message_id"
+	}
     
     dynamic var friendship: RealmFriendship?
     dynamic var sender: RealmUser?
@@ -38,9 +42,9 @@ class RealmMessage: JSONAPIObject, JSONAPIObjectProtocol {
         }
         return Data(base64Encoded: base64EncodedString)
     }
-    
-    override static func primaryKey() -> String {
-        return "message_id"
-    }
+	
+	required convenience init?(map: Map) {
+		self.init()
+	}
 }
 

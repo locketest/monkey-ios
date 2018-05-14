@@ -337,7 +337,6 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
 				userProperty["gender"] = $0
 			}
 			
-//			AnaliticsCenter.update(userProperty: userProperty)
             self.nextVC()
         }
     }

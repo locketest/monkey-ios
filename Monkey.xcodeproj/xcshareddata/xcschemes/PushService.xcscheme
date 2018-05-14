@@ -111,7 +111,7 @@
       </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Release">
+      buildConfiguration = "Sandbox">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
