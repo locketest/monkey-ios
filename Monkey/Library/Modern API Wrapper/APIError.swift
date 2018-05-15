@@ -66,14 +66,18 @@ class APIError: Error, CustomStringConvertible {
         return alert(dismissText: "OK", onDismissal: onOK)
     }
     
+    func toAlert(onOK: ((UIAlertAction) -> Void)?, title: String, text:String) -> UIAlertController {
+        return alert(titleString: title, dismissText: text, onDismissal: onOK)
+    }
+    
     func toAlert(onRetry: ((UIAlertAction) -> Void)?) -> UIAlertController {
         return alert(dismissText: "Retry", onDismissal: onRetry)
     }
     
     
-    private func alert(dismissText: String, onDismissal: ((UIAlertAction) -> Void)?) -> UIAlertController {
+    private func alert(titleString: String = "Uh oh!", dismissText: String, onDismissal: ((UIAlertAction) -> Void)?) -> UIAlertController {
         // Default alert title
-        var title = "Uh oh!"
+        var title = titleString
         
         // Default alert message
         var message = self.message
@@ -87,7 +91,7 @@ class APIError: Error, CustomStringConvertible {
             }
         }
         
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: title, message: titleString == "Uh oh!" ? message : nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: dismissText, style: .cancel, handler: onDismissal))
         return alert
     }

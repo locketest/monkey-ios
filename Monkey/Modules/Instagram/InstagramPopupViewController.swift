@@ -8,7 +8,7 @@
 
 import UIKit
 import RealmSwift
-import SwiftyJSON
+import Kingfisher
 
 // photosId为预留字段，暂未用上
 typealias PhotoIdAndUrlTuple = (photosId:String, photoUrl:String)
@@ -199,6 +199,10 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
             for (index, value) in dataTupleArray.enumerated() {
 
                 let imageButton = UIButton()
+                
+                imageButton.layer.cornerRadius = 5
+                imageButton.layer.masksToBounds = true
+                imageButton.adjustsImageWhenHighlighted = false
 
                 let row = index / Int(totleColumns) // 行号等于索引除以每行要显示的列数
                 let col = index % Int(totleColumns) // 列号等于索引对每行要显示的列数取摸
@@ -206,15 +210,11 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
                 let imageButtonX : CGFloat = Margin + CGFloat(col) * (imageButtonW + Padding)
                 let imageButtonY : CGFloat = CGFloat(row) * (imageButtonH + Padding)
                 
-                imageButton.layer.cornerRadius = 5
-                imageButton.layer.masksToBounds = true
-                imageButton.adjustsImageWhenHighlighted = false
-                
                 if value.photoUrl == "" {
                     imageButton.setImage(UIImage(named: "followMyIGBtn"), for: .normal)
                     imageButton.addTarget(self, action: #selector(followMyIGClickFunc), for: .touchUpInside)
                 } else {
-                    imageButton.sd_setImage(with: URL(string: value.photoUrl), for: .normal, placeholderImage: UIImage(named: "insDefultImg")!, options: SDWebImageOptions.allowInvalidSSLCertificates, completed: nil)
+                    imageButton.kf.setImage(with: ImageResource(downloadURL: URL(string: value.photoUrl)!), for: .normal, placeholder: UIImage(named: "insDefultImg")!, options: [.transition(.fade(0.5))], progressBlock: nil, completionHandler: nil)
                 }
                 
                 imageButton.frame = CGRect(x: imageButtonX, y: imageButtonY, width: imageButtonW, height: imageButtonH)
@@ -230,7 +230,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         
         var instagramURL : URL!
         
-        let isInstagramInstalledBool = UIApplication.shared.canOpenURL(URL(string: "instagram://location?id=1")!)
+        let isInstagramInstalledBool = UIApplication.shared.canOpenURL(URL(string: "instagram://")!)
         
         if let accountId = user?.instagram_account?.instagram_account_id {
             

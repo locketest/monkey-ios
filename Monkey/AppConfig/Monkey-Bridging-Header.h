@@ -9,8 +9,6 @@
 
 #import <OpenTok/OpenTok.h>
 #import "UIView+MJ.h"
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIButton+WebCache.h>
 
 #import <GPUImage/GPUImage.h>
 #import <CommonCrypto/CommonCrypto.h>

@@ -215,6 +215,8 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, CLLocati
 	var addTimeString : String?
 	var addFriendString : String?
 	var equivalentString : String?
+     
+    var alertTextFieldString = ""
 
 	var waitingForFriendToken:NotificationToken?
 	/// After a friendship is made, if there is no snapchat name, we wait for the user id to come down from the socket and push to their chat page
@@ -284,7 +286,7 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, CLLocati
 	}
 
 	@IBAction func chatButtonTapped(sender: Any) {
-		self.present(self.swipableViewControllerToPresentOnLeft!, animated: true, completion: nil)
+          self.present(self.swipableViewControllerToPresentOnLeft!, animated: true, completion: nil)
 	}
 	
 	@IBAction func filterButtonTapped(_ sender: Any) {
@@ -593,7 +595,51 @@ class MainViewController: SwipeableViewController, UITextFieldDelegate, CLLocati
 //		Step 4: Start finding chats
 		self.startFindingChats(forReason: "location-services")
 		NotificationCenter.default.addObserver(self, selector: #selector(handleRemoteNotificationFunc), name: NSNotification.Name(rawValue: RemoteNotificationTag), object: nil)
-		
+     
+     }
+     
+     override func viewWillAppear(_ animated: Bool) {
+          super.viewWillAppear(animated)
+          
+          self.handleFirstNameExistFunc()
+     }
+     
+     func handleFirstNameExistFunc() {
+          if APIController.shared.currentUser?.first_name != nil {
+               
+               let alertController = UIAlertController(title: "⚠️ Name Change ⚠️", message: "yo keep it pg this time", preferredStyle: .alert)
+               alertController.addTextField { (textField) in
+                    textField.placeholder = "Input"
+                    NotificationCenter.default.addObserver(self, selector: #selector(self.alertTextDidChanged), name: NSNotification.Name.UITextFieldTextDidChange, object: textField)
+               }
+               
+               let doneAction = UIAlertAction(title: "kk", style: .default, handler: { (alertAction) in
+                    APIController.shared.currentUser?.update(attributes: [.first_name(self.alertTextFieldString)], completion: { (error) in
+                         if error != nil {
+                              if error?.status == "400" {
+                                   return self.present(error!.toAlert(onOK: { (UIAlertAction) in
+                                        self.handleFirstNameExistFunc()
+                                   }, title:"yo keep it pg", text:"try again"), animated: true, completion: nil)
+                              }
+                         }
+                    })
+               })
+               
+               doneAction.isEnabled = false
+               
+               alertController.addAction(doneAction)
+               
+               self.present(alertController, animated: true, completion: nil)
+          }
+     }
+     
+     func alertTextDidChanged(notification:NSNotification) {
+          if let alertController = self.presentedViewController as? UIAlertController {
+               let textField = alertController.textFields?.first
+               let doneAction = alertController.actions.first
+               doneAction?.isEnabled = (textField?.text?.count)! > 2
+               self.alertTextFieldString = (textField?.text)!
+          }
      }
 	
 	func refreshEventModeStatus() {
