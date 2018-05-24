@@ -1,0 +1,24 @@
+language: swift
+cache: cocoapods
+podfile: Podfile
+osx_image: xcode9.3
+before_install:
+  - brew update
+  - gem install cocoapods
+  - gem install fir-cli
+  - pod repo update
+  - pod install
+before_script:
+#  - "./scripts/env.sh"
+  - "./scripts/add-key.sh"
+script:
+  - "travis_wait 60 ./scripts/travis.sh"
+after_success:
+  - "./scripts/sign-and-upload.sh"
+after_script:
+  - "./scripts/remove-key.sh"
+env:
+  global:
+  - APPNAME="Monkey"
+#  - SCHEME_RELEASE="Release"
+#  - SCHEME_SANDBOX="Sandbox"

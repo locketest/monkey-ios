@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>compileBitcode</key>
+  <false/>
+  <key>method</key>
+  <string>development</string>
+  <key>teamID</key>
+  <string>9RZJW8NK36</string>
+  <key>uploadBitcode</key>
+  <false/>
+  <key>uploadSymbols</key>
+  <false/>
+  <key>signingCertificate</key>
+  <string>iPhone Developer: Eric Tao (QG3W3ZTY42)</string>
+  <key>signingStyle</key>
+  <string>manual</string>
+  <key>provisioningProfiles</key>
+	<dict>
+		<key>cool.monkey.ios</key>
+		<string>87be2588-4193-4dda-a94a-5d672fdaabd2</string>
+		<key>cool.monkey.ios.PushService</key>
+		<string>1214a600-3f11-4532-9c94-e0b873f55d25</string>
+	</dict>
+</dict>
+</plist>
