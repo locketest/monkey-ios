@@ -254,7 +254,7 @@ extension CallViewController {
     }
     
     func screenshotForReport() -> Bool {
-        guard let subscriberView = self.chatSession?.subscriber?.view else {
+        guard let subscriberView = self.chatSession?.remoteView else {
             print("Nothing to report")
             return false
         }
@@ -268,7 +268,7 @@ extension CallViewController {
         self.addMinuteButton.isHidden = true
         self.snapchatButton.isHidden = true
         self.statusCornerView.isHidden = true
-        self.chatSession?.subscriber?.view?.effectsEnabled = false
+//        self.chatSession?.remoteView?.effectsEnabled = false
         for view in self.containerView.subviews {
             if let label = view as? UILabel {
                 if(label.tag == 71074){
@@ -298,7 +298,7 @@ extension CallViewController {
     }
     
     func screenShotForSelf() -> Bool{
-        let capV = MonkeyPublisher.shared.view
+        let capV = HWCameraManager.shared().localPreviewView
         
 //        UIGraphicsBeginImageContext(self.view.bounds.size)
 //
@@ -324,7 +324,7 @@ extension CallViewController {
         self.publisherContainerViewTopConstraint.constant = 0
         self.publisherContainerViewHeightConstraint.constant = self.view.frame.size.height
         
-        self.chatSession?.subscriber?.view?.effectsEnabled = false
+//        self.chatSession?.subscriber?.view?.effectsEnabled = false
 
         self.hideStatusBarForScreenshot = true
         guard let screenCapture = capV.snapshotView(afterScreenUpdates: true) else {
@@ -356,7 +356,7 @@ extension CallViewController {
     }
     
     func sendReport(_ url: URLConvertible, method: HTTPMethod, parameters: Parameters, encoding: ParameterEncoding, headers: HTTPHeaders, imageData: Data) {
-        if let subscriberView = self.chatSession?.subscriber?.view {
+        if let subscriberView = self.chatSession?.remoteView {
             
             // add blur after take screen shot
             let eff = UIBlurEffect.init(style: .light)

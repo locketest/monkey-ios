@@ -12,28 +12,84 @@ import Alamofire
 
 class Chat {
     var chatId: String
-    var wastedTime = 0
+//	
+//	// 是否开启了声音
+//	func isUnmuted() -> Bool {
+//		return user.unMuteRequest && self.unMuteRequest
+//	}
+//	// 是否举报了对方
+//	func isReportPeople() -> Bool {
+//		return user.reported
+//	}
+//	// 是否被举报了
+//	func isReportedPeople() -> Bool {
+//		return user.report
+//	}
+//	// 收到其他所有人的推流
+//	func allUserConected() -> Bool {
+//		return user.connected
+//	}
+//	// 其他所有人进入房间
+//	func allUserJoined() -> Bool {
+//		return user.joined
+//	}
+//	//  其他所有用户全都 accept
+//	func allUserAccepted() -> Bool {
+//		return user.accept
+//	}
+//	// 是否加成好友
+//	func friendAdded() -> Bool {
+//		return user.friendAdded()
+//	}
 	
+	// 对方请求 add time 次数
     var theirMinutesAdded = 0
+	// 主动请求 add time 次数
     var minutesAdded = 0
 	
+	// 对方请求加好友
     var theySharedSnapchat = false
+	// 主动请求加好友
     var sharedSnapchat = false
+	// 是否更新刷新好友状态
+	var hasRefreshFriendships = false
 	
-	var unMute = false
+	// 对方是否请求解除静音
 	var theyUnMute = false
+	// 主动请求解除静音
+	var unMute = false
 	
+	// 是否举报了对方
 	var reporting = false
+	// 是否被对方举报
 	var reported = false
 	
+	// 是否被过
     var skipped = false
 	
 	var age: Int?
 	var location: String?
 	var gender: String?
     var first_name: String?
-    var profile_image_url: String?
     var user_id: String?
+	// 是否点击过举报按钮
+	var showReport = false
+	// 是否已经 accpet
+	var accept = false
+	
+	// create at
+	var beginTime = Date.init()
+	var acceptTime: Date?
+	var connectTime: Date?
+	
+	// 收发消息的次数
+	var sendedMessage = 0
+	var receivedMessage = 0
+	// 加成时间的次数
+	var addTimeCount = 0
+	var addTimeRequest = false
+	var unMuteRequest = false
+	
 	var match_mode: MatchMode = MatchMode.VideoMode
 	var match_room_mode: MatchMode {
 		if let selectedMatchMode = Achievements.shared.selectMatchMode, selectedMatchMode == match_mode {
@@ -48,7 +104,6 @@ class Chat {
 		self.gender = gender
 		self.age = age
 		self.location = location
-        self.profile_image_url = profile_image_url
         self.user_id = user_id
 		self.match_mode = MatchMode.init(string: match_mode ?? MatchMode.VideoMode.rawValue)
     }
@@ -80,12 +135,12 @@ class Chat {
         } else if self.sharedSnapchat {
             snapchatValue = .me
         }
-        let paramaters:Parameters = [
+        let paramaters: Parameters = [
             "data": [
                 "type": "chats",
                 "id": self.chatId,
                 "attributes": [
-                    "wasted_time": self.wastedTime,
+                    "wasted_time": 0,
                     "their_minutes_added": self.theirMinutesAdded,
                     "minutes_added": self.minutesAdded,
                     "snapchat": snapchatValue.rawValue,
@@ -93,27 +148,23 @@ class Chat {
                 ],
             ]
         ]
-        
-        let headers: HTTPHeaders = [
-            "Authorization": authorization,
-            "Accept": "application/json"
-        ]
-        
-        Alamofire.request("\(Environment.baseURL)/api/v1.0/chats/\(self.chatId)", method: .patch, parameters: paramaters, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
-//        Alamofire.request("\(Environment.baseURL)/api/v1.3/match_request", method: .patch, parameters: paramaters, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
-            if let error = response.result.error {
-                callback?(error.localizedDescription)
-                return
-            }
-            if response.response!.statusCode >= 400  {
-                if let reason = (response.result.value as? Dictionary<String, Array<Dictionary<String, Any>>>)?["errors"]?[0]["title"] as? String {
-                    callback?(reason)
-                } else {
-                    callback?("Unknown error")
-                }
-                return
-            }
-            callback?(nil)
-        }
+		
+		JSONAPIRequest.init(url: "\(Environment.baseURL)/api/v1.0/chats/\(self.chatId)", method: .patch, parameters: paramaters, options: [
+			.header("Authorization", authorization)
+			]).addCompletionHandler {[weak self] (result) in
+			switch result {
+			case .error(let error):
+				callback?(error.localizedDescription)
+			case .success( _):
+				if snapchatValue == .both && (self?.hasRefreshFriendships == false || self == nil) {
+					self?.hasRefreshFriendships = true
+					RealmFriendship.fetchAll(completion: { (result:JSONAPIResult<[RealmFriendship]>) in
+						callback?(nil)
+					})
+				}else {
+					callback?(nil)
+				}
+			}
+		}
     }
 }

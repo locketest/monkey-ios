@@ -38,7 +38,7 @@ enum SettingsCellType {
 /**
  * cell类型、cell文本、图片，头像或右边图片，其他，地区
  */
-typealias DataTuple = (cellStyle:SettingsCellStyle, cellType:SettingsCellType,  text:String, image:String, other:String)
+typealias DataTuple = (cellStyle: SettingsCellStyle, cellType: SettingsCellType,  text: String, image: String, other: String)
 
 typealias DataTupleArray = [DataTuple]
 

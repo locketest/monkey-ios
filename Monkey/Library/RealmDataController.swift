@@ -187,10 +187,6 @@ class RealmDataController: NSObject {
 					
 					- Property 'RealmUser.tag' has been deleted
 					*/
-					migration.deleteData(forType: "RealmTag")
-					migration.deleteData(forType: "RealmBlock")
-					migration.deleteData(forType: "RealmPhoneAuth")
-					migration.deleteData(forType: "RealmMatchedUser")
 				}
         }, objectTypes: self.realmObjectClasses)
         Realm.Configuration.defaultConfiguration = config
@@ -302,33 +298,6 @@ class RealmDataController: NSObject {
             }
         }
     }
-	
-    func apply(_ jsonAPIDocument: JSONAPIDocument, toObject object: Object, forRelationship relationshipKey: String, completion: @escaping (_ jsonAPIResult: JSONAPIResult<[Object]>) -> Void) {
-        let threadSafeReferenceToObject = ThreadSafeReference(to: object)
-        self.apply(jsonAPIDocument) { (result) in
-            switch result {
-            case .error(let error):
-                return completion(.error(error))
-            case .success(let newObjects):
-                self.backgroundQueue.async {
-                    guard let realm = try? Realm() else {
-                        return DispatchQueue.main.async {
-                            completion(.error(.realmNotInitialized))
-                        }
-                    }
-                    do {
-                        let threadSafeObject = realm.resolve(threadSafeReferenceToObject)
-                        try realm.write() {
-                            threadSafeObject?.setValue(newObjects.first, forKey: relationshipKey)
-                        }
-                    } catch let error {
-                        print("Error: ", error)
-                        completion(.error(.unableToSave))
-                    }
-                }
-            }
-        }
-    }
 
     /// Inserts the provided resource into realm or updates the existing Realm object with the resource's ID if an object is already in the realm.
     ///
@@ -337,7 +306,7 @@ class RealmDataController: NSObject {
     ///   - jsonAPIResource: The resource to insert or update the realm with.
     /// - Returns: The new or updated Realm object.
     /// - Throws: An Error of type `APIError` when parsing fails.
-    @discardableResult private func parseJSONAPIResource(_ jsonAPIResource:JSONAPIResource) throws -> MonkeyRealmObject? {
+    @discardableResult private func parseJSONAPIResource(_ jsonAPIResource: JSONAPIResource) throws -> MonkeyRealmObject? {
 		guard let resourceRealmObjectClass = try self.classForResourceIdentifier(jsonAPIResource) else {
 			return nil
 		}
@@ -349,7 +318,14 @@ class RealmDataController: NSObject {
         }
 
         var value: [String: Any] = jsonAPIResource.attributes ?? [:]
-
+		
+		// 如果是新的好友，设置 last_message_at 为 created_at
+		if resourceRealmObjectClass.type == ApiType.Friendships.rawValue {
+			if value["last_message_at"] == nil, let created_at = value["created_at"] {
+				value["last_message_at"] = created_at
+			}
+		}
+		
         try jsonAPIResource.relationships?.forEach { (relationshipKey, relationshipValue) in
             let properties = resourceRealmObjectClass.sharedSchema()?.properties
 
@@ -368,7 +344,7 @@ class RealmDataController: NSObject {
             }
             if let dataResource = relationship.dataResource {
                 value[relationshipKey] = try self.getOrCreateRealmObjectForResourceIdentifier(dataResource)
-            } else if let dataResourceCollection = relationship.dataResourceCollection {
+            } else if let dataResourceCollection = relationship.dataResourceCollection, dataResourceCollection.count > 0 {
                 value[relationshipKey] = try dataResourceCollection.map { try self.getOrCreateRealmObjectForResourceIdentifier($0) }
             } else if relationship.isResourceNull {
                 value[relationshipKey] = NSNull()
@@ -434,11 +410,23 @@ class RealmDataController: NSObject {
 			APIError(message: "A relationship is missing an id.").log()
 			return nil
         }
-		
+
 		let realm = try Realm()
 		let object = realm.create(resourceRealmObjectClass, value: [
 			primaryKeyString: relationshipId,
 			], update: true)
 		return object as? MonkeyRealmObject
     }
+
+	func parseDate(_ dateString: String) -> Date {
+		let dateFormatter = DateFormatter()
+		dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+		if dateString.hasSuffix("Z") {
+			dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+		}else {
+			dateFormatter.dateFormat = "E MMM dd yyyy HH:mm:ss Zz"
+		}
+		let date = dateFormatter.date(from: dateString) ?? Date()
+		return date
+	}
 }

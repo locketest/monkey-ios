@@ -251,7 +251,7 @@ extension TextChatViewController {
 	}
 	
 	func screenshotForReport() -> Bool {
-		guard let subscriberView = self.chatSession?.subscriber?.view else {
+		guard let subscriberView = self.chatSession?.remoteView else {
 			print("Nothing to report")
 			return false
 		}
@@ -286,8 +286,8 @@ extension TextChatViewController {
 		return true
 	}
 	
-	func screenShotForSelf() -> Bool{
-		let capV = MonkeyPublisher.shared.view
+	func screenShotForSelf() -> Bool {
+		let capV = HWCameraManager.shared().localPreviewView
 		
 		//        UIGraphicsBeginImageContext(self.view.bounds.size)
 		//
@@ -311,7 +311,7 @@ extension TextChatViewController {
 		self.publisherContainerViewTopConstraint.constant = 0
 		self.publisherContainerViewHeightConstraint.constant = self.view.frame.size.height
 		
-		self.chatSession?.subscriber?.view?.effectsEnabled = false
+//		self.chatSession?.remoteView?.effectsEnabled = false
 		
 		self.hideStatusBarForScreenshot = true
 		guard let screenCapture = capV.snapshotView(afterScreenUpdates: true) else {

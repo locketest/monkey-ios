@@ -56,8 +56,6 @@ enum discoveryState: Int {
 	case chatting = 6
 }
 
-let treeLabelWidth:CGFloat = 48.0
-
 public let ScreenWidth = UIScreen.main.bounds.width
 public let ScreenHeight = UIScreen.main.bounds.height
 
@@ -67,13 +65,13 @@ public let BananaAlertDataTag = "BananaAlertData" // Adjust promotion link下载
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
-class MainViewController: SwipeableViewController, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate, MonkeySocketChatMessageDelegate {
+class MainViewController: SwipeableViewController, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate {
 
 	func webSocketDidRecieveVideoCall(videoCall: Any, data: [String : Any]) {
-		if self.chatSession != nil {
-
+		guard IncomingCallManager.shared.chatSession == nil else {
+			return
 		}
-
+		
 		// present call view controller
 		if let videoc = videoCall as? RealmVideoCall {
 			if let chatsession = IncomingCallManager.shared.createChatSession(fromVideoCall: videoc) {
@@ -86,14 +84,23 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 						self.chatSession = chatsession
 						chatsession.loadingDelegate = self
 						chatsession.accept()
-						break
 					case .declined:
-						break
+//						IncomingCallManager.shared.cancelVideoCall(chatsession: chatsession)
+						chatsession.disconnect(.consumed)
 					}
-//               		IncomingCallManager.shared.reactToIncomingCall(videoc)
 				})
 
+				IncomingCallManager.shared.showingNotification = callnoti
 				self.callNotification = callnoti
+			}
+		}
+	}
+	
+	func webSocketDidRecieveVideoCallCancel(data: [String : Any]) {
+		if let chatSession = IncomingCallManager.shared.chatSession, chatSession.isDialedCall == true {
+			IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
+			if let currentChatSession = self.chatSession {
+				currentChatSession.disconnect(.consumed)
 			}
 		}
 	}
@@ -107,38 +114,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
 	func webScoketDidRecieveChatMessage(data: [String : Any]) {
 		self.chatButton.imageView?.image = #imageLiteral(resourceName: "FriendsButtonNotification")
-	}
-
-	func webSocketDidRecieveUnfriendMessage(friendID: String, userID: String) {
-		RealmFriendship.fetchAll { (result:JSONAPIResult<[RealmFriendship]>) in
-			switch result {
-			case .success(let friendships):
-				let realm = try? Realm()
-				guard let storedFriendships = realm?.objects(RealmFriendship.self) else {
-					print("Error: No friendships to delete on the device when syncing friendships from server")
-					return
-				}
-				let friendshipIdsToKeep = friendships.map { $0.friendship_id }
-				let predicate = NSPredicate(format: "NOT friendship_id IN %@", friendshipIdsToKeep)
-				let exFriends = storedFriendships.filter(predicate)
-				if exFriends.count > 0 {
-					do {
-						try realm?.write {
-							realm?.delete(exFriends)
-						}
-					} catch (let error) {
-						print("Error: \(error.localizedDescription)")
-						APIError.unableToSave.log(context: "Deleting old friendships.")
-					}
-				}
-			case .error(let error):
-				error.log(context: "RealmFriendship sync failed")
-			}
-		}
-	}
-
-	func webSocketNeedUpdateFriendList() {
-
 	}
 
 	internal func showAlert(alert: UIAlertController) {
@@ -193,7 +168,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
 	weak var matchViewController: MatchViewController?
 
-	var callNotification: CallNotificationView?
+	weak var callNotification: CallNotificationView?
 	var mySkip = false
 	var incomingCallId: String?
 	var incomingCallBio: String?
@@ -207,49 +182,15 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	var matchRequestTimer: Timer?
 	var curCommonTree: RealmChannel?
 
-	var yesterdayString: String?
-	var addTimeString: String?
-	var addFriendString: String?
+	var yesterdayString: Int?
+	var addTimeString: Int?
+	var addFriendString: Int?
 	var equivalentString: String?
-	
+
 	var alertTextFieldString = ""
 
 	var bananaNotificationToken: NotificationToken?
 	var unreadMessageNotificationToken: NotificationToken?
-	var waitingForFriendToken: NotificationToken?
-	/// After a friendship is made, if there is no snapchat name, we wait for the user id to come down from the socket and push to their chat page
-	var waitingForFriendUserId:String? {
-		didSet {
-			guard let friendUserId = self.waitingForFriendUserId, friendUserId != oldValue else {
-				return
-			}
-			if oldValue != nil {
-				// Clear old attempt.
-				stopWaitingForFriend()
-			}
-			let realm = try? Realm()
-			var didFindFriend = false
-
-			DispatchQueue.main.asyncAfter(deadline: .after(seconds: 5)) {
-				if !didFindFriend {
-					self.stopWaitingForFriend()
-				}
-			}
-
-			self.waitingForFriendToken = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(friendUserId)\"").observe({ [weak self] (changes) in
-				guard let _ = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(friendUserId)\"").first else {
-					return
-				}
-				didFindFriend = true
-				self?.stopWaitingForFriend()
-			})
-		}
-	}
-
-	private func stopWaitingForFriend() {
-		self.waitingForFriendToken?.invalidate()
-		self.waitingForFriendToken = nil
-	}
 
 	internal func statusChanged(isSkip: Bool) {
 		if isSkip {
@@ -266,7 +207,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 
 	@IBAction func chatButtonTapped(sender: Any) {
-          self.present(self.swipableViewControllerToPresentOnLeft!, animated: true, completion: nil)
+		self.present(self.swipableViewControllerToPresentOnLeft!, animated: true, completion: nil)
 	}
 
 	@IBAction func filterButtonTapped(_ sender: Any) {
@@ -298,13 +239,11 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
 	@IBOutlet var containerView: UIView!
 
-	// count of chats the user timed out before accept/declining
-	var callsInSession = 0
-	var matchingMode:MatchingMode = .discover
 	var lastChatSession: ChatSession?
 	var chatSession: ChatSession?
 	var nextFact = APIController.shared.currentExperiment?.initial_fact_discover ?? ""
 
+	// 如果匹配到了人，则屏幕无法熄灭
 	var isFindingChats = false {
 		didSet {
 			if self.isFindingChats {
@@ -360,15 +299,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 					self.factTextBottom.constant = 14
 					self.matchModeContainer.layer.borderColor = UIColor.init(red: 255.0 / 255.0, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1).cgColor
 					self.matchModeTip.textColor = UIColor.init(red: 255.0 / 255.0, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1)
-				}
-
-				// dismiss if showing
-				if let messageNotificationView = NotificationManager.shared.showingNotification {
-					if messageNotificationView is RatingNotificationView {
-						messageNotificationView.dismiss()
-					} else {
-						UIApplication.shared.keyWindow?.bringSubview(toFront: messageNotificationView)
-					}
 				}
 			} else {
 				self.matchModeContainer.isHidden = true
@@ -456,8 +386,19 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
 		self.addPublisherToView()
 
-		// from loadingView
-		self.skipButton?.setTitle(APIController.shared.currentExperiment?.skip_text, for: .normal)
+		if self.channels.count == 0 {
+			RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>, hadUpdate: Bool) in
+				switch result {
+				case .success(_):
+					if hadUpdate {
+						self.channelUpdateRemindV.alpha = 1
+					}
+					break
+				case .error(let error):
+					error.log()
+				}
+			}
+		}
 
 		self.loadBananaData(isNotificationBool: false)
 		self.handleBananaAlertFunc()
@@ -480,14 +421,14 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 //		Step 4: Start finding chats
 		self.startFindingChats(forReason: "location-services")
 		NotificationCenter.default.addObserver(self, selector: #selector(handleRemoteNotificationFunc), name: NSNotification.Name(rawValue: RemoteNotificationTag), object: nil)
-     }
-     
+	}
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		
+
 		self.handleFirstNameExistFunc()
 	}
-	
+
 	func handleFirstNameExistFunc() {
 		if APIController.shared.currentUser?.first_name == nil {
 			self.stopFindingChats(andDisconnect: true, forReason: "edit_profile")
@@ -496,7 +437,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 				textField.placeholder = "Input"
 				NotificationCenter.default.addObserver(self, selector: #selector(self.alertTextDidChanged), name: NSNotification.Name.UITextFieldTextDidChange, object: textField)
 			}
-			
+
 			let doneAction = UIAlertAction(title: "kk", style: .default, handler: { (alertAction) in
 				APIController.shared.currentUser?.update(attributes: [.first_name(self.alertTextFieldString)], completion: { (error) in
 					if let error = error {
@@ -510,13 +451,13 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 					}
 				})
 			})
-			
+
 			doneAction.isEnabled = false
 			alertController.addAction(doneAction)
 			self.present(alertController, animated: true, completion: nil)
 		}
 	}
-	
+
 	func alertTextDidChanged(notification: NSNotification) {
 		if let alertController = self.presentedViewController as? UIAlertController {
 			let textField = alertController.textFields?.first
@@ -570,7 +511,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			self.refreshEventModeStatus()
 		}
 
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/experiments/\(APIController.shared.appVersion)/match", method: .get, parameters: nil, options: [
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/experiments/\(APIController.shared.appVersion)/match", options: [
 			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (result) in
 				switch result {
@@ -608,32 +549,29 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
      }
 
 	func loadBananaData(isNotificationBool: Bool) {
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/bananas", method: .get, parameters: nil, options: [
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/bananas", options: [
 			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (result) in
 				switch result {
 				case .error(let error):
 					error.log()
 				case .success(let jsonAPIDocument):
-
+					
 					let json = jsonAPIDocument.dataResource?.json
 					if let me = json?["me"] as? [String: Int] {
-						self.yesterdayString = String(describing: me["yesterday"])
+						self.yesterdayString = me["yesterday"]
 					}
-
+					
 					if let redeem = json?["redeem"] as? [String: Int] {
-						self.addTimeString = String(describing: redeem["add_time"])
-						self.addFriendString = String(describing: redeem["add_friend"])
+						self.addTimeString = redeem["add_time"]
+						self.addFriendString = redeem["add_friend"]
 					}
-
+					
 					self.equivalentString = json?["promotion"] as? String
-
-                    if let currentUser = APIController.shared.currentUser {
-                         self.bananaCountLabel.text = currentUser.bananas.value!.description
-                    }
-
-					if isNotificationBool || (UserDefaults.standard.value(forKey: KillAppBananaNotificationTag) as! String) != "" {
-						self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!, isNotificationBool:isNotificationBool)
+					
+					let savedBananaNotificationTag = UserDefaults.standard.string(forKey: KillAppBananaNotificationTag) ?? ""
+					if isNotificationBool || savedBananaNotificationTag.count > 0 {
+						self.showBananaDescription(isNotificationBool: isNotificationBool)
 					}
 				}
 		}
@@ -641,9 +579,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
 	func handleRemoteNotificationFunc(notification: NSNotification) {
 		UserDefaults.standard.setValue("", forKey: KillAppBananaNotificationTag)
-		if let linkString = notification.object as? String, linkString.contains("banana_recap_popup") {
-			self.loadBananaData(isNotificationBool: true)
-		}
+		self.loadBananaData(isNotificationBool: true)
 	}
 
 	var stopFindingReasons = [String]()
@@ -717,28 +653,28 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
         self.curCommonTree = nil
 		self.generateNewRequestID()
-		let parameters:[String:Any] = [
+
+		AnaliticsCenter.log(event: AnalyticEvent.matchRequestTotal)
+
+		let parameters: [String: Any] = [
 			"data": [
 				"type": "chats",
 				"attributes": [
-					"matching_mode": self.matchingMode.rawValue,
+					"matching_mode": MatchingMode.discover.rawValue,
 					"match_mode": Achievements.shared.selectMatchMode?.rawValue ?? MatchMode.VideoMode.rawValue,
 					"request_id": self.request_id!,
 					"match_nearby": Achievements.shared.nearbyMatch,
 				]
 			]
 		]
-
-		AnaliticsCenter.log(event: AnalyticEvent.matchRequestTotal)
-		
 		RealmCall.request(url: RealmCall.common_request_path, method: .post, parameters: parameters) { (error) in
 			print("Chat request completed")
 			self.cancelMatchRequest()
 			self.trackMatchRequest()
-			
+
 			if let error = error {
 				error.log(context:"Create (POST) a matched call")
-				
+
 				guard error.status != "401" else {
 					self.stopFindingChats(andDisconnect: true, forReason: "log-out")
 					self.signOut()
@@ -793,7 +729,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_request": 1])
 		AnaliticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
 		AnaliticsCenter.log(withEvent: AnalyticEvent.matchRequest, andParameter: commonParameters)
-		AnaliticsCenter.log(withEvent: .matchRequestSocketStatus, andParameter: ["status":Socket.shared.socketConnectStatus.rawValue])
+		AnaliticsCenter.log(withEvent: .matchRequestSocketStatus, andParameter: ["status": Socket.shared.socketConnectStatus.rawValue])
 
 		self.continuous_request_count += 1;
 	}
@@ -933,6 +869,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 				})
 			}
 		}
+		HWCameraManager.shared().prepare()
 	}
 
 	@IBAction func acceptButtonTapped(sender: Any) {
@@ -1001,32 +938,16 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			self.nextFact = nextFact
 		}
 
-		guard let sessionId = call.session_id, let chatId = call.chat_id, let token = call.token, let received_id = call.request_id, self.request_id == received_id else {
+		guard let chatId = call.chat_id, /*let received_id = call.request_id, self.request_id == received_id,*/ let sessionId = call.session_id else {
 			print("Error: RealmCall object did not return with sufficient data to create a chatSession")
 			return
 		}
-		self.stopFindingChats(andDisconnect: false, forReason: "receive-match")
-
-		var first_name: String?
-		var gender: String?
-		var profile_photo_url: String?
-		var user_id: String?
-		var age: Int?
-		var location: String?
-
-		if let matchRelationships = jsonAPIDocument.dataResource?.relationships,
-			let matchedUser = matchRelationships["user"] as? JSONAPIDocument, let attribute = matchedUser.dataResource?.attributes {
-			if let channels = attribute["channels"] as? [String], let tree = channels.first {
-				self.listTree(tree: tree)
-			}
-
-			first_name = attribute["first_name"] as? String
-			gender = attribute["gender"] as? String
-			profile_photo_url = attribute["profile_photo_url"] as? String
-			user_id = call.user?.user_id
-			age = attribute["age"] as? Int
-			location = attribute["location"] as? String
+		if call.channelToken.count == 0 {
+			return
 		}
+
+		self.stopFindingChats(andDisconnect: false, forReason: "receive-match")
+		self.listTree(tree: call.user?.channels.first?.channel_id ?? "")
 
 		var bio = "Connecting"
 		if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
@@ -1045,7 +966,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			}
 		}
 
-		self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: first_name, gender: gender, age: age, location: location, profile_image_url: profile_photo_url, user_id: user_id, match_mode: call.match_mode), token: token, loadingDelegate: self, isDialedCall: false)
+		self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: call.user?.first_name, gender: call.user?.gender, age: call.user?.age.value, location: call.user?.location, profile_image_url: call.user?.profile_photo_url, user_id: call.user?.user_id, match_mode: call.match_mode), token: call.channelToken, loadingDelegate: self, isDialedCall: false)
 
 		AnaliticsCenter.add(amplitudeUserProperty: ["match_receive": 1])
 		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_receive": 1])
@@ -1129,7 +1050,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			chatSession.callDelegate = matchViewController
 			matchViewController.commonTree = self.curCommonTree
 
-			self.callsInSession += 1
 			Achievements.shared.totalChats += 1
 			viewController.present(matchViewController, animated: false, completion: nil)
 			if chatSession.friendMatched {
@@ -1171,7 +1091,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
 		if chatSession.isReportedChat, chatSession.friendMatched, let userID = self.chatSession?.realmCall?.user?.user_id, chatSession.isReportedByOther == false {
 			self.showAfterReportFriendAlert(userID: userID)
-        }else if let realmVideoCall = chatSession.realmVideoCall,let userID = realmVideoCall.initiator?.user_id,chatSession.isReportedChat,chatSession.isReportedByOther == false{
+        }else if let realmVideoCall = chatSession.realmVideoCall, let userID = realmVideoCall.initiator?.user_id, chatSession.isReportedChat, chatSession.isReportedByOther == false {
                /// it is a video call
                self.showAfterReportFriendAlert(userID: userID)
           }
@@ -1246,19 +1166,19 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
 		self.startFindingChats(forReason: "re-start")
 	}
-	/// Inserts MonkeyPublisher.shared.view at the back of the ViewController's view and sets it's constraints.
+	/// Inserts HWCameraManager.shared().localPreviewView at the back of the ViewController's view and sets it's constraints.
 	private func addPublisherToView() {
-		self.view.insertSubview(MonkeyPublisher.shared.view, at: 0)
-		let viewsDict = ["view": MonkeyPublisher.shared.view,]
+		self.view.insertSubview(HWCameraManager.shared().localPreviewView, at: 0)
+		let viewsDict = ["view": HWCameraManager.shared().localPreviewView,]
 		self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
 		self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
-		MonkeyPublisher.shared.view.translatesAutoresizingMaskIntoConstraints = false
+		HWCameraManager.shared().localPreviewView.translatesAutoresizingMaskIntoConstraints = false
 	}
 
 	func chatSession(_ chatSession: ChatSession, callEndedWithError error: Error?) {
 		IncomingCallManager.shared.dismissShowingNotificationForChatSession(chatSession)
 		var timeout = false;
-		if (self.connectText.isHidden == false) && (error != nil) {
+		if (self.connectText.isHidden == false) {
 			timeout = true;
 			chatSession.track(matchEvent: .matchConnectTimeOut)
 		}
@@ -1286,13 +1206,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		}
 		if error != nil {
 			print("Error: Uh, oh! Unknown error occurred.")
-		}
-
-		if chatSession.friendMatched == true {
-			// Setting this will open the user's chat page as soon as the socket friendship is available when snapchat opening failed (for example, sever didn't send it because we don't open snap directly anymore)
-			if let theirUserId = chatSession.realmCall?.user?.user_id {
-				self.waitingForFriendUserId = theirUserId
-			}
 		}
 
 		self.startFindingChats(forReason: "receive-match")
@@ -1326,45 +1239,45 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		showPopup(popup: matchModePopup)
 	}
 
-     @IBAction func bananaButtonTapped(sender: Any) {
+	@IBAction func bananaButtonTapped(sender: Any) {
+		self.showBananaDescription(isNotificationBool: false)
+	}
 
-          guard self.yesterdayString != nil else {
-               return
-          }
+	private func showBananaDescription(isNotificationBool: Bool) {
+		guard let yesterdayString = self.yesterdayString, let addTimeString = self.addTimeString, let addFriendString = self.addFriendString, let equivalentString = self.equivalentString else {
+			return
+		}
+		if isNotificationBool == false {
+			UserDefaults.standard.setValue("", forKey: KillAppBananaNotificationTag)
+		}
 
-        self.alertControllerFunc(yesterdayString: self.yesterdayString!, addTimeString: self.addTimeString!, addFriendString: self.addFriendString!, equivalentString: self.equivalentString!, isNotificationBool: false)
-     }
+		self.stopFindingChats(andDisconnect: false, forReason: "show-banana-description")
+		AnaliticsCenter.log(withEvent: .bananaPopupEnter, andParameter: ["source": isNotificationBool ? "push" : "discovery"])
+		let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
 
-     func alertControllerFunc(yesterdayString:String, addTimeString:String, addFriendString:String, equivalentString:String, isNotificationBool:Bool) {
+		let paragraph = NSMutableParagraphStyle()
+		paragraph.lineSpacing = 9
+		paragraph.alignment = .center
 
-          if !isNotificationBool { UserDefaults.standard.setValue("", forKey: KillAppBananaNotificationTag) }
+		let string = "📲Yesterday: 🍌\(yesterdayString) \n 🕑 Time added = 🍌\(addTimeString) \n 🎉 Friend added = 🍌\(addFriendString) \n\n \(equivalentString)"
 
-		  AnaliticsCenter.log(withEvent: .bananaPopupEnter, andParameter: ["source": isNotificationBool ? "push" : "discovery"])
-          let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
+		let attributedString = NSAttributedString(
+			string: string,
+			attributes: [
+				NSParagraphStyleAttributeName: paragraph,
+				NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
+			]
+		)
 
-          let paragraph = NSMutableParagraphStyle()
-          paragraph.lineSpacing = 9
-          paragraph.alignment = .center
+		alert.setValue(attributedString, forKey: "attributedMessage")
 
-          let string = "📲Yesterday: 🍌\(yesterdayString) \n 🕑 Time added = 🍌\(addTimeString) \n 🎉 Friend added = 🍌\(addFriendString) \n\n \(equivalentString)"
+		alert.addAction(UIAlertAction(title: "Cool", style: .cancel, handler: { [weak self]
+			(UIAlertAction) in
+			self?.startFindingChats(forReason: "show-banana-description")
+		}))
 
-          let attributedString = NSAttributedString(
-               string: string,
-               attributes: [
-                    NSParagraphStyleAttributeName: paragraph,
-                    NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
-               ]
-          )
-
-          alert.setValue(attributedString, forKey: "attributedMessage")
-
-          alert.addAction(UIAlertAction(title: "Cool", style: .cancel, handler: {
-               (UIAlertAction) in
-               alert.dismiss(animated: true, completion: nil)
-          }))
-
-          self.present(alert, animated: true, completion: nil)
-     }
+		self.present(alert, animated: true, completion: nil)
+	}
 
 	func warnConnectionTimeout(in chatSession: ChatSession) {
 		self.stopFindingChats(andDisconnect: false, forReason: "ignoring")
@@ -1513,7 +1426,7 @@ extension MainViewController {
 			print("no common tree")
 			return
 		}
-		self.chatSession?.common_tree = tree
+		self.chatSession?.common_tree = curTree.title
 
 		var org_emoji_str = "🍌🍌🍌🍌"
 		var emojiArr: [String] = []
@@ -1543,7 +1456,7 @@ extension MainViewController {
 	func hideTreeLabels() {
 		self.loadingTextLabel.setDefaultTicks()
 	}
-	
+
 	func timeOut() {
 		DispatchQueue.main.async {
 			self.start()
@@ -1560,7 +1473,7 @@ extension MainViewController {
 			self.hideTreeLabels()
 		}
 	}
-	
+
 	func skipped() {
 		DispatchQueue.main.async {
 			self.start()
@@ -1577,16 +1490,16 @@ extension MainViewController {
 			self.hideTreeLabels()
 		}
 	}
-	
+
 	func start() {
 		if let onboardingFactText = APIController.shared.currentExperiment?.onboarding_fact_text, Achievements.shared.minuteMatches == 0, APIController.shared.currentExperiment?.onboarding_video.value == true {
 			self.setFactText(onboardingFactText)
 		}
-		
+
 		self.isSkip = false
 	}
 
-     func showAfterReportFriendAlert(userID:String) {
+     func showAfterReportFriendAlert(userID: String) {
           if let realm = try? Realm(),
                let friendShip = realm.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"").first {
 

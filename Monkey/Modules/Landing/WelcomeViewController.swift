@@ -21,20 +21,20 @@ class WelcomeViewController: MonkeyViewController {
     @IBOutlet var containerView: UIView!
 	@IBOutlet weak var termsTextView: UITextView!
 	@IBOutlet weak var indicator: UIActivityIndicatorView!
-	
+
 	var accountKitAuthSuccess = false
 	var accountKit = AKFAccountKit(responseType: .accessToken)
 	var loginViewController: AKFVCType?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 		indicator.isHidden = true
-		
+
 		loginViewController = accountKit.viewControllerForPhoneLogin() as? AKFVCType
 		loginViewController?.delegate = self
 		loginViewController?.title = "Verify phone number"
 		loginViewController?.navigationItem.leftBarButtonItem = nil
-		
+
         let theme = AKFTheme.default()
         theme.backgroundColor = UIColor.init(red:100.0 / 255.0 , green:74.0 / 255.0, blue:241.0/255.0, alpha: 1.0)
         theme.buttonBackgroundColor = UIColor.yellow
@@ -52,27 +52,27 @@ class WelcomeViewController: MonkeyViewController {
         theme.inputBackgroundColor = UIColor.init(white: 0, alpha: 0.1);
         theme.textColor = UIColor.white.withAlphaComponent(0.25)
         loginViewController?.setTheme(theme)
-		
+
 		configTermsView()
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         // Stop animating when view is not visible
         confettiView.isAnimating = false
-		
+
     }
-	
+
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-		
+
 		indicator.stopAnimating()
 	}
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Begin animating when view is about to appear
-        
+
         if APIController.authorization != nil {
 			self.dismiss(animated: false, completion: nil)
 		}else if (accountKitAuthSuccess) {
@@ -83,7 +83,7 @@ class WelcomeViewController: MonkeyViewController {
 			self.containerView.layer.opacity = 1
 		}
     }
-    
+
     @IBAction func nextVC(_ sender: BigYellowButton) {
         UIView.animate(withDuration: 0.4, animations: {
             self.containerView.layer.opacity = 0
@@ -93,33 +93,33 @@ class WelcomeViewController: MonkeyViewController {
 			}
         }
     }
-	
+
 	func validateAccountkitAuth(_ accountkit_token: String) {
 		var parameters = ["accountkit_token": accountkit_token]
         if Achievements.shared.deeplink_source.count > 0 {
             parameters["source"] = Achievements.shared.deeplink_source
         }
-		
-        JSONAPIRequest(url:"\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/auth/accountkit", method: .post, parameters: parameters, options: [
+
+        JSONAPIRequest(url:"\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/auth/accountkit", method: .post, parameters: parameters, options: [
             .header("version", APIController.shared.appVersion),
             .header("lang", APIController.shared.languageString),
             .header("device", "ios"),
             ]).addCompletionHandler {[weak self] (response) in
 			guard let `self` = self else { return }
-			
+
 			switch response {
 			case .error(let error):
 				NSLog("error login \(error)")
 			case .success(let jsonAPIDocument):
                 // clean deep link source
                 Achievements.shared.deeplink_source = ""
-                
+
 				if let attributes = jsonAPIDocument.dataResource?.json["attributes"] as? [String: String], let relationships = jsonAPIDocument.dataResource?.json["relationships"] as? [String: [String: [String: String]]] {
 					guard let token = attributes["token"], let user = relationships["user"], let user_data = user["data"], let user_id = user_data["id"] else {
 						NSLog("error login second")
 						return
 					}
-					
+
 					RealmDataController.shared.apply(JSONAPIDocument.init(json: user)) { (result) in
 						switch result {
 						case .error( _):
@@ -128,15 +128,15 @@ class WelcomeViewController: MonkeyViewController {
 							let authorization = "Bearer \(token)"
 							let isNewUser = (jsonAPIDocument.dataResource?.json["action"] as? String) == "register"
 							APIController.signCodeSended(isNewUser: isNewUser)
-							
+
 							APIController.authorization = authorization
 							AnaliticsCenter.loginAccount()
 							UserDefaults.standard.set(user_id, forKey: "user_id")
 							UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
-							
+
 							Apns.update(callback: nil)
 							self.dismiss(animated: false, completion: nil)
-							
+
 							UIView.animate(
 								withDuration: 0.4,
 								delay: 0.1,
@@ -161,11 +161,11 @@ extension WelcomeViewController: AKFViewControllerDelegate {
 		accountKitAuthSuccess = true
 		self.validateAccountkitAuth(accessToken.tokenString)
 	}
-	
+
 	private func viewController(_ viewController: UIViewController!, didFailWithError error: NSError!) {
 		print("We have an error \(error)")
 	}
-	
+
 	func viewControllerDidCancel(_ viewController: UIViewController!) {
 		print("The user cancel the login")
 	}
@@ -176,10 +176,10 @@ extension WelcomeViewController: UITextViewDelegate {
 		let termsString = "Tap \"Agree & Continue\" to accept the Monkey Terms of Service and  Privacy Policy."
 		let termsAttributeString = NSMutableAttributedString.init(string: termsString)
 		let termsNSString = NSString.init(string: termsString)
-		
+
 		let termsRange = termsNSString.range(of: "Terms of Service")
 		let privacyRange = termsNSString.range(of: "Privacy Policy")
-		
+
 		let paragraphStyle = NSMutableParagraphStyle.init()
 		paragraphStyle.alignment = NSTextAlignment.center
 		termsAttributeString.addAttributes([
@@ -196,27 +196,27 @@ extension WelcomeViewController: UITextViewDelegate {
 			NSParagraphStyleAttributeName: paragraphStyle,
 			], range: NSMakeRange(0, termsNSString.length))
 		termsTextView.attributedText = termsAttributeString;
-		
+
 		let linkAttributes = [
 			NSForegroundColorAttributeName: UIColor.init(red: 1, green: 1, blue: 0, alpha: 0.7),
 			NSUnderlineColorAttributeName: UIColor.init(red: 1, green: 1, blue: 0, alpha: 0.7),
 			] as [String : Any]
 		termsTextView.linkTextAttributes = linkAttributes;
 	}
-	
+
 	@available(iOS, deprecated: 10.0)
 	func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange) -> Bool {
 		self.openTextViewURL(url)
 		return false
 	}
-	
+
 	/// For iOS 10
 	@available(iOS 10.0, *)
 	func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
 		self.openTextViewURL(url)
 		return false
 	}
-	
+
 	func openTextViewURL(_ URL: URL) {
 		let host = URL.host
 		if host?.compare("terms") == ComparisonResult.orderedSame {
@@ -225,7 +225,7 @@ extension WelcomeViewController: UITextViewDelegate {
 			openURL("http://monkey.cool/privacy", inVC: true)
 		}
 	}
-	
+
 	func openURL(_ urlString: String, inVC: Bool) {
 		guard let url = URL(string: urlString) else {
 			return
@@ -240,4 +240,3 @@ extension WelcomeViewController: UITextViewDelegate {
 		present(vc, animated: true, completion: nil)
 	}
 }
-

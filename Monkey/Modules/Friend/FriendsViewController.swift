@@ -7,15 +7,12 @@
 //
 import UIKit
 
-class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, FriendsViewModelDelegate,MonkeySocketChatMessageDelegate {
+class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITableViewDataSource, FriendsViewModelDelegate {
 
-    @IBOutlet weak var newFriendsCollectionView: UICollectionView!
     @IBOutlet weak var friendsTableView: UITableView!
     @IBOutlet weak var noFriendsView: UIView!
     @IBOutlet weak var noFriendsLabel: MakeTextViewGreatAgain!
     @IBOutlet weak var noFriendsEmojiLabel: LoadingTextLabel!
-    @IBOutlet weak var newFriendsView: MakeUIViewGreatAgain!
-    @IBOutlet var openChatsTopConstraint: NSLayoutConstraint!
     
     let viewModel = FriendsViewModel.sharedFreindsViewModel
     
@@ -23,8 +20,8 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     var callingFromViewDidLoad = false
     
     /// Deep link a conversation from APNS
-    var initialConversation:String?
-    var initialConversationOptions:[AnyHashable:Any]?
+    var initialConversation: String?
+    var initialConversationOptions: [AnyHashable: Any]?
     
     var longPressGestureRecognizer: UILongPressGestureRecognizer?
     
@@ -42,16 +39,11 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         self.panGestureRecognizer.delegate = self
         self.panGestureRecognizer.cancelsTouchesInView = false
         
-        self.newFriendsCollectionView.dataSource = self
-        self.newFriendsCollectionView.delegate = self
-        
         self.friendsTableView.delegate = self
         self.friendsTableView.dataSource = self
+		self.friendsTableView.rowHeight = 64
         
         self.viewModel.delegate = self
-        
-        self.newFriendsCollectionView.contentInset = UIEdgeInsetsMake(self.newFriendsCollectionView.contentInset.top, 14, self.newFriendsCollectionView.contentInset.bottom, 14)
-        self.newFriendsCollectionView.alwaysBounceHorizontal = true
         
         self.noFriendsEmojiLabel.setTicks(bait: "😟", animal: "😢")
         
@@ -88,57 +80,24 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         // Do not allow user to return to chat they just swiped away from
         self.swipableViewControllerToPresentOnLeft = nil
         self.checkDeepLink()
-		
-        Socket.shared.chatMessageDelegate = self
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        if let delegate = Socket.shared.chatMessageDelegate , self.isEqual(delegate) {
-            Socket.shared.chatMessageDelegate = nil
-        }
+		
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func checkNotifications() {
-        
-        if self.viewModel.friendships != nil && self.viewModel.friendships?.count != 0 && !Achievements.shared.promptedNotifications {
-            let promptNotifications = UIAlertController(title: "🔔 Get notified?", message: "Would you like to get notifications when a friend messages you?", preferredStyle: .alert)
-            let notNow = UIAlertAction(title: "Not now", style: .cancel, handler: nil)
-            let notifyMe = UIAlertAction(title: "Notify me", style: .default, handler: { (done) in
-                
-                let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-                UIApplication.shared.registerUserNotificationSettings(settings)
-                // This is an asynchronous method to retrieve a Device Token
-                // Callbacks are in AppDelegate.swift
-                // Success = didRegisterForRemoteNotificationsWithDeviceToken
-                // Fail = didFailToRegisterForRemoteNotificationsWithError
-                UIApplication.shared.registerForRemoteNotifications()
-                Achievements.shared.promptedNotifications = true
-            })
-            
-            promptNotifications.addAction(notifyMe)
-            promptNotifications.addAction(notNow)
-            
-            self.present(promptNotifications, animated: true)
-        }
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
+	
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.openChats.count
+        return self.viewModel.friendships.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // FIXME: why the openChats array out of range?
-        guard let openChats = self.viewModel.openChats , openChats.count > indexPath.row else {
+        guard let openChats = self.viewModel.friendships, openChats.count > indexPath.row else {
             return FriendTableViewCell()
         }
         
@@ -149,8 +108,8 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         cell.configureWithFriendship(friendship)
         
         if let user = friendship.user {
-            if user.user_id != "2" {
-                if (friendship.user_is_typing.value ?? false) == true {
+            if user.isMonkeyKing() == false {
+                if friendship.user_is_typing.value == true {
                     cell.descriptionLabel.text = "typing..."
                 } else {
                     cell.descriptionLabel?.text = self.viewModel.latestMessageForFriendship(friendship: friendship)
@@ -164,14 +123,10 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let friendship = self.viewModel.openChats?[indexPath.row] else {
+        guard let friendship = self.viewModel.friendships?[indexPath.row] else {
             return
         }
         openChat(friendship)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 64
     }
     
     /**
@@ -196,8 +151,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             }
             instagramVC.friendshipId = friendship.friendship_id
             instagramVC.userId = friendship.user?.user_id
-            
-            instagramVC.isMonkeyKingBool = friendship.user?.user_id == "2" ? true : false
+            instagramVC.isMonkeyKingBool = friendship.user?.isMonkeyKing() ?? false
             
             self.present(instagramVC, animated: true, completion: {
                 self.initialLongPressLocation = locationPoint
@@ -252,65 +206,19 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         }
     }
     
-    func friendshipForCell(from longPressGesture:UILongPressGestureRecognizer) -> RealmFriendship? {
-//        let locationInView = longPressGesture.location(in: self.view)
-//        if locationInView.y < 146.0 { // in new friends
-//            let newFriendsLocation = longPressGesture.location(in: self.newFriendsCollectionView)
-//            guard let longPressedIndexPath =  self.newFriendsCollectionView.indexPathForItem(at: newFriendsLocation) else {
-//                // Long press is not in collection view
-//                return nil
-//            }
-//            return self.viewModel.newFriends?[longPressedIndexPath.row]
-//        } else {
-            let friendsLocation = longPressGesture.location(in: self.friendsTableView)
-            
-            guard let longPressedIndexPath = self.friendsTableView.indexPathForRow(at: friendsLocation) else {
-                // Long press is not in table view
-                return nil
-            }
-            return self.viewModel.openChats?[longPressedIndexPath.row]
-//        }
-    }
-
+    func friendshipForCell(from longPressGesture: UILongPressGestureRecognizer) -> RealmFriendship? {
+		let friendsLocation = longPressGesture.location(in: self.friendsTableView)
+		
+		guard let longPressedIndexPath = self.friendsTableView.indexPathForRow(at: friendsLocation) else {
+			// Long press is not in table view
+			return nil
+		}
+		return self.viewModel.friendships?[longPressedIndexPath.row]
+	}
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.viewModel.newFriends.count
-    }
-    
-     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let friendship = self.viewModel.newFriends?[indexPath.item] else {
-            return NewFriendCollectionViewCell()
-        }
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "newFriend", for: indexPath) as! NewFriendCollectionViewCell
-        
-        if friendship.user?.user_id != cell.userId  {
-            cell.profileImage.url = friendship.user?.profile_photo_url
-        }
-        
-        cell.userId = friendship.user?.user_id
-        
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        guard let friendship = self.viewModel.newFriends?[indexPath.row] else {
-            return
-        }
-        
-        openChat(friendship)
-    }
-    
-    func openChat(_ friendship:RealmFriendship) {
+    func openChat(_ friendship: RealmFriendship) {
         
         let storyboard = UIStoryboard(name: "Chat", bundle: Bundle.main)
-        
         let chatViewController = storyboard.instantiateViewController(withIdentifier: "chat") as! ChatViewController
         chatViewController.viewModel.friendshipId = friendship.friendship_id
         
@@ -337,29 +245,12 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             self.noFriendsView.isHidden = true
         }
         
-// TODO: this should be removed
-        // Hide new friends card if no new friends
-//        let numberOfNewFriends = self.viewModel.newFriends.count
-//        if numberOfNewFriends == 0 {
-            // Hide new friends
-            self.newFriendsView.isHidden = true
-            self.openChatsTopConstraint?.isActive = false
-//        } else {
-//            self.newFriendsView.isHidden = false
-//            self.openChatsTopConstraint?.isActive = true
-//        }
-        
         self.view.setNeedsLayout()
     }
     
-    func reloadOpenChats() {
+    func reloadFriendships() {
         self.reloadData()
         self.friendsTableView.reloadData()
-    }
-    
-    func reloadNewFriends() {
-        self.reloadData()
-        self.newFriendsCollectionView.reloadData()
     }
     
     /// Checks if there is a conversation to push onto the stack, then opens that friendship
@@ -372,27 +263,16 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         let chatLinkPredicate = NSPredicate(format: "friendship_id == \"\(friendshipToPush)\"")
         let matchingChats = self.viewModel.friendships?.filter(chatLinkPredicate)
         
-        guard let matching = matchingChats else {
+        guard let initialFriendship = matchingChats?.first else {
             self.initialConversation = nil
             self.initialConversationOptions = nil
             return
         }
-        
-        if let friendship = matching.first {
-            self.openChat(friendship)
-        }
-        
+		
+        self.openChat(initialFriendship)
         // Ensure that deep link is not acted upon twice, we reset these values to nil
         self.initialConversation = nil
         self.initialConversationOptions = nil
-    }
-    
-    func webScoketDidRecieveChatMessage(data: [String : Any]) {
-        self.reloadOpenChats()
-    }
-    
-    func webSocketNeedUpdateFriendList() {
-        self.reloadOpenChats()
     }
 }
 

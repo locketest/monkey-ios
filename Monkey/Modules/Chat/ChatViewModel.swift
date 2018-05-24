@@ -128,7 +128,7 @@ class ChatViewModel {
     }
 
     func addSnapchat() {
-        guard let username = friendship?.user?.username else {
+        guard let username = friendship?.user?.snapchat_username else {
             print("Error: could not get snapchat username to add")
             return
         }
@@ -223,7 +223,7 @@ class ChatViewModel {
             return
         }
 
-        let parameters:[String:Any] = [
+        let parameters: [String: Any] = [
             "data": [
                 "type": "videocall",
                 "friendship": [
@@ -233,19 +233,17 @@ class ChatViewModel {
             ]
         ]
 
-//        RealmVideoCall.customURLCreate(url: "\(Environment.baseURL)/api/v1.3/videocall",parameters: parameters) { (result:JSONAPIResult<[RealmVideoCall]>) in
-//            switch result {
-//            case .success(let callObjects):
-//                callObjects.first.then { self.delegate?.processRecievedRealmCallFromServer(realmVideoCall: $0) }
-//            case .error(let error):
-//                // revert fade animation back to screen
-//                // notify user call failed
-//                error.log(context: "Create (POST) on an initiated call")
-//                self.delegate?.callFailedBeforeInitializingChatSession()
-//            }
-//        }
-        
-        
+		RealmVideoCall.create(method: .post, parameters: parameters) { (result: JSONAPIResult<RealmVideoCall>) in
+			switch result {
+			case .error(let error):
+				// revert fade animation back to screen
+				// notify user call failed
+				error.log(context: "Create (POST) on an initiated call")
+				self.delegate?.callFailedBeforeInitializingChatSession()
+			case .success(let videoCall):
+				self.delegate?.processRecievedRealmCallFromServer(realmVideoCall: videoCall)
+			}
+		}
     }
 
     func playMessageSoundIfNecessary() {

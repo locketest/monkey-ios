@@ -34,15 +34,15 @@ class JSONAPIRequest {
 	*/
 	@discardableResult init(url: String, method: HTTPMethod = .get, parameters: Parameters? = nil, options: [RequestOption]? = nil) {
 		
-		let client = Bundle.main.bundleIdentifier
-		let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+		let client = Environment.bundleId
+		let version = APIController.shared.appVersion
 		
 		// Define variables which may be modified in some way by changing the `options` array.
 		var headers: HTTPHeaders = [
 			"Accept": "application/vnd.api+json, application/json",
 			"Content-Type": "application/vnd.api+json",
-			"Client": client ?? "",
-			"Version": version ?? "",
+			"Client": client,
+			"Version": version,
 		]
 		
 		// Loop through all the options and assign their values to the associated variable.
@@ -94,13 +94,13 @@ class JSONAPIRequest {
 /// Represents JSON API response data in a defined format.
 class JSONAPIDocument {
 	/// The JSON data provided to init.
-	let json: [String:Any]
+	let json: [String: Any]
 	/**
 	Creates a new JSONAPIResource struct from the provided JSON data.
 	
 	- parameter json: The JSON data to base the struct off of.
 	*/
-	init(json: [String:Any]) {
+	init(json: [String: Any]) {
 		self.json = json
 	}
 	convenience init(data: JSONAPIResourceIdentifier?) {
@@ -110,51 +110,58 @@ class JSONAPIDocument {
 	}
 	/// json.data
 	var dataResource: JSONAPIResource? {
-		guard let data = json["data"] as? [String:Any] else {
+		guard let data = json["data"] as? [String: Any] else {
 			return nil // Top level data object doesn't exist.
 		}
 		return JSONAPIResource(data: data)
 	}
 	/// json.meta
-	var meta: [String:Any]? {
-		return json["meta"] as? [String:Any]
+	var meta: [String: Any]? {
+		return json["meta"] as? [String: Any]
 	}
 	/// json.data
 	var dataResourceCollection: [JSONAPIResource]? {
-		guard let data = json["data"] as? [[String:Any]] else {
-			return nil // Top level data object doesn't exist or is in the incorrect format.
+		guard let data = json["data"] as? [[String: Any]] else {
+			return [JSONAPIResource]() // Top level data object doesn't exist or is in the incorrect format.
 		}
 		return data.map { JSONAPIResource(data: $0) }
 	}
 	/// json.data is NSNull
 	var isResourceNull: Bool {
-		return json["data"]  is NSNull
+		return json["data"] is NSNull
 	}
 	/// json.data is NSNull
 	var isResourceUndefined: Bool {
 		return json["data"] == nil
 	}
+	/// json.error
+	var error: JSONAPIError? {
+		guard let error = json["error"] as? [String: Any] else {
+			return nil // Top level errors object doesn't exist or is in the incorrect format.
+		}
+		return JSONAPIError(error: error)
+	}
 	/// json.errors
-	var errors:[JSONAPIError]? {
+	var errors: [JSONAPIError]? {
 		guard let errors = json["errors"] as? [[String: Any]] else {
 			return nil // Top level errors object doesn't exist or is in the incorrect format.
 		}
 		return errors.map { JSONAPIError(error: $0) }
 	}
 	/// json.included
-	var included:[JSONAPIResource]? {
-		guard let included = json["included"] as? [[String:Any]] else {
-			guard let data:[String:Any] = json["data"] as? [String : Any],
-				let included2 = data["included"] as? [[String:Any]] else {
-					return nil
+	var included: [JSONAPIResource]? {
+		guard let included = json["included"] as? [[String: Any]] else {
+			guard let data: [String: Any] = json["data"] as? [String: Any],
+				let dataIncluded = data["included"] as? [[String: Any]] else {
+					return [JSONAPIResource]()
 			}
-			return included2.map { JSONAPIResource(data: $0) } // Top level data object doesn't exist or is in the incorrect format.
+			return dataIncluded.map { JSONAPIResource(data: $0) } // Top level data object doesn't exist or is in the incorrect format.
 		}
 		return included.map { JSONAPIResource(data: $0) }
 	}
 	/// data.deleted (This is NOT valid JSON API format. We have deviated from the spec. An array of resource identifiers that were deleted. All delete requests MUST include an identifier for self.)
 	var deleted: [JSONAPIResourceIdentifier]? {
-		guard let deleted = json["deleted"] as? [[String:Any]] else {
+		guard let deleted = json["deleted"] as? [[String: Any]] else {
 			return nil // Top level data object doesn't exist or is in the incorrect format.
 		}
 		return deleted.map { JSONAPIResourceIdentifier(data: $0) }
@@ -194,9 +201,9 @@ class JSONAPIError {
 	var detail: String? {
 		return error["detail"] as? String
 	}
-	
+	// error.meta
 	var meta: [String: Any]? {
-		return error["meta"] as? [String:Any]
+		return error["meta"] as? [String: Any]
 	}
 }
 
@@ -239,13 +246,14 @@ class JSONAPIResource: JSONAPIResourceIdentifier {
 			return json["attributes"] as? [String: Any]
 		}
 	}
+	
 	/// data.relationships
 	var relationships: [String: Any]? {
-		return (json["relationships"] as? [String:Any])?.mapPairs { (key, value) in
+		return (json["relationships"] as? [String: Any])?.mapPairs { (key, value) in
 			guard value as? NSNull == nil else {
 				return (key, value) // Keep null
 			}
-			guard let relationshipJSON = value as? [String:Any] else {
+			guard let relationshipJSON = value as? [String: Any] else {
 				return (key, value) // Keep unexpected response
 			}
 			return (key, JSONAPIDocument(json: relationshipJSON))

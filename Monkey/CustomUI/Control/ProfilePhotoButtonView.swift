@@ -245,26 +245,13 @@ extension ProfilePhotoButtonView: CropViewControllerDelegate {
 	func cropViewController(_ cropViewController: CropViewController, didFinishCancelled cancelled: Bool) {
 		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
 	}
-	func cropViewController(_ cropViewController: CropViewController, didCropImageToRect rect: CGRect, angle: Int) {
-		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
-	}
-	func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
-		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
-	}
 	func cropViewController(_ cropViewController: CropViewController, didCropToCircularImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+		setProfile(image: image)
+		self.cachedImageView?.removeFromSuperview()
+		self.delegate?.profilePhotoButtonView(self, selectedImage: image)
 		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
 	}
-	
-	
-//	if let image = info["UIImagePickerControllerEditedImage"] as? UIImage {
-//		setProfile(image: image)
-//		self.cachedImageView?.removeFromSuperview()
-//		self.delegate?.profilePhotoButtonView(self, selectedImage: image)
-//	} else {
-//	print("Error: could not extract profile image after selection.")
-//	}
 }
-
 
 protocol ProfilePhotoButtonViewDelegate: class {
     func profilePhotoButtonView(_ profilePhotoButtonView: ProfilePhotoButtonView, selectedImage: UIImage)

@@ -38,13 +38,13 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     @IBOutlet weak var startConvoButton: UIButton!
 
     @IBOutlet weak var textFieldBgView: UIView!
-    
+
     @IBOutlet weak var aboutUsButton: BigYellowButton!
-    
+
     @IBOutlet weak var snapchatButtonConstraint: NSLayoutConstraint!
-    
+
     @IBOutlet weak var chatTableViewBottomConstraint: NSLayoutConstraint!
-    
+
     /// Data backing for ChatViewController
     lazy var viewModel = ChatViewModel()
     let textInset:CGFloat = 12
@@ -54,13 +54,13 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     var isAnimatingDown = false
 
     var callTimer:Timer?
-    
+
     var isMonkeyKingBool : Bool?
-    
+
     let MonkeyKingShadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-    
+
     let MonkeyKingBgColor = UIColor(red: 34 / 255, green: 29 / 255, blue: 62 / 255, alpha: 1)
-    
+
     /// A reference to the presented instagramVC. Currently used to forward longPressGestureRecognizer updates
     weak var instagramViewController: InstagramPopupViewController?
     /// The location of the user's finger when instagram popup is presented, used to calculate displacement to pass to instagramVC if they do not lift finger to pan
@@ -136,7 +136,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     func reloadData() {
         self.chatTableView.reloadData()
         self.chatTableView.scrollToBottom(animated: true)
-        
+
         if !self.isMonkeyKingBool! {
             if (self.viewModel.friendship?.user_is_typing.value ?? false) == true {
                 self.profileActiveLabel.text = "typing..."
@@ -159,29 +159,27 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
     /// This method is a callback for the API request to create a RealmCall object. It is only called when user initiates a call.
     func processRecievedRealmCallFromServer(realmVideoCall: RealmVideoCall) {
-
-        guard let sessionId = realmVideoCall.session_id, let chatId = realmVideoCall.chat_id, let token = realmVideoCall.token else {
+        guard let sessionId = realmVideoCall.session_id, let chatId = realmVideoCall.chat_id else {
             self.callFailedBeforeInitializingChatSession()
             print("Chat couldn't be created because the server did not return the correct token, chat, or session_id")
             return
         }
+		let realm = try? Realm()
+		do {
+			try realm?.write {
+				realmVideoCall.initiator = self.viewModel.friendship?.user
+			}
+		} catch(let error) {
+			print("Error: ", error)
+		}
 
-        let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name:self.profileNameLabel.text, profile_image_url:self.profileImageView.url, user_id:realmVideoCall.initiator?.user_id), token: token, loadingDelegate: self, isDialedCall: true)
-        chatSession.accept() // we accept before setting it because didSet checks to see if it's been accepted to differientiate bw initiated and incoming calls
-        
-        let realm = try? Realm()
-        if let realmUsr = realm?.objects(RealmUser.self).filter({ return ($0.user_id == self.viewModel.friendship?.user?.user_id) }).first
-        {
-            realm?.beginWrite()
-            realmVideoCall.initiator = realmUsr
-            try! realm?.commitWrite()
-        }
-        
+        let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: self.profileNameLabel.text, profile_image_url: self.profileImageView.url, user_id: realmVideoCall.initiator?.user_id), token: realmVideoCall.channelToken, loadingDelegate: self, isDialedCall: true)
         self.chatSession = chatSession
-        self.chatSession?.realmVideoCall = realmVideoCall
+		
+		chatSession.accept() // we accept before setting it because didSet checks to see if it's been accepted to differientiate bw initiated and incoming calls
     }
 
-    override func viewDidLoad() {        
+    override func viewDidLoad() {
         super.viewDidLoad()
         self.viewModel.delegate = self
 
@@ -211,7 +209,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         if self.viewModel.friendship?.user?.username == nil {
             self.snapchatButton.isHidden = true
         }
-        
+
         self.handleViewFunc()
 
         // notifications for keyboard hide/show
@@ -220,21 +218,21 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         // notification for dictation
         NotificationCenter.default.addObserver(self, selector: #selector(changeInputMode(notification:)), name: .UITextInputCurrentInputModeDidChange, object: nil)
     }
-    
+
     func handleViewFunc() {
-        
+
         guard self.isMonkeyKingBool != nil else {
             print("Monkey King user id is nil")
             return
         }
-        
+
         if self.isMonkeyKingBool! {
             self.aboutUsButton.layer.shadowColor = MonkeyKingShadowColor
             self.aboutUsButton.backgroundColor = MonkeyKingBgColor
             self.aboutUsButton.layer.shadowOpacity = 0.7
             self.aboutUsButton.layer.shadowRadius = 10
             self.aboutUsButton.clipsToBounds = false
-            
+
             self.chatTableViewBottomConstraint.constant = 0
             self.snapchatButtonConstraint.constant = 14
             self.startConvoButton.isHidden = true
@@ -269,7 +267,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     }
 
     @IBAction func aboutUsBtnClickFunc(_ sender: BigYellowButton) {
-        
+
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertController.addAction(UIAlertAction(title: "💖 Rate Us", style: .default, handler: { (UIAlertAction) in
@@ -278,9 +276,9 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         alertController.addAction(UIAlertAction(title: "📲 Support", style: .default, handler: { (UIAlertAction) in
             self.openURL("https://monkey.canny.io/requests", inVC: true)
         }))
-        
+
         alertController.addAction(UIAlertAction(title: "🚑 Safety", style: .default, handler: { (UIAlertAction) in
-            
+
             let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             alertController.addAction(UIKit.UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
             }))
@@ -302,11 +300,11 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                 }))
             }
             self.present(alertController, animated: true, completion: nil)
-            
+
         }))
         self.present(alertController, animated: true, completion: nil)
     }
-    
+
     func openURL(_ urlString: String, inVC: Bool)
     {
         guard let url = URL(string: urlString) else {
@@ -321,7 +319,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         vc.modalPresentationStyle = .overFullScreen
         present(vc, animated: true, completion: nil)
     }
-    
+
     @IBAction func presentInstagramPopover(_ longPressGestureRecognizer: UILongPressGestureRecognizer) {
 
         let locationPoint = longPressGestureRecognizer.location(in: longPressGestureRecognizer.view)
@@ -347,11 +345,11 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             guard let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as? InstagramPopupViewController else {
                 return
             }
-            
+
             if !self.isMonkeyKingBool! {
                 instagramVC.responderAfterDismissal = self.chatTextField
             }
-            
+
             self.chatTextField.resignFirstResponder()
             self.initialLongPressLocation = nil
             self.previousLongPressLocation = nil
@@ -359,7 +357,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             instagramVC.friendshipId = friendshipId
             instagramVC.userId = friendship.user?.user_id
             instagramVC.isMonkeyKingBool = self.isMonkeyKingBool!
-            
+
             self.present(instagramVC, animated: true, completion: {
                 self.initialLongPressLocation = locationPoint
                 self.previousLongPressLocation = locationPoint
@@ -548,17 +546,17 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             self.viewModel.sendText(messageText)
         }
         self.isShowingPlaceholderText = true
-		
+
 		AnaliticsCenter.log(event: .sentMessageConvo)
 
         self.view.layoutIfNeeded()
     }
-    
-    func sendCancelCallMessage(){
+
+    func sendCancelCallMessage() {
         if let chatSession = self.chatSession {
             IncomingCallManager.shared.cancelVideoCall(chatsession: chatSession)
         }
-        
+
         self.viewModel.sendText("Call canceled")
         self.view.layoutIfNeeded()
     }
@@ -639,60 +637,47 @@ extension ChatViewController: ChatSessionLoadingDelegate {
     }
 
     func dismissCallViewController(for chatSession:ChatSession) {
-        
+
         HWCameraManager.shared().removePixellate()
         HWCameraManager.shared().changeCameraPosition(to: .front)
-        
-        if chatSession.isReportedChat, chatSession.friendMatched, let userID = self.chatSession?.realmCall?.user?.user_id, chatSession.isReportedByOther == false {
-            
-            if let realm = try? Realm(), let friendShip = realm.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"").first {
-                
-                let alert = UIAlertController(title: nil, message: "Do you want to remove this user from your friend list?", preferredStyle: .alert)
-                let remove = UIAlertAction.init(title: "Remove", style: .default, handler: { (action) in
-                    friendShip.delete(completion: { (error) in
-                        
-                    })
-                })
-                
-                let cancel = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
-
-                })
-                
-                alert.addAction(remove)
-                alert.addAction(cancel)
-                
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 1.0)) {
-                    self.present(alert, animated: true, completion: nil)
-                }
-            }
-        }
 
         self.callButton.isJiggling = false
         self.callButton.isSpinning = false // sets jiggling to false if its true so captures both
         self.stopCallSound()
 
         chatSession.chat?.update(callback: nil)
+		let presentingViewController = self.callViewController?.presentingViewController
+		
+//		UIView.animate(withDuration: 0.2, animations: {
+//			self.colorGradientView.alpha = 1.0
+//			presentingViewController?.view.alpha = 1.0
+//		}) { (Bool) in
+//			self.containerView.setNeedsLayout()
+//			self.matchViewController = nil
+//		}
 
         print("Consumed")
         UIView.animate(withDuration: 0.3, animations: {
             self.callViewController?.isPublisherViewEnlarged = true
             self.callViewController?.view.layoutIfNeeded()
         }) { [weak self] (success) in
-            self?.callViewController?.dismiss(animated: false) {
+            presentingViewController?.dismiss(animated: false) {
                 let publisherContainerView = self?.presentingViewController!.presentingViewController!.view
-                publisherContainerView?.insertSubview(MonkeyPublisher.shared.view, at: 0)
-                MonkeyPublisher.shared.view.translatesAutoresizingMaskIntoConstraints = false
-                let viewsDict = ["view": MonkeyPublisher.shared.view,]
+                publisherContainerView?.insertSubview(HWCameraManager.shared().localPreviewView, at: 0)
+                HWCameraManager.shared().localPreviewView.translatesAutoresizingMaskIntoConstraints = false
+                let viewsDict = ["view": HWCameraManager.shared().localPreviewView,]
                 publisherContainerView?.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
                 publisherContainerView?.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
-                self?.callViewController = nil
                 UIView.animate(withDuration: 0.2, animations: {
                     self?.view.alpha = 1.0
-                })
+					presentingViewController?.view.alpha = 1.0
+                }) { (Bool) in
+					self?.callViewController = nil
+				}
             }
         }
     }
-	
+
     func shouldShowConnectingStatus(in chatSession: ChatSession) {
         // do noting
     }

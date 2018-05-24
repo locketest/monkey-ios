@@ -22,18 +22,18 @@ class EffectsCoordinator: NSObject, MessageHandler {
     /// Unique to this MessageHandler.
     var chatSessionMessagingPrefix = "effects"
     func chatSession(_ chatSession: ChatSession, received message: String, from connection: OTConnection, withType type: String) {
-        if type == "effects" {
-            guard let data = message.asJSON as? Dictionary<String, String> else {
-                print("Error: Invalid effect data.")
-                return
-            }
-            var subscriberEffects = [Effect]()
-            for effectType in effectTypes {
-                let encoded = data[effectType.effectName] ?? ""
-                effectType.init(encoded: encoded).then { subscriberEffects.append($0) }
-            }
-            self.chatSession?.subscriber?.view?.effects = subscriberEffects
-        }
+//        if type == "effects" {
+//            guard let data = message.asJSON as? Dictionary<String, String> else {
+//                print("Error: Invalid effect data.")
+//                return
+//            }
+//            var subscriberEffects = [Effect]()
+//            for effectType in effectTypes {
+//                let encoded = data[effectType.effectName] ?? ""
+//                effectType.init(encoded: encoded).then { subscriberEffects.append($0) }
+//            }
+//            self.chatSession?.subscriber?.view?.effects = subscriberEffects
+//        }
     }
     func chatSession(_ chatSession: ChatSession, statusChangedTo status: ChatSessionStatus) {
 		

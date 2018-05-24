@@ -25,8 +25,8 @@ let APSNotificationKey:String = "aps"
 
 class NotificationManager {
     static let shared = NotificationManager()
-    weak var viewManager:SlideViewManager?
-    weak var chatSessionLoadingDelegate:ChatSessionLoadingDelegate?
+    weak var viewManager: SlideViewManager?
+    weak var chatSessionLoadingDelegate: ChatSessionLoadingDelegate?
     var friendships:Results<RealmFriendship>?
     weak var showingNotification:MessageNotificationView?
     
@@ -211,7 +211,7 @@ class NotificationManager {
          let notification = CallNotificationView.instanceFromNib()
         notification.chatSession = chatSession
         
-        if let userID = chatSession.chat?.user_id{
+        if let userID = chatSession.chat?.user_id {
             let realm = try? Realm()
             let filter = NSPredicate(format:"user_id == \"\(userID)\"")
             let user = realm?.objects(RealmUser.self).filter(filter).first

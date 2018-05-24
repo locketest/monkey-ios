@@ -51,16 +51,12 @@ class CallNotificationView:MessageNotificationView {
         self.connectingActivityIndicator.isHidden = false
         self.emojiLabel.isHidden = true
         self.panGes.isEnabled = false
-        
-        DispatchQueue.main.asyncAfter(deadline: .now()+30) {
-            //  make sure dismiss
-            self.dismiss()
-        }
     }
     
     @IBAction func ignoreCall(_ sender: JigglyButton) {
         self.dismiss()
         if let chatSession = self.chatSession {
+			self.onSwipeUp?()
             IncomingCallManager.shared.cancelVideoCall(chatsession: chatSession)
         }
     }

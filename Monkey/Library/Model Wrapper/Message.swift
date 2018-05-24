@@ -50,12 +50,21 @@ enum MessageType: String {
     case Background = "turntobackground"
 }
 
-class Message: Mappable {
+class Message: NSObject, Mappable {
 	var sender: String?
 	var parameter: String?
 	lazy var type: String = MessageType.Normal.rawValue
 	lazy var body: String = ""
 	lazy var time = Date.init().timeIntervalSince1970
+	
+	func messageJson() -> [String: Any] {
+		return [
+			"sender": sender ?? APIController.shared.currentUser?.user_id ?? "",
+			"type": type,
+			"body": body,
+			"time": time,
+		]
+	}
 	
 	required init?(map: Map) {
 		
@@ -72,7 +81,6 @@ class Message: Mappable {
 
 class MatchMessage: Message {
 	var room: String?
-	lazy override var type: String = MessageType.Match.rawValue
 	
 	required init?(map: Map) {
 		super.init(map: map)
@@ -86,7 +94,6 @@ class MatchMessage: Message {
 }
 
 class TextMessage: MatchMessage {
-	lazy override var type: String = MessageType.Text.rawValue
 	static let minmumHeight: CGFloat = 21
 	static let maxmumWidth: CGFloat = UIScreen.main.bounds.size.width - 20 - 16
 	var direction: MessageDirection {
@@ -115,6 +122,7 @@ class TextMessage: MatchMessage {
 	
 	required init?(map: Map) {
 		super.init(map: map)
+		self.type = MessageType.Text.rawValue
 	}
 	
 	override func mapping(map: Map) {

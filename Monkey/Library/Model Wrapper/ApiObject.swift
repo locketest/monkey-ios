@@ -22,20 +22,23 @@ enum ApiType: String {
 	case Bananas = "bananas"
 	case Apns = "apns"
 	case Channels = "channels"
-	case UserOptions = "UserOption"
 
 	case Messages = "messages"
 	case Friendships = "friendships"
 	case Blocks = "blocks"
-
-	case Videocall = "videocall"
-
-	case Chats = "chats"
+	
 	case Match_request = "match_request"
-	case Match_cancel = "match_cancel"
+	
+	case Videocall = "videocall"
 	case Reports = "reports"
+	case Chats = "chats"
+	
+	case Match_cancel = "match_cancel"
 	case Match_event = "MatchEvent"
 	case Match_info = "MatchInfo"
+	case UserOptions = "UserOption"
+	case Match_users = "match_users"
+	case Match_model = "match_model"
 }
 
 enum ApiVersion: String {
@@ -45,6 +48,7 @@ enum ApiVersion: String {
 	case V20 = "v2.0"
 }
 
+typealias CompletionHandler = () -> Void
 typealias SingleModelOperationCompletionHandler<T> = (_ result: JSONAPIResult<T>) -> Void
 typealias JSONAPIOperationCompletionHandler<T> = (_ result: JSONAPIResult<[T]>) -> Void
 typealias JSONAPIOperationCompletionHandlerWithFlag<T> = (_ result: JSONAPIResult<[T]>,_ flag:Bool) -> Void
@@ -104,7 +108,7 @@ extension SpecificObjectProtocol {
 			print("must be a monkey model")
 			return nil
 		}
-		
+
 		let primary_key = type(of: model).primaryKey()
 		guard let specific_id = model.value(forKey: primary_key) as? String else {
 			print("To refresh, an item must have an ID")
@@ -169,17 +173,6 @@ protocol SpecificJsonAPIRequestProtocol: APIRequestProtocol {
 
 protocol SpecificAPIRequestProtocol: SpecificObjectProtocol, SpecificJsonAPIRequestProtocol {
 	/**
-	Retrieve an item from the API and update/add that data to Realm.
-
-	- parameter id: The id of the item to retrieve.
-	- parameter completion: Called after the request finishes and the data is syced with Realm (or on error).
-	- parameter error: The error encountered.
-	- parameter item: The item retrieved.
-	- returns: The DataRequest if a request was started. Use this to cancel the in-flight HTTP request.
-	*/
-	@discardableResult static func fetch(id: String, completion: @escaping JSONAPIRequestCompletionHandler) -> JSONAPIRequest?
-
-	/**
 	Updates the current item with the latest data available in the server.
 
 	- parameter completion: Called when the request completes.
@@ -234,7 +227,7 @@ extension APIRequestProtocol {
 				.header("Authorization", authorization),
 			]
 		}
-		
+
 		print("API request:request url:\(url)\nobject type:\(type)\nobject api version:\(api_version)\nobject subfix:\(requst_subfix)")
 
 		return JSONAPIRequest(url: url, method: method, parameters: parameters, options: options).addCompletionHandler({ result in
@@ -307,16 +300,15 @@ extension CommonAPIRequestProtocol {
 }
 
 extension SpecificAPIRequestProtocol {
-	@discardableResult static func fetch(id: String, completion: @escaping JSONAPIRequestCompletionHandler) -> JSONAPIRequest? {
-		return request(url: specific_request_path(specific_id: id), completion: completion)
-	}
-
 	@discardableResult func reload(completion: @escaping JSONAPIRequestErrorHandler) -> JSONAPIRequest? {
 		return type(of: self).request(url: specific_request_path, completionParse:completion)
 	}
 
 	@discardableResult func update(relationship: String, resourceIdentifier: JSONAPIResourceIdentifier?, completion: @escaping JSONAPIRequestErrorHandler) -> JSONAPIRequest? {
-		return type(of: self).request(url: specific_request_path, completionParse:completion)
+		guard let request_path = specific_request_path else {
+			return nil
+		}
+		return type(of: self).request(url: "\(request_path)/relationships/\(relationship)", method: .patch, completionParse: completion)
 	}
 
 	@discardableResult func update(attributes: [String]?, completion: @escaping JSONAPIRequestErrorHandler) -> JSONAPIRequest? {
@@ -324,7 +316,8 @@ extension SpecificAPIRequestProtocol {
 	}
 
 	@discardableResult func delete(completion: @escaping JSONAPIRequestErrorHandler) -> JSONAPIRequest? {
-		return type(of: self).request(url: specific_request_path, completionParse:completion)
+		return type(of: self).request(url: specific_request_path, method: .delete, completionParse: completion)
+
 	}
 
 	func patch(parameters: Parameters?, completion: @escaping JSONAPIRequestErrorHandler) {

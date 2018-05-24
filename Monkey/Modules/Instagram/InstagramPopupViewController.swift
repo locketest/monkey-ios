@@ -127,7 +127,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     
     func initData() {
         if let accountId = user?.instagram_account?.instagram_account_id {
-            JSONAPIRequest(url: "\(Environment.baseURL)/api/\(APIController.shared.apiVersion)/instagram_accounts/\(accountId)", options: [
+            JSONAPIRequest(url: "\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/instagram_accounts/\(accountId)", options: [
                 .header("Authorization", APIController.authorization)
                 ]).addCompletionHandler { (response) in
                     switch response {
@@ -306,14 +306,16 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     
     func setLabelsAndImages() {
         // if available, set values before we reload
-		self.nameLabel.text = self.user?.first_name ?? self.user?.username ?? "Your friend"
-        if let age = self.user?.age.value {
-            self.nameLabel.text?.append(", \(age)")
-        }
-		
+		self.nameLabel.text = self.user?.first_name ?? "Your friend"
+		self.profileImageView.url = self.friendship?.user?.profile_photo_url ?? self.user?.profile_photo_url
 		self.locationLabel.text = ""
+		
 		guard isMonkeyKingBool == false else {
 			return
+		}
+		
+		if let age = self.user?.age.value {
+			self.nameLabel.text?.append(", \(age)")
 		}
 		
 		self.locationLabel.text = self.user?.location

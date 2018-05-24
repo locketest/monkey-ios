@@ -32,7 +32,6 @@
  */
 @protocol MonkeyRendererDelegate <NSObject>
 
-- (void)renderer:(MonkeyVideoRender*)renderer
- didReceiveFrame:(OTVideoFrame*)frame;
+- (void)renderer:(MonkeyVideoRender*)renderer didReceiveFrame:(OTVideoFrame *)frame;
 
 @end

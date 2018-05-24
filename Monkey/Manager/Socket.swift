@@ -12,110 +12,78 @@ import RealmSwift
 import Alamofire
 
 enum SocketConnectStatus : String {
-    case connected = "connected"
-    case disconnected = "disconnected"
+	case connected = "connected"
+	case disconnected = "disconnected"
+}
+
+public protocol MonkeySocketDelegate: class {
+	func webSocketDidRecieveMatch(match: Any, data: [String:Any])
+	func webSocketDidRecieveVideoCall(videoCall: Any, data: [String: Any])
+	func webSocketDidRecieveVideoCallCancel(data: [String: Any])
+	func webScoketDidRecieveChatMessage(data: [String: Any])
 }
 
 class Socket: WebSocketDelegate, WebSocketPongDelegate {
-    typealias Callback = (( _ error: Error?, _ response: [String: Any]?) -> ())
-    private (set) var callbacks = [Int: Callback]()
-    struct SocketWrite {
-        var string: String
-        var completion: (() -> ())?
-    }
-    private (set) var messageId = 1
-    private (set) var isAuthorized = false
-    private (set) var pendingSocketWrites = [SocketWrite]()
-    let webSocket = WebSocket(url: URL(string: Environment.socketURL)!)
-    static let shared = Socket()
-    weak var currentFriendshipsJSONAPIRequest: JSONAPIRequest?
-    weak var currentMessagesJSONAPIRequest: JSONAPIRequest?
-    public weak var delegate: MonkeySocketDelegate?
-    public weak var chatMessageDelegate: MonkeySocketChatMessageDelegate?
-    var isEnabled = false {
-        didSet {
-            if self.isEnabled {
-                self.webSocket.connect()
-            } else {
-                self.webSocket.disconnect()
-            }
-        }
-    }
+	typealias Callback = (( _ error: Error?, _ response: [String: Any]?) -> ())
+	private (set) var callbacks = [Int: Callback]()
 
-    var socketConnectStatus: SocketConnectStatus {
-        get {
-            if (self.webSocket.isConnected){
-                return .connected
-            }else {
-                return .disconnected
-            }
-        }
-    }
-    /// Clear locally stored calls on launch.
-    ///
-    /// - Throws: An error when realm is unable to write the delete.
-    func deleteDialedCalls() throws {
-        let realm = try Realm()
-        let objectsToDelete = realm.objects(RealmCall.self)
-        try realm.write {
-            realm.delete(objectsToDelete)
-        }
-    }
+	// 写操作
+	struct SocketWrite {
+		var string: String
+		var completion: (() -> ())?
+	}
+	// 未发出的写操作
+	private (set) var pendingSocketWrites = [SocketWrite]()
+	// message 号，from 1
+	private (set) var messageId = 1
+	// 是否有写入权限
+	private (set) var isAuthorized = false
+	private var fetchCollection = false
 
-    /// Deletes any instagram data stored.
-    ///
-    /// - Throws: An error when realm is unable to write the delete.
-    func deleteInstagramData() throws {
-        let realm = try Realm()
-        let photosToDelete = realm.objects(RealmInstagramPhoto.self)
-        let accountsToDelete = realm.objects(RealmInstagramAccount.self)
-        try realm.write {
-            realm.delete(photosToDelete)
-            realm.delete(accountsToDelete)
-        }
-    }
+	// 单例
+	static let shared = Socket()
+	// 底层 websocket
+	let webSocket = WebSocket(url: URL(string: Environment.socketURL)!)
 
-    /// Deletes any stored RealmUser's that dont have a friendship with the current user.
-    ///
-    /// - Throws: An error when realm is unable to write the delete, or there is no current user
-    func deleteSuperfluousRealmUsers() throws {
-        guard let currentUserId = APIController.shared.currentUser?.user_id else {
-            throw APIError(message:"Current user has no ID")
-        }
+	// 好友和消息请求
+	weak var currentFriendshipsJSONAPIRequest: JSONAPIRequest?
+	weak var currentMessagesJSONAPIRequest: JSONAPIRequest?
 
-        let realm = try Realm()
-        let superfluousUsers = realm.objects(RealmUser.self).filter( { return ($0.friendships.count == 0 && $0.user_id != currentUserId) })
+	// 消息代理回调
+	public weak var delegate: MonkeySocketDelegate?
 
-        try realm.write {
-            realm.delete(superfluousUsers)
-        }
-    }
-
-    private init() {
-        webSocket.delegate = self
-        DispatchQueue.global(qos: .utility).async {
-            do {
-                try self.deleteDialedCalls()
-                // delete all the RealmUser's the current user isnt friends with (extra can be returned for ex. in live chats for isntagram purposes)
-                try self.deleteSuperfluousRealmUsers()
-                try self.deleteInstagramData()
-            } catch (let error) {
-                print("Error: Unable to delete old realm data \(error.localizedDescription)")
-            }
-        }
-    }
-
-
-	internal func websocketDidConnect(socket: WebSocketClient) {
-		print("websocketDidConnect \(webSocket)")
-		guard let authorization = APIController.authorization else {
-			return // Signed out.
+	// 是否可用
+	var isEnabled = false {
+		didSet {
+			if self.isEnabled {
+				self.webSocket.connect()
+			} else {
+				self.webSocket.disconnect()
+			}
 		}
+	}
 
+	// 连接状态
+	var socketConnectStatus: SocketConnectStatus {
+		get {
+			if (self.webSocket.isConnected){
+				return .connected
+			}else {
+				return .disconnected
+			}
+		}
+	}
+
+	// 初始化
+	private init() {
+		webSocket.delegate = self
+	}
+
+	private func refreshFriendships() {
 		self.currentFriendshipsJSONAPIRequest?.cancel()
 		self.currentFriendshipsJSONAPIRequest = RealmFriendship.fetchAll { (result: JSONAPIResult<[RealmFriendship]>) in
 			switch result {
-                
+
 			case .success(let friendships):
 				let realm = try? Realm()
 				guard let storedFriendships = realm?.objects(RealmFriendship.self) else {
@@ -139,7 +107,9 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 				error.log(context: "RealmFriendship sync failed")
 			}
 		}
+	}
 
+	private func refreshMessageList() {
 		self.currentMessagesJSONAPIRequest?.cancel()
 		self.currentMessagesJSONAPIRequest = RealmMessage.fetchAll { (result: JSONAPIResult<[RealmMessage]>) in
 			switch result {
@@ -149,11 +119,26 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 				error.log(context: "RealmMessage sync failed")
 			}
 		}
+	}
+
+	internal func websocketDidConnect(socket: WebSocketClient) {
+		print("websocketDidConnect \(webSocket)")
+
+		guard let authorization = APIController.authorization else {
+			return // Signed out.
+		}
+
+		if self.fetchCollection == false {
+			self.refreshFriendships()
+			self.refreshMessageList()
+			self.fetchCollection = true
+		}
 
 		self.webSocket.write(string: [0, "authorization",[
 			"authorization": authorization,
 			"last_data_received_at": Date().iso8601,
 			]].toJSON)
+		
 		callbacks[0] = { (error, data) in
 			if let error = error {
 				self.webSocket.disconnect()
@@ -161,6 +146,8 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 				return
 			}
 			self.isAuthorized = true
+			
+			// 刚连接成功时，将所有未发送的消息全部发送
 			let socketWrites = self.pendingSocketWrites
 			self.pendingSocketWrites = [SocketWrite]()
 			for socketWrite in socketWrites {
@@ -168,9 +155,11 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 			}
 		}
 	}
+
 	internal func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
 		error.then { print("websocketDidDisconnect \($0)") }
 		self.isAuthorized = false
+		// 断线重连
 		guard let error = error else {
 			if self.isEnabled {
 				self.webSocket.connect()
@@ -181,7 +170,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 	}
 	internal func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
 		print("websocketDidReceiveMessage \(text)")
-		guard let result = text.asJSON as? Array<Any> else {
+		guard let result = text.asJSON as? [Any] else {
 			print("Result must be an array")
 			return
 		}
@@ -197,7 +186,6 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 		case "internal_error":
 			if let error = data["error"] as? Dictionary<String, Any> {
 				self.didReceive(error: NSError(domain: "NSMonkeyAPIErrorDomain", code: error["code"] as? Int ?? -1, userInfo: error))
-				return
 			}
 		case "callback":
 			if let error = data["error"] as? Dictionary<String, Any> {
@@ -209,8 +197,8 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 					print("Callback missing message ID")
 					return
 				}
-				if messageId == -1 {
-					self.parseJSONAPIData(data: data["data"] as! [String:Any],channel: channel)
+				if messageId == -1, let jsonData = data["data"] as? [String: Any] {
+					self.parseJSONAPIData(data: jsonData, channel: channel)
 				}
 				for (callbackId, callback) in callbacks {
 					if callbackId == messageId {
@@ -219,162 +207,175 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 					}
 				}
 			}
-		case "chat":
-			self.parseJSONAPIData(data: data,channel: channel)
-		case "json_api_data":
-			self.parseJSONAPIData(data: data,channel: channel)
-		case "matched_user":
-			self.parseJSONAPIData(data: data,channel: channel)
-		case "videocall_call":
-			self.parseJSONAPIData(data: data,channel: channel)
 		case "friendship_deleted":
-			if  let dataDict = data["data"] as? [String:Any],
-				let friendshipDict = dataDict["friendship"] as? [String:Any],
-				let friendshipID = friendshipDict["friendship_id"] as? String,
-				let userDict = friendshipDict["user"] as? [String:Any],
-				let userID = userDict["id"] as? String{
-				self.delegate?.webSocketDidRecieveUnfriendMessage(friendID: friendshipID, userID: userID)
-				self.chatMessageDelegate?.webSocketNeedUpdateFriendList()
-			}
+			self.refreshFriendships()
+		case "chat":
+			fallthrough
+		case "matched_user":
+			fallthrough
+		case "videocall_call":
+			fallthrough
+		case "json_api_data":
+			fallthrough
 		default:
-			break
+			self.parseJSONAPIData(data: data, channel: channel)
 		}
 	}
 
-    internal func parseJSONAPIData(data: [String: Any], channel: String) {
-        RealmDataController.shared.apply(JSONAPIDocument(json: data)) { result in
-            switch result {
-            case .error(let error):
-                error.log()
-            case .success(let objects):
-                if(channel == "matched_user") , let delegate = self.delegate {
-                    delegate.webSocketDidRecieveMatch(match: objects.first as Any,data: data)
-                }else if(channel == "videocall_call"){
-                    if let dt = data["data"] as? [String:Any],
-                        let re = dt["relationships"] as? [String:Any],
-                        let usr = re["user"] as? [String:Any],
-                        let usrID = usr["id"] as? String,
-                        let realm = try? Realm(),
-                        let realmUsr = realm.objects(RealmUser.self).filter({ return ($0.user_id == usrID) }).first,
-                            let call = objects.first as? RealmVideoCall
-                        {
-                            realm.beginWrite()
-                            call.initiator = realmUsr
-//                            call.status = "WAITING"
-                            try! realm.commitWrite()
-
-                            self.delegate?.webSocketDidRecieveVideoCall(videoCall: call, data: data)
-                        }
-                }else if(channel == "chat"){
-                    self.chatMessageDelegate?.webScoketDidRecieveChatMessage(data: data)
-                }
-                print("Received \(objects.count) more objects from the socket.")
-            }
-            // Nothing really needs to happen here. The data goes into realm and the notification blocks update the UI.
-        }
-    }
+	internal func parseJSONAPIData(data: [String: Any], channel: String) {
+		var jsonData = data
+		if channel == "matched_user" {
+			var realmCall = jsonData["data"] as? [String: Any]
+			if let relationships = realmCall?["relationships"] as? [String: Any], let user = relationships["user"] as? [String: Any], let userData = user["data"] as? [String: Any] {
+				
+				var include = userData
+				if let userAttributes = userData["attributes"] as? [String: Any] {
+					
+					var userRelationships = [String: Any]()
+					if let channels = userAttributes["channels"] as? [String] {
+						// make channels with user's channels
+						let channelsData = channels.flatMap { (channel_id) -> [String: String]? in
+							return [
+								"type": "channels",
+								"id": channel_id,
+								]
+						}
+						userRelationships["channels"] = ["data": channelsData]
+					}
+					
+					if let instagram_account = userAttributes["instagram_account_id"] as? String {
+						userRelationships["instagram_account"] = ["data": [
+							"type": "instagram_accounts",
+							"id": instagram_account,
+							]]
+					}
+					
+					include["relationships"] = userRelationships
+				}
+				
+				jsonData["included"] = [include]
+			}
+			
+		}else if channel == "videocall_call" {
+			var realmCall = jsonData["data"] as? [String: Any]
+			if let relationships = realmCall?["relationships"] as? [String: Any], let user = relationships["user"] as? [String: Any], let user_id = user["id"] as? String {
+				var initiator = user
+				initiator["data"] = [
+					"type": "users",
+					"id": user_id,
+				]
+				var userRelationships = relationships
+				userRelationships["initiator"] = initiator
+				realmCall?["relationships"] = userRelationships
+				
+				jsonData["data"] = realmCall
+			}
+		}else if channel == "relationship_new" {
+			return
+		}
+		
+		RealmDataController.shared.apply(JSONAPIDocument(json: jsonData)) { result in
+			switch result {
+			case .error(let error):
+				error.log()
+			case .success(let objects):
+				if(channel == "matched_user") {
+					self.delegate?.webSocketDidRecieveMatch(match: objects.first as Any, data: data)
+				} else if(channel == "videocall_call") {
+					self.delegate?.webSocketDidRecieveVideoCall(videoCall: objects.first as Any, data: data)
+				} else if(channel == "videocall_cancel") {
+					self.delegate?.webSocketDidRecieveVideoCallCancel(data: data)
+				} else if(channel == "chat") {
+					self.delegate?.webScoketDidRecieveChatMessage(data: data)
+				}
+				print("Received \(objects.count) more objects from the socket.")
+			}
+		}
+	}
 
 	internal func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
 		print("websocketDidReceiveData \(data)")
 	}
 
-
 	internal func websocketDidReceivePong(socket: WebSocketClient, data: Data?) {
 		print("websocketDidReceivePong \(String(describing: data)))")
 	}
 
-    internal func send(message: Dictionary<String, Any>, to channel: String, completion: Callback?) {
-        let data:[Any] = [messageId, channel, message]
-        callbacks[messageId] = completion
-        messageId += 1
-        self.write(string: data.toJSON, completion: nil)
-    }
+	internal func send(message: Dictionary<String, Any>, to channel: String, completion: Callback?) {
+		let data:[Any] = [messageId, channel, message]
+		callbacks[messageId] = completion
+		messageId += 1
+		self.write(string: data.toJSON, completion: nil)
+	}
 
-    private func write(string: String, completion: (() -> ())?) {
-        guard self.isAuthorized else {
-            print("Queuing message: \(string.trunc(length: 100))")
-            self.pendingSocketWrites.append(SocketWrite(string: string, completion: completion))
-            return
-        }
-        print("Writing message: \(string.trunc(length: 100))")
-        self.webSocket.write(string: string, completion: completion)
-    }
+	private func write(string: String, completion: (() -> ())?) {
+		guard self.isAuthorized else {
+			print("Queuing message: \(string.trunc(length: 100))")
+			self.pendingSocketWrites.append(SocketWrite(string: string, completion: completion))
+			return
+		}
+		print("Writing message: \(string.trunc(length: 100))")
+		self.webSocket.write(string: string, completion: completion)
+	}
 
-    private func didReceive(error: Error) {
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
-            if self.isEnabled {
-                self.webSocket.connect()
-            }
-        }
-    }
-}
-
-public protocol MonkeySocketDelegate: class {
-    func webSocketDidRecieveMatch(match: Any,data: [String:Any])
-    func webSocketDidRecieveVideoCall(videoCall:Any,data:[String:Any])
-    func webSocketDidRecieveUnfriendMessage(friendID:String,userID:String)
-}
-
-public protocol MonkeySocketChatMessageDelegate: class{
-    func webScoketDidRecieveChatMessage(data:[String: Any])
-    func webSocketNeedUpdateFriendList()
+	private func didReceive(error: Error) {
+		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
+			if self.isEnabled {
+				self.webSocket.connect()
+			}
+		}
+	}
 }
 
 extension Array {
-    var toJSON: String {
-        get {
-            let defaultJSON = "[]"
-            guard let data = try? JSONSerialization.data(withJSONObject: self, options: []) else {
-                return defaultJSON
-            }
+	var toJSON: String {
+		get {
+			let defaultJSON = "[]"
+			guard let data = try? JSONSerialization.data(withJSONObject: self, options: []) else {
+				return defaultJSON
+			}
 
-            return String(data: data, encoding: .utf8) ?? defaultJSON
-        }
-    }
+			return String(data: data, encoding: .utf8) ?? defaultJSON
+		}
+	}
 }
 
 extension Dictionary {
-    var toJSON: String {
-        get {
-            let defaultJSON = "{}"
-            guard let data = try? JSONSerialization.data(withJSONObject: self, options: []) else {
-                return defaultJSON
-            }
+	var toJSON: String {
+		get {
+			let defaultJSON = "{}"
+			guard let data = try? JSONSerialization.data(withJSONObject: self, options: []) else {
+				return defaultJSON
+			}
 
-            return String(data: data, encoding: .utf8) ?? defaultJSON
-        }
-    }
+			return String(data: data, encoding: .utf8) ?? defaultJSON
+		}
+	}
 }
 
-extension String
-{
-    var asJSON: AnyObject? {
-        let data = self.data(using: .utf8, allowLossyConversion: false)
+extension String {
+	var asJSON: AnyObject? {
+		let data = self.data(using: .utf8, allowLossyConversion: false)
 
-        if let jsonData = data
-        {
-            // Will return an object or nil if JSON decoding fails
-            do
-            {
-                let message = try JSONSerialization.jsonObject(with: jsonData, options:.mutableContainers)
-                if let jsonResult = message as? NSMutableArray {
-                    return jsonResult //Will return the json array output
-                } else if let jsonResult = message as? NSMutableDictionary {
-                    return jsonResult //Will return the json dictionary output
-                } else {
-                    return nil
-                }
-            }
-            catch let error as NSError
-            {
-                print("An error occurred: \(error)")
-                return nil
-            }
-        }
-        else
-        {
-            // Lossless conversion of the string was not possible
-            return nil
-        }
-    }
+		if let jsonData = data {
+//			Will return an object or nil if JSON decoding fails
+			do {
+				let message = try JSONSerialization.jsonObject(with: jsonData, options:.mutableContainers)
+				if let jsonResult = message as? NSMutableArray {
+					return jsonResult //Will return the json array output
+				} else if let jsonResult = message as? NSMutableDictionary {
+					return jsonResult //Will return the json dictionary output
+				} else {
+					return nil
+				}
+			}
+			catch let error as NSError {
+				print("An error occurred: \(error)")
+				return nil
+			}
+		} else {
+//			Lossless conversion of the string was not possible
+			return nil
+		}
+	}
 }

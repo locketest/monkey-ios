@@ -33,7 +33,7 @@ class FriendTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configureWithFriendship(_ friendship:RealmFriendship) {
+    func configureWithFriendship(_ friendship: RealmFriendship) {
         
         self.usernameLabel.text = friendship.user?.first_name ?? friendship.user?.username ?? "them"
         

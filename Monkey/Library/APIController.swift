@@ -11,15 +11,9 @@ import CoreData
 import UIKit
 import RealmSwift
 
-class APIController {
-    
-    static let kCodeVerifyJustNow = "kCodeVerifyJustNow"
-    static let kNewAccountCodeVerify = "kNewAccountCodeVerify"
-    static let kSignAsLogin = "kSignAsLogin"
-    static let kNewAccountSignUpFinish = "kNewAccountSignUpFinish"
-
+class APIController: NSObject {
     static let shared = APIController()
-    private init() {}
+	private override init() {}
     
     /// Currently signed in user
     var currentUser: RealmUser? {
@@ -44,10 +38,6 @@ class APIController {
     var appVersion: String {
         return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0" // Use zeros instead of crashing. This should not happen.
     }
-    /// The current version string of the API to be used in URLs.
-    private static let apiVersion = "v1.0"
-    /// The current version string of the API to be used in URLs.
-    let apiVersion: String = APIController.apiVersion
     
     static var authorization: String? {
         get {
@@ -59,26 +49,4 @@ class APIController {
 			Achievements.shared.group_authorization = auth;
         }
     }
-    class func urlTo(_ model: String) -> String {
-        return "\(Environment.baseURL)/api/\(self.apiVersion)/\(model)"
-    }
-    class func parseDate(_ dateString: String) -> Date {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        return dateFormatter.date(from: dateString) ?? Date()
-    }
-}
-
-@objc protocol ModelAttributes {
-    var id: String? { get set }
-}
-protocol Model {
-    static var className: String { get }
-    static var type: String { get }
-    static func update(id: String,
-                       attributes: Dictionary<String,Any>,
-                       relationships: Dictionary<String, Model>,
-                       completion: @escaping ( _ result : NSManagedObject?) -> Void)
-    static func set(id: String, updatedAt date: String, callback: ((APIError?, Bool) -> Void)?)
 }

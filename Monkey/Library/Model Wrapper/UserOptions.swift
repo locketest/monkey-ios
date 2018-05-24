@@ -9,17 +9,17 @@
 import Foundation
 import ObjectMapper
 
-class UserOptions: MonkeyModel {
-	override class var requst_subfix: String {
+class UserOptions: NSObject, MonkeyApiObject, Mappable {
+	class var requst_subfix: String {
 		return "me/options"
 	}
-	override class var api_version: ApiVersion {
+	class var api_version: ApiVersion {
 		return ApiVersion.V13
 	}
-	override class var type: String {
+	class var type: String {
 		return ApiType.UserOptions.rawValue
 	}
-	override static func primaryKey() -> String {
+	static func primaryKey() -> String {
 		return "user_id"
 	}
 	
@@ -31,8 +31,7 @@ class UserOptions: MonkeyModel {
 		self.init()
 	}
 	
-	override func mapping(map: Map) {
-		super.mapping(map: map)
+	func mapping(map: Map) {
 		update_birth_date <- map["data.update_birth_date"]
 		update_username <- (map["data.update_username"], DateTransform())
 	}

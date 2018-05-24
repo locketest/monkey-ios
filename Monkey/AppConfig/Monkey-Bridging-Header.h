@@ -5,7 +5,9 @@
 #import "MonkeyVideoRender.h"
 #import "KeyboardManager.h"
 #import "HWCameraManager.h"
+//#import "AgoraService.h"
 
 #import <OpenTok/OpenTok.h>
 #import <GPUImage/GPUImage.h>
 #import <CommonCrypto/CommonCrypto.h>
+#import <AgoraRtcEngineKit/AgoraRtcEngineKit.h>

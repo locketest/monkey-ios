@@ -112,7 +112,7 @@ class AuthViewController: MonkeyViewController {
 			Achievements.shared.group_gender = currentUser.gender;
 			Achievements.shared.group_profile_photo = currentUser.profile_photo_url;
 			
-			// 如果资料不全
+			// 如果资料完整
 			if currentUser.isCompleteProfile() {
 				APIController.trackCodeVerifyIfNeed(result: true, isProfileComp: true)
 				
@@ -121,7 +121,6 @@ class AuthViewController: MonkeyViewController {
 				
 				// 资料不全，编辑信息
 				let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
-				accountVC.shouldDismissAfterEntry = true
 				(self.presentedViewController as? MainViewController)?.present(accountVC, animated: true, completion: nil)
 			}
 			
@@ -221,7 +220,12 @@ class AuthViewController: MonkeyViewController {
 		
 		AnaliticsCenter.loginAccount()
 		
-		if Achievements.shared.grantedPermissionsV2 == false {
+		if APIController.shared.currentUser?.isCompleteProfile() == false {
+			// 资料不全，编辑信息
+			let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
+			accountVC.shouldDismissAfterEntry = true
+			self.present(accountVC, animated: false)
+		} else if Achievements.shared.grantedPermissionsV2 == false {
 			let permissionsVC = self.storyboard!.instantiateViewController(withIdentifier: "permVC")
 			self.present(permissionsVC, animated: false)
 		} else {

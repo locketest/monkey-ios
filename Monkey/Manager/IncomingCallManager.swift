@@ -62,7 +62,7 @@ class IncomingCallManager {
         self.reactToIncomingCall(incomingCall)
     }
     
-    func reactToIncomingCall(_ realmCall:RealmVideoCall) {
+    func reactToIncomingCall(_ realmCall: RealmVideoCall) {
         
         guard self.delegate != nil, showingNotification == nil, self.skipCallIds.contains(realmCall.chat_id!) != true else {
             return
@@ -91,45 +91,44 @@ class IncomingCallManager {
     }
     
     ///  if user ignore video call , call this func
-    func cancelVideoCall(chatsession:ChatSession) {
-        if let userID = self.chatSession?.realmCall?.user?.user_id,
-            let realm = try? Realm(), let friendShip = realm.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"").first ,
-        let friendshipID = friendShip.friendship_id{
-            let param = [
-                "data":[
-                    "type":"videocall",
-                    "friendship":[
-                        "id":friendshipID,
-                        "friend_id":userID
-                    ]
-                ]
-            ]
-            JSONAPIRequest.init(url: "\(Environment.baseURL)/api/videocall/cancel", method: .post, parameters: param,
-                                options: [.header("Authorization", APIController.authorization),])
-        }
-    }
+	func cancelVideoCall(chatsession: ChatSession) {
+		self.chatSession = nil
+		if let friendShip = chatsession.videoCall?.matchedFriendship, let friendshipID = friendShip.friendship_id, let chat_id = chatsession.chat?.chatId, let user_id = chatsession.videoCall?.user?.user_id ?? chatsession.videoCall?.initiator?.user_id {
+			let param = [
+				"data": [
+					"type": "videocall",
+					"chat_id": chat_id,
+					"friendship": [
+						"id": friendshipID,
+						"friend_id": user_id,
+					]
+				]
+			]
+			JSONAPIRequest.init(url: "\(Environment.baseURL)/api/\(ApiVersion.V13.rawValue)/videocall/cancel", method: .post, parameters: param, options: [.header("Authorization", APIController.authorization),])
+		}
+	}
     
-    func createChatSession(fromCall:RealmCall) -> ChatSession? {
-        guard let chatId = fromCall.chat_id, let sessionId = fromCall.session_id, let userId = fromCall.initiator?.user_id, let token = fromCall.token else {
+    func createChatSession(fromCall: RealmCall) -> ChatSession? {
+        guard let chatId = fromCall.chat_id, let sessionId = fromCall.session_id, let userId = fromCall.initiator?.user_id else {
             return nil
         }
         
         return ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId,
-                           chat: Chat(chat_id: chatId, first_name:fromCall.user?.first_name ?? "Your friend", profile_image_url:fromCall.user?.profile_photo_url, user_id:userId),
-                           token: token, loadingDelegate: self, isDialedCall: true)
+                           chat: Chat(chat_id: chatId, first_name: fromCall.user?.first_name ?? "Your friend", profile_image_url: fromCall.user?.profile_photo_url, user_id: userId),
+                           token: fromCall.channelToken, loadingDelegate: self, isDialedCall: true)
     }
     
-    func createChatSession(fromVideoCall:RealmVideoCall) -> ChatSession? {
-        guard let chatId = fromVideoCall.chat_id, let sessionId = fromVideoCall.session_id, let userId = fromVideoCall.initiator?.user_id, let token = fromVideoCall.token else {
-            return nil
-        }
-        
-        let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId,
-                                      chat: Chat(chat_id: chatId, first_name:fromVideoCall.user?.first_name ?? "Your friend", profile_image_url:fromVideoCall.user?.profile_photo_url, user_id:userId),
-                                      token: token, loadingDelegate: self, isDialedCall: true)
-        chatSession.realmVideoCall = fromVideoCall
-        return chatSession
-    }
+	func createChatSession(fromVideoCall: RealmVideoCall) -> ChatSession? {
+		guard let chatId = fromVideoCall.chat_id, let sessionId = fromVideoCall.session_id, let userId = fromVideoCall.initiator?.user_id else {
+			return nil
+		}
+		
+		let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId,
+								chat: Chat(chat_id: chatId, first_name: fromVideoCall.user?.first_name ?? "Your friend", profile_image_url: fromVideoCall.user?.profile_photo_url, user_id: userId),
+								token: fromVideoCall.channelToken, loadingDelegate: self, isDialedCall: true)
+		self.chatSession = chatSession
+		return chatSession
+	}
     
     func initiateCallTimer() {
         self.callTimer = Timer(timeInterval: 2.52, target: self, selector: #selector(playCallSound), userInfo: nil, repeats: true)
@@ -146,16 +145,17 @@ class IncomingCallManager {
         self.callTimer?.invalidate()
         self.callTimer = nil
     }
-    func dismissShowingNotificationForChatSession(_ chatSession: ChatSession) {
-        guard self.showingNotification?.chatSession == chatSession else {
-            // Call not started from notification or a different notification is being displayed
-            // This should usually be fine but is an easy place for bugs to pop up.
-            return
-        }
-        self.delegate?.incomingCallManager(self, didDismissNotificatationFor: chatSession)
-        self.showingNotification?.dismiss()
-        self.showingNotification = nil
-    }
+	func dismissShowingNotificationForChatSession(_ chatSession: ChatSession) {
+		guard self.showingNotification?.chatSession == chatSession else {
+			// Call not started from notification or a different notification is being displayed
+			// This should usually be fine but is an easy place for bugs to pop up.
+			return
+		}
+		self.delegate?.incomingCallManager(self, didDismissNotificatationFor: chatSession)
+		self.showingNotification?.dismiss()
+		self.showingNotification = nil
+		self.chatSession = nil
+	}
 }
 
 extension IncomingCallManager:ChatSessionLoadingDelegate {

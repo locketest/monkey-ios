@@ -11,12 +11,11 @@ import AudioToolbox
 import RealmSwift
 import DeviceKit
 
-protocol CallViewControllerDelegate:class {
+protocol CallViewControllerDelegate: class {
     func stopFindingChats(andDisconnect:Bool, forReason:String)
     func startFindingChats(forReason:String)
 }
 
-// TODO: this class shouldn't create and destroy every time
 class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSessionCallDelegate, MatchViewControllerProtocol {
     var commonTree: RealmChannel?
 
@@ -56,7 +55,9 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     static var lastScreenShotTime:TimeInterval = 0
     var currentMatchPastTime:TimeInterval = 0
     
-    var isLinkInstagramBool = false
+	var isLinkInstagramBool: Bool {
+		return chatSession?.videoCall?.matchedFriendship?.user?.instagram_account != nil
+	}
     
     var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧"
     let truthOrDareView = TruthOrDareView.instanceFromNib()
@@ -66,17 +67,16 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 		TapticFeedback.impact(style: .heavy)
     }
 
-    var chatSession:ChatSession? {
+    var chatSession: ChatSession? {
         didSet {
-            guard self.chatSession?.subscriber?.view != nil else {
-                guard let oldSubView = oldValue?.subscriber?.view else {
+            guard self.chatSession?.remoteView != nil else {
+                guard let oldSubView = oldValue?.remoteView else {
                     return
                 }
                 oldSubView.removeFromSuperview()
                 return
             }
 
-            chatSession?.add(messageHandler: self.truthOrDareView)
             chatSession?.add(messageHandler: self.effectsCoordinator)
             chatSession?.toggleFrontCamera(front: true)
             if chatSession?.isDialedCall == true || chatSession?.matchMode == .EventMode {
@@ -201,21 +201,11 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 			self.skipButtonContainerView.isUserInteractionEnabled = false
 			self.skipButtonContainerView.alpha = 0
 			self.skipButtonContainerView.isHidden = false
-			
-//			DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: TimeInterval(RemoteConfigManager.shared.event_mode_next_show))) { [weak self] in
-//				guard let `self` = self else { return }
-//				self.skipButton.isEnabled = true
-//			}
-			
 		}
 		
-        self.truthOrDareView.frame = self.view.frame
-        self.truthOrDareView.isHidden = true
-        self.view.addSubview(truthOrDareView)
-        self.truthOrDareView.delegate = self
         self.statusCornerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(togglePublisherEffects)))
 
-        if let subView = self.chatSession?.subscriber?.view {
+        if let subView = self.chatSession?.remoteView {
             self.containerView.insertSubview(subView, at: 0)
             subView.frame = UIScreen.main.bounds
         }
@@ -229,19 +219,11 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 		
 		self.cameraPositionButton.isHidden = true
 		self.cameraPositionButton.backgroundColor = UIColor.clear
-        let realm = try? Realm()
-        self.isLinkInstagramBool = self.chatSession?.realmCall?.user?.instagram_account == nil ? false : true
-        var callUserID = self.chatSession?.realmCall?.user?.user_id
-        if callUserID == nil {
-            callUserID = self.chatSession?.realmVideoCall?.initiator?.user_id
-        }
-        if let userID = callUserID {
-            let friendShip = realm?.objects(RealmFriendship.self).filter("user.user_id = \"\(userID)\"")
-            if (friendShip?.last?.friendship_id) != nil {
-                self.cameraPositionButton.isHidden = false
-                self.clockLabel.isHidden = true
-                self.clockTimeIcon.isHidden = true
-            }
+		
+        if chatSession?.friendMatched == true {
+			self.cameraPositionButton.isHidden = false
+			self.clockLabel.isHidden = true
+			self.clockTimeIcon.isHidden = true
         }
 		
 		if chatSession?.matchMode == .EventMode {
@@ -275,9 +257,10 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.publisherContainerView.addSubview(MonkeyPublisher.shared.view)
-
-        let viewsDict = ["view": MonkeyPublisher.shared.view]
+		let localPreviewView = HWCameraManager.shared().localPreviewView
+        self.publisherContainerView.addSubview(localPreviewView)
+		
+        let viewsDict = ["view": HWCameraManager.shared().localPreviewView]
         self.publisherContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
         self.publisherContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
 
@@ -294,7 +277,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     }
 
     func unhideAfterReportScreenshot() {
-        self.chatSession?.subscriber?.view?.effectsEnabled = true
+//        self.chatSession?.remoteView?.effectsEnabled = true
         self.policeButton.isHidden = false
         self.statusCornerView.isHidden = false
         
@@ -418,7 +401,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         
         let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as! InstagramPopupViewController
         
-        instagramVC.userId = self.chatSession?.realmCall?.user?.user_id
+        instagramVC.userId = self.chatSession?.videoCall?.user?.user_id ?? self.chatSession?.videoCall?.initiator?.user_id
         instagramVC.followMyIGTagBool = false
         
         self.present(instagramVC, animated: true)

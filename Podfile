@@ -26,13 +26,16 @@ abstract_target 'Monkey' do
 	
 	pod 'RealmSwift'
 	pod 'Alamofire'
+#	pod 'SwiftyJSON'
+#	pod 'Alamofire-SwiftyJSON'
 	pod 'ObjectMapper', '~> 3.1'
 	pod 'AlamofireObjectMapper', '~> 5.0'
 	pod 'ObjectMapperAdditions/Realm', '~> 4.1'
 	
 	pod 'OpenTok'
+	#agora
+	pod 'AgoraRtcEngine_iOS', :inhibit_warnings => true
 	pod 'GPUImage', :git => 'https://github.com/holla-world/GPUImage.git', :branch => 'master'
-	
 	
 	target 'Release' do
 	end

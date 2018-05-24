@@ -50,8 +50,10 @@ class TextChatViewController: MonkeyViewController {
 	weak var callDelegate: CallViewControllerDelegate?
 	var soundPlayer = SoundPlayer.shared
 	var eras = "👂"
-    
-    var isLinkInstagramBool = false
+	
+	var isLinkInstagramBool: Bool {
+		return chatSession?.videoCall?.matchedFriendship?.user?.instagram_account != nil
+	}
     
     var commonTree:RealmChannel?
 	
@@ -147,7 +149,7 @@ class TextChatViewController: MonkeyViewController {
 		self.conversationTip.text = self.tips[random]
 		
 		chatSession?.add(messageHandler: self)
-		if let subView = self.chatSession?.subscriber?.view {
+		if let subView = self.chatSession?.remoteView {
 			self.containerView.insertSubview(subView, belowSubview: policeButton)
 			subView.frame = UIScreen.main.bounds
 			self.remoteStreamView = subView
@@ -213,19 +215,17 @@ class TextChatViewController: MonkeyViewController {
 				self.endCallButton.alpha = 1
 			})
 		}
-        
-        self.isLinkInstagramBool = self.chatSession?.realmCall?.user?.instagram_account == nil ? false : true
     }
     
-    func handleInstagramPopupBtnHiddenFunc(isHidden:Bool) {
+    func handleInstagramPopupBtnHiddenFunc(isHidden: Bool) {
         self.instagramPopupButton.isHidden = self.isLinkInstagramBool ? isHidden : true
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		self.publisherContainerView.addSubview(MonkeyPublisher.shared.view)
-		let viewsDict = ["view": MonkeyPublisher.shared.view]
+		self.publisherContainerView.addSubview(HWCameraManager.shared().localPreviewView)
+		let viewsDict = ["view": HWCameraManager.shared().localPreviewView]
 		self.publisherContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
 		self.publisherContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
 	}
@@ -278,8 +278,8 @@ class TextChatViewController: MonkeyViewController {
     @IBAction func alertInstagramPopupVcFunc(_ sender: SmallYellowButton) {
         
         let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as! InstagramPopupViewController
-        
-        instagramVC.userId = self.chatSession?.realmCall?.user?.user_id
+		instagramVC.userId = self.chatSession?.videoCall?.user?.user_id ?? self.chatSession?.videoCall?.initiator?.user_id
+
         instagramVC.followMyIGTagBool = false
         
         self.present(instagramVC, animated: true)
@@ -686,7 +686,7 @@ extension TextChatViewController: MatchViewControllerProtocol {
 	}
 	
 	func unhideAfterReportScreenshot() {
-		self.chatSession?.subscriber?.view?.effectsEnabled = true
+//		self.chatSession?.remoteView?.effectsEnabled = true
 		
 		self.policeButton.isHidden = false
 		self.soundButton.isHidden = false

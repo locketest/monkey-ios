@@ -18,14 +18,5 @@ class MonkeyPublisher: OTPublisherKit {
         self.view = HWCameraManager.shared().localPreviewView
         super.init(delegate: delegate, settings: settings)!
         self.videoCapture = HWCameraManager.shared()
-//        self.videoRender = self.view
     }
-//	
-//	override var publishVideo: Bool {
-//		didSet {
-//			if !publishVideo {
-//				self.view.clearBuffer()
-//			}
-//		}
-//	}
 }

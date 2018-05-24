@@ -10,7 +10,6 @@
 		1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F79A1201831140069D473 /* APIController+UserCenter.swift */; };
 		1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76554620132B0600FAB045 /* MKMatchManager.swift */; };
 		1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76B194206A46560044AC7F /* RealmVideoCall.swift */; };
-		1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD655482046B2A900CAA2D5 /* Configs.swift */; };
 		34B7F7DB20898CCA00A6B7B2 /* UIView+MJ.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */; };
 		34B7F7DC20898CCA00A6B7B2 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */; };
@@ -23,7 +22,6 @@
 		8435C2EA1F14018100C80AC6 /* FriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2E91F14018100C80AC6 /* FriendsViewModel.swift */; };
 		8435C2EE1F1443F200C80AC6 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2ED1F1443F200C80AC6 /* FriendsViewController.swift */; };
 		8435C2F01F144DA800C80AC6 /* FriendTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2EF1F144DA800C80AC6 /* FriendTableViewCell.swift */; };
-		8435C2F21F14500000C80AC6 /* NewFriendCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2F11F14500000C80AC6 /* NewFriendCollectionViewCell.swift */; };
 		8464868D1F1D65240092E89E /* JigglyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8464868C1F1D65240092E89E /* JigglyButton.swift */; };
 		847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847EABF91EBE813F000F9575 /* ProfilePhotoButtonView.swift */; };
 		848727B11E86B1AD00F13501 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848727B01E86B1AD00F13501 /* ConfettiView.swift */; };
@@ -94,7 +92,6 @@
 		8BE9FE7F1DDF698400B55280 /* ChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE9FE7E1DDF698400B55280 /* ChatSession.swift */; };
 		8BEB20041EFC6067001AAC3C /* BackgroundColorGradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BEB20031EFC6067001AAC3C /* BackgroundColorGradientLayer.swift */; };
 		8BFD6D561EF98B9F002C9F9C /* MonkeyVideoRender.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D551EF98B9E002C9F9C /* MonkeyVideoRender.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		8BFD6D621EFAEA87002C9F9C /* MonkeyPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D611EFAEA87002C9F9C /* MonkeyPublisher.swift */; };
 		8BFD6D681EFB280D002C9F9C /* EffectsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */; };
 		8BFD6D6D1EFB2DF0002C9F9C /* MonkeySubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */; };
 		926434F6647F6A00FB3D858C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C07119D48848FAD5F3C2D15D /* QuartzCore.framework */; };
@@ -145,8 +142,12 @@
 		D1025CEE20A2E79F00557B64 /* ApiObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CEC20A2E79F00557B64 /* ApiObject.swift */; };
 		D1025CF020A2FD9900557B64 /* MonkeyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CEF20A2FD9900557B64 /* MonkeyModel.swift */; };
 		D1025CF120A2FD9900557B64 /* MonkeyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CEF20A2FD9900557B64 /* MonkeyModel.swift */; };
-		D1025CF420A35EF600557B64 /* MonkeyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CF320A35EF600557B64 /* MonkeyUser.swift */; };
-		D1025CF520A35EF600557B64 /* MonkeyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CF320A35EF600557B64 /* MonkeyUser.swift */; };
+		D10490ED20ADB02000381F9E /* AgoraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10490EC20ADB02000381F9E /* AgoraService.swift */; };
+		D10490EE20ADB02000381F9E /* AgoraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10490EC20ADB02000381F9E /* AgoraService.swift */; };
+		D10490F020ADB5F000381F9E /* OpenTokService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10490EF20ADB5F000381F9E /* OpenTokService.swift */; };
+		D10490F120ADB5F000381F9E /* OpenTokService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10490EF20ADB5F000381F9E /* OpenTokService.swift */; };
+		D10490F320AEA57300381F9E /* MatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10490F220AEA57300381F9E /* MatchManager.swift */; };
+		D10490F420AEA57300381F9E /* MatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10490F220AEA57300381F9E /* MatchManager.swift */; };
 		D105079F20034D5B0018A14F /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D105079E20034D5B0018A14F /* DateHelper.swift */; };
 		D10585ED20A04F5B00E63ADC /* onboarding-4.gif in Resources */ = {isa = PBXBuildFile; fileRef = D10585E920A04F5B00E63ADC /* onboarding-4.gif */; };
 		D10585EE20A04F5B00E63ADC /* onboarding-4.gif in Resources */ = {isa = PBXBuildFile; fileRef = D10585E920A04F5B00E63ADC /* onboarding-4.gif */; };
@@ -161,8 +162,16 @@
 		D12E22942010747200703F9B /* RemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12E22932010747200703F9B /* RemoteConfig.swift */; };
 		D14478672058C5A400485D68 /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = D14478662058C5A400485D68 /* NotificationService.m */; };
 		D144786B2058C5A400485D68 /* PushService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D14478632058C5A300485D68 /* PushService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D147127820AD65870055516A /* MatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147127720AD65870055516A /* MatchModel.swift */; };
+		D147127920AD65870055516A /* MatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147127720AD65870055516A /* MatchModel.swift */; };
+		D147128820AD93630055516A /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147128720AD93630055516A /* NetworkMonitor.swift */; };
+		D147128920AD93630055516A /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147128720AD93630055516A /* NetworkMonitor.swift */; };
+		D147128E20AD98080055516A /* ChannelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147128D20AD98080055516A /* ChannelService.swift */; };
+		D147128F20AD98080055516A /* ChannelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147128D20AD98080055516A /* ChannelService.swift */; };
 		D17CE9852009C2E4002F4F9D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D17CE9842009C2E4002F4F9D /* GoogleService-Info.plist */; };
 		D17CE989200A1186002F4F9D /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17CE988200A1185002F4F9D /* Analytics.swift */; };
+		D17E59A820AC2BA300B26501 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17E59A720AC2BA300B26501 /* SettingsViewController.swift */; };
+		D17E59A920AC2BA300B26501 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17E59A720AC2BA300B26501 /* SettingsViewController.swift */; };
 		D192A3DB20286E0600791002 /* TextChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DA20286E0600791002 /* TextChatViewController.swift */; };
 		D192A3DD2029966E00791002 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DC2029966E00791002 /* Message.swift */; };
 		D192A3DF2029AD8300791002 /* TextModeMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DE2029AD8300791002 /* TextModeMessageCell.swift */; };
@@ -171,8 +180,6 @@
 		D192A3E7202AD1CE00791002 /* MatchViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E6202AD1CE00791002 /* MatchViewControllerProtocol.swift */; };
 		D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E8202ADF1000791002 /* SmallYellowButton.swift */; };
 		D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D192A3EB202B015A00791002 /* KeyboardManager.m */; };
-		D19D3B1720A4561F0028F69C /* RealmObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19D3B1620A4561E0028F69C /* RealmObject.swift */; };
-		D19D3B1820A4561F0028F69C /* RealmObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19D3B1620A4561E0028F69C /* RealmObject.swift */; };
 		D1A22A5320A03F8A004F0F05 /* TruthOrDare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B24D4C51E3197FB006EFCFA /* TruthOrDare.swift */; };
 		D1A22A5520A03F8A004F0F05 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2ED1F1443F200C80AC6 /* FriendsViewController.swift */; };
 		D1A22A5620A03F8A004F0F05 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47833E11F2BF276007F37DB /* NotificationManager.swift */; };
@@ -209,7 +216,6 @@
 		D1A22A7720A03F8A004F0F05 /* IF1977Filter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D082060DACB00F209B4 /* IF1977Filter.m */; };
 		D1A22A7820A03F8A004F0F05 /* DismissPopupTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CF020C1F58CA66009D7B33 /* DismissPopupTransitionAnimator.swift */; };
 		D1A22A7920A03F8A004F0F05 /* RatingNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43415511F33812C00A481CC /* RatingNotificationView.swift */; };
-		D1A22A7A20A03F8A004F0F05 /* MonkeyPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D611EFAEA87002C9F9C /* MonkeyPublisher.swift */; };
 		D1A22A7B20A03F8A004F0F05 /* RemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12E22932010747200703F9B /* RemoteConfig.swift */; };
 		D1A22A7C20A03F8A004F0F05 /* Apns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BB895871DBD2E1800FC5E53 /* Apns.swift */; };
 		D1A22A7D20A03F8A004F0F05 /* ProfilePhotoButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847EABF91EBE813F000F9575 /* ProfilePhotoButtonView.swift */; };
@@ -226,7 +232,6 @@
 		D1A22A8920A03F8A004F0F05 /* RealmVideoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76B194206A46560044AC7F /* RealmVideoCall.swift */; };
 		D1A22A8A20A03F8A004F0F05 /* IFXproIIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D1C2060DACB00F209B4 /* IFXproIIFilter.m */; };
 		D1A22A8B20A03F8A004F0F05 /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4656C4C1F49F98700966C6D /* PermissionViewController.swift */; };
-		D1A22A8C20A03F8A004F0F05 /* MKNetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */; };
 		D1A22A8D20A03F8A004F0F05 /* IncomingCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D433C1501F44D35500C9F704 /* IncomingCallManager.swift */; };
 		D1A22A8E20A03F8A004F0F05 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DC2029966E00791002 /* Message.swift */; };
 		D1A22A8F20A03F8A004F0F05 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
@@ -264,7 +269,6 @@
 		D1A22AB320A03F8A004F0F05 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC64B9D1E88A83A00120777 /* SelectableButton.swift */; };
 		D1A22AB420A03F8A004F0F05 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D105079E20034D5B0018A14F /* DateHelper.swift */; };
 		D1A22AB520A03F8A004F0F05 /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49796011F36304E00E5382E /* CallViewController.swift */; };
-		D1A22AB620A03F8A004F0F05 /* NewFriendCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2F11F14500000C80AC6 /* NewFriendCollectionViewCell.swift */; };
 		D1A22AB720A03F8A004F0F05 /* MonkeyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE491341E8763A0002E9D78 /* MonkeyViewController.swift */; };
 		D1A22AB920A03F8A004F0F05 /* CallViewController+Clock.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43AD40A1F12B52600DE6BBD /* CallViewController+Clock.swift */; };
 		D1A22ABA20A03F8A004F0F05 /* APIController+UserCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F79A1201831140069D473 /* APIController+UserCenter.swift */; };
@@ -374,6 +378,10 @@
 		D1B79D5520611C5500F209B4 /* HWCameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D5420611C5400F209B4 /* HWCameraManager.m */; };
 		D1B79D5A20614F8200F209B4 /* GPUImageSixInputFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D5620614F7E00F209B4 /* GPUImageSixInputFilter.m */; };
 		D1B79D5B20614F8200F209B4 /* GPUImageFiveInputFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D5920614F8000F209B4 /* GPUImageFiveInputFilter.m */; };
+		D1CAB50420B1D4C200D45AF4 /* MonkeyPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CAB50320B1D4C100D45AF4 /* MonkeyPublisher.swift */; };
+		D1CAB50520B1D4C200D45AF4 /* MonkeyPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CAB50320B1D4C100D45AF4 /* MonkeyPublisher.swift */; };
+		D1F7912620B3CE610097574B /* GPUImageFilterGroup+Handler.m in Sources */ = {isa = PBXBuildFile; fileRef = D1F7912420B3CE610097574B /* GPUImageFilterGroup+Handler.m */; };
+		D1F7912720B3CE620097574B /* GPUImageFilterGroup+Handler.m in Sources */ = {isa = PBXBuildFile; fileRef = D1F7912420B3CE610097574B /* GPUImageFilterGroup+Handler.m */; };
 		D1FCDBAA20933C1000CF1BD9 /* RealmMatchInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FCDBA920933C1000CF1BD9 /* RealmMatchInfo.swift */; };
 		D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E59331F3A81510091A7B2 /* CallNotificationView.swift */; };
 		D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */; };
@@ -443,7 +451,6 @@
 		1B3F79A1201831140069D473 /* APIController+UserCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIController+UserCenter.swift"; sourceTree = "<group>"; };
 		1B76554620132B0600FAB045 /* MKMatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMatchManager.swift; sourceTree = "<group>"; };
 		1B76B194206A46560044AC7F /* RealmVideoCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmVideoCall.swift; sourceTree = "<group>"; };
-		1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKNetworkHelper.swift; sourceTree = "<group>"; };
 		1BD655482046B2A900CAA2D5 /* Configs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
 		1C187BCB3CB68083954F9BC0 /* Pods_Monkey_Release.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Monkey_Release.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -461,7 +468,6 @@
 		8435C2E91F14018100C80AC6 /* FriendsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsViewModel.swift; sourceTree = "<group>"; };
 		8435C2ED1F1443F200C80AC6 /* FriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		8435C2EF1F144DA800C80AC6 /* FriendTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendTableViewCell.swift; sourceTree = "<group>"; };
-		8435C2F11F14500000C80AC6 /* NewFriendCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewFriendCollectionViewCell.swift; sourceTree = "<group>"; };
 		8464868C1F1D65240092E89E /* JigglyButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JigglyButton.swift; sourceTree = "<group>"; };
 		847EABF91EBE813F000F9575 /* ProfilePhotoButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePhotoButtonView.swift; sourceTree = "<group>"; };
 		848727B01E86B1AD00F13501 /* ConfettiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
@@ -537,7 +543,6 @@
 		8BEB20031EFC6067001AAC3C /* BackgroundColorGradientLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundColorGradientLayer.swift; sourceTree = "<group>"; };
 		8BFD6D551EF98B9E002C9F9C /* MonkeyVideoRender.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 5; lastKnownFileType = sourcecode.c.objc; path = MonkeyVideoRender.m; sourceTree = "<group>"; };
 		8BFD6D571EF98BB1002C9F9C /* MonkeyVideoRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonkeyVideoRender.h; sourceTree = "<group>"; };
-		8BFD6D611EFAEA87002C9F9C /* MonkeyPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyPublisher.swift; sourceTree = "<group>"; };
 		8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EffectsCoordinator.swift; sourceTree = "<group>"; };
 		8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeySubscriber.swift; sourceTree = "<group>"; };
 		990EC94B20997BC600CA5E0B /* InstagramAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramAuthViewController.swift; sourceTree = "<group>"; };
@@ -576,7 +581,9 @@
 		D1025CD720A1406C00557B64 /* SettingCancelSaveCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCancelSaveCell.swift; sourceTree = "<group>"; };
 		D1025CEC20A2E79F00557B64 /* ApiObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiObject.swift; sourceTree = "<group>"; };
 		D1025CEF20A2FD9900557B64 /* MonkeyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeyModel.swift; sourceTree = "<group>"; };
-		D1025CF320A35EF600557B64 /* MonkeyUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeyUser.swift; sourceTree = "<group>"; };
+		D10490EC20ADB02000381F9E /* AgoraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgoraService.swift; sourceTree = "<group>"; };
+		D10490EF20ADB5F000381F9E /* OpenTokService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenTokService.swift; sourceTree = "<group>"; };
+		D10490F220AEA57300381F9E /* MatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchManager.swift; sourceTree = "<group>"; };
 		D105079E20034D5B0018A14F /* DateHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		D10585E920A04F5B00E63ADC /* onboarding-4.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "onboarding-4.gif"; sourceTree = "<group>"; };
 		D10585EA20A04F5B00E63ADC /* onboarding-2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "onboarding-2.gif"; sourceTree = "<group>"; };
@@ -589,9 +596,13 @@
 		D14478662058C5A400485D68 /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
 		D14478682058C5A400485D68 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D14478732058E28000485D68 /* PushService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushService.entitlements; sourceTree = "<group>"; };
+		D147127720AD65870055516A /* MatchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchModel.swift; sourceTree = "<group>"; };
+		D147128720AD93630055516A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		D147128D20AD98080055516A /* ChannelService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelService.swift; sourceTree = "<group>"; };
 		D17CE9842009C2E4002F4F9D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D17CE9862009E47A002F4F9D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D17CE988200A1185002F4F9D /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		D17E59A720AC2BA300B26501 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		D192A3DA20286E0600791002 /* TextChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextChatViewController.swift; sourceTree = "<group>"; };
 		D192A3DC2029966E00791002 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		D192A3DE2029AD8300791002 /* TextModeMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextModeMessageCell.swift; sourceTree = "<group>"; };
@@ -601,7 +612,6 @@
 		D192A3E8202ADF1000791002 /* SmallYellowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallYellowButton.swift; sourceTree = "<group>"; };
 		D192A3EA202B015A00791002 /* KeyboardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardManager.h; sourceTree = "<group>"; };
 		D192A3EB202B015A00791002 /* KeyboardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardManager.m; sourceTree = "<group>"; };
-		D19D3B1620A4561E0028F69C /* RealmObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmObject.swift; sourceTree = "<group>"; };
 		D1A22B1E20A03F8A004F0F05 /* Sandbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sandbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeySwitch.swift; sourceTree = "<group>"; };
 		D1B79CF3205FA80800F209B4 /* UserOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserOptions.swift; sourceTree = "<group>"; };
@@ -658,6 +668,9 @@
 		D1B79D5720614F7F00F209B4 /* GPUImageSixInputFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageSixInputFilter.h; sourceTree = "<group>"; };
 		D1B79D5820614F7F00F209B4 /* GPUImageFiveInputFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageFiveInputFilter.h; sourceTree = "<group>"; };
 		D1B79D5920614F8000F209B4 /* GPUImageFiveInputFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageFiveInputFilter.m; sourceTree = "<group>"; };
+		D1CAB50320B1D4C100D45AF4 /* MonkeyPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyPublisher.swift; sourceTree = "<group>"; };
+		D1F7912420B3CE610097574B /* GPUImageFilterGroup+Handler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GPUImageFilterGroup+Handler.m"; sourceTree = "<group>"; };
+		D1F7912520B3CE610097574B /* GPUImageFilterGroup+Handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GPUImageFilterGroup+Handler.h"; sourceTree = "<group>"; };
 		D1FCDBA920933C1000CF1BD9 /* RealmMatchInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmMatchInfo.swift; sourceTree = "<group>"; };
 		D40E59331F3A81510091A7B2 /* CallNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallNotificationView.swift; sourceTree = "<group>"; };
 		D40E59351F3A816B0091A7B2 /* CallNotificationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CallNotificationView.xib; sourceTree = "<group>"; };
@@ -816,9 +829,10 @@
 			isa = PBXGroup;
 			children = (
 				D1025CEC20A2E79F00557B64 /* ApiObject.swift */,
-				D19D3B1620A4561E0028F69C /* RealmObject.swift */,
 				D1025CEF20A2FD9900557B64 /* MonkeyModel.swift */,
-				D1025CF320A35EF600557B64 /* MonkeyUser.swift */,
+				D192A3DC2029966E00791002 /* Message.swift */,
+				D147127720AD65870055516A /* MatchModel.swift */,
+				D1B79CF3205FA80800F209B4 /* UserOptions.swift */,
 			);
 			path = "Model Wrapper";
 			sourceTree = "<group>";
@@ -949,15 +963,20 @@
 			children = (
 				8BC260121E54122000B9CC16 /* Socket.swift */,
 				D17CE988200A1185002F4F9D /* Analytics.swift */,
+				D12E22932010747200703F9B /* RemoteConfig.swift */,
+				D192A3EA202B015A00791002 /* KeyboardManager.h */,
+				D192A3EB202B015A00791002 /* KeyboardManager.m */,
 				D1B79D5320611C5400F209B4 /* HWCameraManager.h */,
 				D1B79D5420611C5400F209B4 /* HWCameraManager.m */,
 				D47833E11F2BF276007F37DB /* NotificationManager.swift */,
 				D433C1501F44D35500C9F704 /* IncomingCallManager.swift */,
-				D192A3EA202B015A00791002 /* KeyboardManager.h */,
-				D192A3EB202B015A00791002 /* KeyboardManager.m */,
-				1BCCDE561FE2852D0081CFD2 /* MKNetworkHelper.swift */,
-				D12E22932010747200703F9B /* RemoteConfig.swift */,
 				1B76554620132B0600FAB045 /* MKMatchManager.swift */,
+				D147128720AD93630055516A /* NetworkMonitor.swift */,
+				D10490F220AEA57300381F9E /* MatchManager.swift */,
+				D147128D20AD98080055516A /* ChannelService.swift */,
+				D10490EC20ADB02000381F9E /* AgoraService.swift */,
+				D10490EF20ADB5F000381F9E /* OpenTokService.swift */,
+				D1CAB50320B1D4C100D45AF4 /* MonkeyPublisher.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1060,6 +1079,7 @@
 			children = (
 				D1025CA920A13FFD00557B64 /* Component */,
 				8BE02A451EE9FBC7004CF000 /* Settings.storyboard */,
+				D17E59A720AC2BA300B26501 /* SettingsViewController.swift */,
 				D1025CCF20A1406B00557B64 /* SettingEditViewController.swift */,
 				D1025CD520A1406C00557B64 /* SettingMainViewController.swift */,
 				990EC94B20997BC600CA5E0B /* InstagramAuthViewController.swift */,
@@ -1072,7 +1092,6 @@
 			children = (
 				8435C2E91F14018100C80AC6 /* FriendsViewModel.swift */,
 				8435C2EF1F144DA800C80AC6 /* FriendTableViewCell.swift */,
-				8435C2F11F14500000C80AC6 /* NewFriendCollectionViewCell.swift */,
 				8435C2ED1F1443F200C80AC6 /* FriendsViewController.swift */,
 				8BE02A431EE9FB7E004CF000 /* Chat.storyboard */,
 			);
@@ -1155,7 +1174,6 @@
 			isa = PBXGroup;
 			children = (
 				8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */,
-				8BFD6D611EFAEA87002C9F9C /* MonkeyPublisher.swift */,
 			);
 			path = RoomManager;
 			sourceTree = "<group>";
@@ -1302,8 +1320,8 @@
 				D16C40A720A05EEF005424C9 /* Old API Wrapper */,
 				D16C40A620A05EE1005424C9 /* Modern API Wrapper */,
 				8B6A57A11EAEBF3E00136311 /* JSONAPI.swift */,
-				BF8C38B61E9A188E0089B313 /* RealmDataController.swift */,
 				8B6A579F1EAE9E6100136311 /* APIError.swift */,
+				BF8C38B61E9A188E0089B313 /* RealmDataController.swift */,
 				1BD655482046B2A900CAA2D5 /* Configs.swift */,
 				8BAA4C711E5545AC0072F3F6 /* APIController.swift */,
 				1B3F79A1201831140069D473 /* APIController+UserCenter.swift */,
@@ -1323,8 +1341,6 @@
 				C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */,
 				C0197E361F60A435005F121A /* RealmBlock.swift */,
 				C0AD96B91F6721A9007932AF /* RealmFriendship.swift */,
-				D192A3DC2029966E00791002 /* Message.swift */,
-				D1B79CF3205FA80800F209B4 /* UserOptions.swift */,
 				D1B79CFE2060B52500F209B4 /* RealmFilter.swift */,
 				1B76B194206A46560044AC7F /* RealmVideoCall.swift */,
 				D1FCDBA920933C1000CF1BD9 /* RealmMatchInfo.swift */,
@@ -1344,6 +1360,8 @@
 		D1B79D042060DACB00F209B4 /* GPUImage */ = {
 			isa = PBXGroup;
 			children = (
+				D1F7912520B3CE610097574B /* GPUImageFilterGroup+Handler.h */,
+				D1F7912420B3CE610097574B /* GPUImageFilterGroup+Handler.m */,
 				D1B79D112060DACB00F209B4 /* GPUImage.InstagramFilter.bundle */,
 				D1B79D4A2060E1E500F209B4 /* GPUImageHelper.h */,
 				D1B79D4B2060E1E500F209B4 /* GPUImageHelper.m */,
@@ -1908,6 +1926,7 @@
 				8BEB20041EFC6067001AAC3C /* BackgroundColorGradientLayer.swift in Sources */,
 				D1B79D352060DACB00F209B4 /* IFHudsonFilter.m in Sources */,
 				8BC903271EBE6DE6004B46D8 /* PopupTransitionDismissAnimator.swift in Sources */,
+				D147128820AD93630055516A /* NetworkMonitor.swift in Sources */,
 				D1B79D5520611C5500F209B4 /* HWCameraManager.m in Sources */,
 				D1B79CFF2060B52500F209B4 /* RealmFilter.swift in Sources */,
 				D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */,
@@ -1920,14 +1939,15 @@
 				1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */,
 				BF5258B01E95D1F4002EA03F /* RealmUser.swift in Sources */,
 				C0CF020B1F58CA45009D7B33 /* PresentPopupTransitionAnimator.swift in Sources */,
+				D10490ED20ADB02000381F9E /* AgoraService.swift in Sources */,
 				84AA03DE1EBFAC1E00779C54 /* BirthdatePicker.swift in Sources */,
 				D43AD40F1F12B5A700DE6BBD /* CallViewController+Reporting.swift in Sources */,
 				D1B79D3E2060DACB00F209B4 /* IFHefeFilter.m in Sources */,
+				D17E59A820AC2BA300B26501 /* SettingsViewController.swift in Sources */,
 				8BE9FE7F1DDF698400B55280 /* ChatSession.swift in Sources */,
 				D1B79D2E2060DACB00F209B4 /* IF1977Filter.m in Sources */,
 				C0CF020D1F58CA66009D7B33 /* DismissPopupTransitionAnimator.swift in Sources */,
 				D43415521F33812C00A481CC /* RatingNotificationView.swift in Sources */,
-				8BFD6D621EFAEA87002C9F9C /* MonkeyPublisher.swift in Sources */,
 				D12E22942010747200703F9B /* RemoteConfig.swift in Sources */,
 				8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */,
 				847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */,
@@ -1935,6 +1955,7 @@
 				34B7F7DB20898CCA00A6B7B2 /* UIView+MJ.m in Sources */,
 				8B2ED8BE1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift in Sources */,
 				D1B79D402060DACB00F209B4 /* IFNashvilleFilter.m in Sources */,
+				D10490F020ADB5F000381F9E /* OpenTokService.swift in Sources */,
 				D1025CE020A1406C00557B64 /* SettingHeadView.swift in Sources */,
 				D192A3DB20286E0600791002 /* TextChatViewController.swift in Sources */,
 				C047D7C71F6C36160048286F /* CountingLabel.swift in Sources */,
@@ -1947,7 +1968,6 @@
 				1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */,
 				D1B79D3A2060DACB00F209B4 /* IFXproIIFilter.m in Sources */,
 				D4656C4D1F49F98700966C6D /* PermissionViewController.swift in Sources */,
-				1BCCDE571FE2852E0081CFD2 /* MKNetworkHelper.swift in Sources */,
 				D433C1511F44D35500C9F704 /* IncomingCallManager.swift in Sources */,
 				D192A3DD2029966E00791002 /* Message.swift in Sources */,
 				D40E59341F3A81510091A7B2 /* CallNotificationView.swift in Sources */,
@@ -1975,14 +1995,12 @@
 				8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */,
 				8BC260131E54122000B9CC16 /* Socket.swift in Sources */,
 				8435C2F01F144DA800C80AC6 /* FriendTableViewCell.swift in Sources */,
-				D19D3B1720A4561F0028F69C /* RealmObject.swift in Sources */,
 				848727B11E86B1AD00F13501 /* ConfettiView.swift in Sources */,
 				D1025CE420A1406C00557B64 /* SettingEditCell.swift in Sources */,
 				BF8C38B51E9A0B620089B313 /* MainViewController+Location.swift in Sources */,
 				D1B79D022060C94800F209B4 /* MonkeyFilterCell.swift in Sources */,
 				D1025CDC20A1406C00557B64 /* SettingImageCell.swift in Sources */,
 				8BE02A4A1EEA4187004CF000 /* SwipeableViewController.swift in Sources */,
-				D1025CF420A35EF600557B64 /* MonkeyUser.swift in Sources */,
 				D1B79D3C2060DACB00F209B4 /* IFLomofiFilter.m in Sources */,
 				8B7DC74A1EF5CADB00A3F966 /* ChannelsViewController.swift in Sources */,
 				D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */,
@@ -1993,12 +2011,13 @@
 				D105079F20034D5B0018A14F /* DateHelper.swift in Sources */,
 				D1025CDA20A1406C00557B64 /* SettingEditViewController.swift in Sources */,
 				D49796021F36304E00E5382E /* CallViewController.swift in Sources */,
-				8435C2F21F14500000C80AC6 /* NewFriendCollectionViewCell.swift in Sources */,
 				8BE491351E8763A0002E9D78 /* MonkeyViewController.swift in Sources */,
 				D43AD40B1F12B52600DE6BBD /* CallViewController+Clock.swift in Sources */,
 				1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */,
+				D1F7912620B3CE610097574B /* GPUImageFilterGroup+Handler.m in Sources */,
 				D1B79CF4205FA80800F209B4 /* UserOptions.swift in Sources */,
 				D1A7DC2B2049506800B061F9 /* MonkeySwitch.swift in Sources */,
+				D147127820AD65870055516A /* MatchModel.swift in Sources */,
 				D1B79D3F2060DACB00F209B4 /* IFNormalFilter.m in Sources */,
 				D1B79D3D2060DACB00F209B4 /* IFSutroFilter.m in Sources */,
 				D1B79D362060DACB00F209B4 /* IFValenciaFilter.m in Sources */,
@@ -2012,6 +2031,7 @@
 				8B7C19361DB15A6F002FA6C9 /* AuthViewController.swift in Sources */,
 				D1B79D3B2060DACB00F209B4 /* IFLordKelvinFilter.m in Sources */,
 				D192A3E1202A0E1A00791002 /* MatchModeSwitch.swift in Sources */,
+				D10490F320AEA57300381F9E /* MatchManager.swift in Sources */,
 				D1B79D4C2060E1E600F209B4 /* GPUImageHelper.m in Sources */,
 				8BFD6D6D1EFB2DF0002C9F9C /* MonkeySubscriber.swift in Sources */,
 				8B8664BD1F04AB9700E5AC12 /* PixelationEffect.swift in Sources */,
@@ -2023,7 +2043,9 @@
 				8BE02A4E1EEA4B62004CF000 /* SwipeableInteractiveTransition.swift in Sources */,
 				BF8C38B71E9A188E0089B313 /* RealmDataController.swift in Sources */,
 				8B7C193A1DB17967002FA6C9 /* MainViewController.swift in Sources */,
+				D147128E20AD98080055516A /* ChannelService.swift in Sources */,
 				8B6DC3351DB4978A004F787E /* Environment.swift in Sources */,
+				D1CAB50420B1D4C200D45AF4 /* MonkeyPublisher.swift in Sources */,
 				D1B79D2D2060DACB00F209B4 /* IFBrannanFilter.m in Sources */,
 				8BE491321E875E3B002E9D78 /* AgePickerView.swift in Sources */,
 				8499A58C1E86DED80088D0D2 /* TapticFeedback.swift in Sources */,
@@ -2071,6 +2093,7 @@
 				D1A22A6320A03F8A004F0F05 /* BackgroundColorGradientLayer.swift in Sources */,
 				D1A22A6420A03F8A004F0F05 /* IFHudsonFilter.m in Sources */,
 				D1A22A6620A03F8A004F0F05 /* PopupTransitionDismissAnimator.swift in Sources */,
+				D147128920AD93630055516A /* NetworkMonitor.swift in Sources */,
 				D1A22A6720A03F8A004F0F05 /* HWCameraManager.m in Sources */,
 				D1A22A6920A03F8A004F0F05 /* RealmFilter.swift in Sources */,
 				D1A22A6A20A03F8A004F0F05 /* SmallYellowButton.swift in Sources */,
@@ -2083,14 +2106,15 @@
 				D1A22A7020A03F8A004F0F05 /* Configs.swift in Sources */,
 				D1A22A7120A03F8A004F0F05 /* RealmUser.swift in Sources */,
 				D1A22A7220A03F8A004F0F05 /* PresentPopupTransitionAnimator.swift in Sources */,
+				D10490EE20ADB02000381F9E /* AgoraService.swift in Sources */,
 				D1A22A7320A03F8A004F0F05 /* BirthdatePicker.swift in Sources */,
 				D1A22A7420A03F8A004F0F05 /* CallViewController+Reporting.swift in Sources */,
 				D1A22A7520A03F8A004F0F05 /* IFHefeFilter.m in Sources */,
+				D17E59A920AC2BA300B26501 /* SettingsViewController.swift in Sources */,
 				D1A22A7620A03F8A004F0F05 /* ChatSession.swift in Sources */,
 				D1A22A7720A03F8A004F0F05 /* IF1977Filter.m in Sources */,
 				D1A22A7820A03F8A004F0F05 /* DismissPopupTransitionAnimator.swift in Sources */,
 				D1A22A7920A03F8A004F0F05 /* RatingNotificationView.swift in Sources */,
-				D1A22A7A20A03F8A004F0F05 /* MonkeyPublisher.swift in Sources */,
 				D1A22A7B20A03F8A004F0F05 /* RemoteConfig.swift in Sources */,
 				D1A22A7C20A03F8A004F0F05 /* Apns.swift in Sources */,
 				D1A22A7D20A03F8A004F0F05 /* ProfilePhotoButtonView.swift in Sources */,
@@ -2098,6 +2122,7 @@
 				D1A22A7F20A03F8A004F0F05 /* UIView+MJ.m in Sources */,
 				D1A22A8020A03F8A004F0F05 /* SwipeableTransitionDismissAnimator.swift in Sources */,
 				D1A22A8120A03F8A004F0F05 /* IFNashvilleFilter.m in Sources */,
+				D10490F120ADB5F000381F9E /* OpenTokService.swift in Sources */,
 				D1025CE120A1406C00557B64 /* SettingHeadView.swift in Sources */,
 				D1A22A8220A03F8A004F0F05 /* TextChatViewController.swift in Sources */,
 				D1A22A8320A03F8A004F0F05 /* CountingLabel.swift in Sources */,
@@ -2110,7 +2135,6 @@
 				D1A22A8920A03F8A004F0F05 /* RealmVideoCall.swift in Sources */,
 				D1A22A8A20A03F8A004F0F05 /* IFXproIIFilter.m in Sources */,
 				D1A22A8B20A03F8A004F0F05 /* PermissionViewController.swift in Sources */,
-				D1A22A8C20A03F8A004F0F05 /* MKNetworkHelper.swift in Sources */,
 				D1A22A8D20A03F8A004F0F05 /* IncomingCallManager.swift in Sources */,
 				D1A22A8E20A03F8A004F0F05 /* Message.swift in Sources */,
 				D1A22A8F20A03F8A004F0F05 /* CallNotificationView.swift in Sources */,
@@ -2138,14 +2162,12 @@
 				D1A22AA420A03F8A004F0F05 /* PopupViewController.swift in Sources */,
 				D1A22AA620A03F8A004F0F05 /* Socket.swift in Sources */,
 				D1A22AA720A03F8A004F0F05 /* FriendTableViewCell.swift in Sources */,
-				D19D3B1820A4561F0028F69C /* RealmObject.swift in Sources */,
 				D1A22AA820A03F8A004F0F05 /* ConfettiView.swift in Sources */,
 				D1025CE520A1406C00557B64 /* SettingEditCell.swift in Sources */,
 				D1A22AA920A03F8A004F0F05 /* MainViewController+Location.swift in Sources */,
 				D1A22AAA20A03F8A004F0F05 /* MonkeyFilterCell.swift in Sources */,
 				D1025CDD20A1406C00557B64 /* SettingImageCell.swift in Sources */,
 				D1A22AAC20A03F8A004F0F05 /* SwipeableViewController.swift in Sources */,
-				D1025CF520A35EF600557B64 /* MonkeyUser.swift in Sources */,
 				D1A22AAD20A03F8A004F0F05 /* IFLomofiFilter.m in Sources */,
 				D1A22AAE20A03F8A004F0F05 /* ChannelsViewController.swift in Sources */,
 				D1A22AAF20A03F8A004F0F05 /* KeyboardManager.m in Sources */,
@@ -2156,12 +2178,13 @@
 				D1A22AB420A03F8A004F0F05 /* DateHelper.swift in Sources */,
 				D1025CDB20A1406C00557B64 /* SettingEditViewController.swift in Sources */,
 				D1A22AB520A03F8A004F0F05 /* CallViewController.swift in Sources */,
-				D1A22AB620A03F8A004F0F05 /* NewFriendCollectionViewCell.swift in Sources */,
 				D1A22AB720A03F8A004F0F05 /* MonkeyViewController.swift in Sources */,
 				D1A22AB920A03F8A004F0F05 /* CallViewController+Clock.swift in Sources */,
 				D1A22ABA20A03F8A004F0F05 /* APIController+UserCenter.swift in Sources */,
+				D1F7912720B3CE620097574B /* GPUImageFilterGroup+Handler.m in Sources */,
 				D1A22ABB20A03F8A004F0F05 /* UserOptions.swift in Sources */,
 				D1A22ABC20A03F8A004F0F05 /* MonkeySwitch.swift in Sources */,
+				D147127920AD65870055516A /* MatchModel.swift in Sources */,
 				D1A22ABD20A03F8A004F0F05 /* IFNormalFilter.m in Sources */,
 				D1A22ABE20A03F8A004F0F05 /* IFSutroFilter.m in Sources */,
 				D1A22ABF20A03F8A004F0F05 /* IFValenciaFilter.m in Sources */,
@@ -2175,6 +2198,7 @@
 				D1A22AC720A03F8A004F0F05 /* AuthViewController.swift in Sources */,
 				D1A22AC920A03F8A004F0F05 /* IFLordKelvinFilter.m in Sources */,
 				D1A22ACA20A03F8A004F0F05 /* MatchModeSwitch.swift in Sources */,
+				D10490F420AEA57300381F9E /* MatchManager.swift in Sources */,
 				D1A22ACB20A03F8A004F0F05 /* GPUImageHelper.m in Sources */,
 				D1A22ACC20A03F8A004F0F05 /* MonkeySubscriber.swift in Sources */,
 				D1A22ACD20A03F8A004F0F05 /* PixelationEffect.swift in Sources */,
@@ -2186,7 +2210,9 @@
 				D1A22AD420A03F8A004F0F05 /* SwipeableInteractiveTransition.swift in Sources */,
 				D1A22AD520A03F8A004F0F05 /* RealmDataController.swift in Sources */,
 				D1A22AD620A03F8A004F0F05 /* MainViewController.swift in Sources */,
+				D147128F20AD98080055516A /* ChannelService.swift in Sources */,
 				D1A22AD720A03F8A004F0F05 /* Environment.swift in Sources */,
+				D1CAB50520B1D4C200D45AF4 /* MonkeyPublisher.swift in Sources */,
 				D1A22AD820A03F8A004F0F05 /* IFBrannanFilter.m in Sources */,
 				D1A22AD920A03F8A004F0F05 /* AgePickerView.swift in Sources */,
 				D1A22ADA20A03F8A004F0F05 /* TapticFeedback.swift in Sources */,
@@ -2302,6 +2328,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Monkey/Resource/Entitlements/Monkey.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = YES;
@@ -2452,6 +2479,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Monkey/Resource/Entitlements/Monkey.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 9RZJW8NK36;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

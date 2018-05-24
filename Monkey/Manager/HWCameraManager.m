@@ -9,15 +9,15 @@
 #import "HWCameraManager.h"
 #import "GPUImageHelper.h"
 #import <AVFoundation/AVFoundation.h>
+#import "GPUImageFilterGroup+Handler.h"
 
-@interface HWCameraManager() <GPUImageVideoCameraDelegate>
+@interface HWCameraManager() <GPUImageVideoCameraDelegate, GPUImageFilterGroupDelgate>
 
 // 滤镜以及预览
 @property (nonatomic, strong) GPUImageView *gpuImageView;
 @property (nonatomic, strong) GPUImagePixellateFilter *pixellateFilter;
 @property (nonatomic, strong) GPUImageFilterGroup *gpuImagefilter;
 @property (nonatomic, strong) GPUImageVideoCamera *gpuImageCamera;
-@property (nonatomic, strong) GPUImageRawDataOutput *rawOut;
 
 @end
 
@@ -87,22 +87,21 @@
 
 #pragma mark - pixel
 - (void)addPixellate {
-	[self clearFilter];
-	
 	self.pixellated = YES;
+	
+	[self clearFilter];
 	_gpuImagefilter = [[GPUImageFilterGroup alloc] init];
 	[_gpuImagefilter addFilter:self.pixellateFilter];
 	[_gpuImagefilter setInitialFilters:@[self.pixellateFilter]];
 	[_gpuImagefilter setTerminalFilter:self.pixellateFilter];
-	
 	[self addFilter];
 }
 
 - (void)removePixellate {
 	self.pixellated = NO;
+	
 	[self clearFilter];
 	self.filterType = self.filterType;
-	[self addFilter];
 }
 
 #pragma mark - 切换摄像头
@@ -168,20 +167,13 @@
 	return self.gpuImageView;
 }
 
-- (GPUImageRawDataOutput *)rawOut {
-	if (!_rawOut) {
-		_rawOut = [[GPUImageRawDataOutput alloc] initWithImageSize:CGSizeMake(_imageWidth, _imageHeight) resultsInBGRAFormat:YES];
-	}
-	return _rawOut;
-}
-
 - (GPUImageVideoCamera *)gpuImageCamera {
 	if (!_gpuImageCamera) {
 		NSString *captureSession = AVCaptureSessionPreset640x480;
 		
 		_gpuImageCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:captureSession cameraPosition:AVCaptureDevicePositionFront];
 		_gpuImageCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
-		_gpuImageCamera.delegate = self;
+//		_gpuImageCamera.delegate = self;
 	}
 	return _gpuImageCamera;
 }
@@ -194,15 +186,8 @@
 	_filterType = filterType;
 	
 	[self clearFilter];
-	
 	_gpuImagefilter = [GPUImageHelper filterGroupWithType:filterType];
-	
 	[self addFilter];
-	
-	__weak typeof(self) weakSelf = self;
-	_gpuImagefilter.frameProcessingCompletionBlock = ^(GPUImageOutput *frameBufferOutput, CMTime timeShot) {
-		[weakSelf frameProcessingComplete:frameBufferOutput];
-	};
 }
 
 #pragma mark - life cycle
@@ -210,7 +195,6 @@
 	// 释放旧的滤镜
 	if (_gpuImagefilter) {
 		[_gpuImagefilter removeTarget:_gpuImageView];
-		[_gpuImagefilter removeTarget:_rawOut];
 		[self.gpuImageCamera removeTarget:_gpuImagefilter];
 		_gpuImagefilter = nil;
 	}
@@ -219,8 +203,8 @@
 - (void)addFilter {
 	[self.gpuImageCamera addTarget:_gpuImagefilter];
 	[_gpuImagefilter addTarget:self.gpuImageView];
-	[_gpuImagefilter addTarget:self.rawOut];
 	[self.gpuImageView setInputRotation:kGPUImageFlipHorizonal atIndex:0];
+	_gpuImagefilter.delegate = self;
 }
 
 - (void)prepareManager {
@@ -228,27 +212,13 @@
 	_imageHeight = 640;
 	[self videoFrame];
 	
-	__weak typeof(self) weakSelf = self;
-	[self.rawOut setNewFrameAvailableBlock:^{
-		if ([weakSelf isCaptureStarted]) {
-			[weakSelf.rawOut lockFramebufferForReading];
-			GLubyte *rawData = weakSelf.rawOut.rawBytesForImage;
-			[weakSelf.videoFrame clearPlanes];
-			[weakSelf.videoFrame.planes addPointer:rawData];
-			[weakSelf.videoCaptureConsumer consumeFrame:weakSelf.videoFrame];
-			[weakSelf.rawOut unlockFramebufferAfterReading];
-		}
-	}];
 	self.filterType = [[NSUserDefaults standardUserDefaults] stringForKey:@"MonkeySelectFilter"];
 	[self startCamera];
 }
 
 - (void)clearManager {
-	if (_gpuImagefilter) {
-		[self.gpuImagefilter removeTarget:_gpuImageView];
-		[self.gpuImageCamera removeTarget:_gpuImagefilter];
-		_gpuImagefilter = nil;
-	}
+	[self clearFilter];
+	
 	if (_gpuImageView) {
 		[self.gpuImageView removeFromSuperview];
 		self.gpuImageView = nil;
@@ -259,21 +229,33 @@
 
 #pragma mark - GPUImageVideoCameraDelegate
 - (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer {
-	
+//	CVPixelBufferRef videoFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
+//	[self upload:videoFrame];
+}
+
+- (void)processPixelBuffer:(CVPixelBufferRef)pixelBuffer {
+	[self upload:pixelBuffer];
 }
 
 #pragma mark - processing filter video complete
-- (void)pixelBufferProcessing:(CVPixelBufferRef)pixelBuffer {
-	// push video buffer
-//	if (!(_capturing && _videoCaptureConsumer)) {
-//		return;
-//	}
+- (void)upload:(CVPixelBufferRef)pixelBuffer {
+	if (self.agora_capture) {
+		CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+		[self.streamHandler newFrameBufferAvailable:pixelBuffer];
+		CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+	}else if ([self isCaptureStarted]) {
+		CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+		self.videoFrame.format.estimatedCaptureDelay = 100;
+		[self.videoFrame clearPlanes];
+		[self.videoFrame.planes addPointer:CVPixelBufferGetBaseAddress(pixelBuffer)];
+		[self.videoCaptureConsumer consumeFrame:self.videoFrame];
+		CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+	}
 }
 
 - (void)frameProcessingComplete:(GPUImageOutput *)frameBufferOutput {
-	[self pixelBufferProcessing:frameBufferOutput.framebufferForOutput.pixelBuffer];
+//	[self upload:frameBufferOutput.framebufferForOutput.pixelBuffer];
 }
-
 #pragma mark - OTVideoCapture
 
 /**
@@ -310,7 +292,7 @@
  * Whether video is being captured.
  */
 - (BOOL)isCaptureStarted {
-	return _capturing && [self.gpuImageCamera isRunning];
+	return _capturing && [self.gpuImageCamera isRunning] && _opentok_capture;
 }
 
 /**

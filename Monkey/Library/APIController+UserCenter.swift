@@ -10,6 +10,12 @@ import Foundation
 
 //  user action track
 extension APIController {
+	
+	static let kCodeVerifyJustNow = "kCodeVerifyJustNow"
+	static let kNewAccountCodeVerify = "kNewAccountCodeVerify"
+	static let kSignAsLogin = "kSignAsLogin"
+	static let kNewAccountSignUpFinish = "kNewAccountSignUpFinish"
+	
     private static let userDef = UserDefaults.standard
     
     private class func signAsNewUser() {

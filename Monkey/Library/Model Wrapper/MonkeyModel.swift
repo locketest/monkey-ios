@@ -32,7 +32,7 @@ class MonkeyModel: Object, Mappable, MonkeyObject {
 		guard property.type == .date, let stringValue = value as? String else {
 			return super.setValue(value, forKey: key)
 		}
-		super.setValue(APIController.parseDate(stringValue), forKey: key)
+		super.setValue(RealmDataController.shared.parseDate(stringValue), forKey: key)
 	}
 	
 	class var type: String {
