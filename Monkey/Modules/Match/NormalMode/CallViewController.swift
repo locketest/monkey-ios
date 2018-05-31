@@ -52,7 +52,6 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     @IBOutlet var clockLabelBackgroundView: UIView!
 
     @IBOutlet weak var cameraPositionButton: UIButton!
-    static var lastScreenShotTime:TimeInterval = 0
     var currentMatchPastTime:TimeInterval = 0
     
 	var isLinkInstagramBool: Bool {
@@ -276,28 +275,6 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
         self.ticker = nil
     }
 
-    func unhideAfterReportScreenshot() {
-//        self.chatSession?.remoteView?.effectsEnabled = true
-        self.policeButton.isHidden = false
-        self.statusCornerView.isHidden = false
-        
-        if self.chatSession?.friendMatched == true {
-            self.endCallButton.isHidden = false
-            self.handleInstagramPopupBtnHiddenFunc(isHidden: self.endCallButton.isHidden)
-        }else if self.chatSession?.matchMode == .EventMode {
-            self.skipButton.isHidden = false
-            self.snapchatButton.isHidden = false
-        }else {
-            self.addMinuteButton.isHidden = false
-            self.snapchatButton.isHidden = false
-        }
-        
-        if let label = self.containerView.viewWithTag(71074) as? UILabel {
-            label.isHidden = false
-        }
-        self.hideStatusBarForScreenshot = false
-    }
-
     func requestPresentation(of alertController: UIAlertController, from view: UIView) {
         self.present(alertController, animated: true, completion: nil)
     }
@@ -414,10 +391,7 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     }
     var winEmojis = "🎉👻🌟😀💎♥️🎊🎁🐬🙉🔥"
 
-    // MARK: Report Button
     var reportedLabel: UILabel?
-    var reportImage: UIImage?
-    var reportChatId: String?
 
 	func received(textMessage: TextMessage, in chatSession: ChatSession) {
 

@@ -169,7 +169,7 @@ class ChatViewModel {
             self.delegate?.reloadData()
         }
 
-        let messageText:Any = message ?? NSNull()
+        let messageText: Any = message ?? NSNull()
 
         let messageData =  [
             "data": [

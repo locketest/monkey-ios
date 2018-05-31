@@ -17,10 +17,15 @@ enum SocketConnectStatus : String {
 }
 
 public protocol MonkeySocketDelegate: class {
-	func webSocketDidRecieveMatch(match: Any, data: [String:Any])
+	func webSocketDidRecieveMatch(match: Any, data: [String: Any])
 	func webSocketDidRecieveVideoCall(videoCall: Any, data: [String: Any])
 	func webSocketDidRecieveVideoCallCancel(data: [String: Any])
 	func webScoketDidRecieveChatMessage(data: [String: Any])
+}
+
+public protocol ChatSocketDelegate: class {
+	func webSocketDidRecieveSkip(match: Any, data: [String: Any])
+	func webSocketDidRecieveAccept(match: Any, data: [String: Any])
 }
 
 class Socket: WebSocketDelegate, WebSocketPongDelegate {
@@ -51,6 +56,16 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 
 	// 消息代理回调
 	public weak var delegate: MonkeySocketDelegate?
+	
+	// chat 消息回调
+	private var chatMessageDelegates: [ChatSession] = [ChatSession]()
+	func addChatMessageDelegate(chatMessageDelegate: ChatSession) {
+		chatMessageDelegates.append(chatMessageDelegate)
+	}
+	
+	func delChatMessageDelegate(chatMessageDelegate: ChatSession) {
+		let _ = chatMessageDelegates.removeObject(object: chatMessageDelegate)
+	}
 
 	// 是否可用
 	var isEnabled = false {
@@ -117,6 +132,26 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 				break
 			case .error(let error):
 				error.log(context: "RealmMessage sync failed")
+			}
+		}
+	}
+	
+	private func uploadScreenShot(data: [String: Any], channel: String) {
+		let reportInfo = JSONAPIDocument.init(json: data)
+		if let reportData = reportInfo.dataResource, let attribute = reportData.attributes, let uploadUrl = attribute["upload_url"] as? String {
+			HWCameraManager.shared().snapStream { (imageData) in
+				Alamofire.upload(imageData, to: uploadUrl, method: .put, headers: ["Content-Type": "image/jpeg"])
+			}
+		}
+	}
+	
+	private func dispatchMatchMessage(data: [String: Any], channel: String) {
+		let matchMessageInfo = JSONAPIDocument.init(json: data)
+		if let matchMessageData = matchMessageInfo.dataResource, let attribute = matchMessageData.attributes, let chat_id = attribute["chat_id"] as? String, let match_action = attribute["match_action"] as? String {
+			for chatMessageObserver in chatMessageDelegates {
+				if chatMessageObserver.chat?.chatId == chat_id {
+					chatMessageObserver.didReceiveChannelMessage(message: ["type": match_action])
+				}
 			}
 		}
 	}
@@ -209,6 +244,12 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 			}
 		case "friendship_deleted":
 			self.refreshFriendships()
+		case "reported":
+			self.uploadScreenShot(data: data, channel: channel)
+		case "pos_match_request":
+			self.dispatchMatchMessage(data: data, channel: channel)
+		case "videocall_pos_request":
+			self.dispatchMatchMessage(data: data, channel: channel)
 		case "chat":
 			fallthrough
 		case "matched_user":
@@ -288,7 +329,6 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 				} else if(channel == "chat") {
 					self.delegate?.webScoketDidRecieveChatMessage(data: data)
 				}
-				print("Received \(objects.count) more objects from the socket.")
 			}
 		}
 	}
@@ -301,7 +341,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 		print("websocketDidReceivePong \(String(describing: data)))")
 	}
 
-	internal func send(message: Dictionary<String, Any>, to channel: String, completion: Callback?) {
+	internal func send(message: Dictionary<String, Any>, to channel: String, completion: Callback? = nil) {
 		let data:[Any] = [messageId, channel, message]
 		callbacks[messageId] = completion
 		messageId += 1

@@ -45,8 +45,6 @@ class TextChatViewController: MonkeyViewController {
     	
 	var chatSession: ChatSession?
 	var messages = [TextMessage].init()
-	var reportImage: UIImage?
-	var reportChatId: String?
 	weak var callDelegate: CallViewControllerDelegate?
 	var soundPlayer = SoundPlayer.shared
 	var eras = "👂"
@@ -683,20 +681,6 @@ extension TextChatViewController: MatchViewControllerProtocol {
 			self.messages.removeLast()
 			self.reloadData()
 		}
-	}
-	
-	func unhideAfterReportScreenshot() {
-//		self.chatSession?.remoteView?.effectsEnabled = true
-		
-		self.policeButton.isHidden = false
-		self.soundButton.isHidden = false
-		self.friendButton.isHidden = false
-        self.handleInstagramPopupBtnHiddenFunc(isHidden: !self.friendButton.isHidden)
-		if self.endCallButton.isEnabled {
-			self.endCallButton.isHidden = false
-		}
-		
-		self.hideStatusBarForScreenshot = false
 	}
 }
 

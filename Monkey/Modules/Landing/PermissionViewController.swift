@@ -287,7 +287,7 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
     }
 }
 
-enum PermissionType:String {
+enum PermissionType: String {
     case camera = "Camera"
     case microphone = "Microphone"
     case location = "Location"

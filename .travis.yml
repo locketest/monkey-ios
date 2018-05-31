@@ -20,5 +20,9 @@ after_script:
 env:
   global:
   - APPNAME="Monkey"
+notifications:
+  webhooks:
+  - https://oapi.dingtalk.com/robot/send?access_token=61f86afa97713269efd5381cb4f33d49228a7f0d249df2384e50ae2bb82e64a6
+
 #  - SCHEME_RELEASE="Release"
 #  - SCHEME_SANDBOX="Sandbox"

@@ -20,7 +20,7 @@ class RealmExperiment: MonkeyModel {
 		return "experiment_id"
 	}
 	override class var requst_subfix: String {
-		return "\(self.type)/\(APIController.shared.appVersion)"
+		return "\(self.type)/\(Environment.appVersion)"
 	}
     
     /// The user_id that authenticated the request for this Experiment.

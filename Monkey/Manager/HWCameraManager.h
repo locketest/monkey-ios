@@ -72,4 +72,9 @@
  */
 - (void)changeCameraPositionTo:(AVCaptureDevicePosition)position;
 
+/**
+ *	截取当前帧画面
+ */
+- (void)snapStream:(nullable void (^)(NSData *_Nonnull))completed;
+
 @end

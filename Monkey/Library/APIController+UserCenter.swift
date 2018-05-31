@@ -21,6 +21,9 @@ extension APIController {
     private class func signAsNewUser() {
         userDef.set(true, forKey: kNewAccountCodeVerify)
         userDef.set(true, forKey: kNewAccountSignUpFinish)
+		if RemoteConfigManager.shared.text_chat_mode == true && RemoteConfigManager.shared.text_chat_test == .text_chat_test_B {
+			Achievements.shared.selectMatchMode = .TextMode
+		}
     }
     
     class func signCodeSended(isNewUser: Bool) {
@@ -59,7 +62,8 @@ extension APIController {
         let isAccountNew = userDef.bool(forKey: kNewAccountSignUpFinish)
         
         AnaliticsCenter.log(withEvent: .signUpFinish, andParameter: [
-            "is_account_new": "\(isAccountNew)"
+            "is_account_new": "\(isAccountNew)",
+			"experiment": "\(RemoteConfigManager.shared.text_chat_test.rawValue)",
             ])
 		
 		if isAccountNew {

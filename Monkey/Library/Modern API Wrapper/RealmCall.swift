@@ -9,6 +9,7 @@
 import UIKit
 import RealmSwift
 import ObjectMapper
+import ObjectMapperAdditions
 
 class RealmCall: MonkeyModel, VideoCallProtocol {
 	override class var requst_subfix: String {
@@ -42,6 +43,7 @@ class RealmCall: MonkeyModel, VideoCallProtocol {
 	dynamic var bio: String?
 	let match_distance = RealmOptional<Int>()
     dynamic var status: String?
+	dynamic var notify_accept: Bool = false
 
     dynamic var user: RealmUser?
     dynamic var initiator: RealmUser?
@@ -65,6 +67,10 @@ class RealmCall: MonkeyModel, VideoCallProtocol {
 	// 是否支持 agora
 	func supportAgora() -> Bool {
 		return video_service == "agora"
+	}
+	
+	func supportSocket() -> Bool {
+		return notify_accept == true
 	}
 
 	required convenience init?(map: Map) {

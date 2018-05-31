@@ -126,7 +126,6 @@
 		C0CF020D1F58CA66009D7B33 /* DismissPopupTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CF020C1F58CA66009D7B33 /* DismissPopupTransitionAnimator.swift */; };
 		C0DAAB121F53816000739F42 /* RealmInstagramAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DAAB111F53816000739F42 /* RealmInstagramAccount.swift */; };
 		C0DAAB141F538C5300739F42 /* RealmInstagramPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */; };
-		C0FC9E301F63106A00A813C5 /* ChannelLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */; };
 		C1048846AC127C35C9B1C80E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1061E7F5DF089EB4FD9C2809 /* CoreVideo.framework */; };
 		D1025CCC20A1406400557B64 /* Setting.xib in Resources */ = {isa = PBXBuildFile; fileRef = D1025CCB20A1406400557B64 /* Setting.xib */; };
 		D1025CCD20A1406400557B64 /* Setting.xib in Resources */ = {isa = PBXBuildFile; fileRef = D1025CCB20A1406400557B64 /* Setting.xib */; };
@@ -211,7 +210,6 @@
 		D1A22A6A20A03F8A004F0F05 /* SmallYellowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E8202ADF1000791002 /* SmallYellowButton.swift */; };
 		D1A22A6B20A03F8A004F0F05 /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B19B6771EBD5F3D00493A3A /* PopupTransitionPresentPopupOnPopupAnimator.swift */; };
 		D1A22A6C20A03F8A004F0F05 /* IFToasterFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D162060DACB00F209B4 /* IFToasterFilter.m */; };
-		D1A22A6D20A03F8A004F0F05 /* ChannelLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */; };
 		D1A22A6E20A03F8A004F0F05 /* RealmCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06FBB511F3A559B00659489 /* RealmCall.swift */; };
 		D1A22A6F20A03F8A004F0F05 /* Achievements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE35E241DB9BF97002049B5 /* Achievements.swift */; };
 		D1A22A7020A03F8A004F0F05 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD655482046B2A900CAA2D5 /* Configs.swift */; };
@@ -580,7 +578,6 @@
 		C0CF020C1F58CA66009D7B33 /* DismissPopupTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissPopupTransitionAnimator.swift; sourceTree = "<group>"; };
 		C0DAAB111F53816000739F42 /* RealmInstagramAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmInstagramAccount.swift; sourceTree = "<group>"; };
 		C0DAAB131F538C5300739F42 /* RealmInstagramPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmInstagramPhoto.swift; sourceTree = "<group>"; };
-		C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelLabelView.swift; sourceTree = "<group>"; };
 		C1292670210D20783E5E884E /* Pods-Monkey-Release.sandbox.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey-Release.sandbox.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey-Release/Pods-Monkey-Release.sandbox.xcconfig"; sourceTree = "<group>"; };
 		D1025CCB20A1406400557B64 /* Setting.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Setting.xib; sourceTree = "<group>"; };
 		D1025CCE20A1406B00557B64 /* SettingProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingProfileCell.swift; sourceTree = "<group>"; };
@@ -1157,7 +1154,6 @@
 			isa = PBXGroup;
 			children = (
 				C01873731F4F2DDF008C8790 /* Instagram.storyboard */,
-				C0FC9E2F1F63106A00A813C5 /* ChannelLabelView.swift */,
 				C01873701F4F2B92008C8790 /* InstagramPopupViewController.swift */,
 			);
 			path = Instagram;
@@ -1351,9 +1347,9 @@
 				D1025CF220A35EBD00557B64 /* Model Wrapper */,
 				D16C40A720A05EEF005424C9 /* Old API Wrapper */,
 				D16C40A620A05EE1005424C9 /* Modern API Wrapper */,
+				BF8C38B61E9A188E0089B313 /* RealmDataController.swift */,
 				8B6A57A11EAEBF3E00136311 /* JSONAPI.swift */,
 				8B6A579F1EAE9E6100136311 /* APIError.swift */,
-				BF8C38B61E9A188E0089B313 /* RealmDataController.swift */,
 				1BD655482046B2A900CAA2D5 /* Configs.swift */,
 				8BAA4C711E5545AC0072F3F6 /* APIController.swift */,
 				1B3F79A1201831140069D473 /* APIController+UserCenter.swift */,
@@ -1966,7 +1962,6 @@
 				8B19B6781EBD5F3D00493A3A /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */,
 				D1025CF020A2FD9900557B64 /* MonkeyModel.swift in Sources */,
 				D1B79D372060DACB00F209B4 /* IFToasterFilter.m in Sources */,
-				C0FC9E301F63106A00A813C5 /* ChannelLabelView.swift in Sources */,
 				C06FBB521F3A559B00659489 /* RealmCall.swift in Sources */,
 				8BE35E251DB9BF97002049B5 /* Achievements.swift in Sources */,
 				1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */,
@@ -2137,7 +2132,6 @@
 				D1A22A6B20A03F8A004F0F05 /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */,
 				D1025CF120A2FD9900557B64 /* MonkeyModel.swift in Sources */,
 				D1A22A6C20A03F8A004F0F05 /* IFToasterFilter.m in Sources */,
-				D1A22A6D20A03F8A004F0F05 /* ChannelLabelView.swift in Sources */,
 				D1A22A6E20A03F8A004F0F05 /* RealmCall.swift in Sources */,
 				D1A22A6F20A03F8A004F0F05 /* Achievements.swift in Sources */,
 				D1A22A7020A03F8A004F0F05 /* Configs.swift in Sources */,
@@ -2451,6 +2445,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Monkey/AppConfig/Monkey-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Monkey-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -2596,6 +2591,7 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Monkey/AppConfig/Monkey-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Monkey-Swift.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -2725,6 +2721,7 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Monkey/AppConfig/Monkey-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Monkey-Swift.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -2821,6 +2818,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Monkey/AppConfig/Monkey-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Monkey-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;

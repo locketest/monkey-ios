@@ -356,8 +356,13 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.matchModeContainer.layer.borderWidth = 3;
 		self.matchModeContainer.layer.borderColor = UIColor.clear.cgColor
 
-		self.matchModeSwitch.isEnabled = RemoteConfigManager.shared.text_chat_mode
-		self.matchModeSwitch.isHidden = !RemoteConfigManager.shared.text_chat_mode
+		if RemoteConfigManager.shared.text_chat_mode == false || RemoteConfigManager.shared.text_chat_test == .text_chat_test_C {
+			self.matchModeSwitch.isEnabled = false
+			self.matchModeSwitch.isHidden = true
+		}else {
+			self.matchModeSwitch.isEnabled = true
+			self.matchModeSwitch.isHidden = false
+		}
 
 		NotificationManager.shared.viewManager = self
 		NotificationManager.shared.chatSessionLoadingDelegate = self
@@ -559,7 +564,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			self.refreshEventModeStatus()
 		}
 
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/experiments/\(APIController.shared.appVersion)/match", options: [
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/experiments/\(Environment.appVersion)/match", options: [
 			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (result) in
 				switch result {

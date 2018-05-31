@@ -17,7 +17,6 @@ class Configs {
         let curDay = Date.init().timeIntervalSince1970
         UserDefaults.standard.set(curDay, forKey: kLastLoginTime)
         
-//            if day - lastLoginDay == 1 {
         if Date.init(timeIntervalSince1970: TimeInterval(lastLoginDay)).compare(.isYesterday) {
             UserDefaults.standard.set(UserDefaults.standard.integer(forKey:kContiLoginTimes) + 1, forKey: kContiLoginTimes)
         }else {

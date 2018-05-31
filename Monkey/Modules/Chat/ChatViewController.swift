@@ -575,7 +575,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                 self.callButton.backgroundColor = Colors.white(0.06)
             } else {
                 self.callButton.isSpinning = true
-                self.isMonkeyKingBool! ? (self.profileActiveLabel.isHidden = true) : (self.profileActiveLabel.text = "connecting...")
+                self.profileActiveLabel.text = "connecting..."
                 self.chatSession?.accept()
 			}
             return

@@ -39,22 +39,34 @@ struct Environment {
 	static let version = 38 // 2.5.8
 
 	static let bundleId = "cool.monkey.ios"
+	
+	static var languageString : String {
+		return NSLocale.preferredLanguages.first ?? ""
+	}
+	
+	static var appVersion: String {
+		return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0" // Use zeros instead of crashing. This should not happen.
+	}
+	
     static var environment: ENV {
         let envString = (Bundle.main.object(forInfoDictionaryKey: "Configuration") as? String ?? "").lowercased()
         return ENV.allValues.first { $0.rawValue.lowercased().contains(envString) } ?? .sandbox
     }
+	
     static var baseURL: String {
         switch self.environment {
         case .sandbox: return "http://test.monkey.cool"
         case .release: return "https://api.monkey.cool"
         }
     }
+	
     static var socketURL: String {
         switch self.environment {
         case .sandbox: return "ws://test.monkey.cool/api/v2.0/sockets/websocket"
         case .release: return "wss://ws.monkey.cool/api/v2.0/sockets/websocket"
         }
     }
+	
 	static var amplitudeKey: String {
 		switch self.environment {
 		case .sandbox: return "04f72fae8a9c614c47cc38e822778a36"

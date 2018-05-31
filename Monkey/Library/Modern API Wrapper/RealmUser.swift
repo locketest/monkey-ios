@@ -85,6 +85,38 @@ class RealmUser: MonkeyModel {
 		return isMonkeyKing
 	}
 	
+	static var lastScreenShotTime: TimeInterval = 0
+	func shouldUploadScreenShot() -> Bool {
+		if is_banned.value == true {
+			return false
+		}
+		
+		if (Date().timeIntervalSince1970 - RealmUser.lastScreenShotTime) < 30 {
+			return false
+		}
+		
+		if gender == Gender.female.rawValue {
+			return false
+		}
+		
+		let random = Int.arc4random() % 2
+		if random == 0 {
+			return false
+		}
+		
+		let randomAgeReduce = Int.arc4random() % 100
+		if let age = age.value, age <= 17, randomAgeReduce > RemoteConfigManager.shared.moderation_age_reduce {
+			return false
+		}
+		
+		let randomHourReduce = Int.arc4random() % 100
+		if let hour = Date.init().component(.hour), hour > 8 && hour < 20, randomHourReduce > RemoteConfigManager.shared.moderation_non_peak {
+			return false
+		}
+		
+		return true
+	}
+	
 	/// Each Attribute case corresponds to a User attribute that can be updated/modified.
 	enum Attribute {
 		case gender(String?)

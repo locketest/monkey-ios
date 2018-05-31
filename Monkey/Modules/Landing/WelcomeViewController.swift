@@ -122,15 +122,25 @@ class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegat
         }
 
         JSONAPIRequest(url:"\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/auth/accountkit", method: .post, parameters: parameters, options: [
-            .header("version", APIController.shared.appVersion),
-            .header("lang", APIController.shared.languageString),
+            .header("version", Environment.appVersion),
+            .header("lang", Environment.languageString),
             .header("device", "ios"),
             ]).addCompletionHandler {[weak self] (response) in
 			guard let `self` = self else { return }
 
 			switch response {
-			case .error(let error):
-				NSLog("error login \(error)")
+			case .error( _):
+				UIView.animate(
+					withDuration: 0.4,
+					delay: 0.1,
+					options:.curveEaseInOut,
+					animations: {
+						self.containerView.alpha = 0
+						self.view.layoutIfNeeded()
+				}){ (Bool) in
+					self.dismiss(animated: false, completion: nil)
+				}
+				
 			case .success(let jsonAPIDocument):
                 // clean deep link source
                 Achievements.shared.deeplink_source = ""
@@ -156,7 +166,6 @@ class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegat
 							UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
 
 							Apns.update(callback: nil)
-							self.dismiss(animated: false, completion: nil)
 
 							UIView.animate(
 								withDuration: 0.4,

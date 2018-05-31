@@ -41,8 +41,6 @@ class ChatSession: NSObject {
 			return realmCall
 		}
 	}
-	
-    private var chatNotificationToken: NotificationToken?
 
 	var remoteView: UIView? {
 		if let realmCall = videoCall {
@@ -151,8 +149,8 @@ class ChatSession: NSObject {
     fileprivate var initiatorReadyChecks = 0 {
         didSet {
             if self.initiatorReadyChecks == 2 {
-                self.tryConnecting()
 				self.startConnect()
+                self.tryConnecting()
             }
         }
     }
@@ -290,43 +288,10 @@ class ChatSession: NSObject {
 			self.friendMatched = true
 		}
 		
-		guard let realmCall = videoCall else {
-			self.log(.error, "Could not connect to session")
-			self.disconnect(.consumed)
-			return
-		}
-
-		self.chatNotificationToken = (realmCall as? Object)?.observe { [weak self] change in
-            switch change {
-            case .error(let error):
-                print("Error: \(error.localizedDescription)")
-            case .change(let properties):
-                for property in properties {
-                    if property.name == "status" {
-                        let newStatus = property.newValue as? String
-                        if newStatus == "MISSED" || newStatus == "ENDED" {
-                            self?.disconnect(.consumed)
-                        }
-                    }
-                }
-            default:
-                break
-            }
-        }
-
-		if realmCall.supportAgora() {
-			agoraService.joinChannel(matchModel: realmCall) { [weak self] in
-				guard let `self` = self else { return }
-				self.joinChannelSuccessful()
-			}
+		if videoCall?.supportSocket() == false {
+			self.joinChannel()
 		}else {
-			self.session = OTSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, delegate: self)
-			var maybeError : OTError?
-			session?.connect(withToken: token, error: &maybeError)
-			if let error = maybeError {
-				self.log(.error, "Could not connect to session \(error)")
-				self.disconnect(.consumedWithError)
-			}
+			Socket.shared.addChatMessageDelegate(chatMessageDelegate: self)
 		}
 
 		if isDialedCall == true {
@@ -354,8 +319,32 @@ class ChatSession: NSObject {
 			}
 		}
     }
+	
+	func joinChannel() {
+		guard let realmCall = videoCall else {
+			self.log(.error, "Could not connect to session")
+			self.disconnect(.consumed)
+			return
+		}
+		
+		if realmCall.supportAgora() {
+			agoraService.joinChannel(matchModel: realmCall) { [weak self] in
+				guard let `self` = self else { return }
+				self.joinChannelSuccessful()
+			}
+		}else {
+			self.session = OTSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: realmCall.session_id!, delegate: self)
+			var maybeError : OTError?
+			session?.connect(withToken: realmCall.token!, error: &maybeError)
+			if let error = maybeError {
+				self.log(.error, "Could not connect to session \(error)")
+				self.disconnect(.consumedWithError)
+			}
+		}
+	}
 
     deinit {
+		Socket.shared.delChatMessageDelegate(chatMessageDelegate: self)
         print("chat session deinit")
     }
 
@@ -371,6 +360,7 @@ class ChatSession: NSObject {
             self.log(.info, "Initiator not ready")
             return
         }
+		
 		// 双方都 accept，但是没有收到对方的流
         guard self.didReceiveRemoteVideo else {
             self.log(.info, "Stream not ready")
@@ -532,8 +522,6 @@ class ChatSession: NSObject {
 			return
 		}
 
-		self.chatNotificationToken?.invalidate()
-		self.chatNotificationToken = nil
 		runAsynchronouslyOnVideoProcessingQueue {
 			HWCameraManager.shared().opentok_capture = false
 			HWCameraManager.shared().agora_capture = false
@@ -573,7 +561,7 @@ class ChatSession: NSObject {
 		self.updateStatusTo(.skippable)
 		if self.response == .skipped {
 			self.sendSkip()
-		}else if self.response == .accepted {
+		}else if self.response == .accepted, videoCall?.supportSocket() == false {
 			self.accept()
 		}
 	}
@@ -584,11 +572,25 @@ class ChatSession: NSObject {
 	}
 
 	func startConnect() {
-		self.loadingDelegate?.shouldShowConnectingStatus!(in: self)
+		self.loadingDelegate?.shouldShowConnectingStatus(in: self)
 		AnaliticsCenter.add(amplitudeUserProperty: ["match_connect": 1])
 		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_connect": 1])
 		self.track(matchEvent: .matchConnect)
+		
+		if videoCall?.supportSocket() == true {
+			self.joinChannel()
 
+			if let realmCall = videoCall, realmCall.supportAgora() {
+				runAsynchronouslyOnVideoProcessingQueue {
+					HWCameraManager.shared().agora_capture = true
+				}
+			}else {
+				runAsynchronouslyOnVideoProcessingQueue {
+					HWCameraManager.shared().opentok_capture = true
+				}
+			}
+		}
+		
 		guard self.status != .connected else {
 			return
 		}
@@ -648,12 +650,12 @@ protocol MessageHandler: class {
     func chatSesssion(_ chatSesssion: ChatSession, connectionCreated connection: OTConnection)
 }
 
-@objc protocol ChatSessionLoadingDelegate:class {
+@objc protocol ChatSessionLoadingDelegate: class {
     func presentCallViewController(for chatSession: ChatSession)
     func dismissCallViewController(for chatSession: ChatSession)
-    func chatSession(_ chatSession: ChatSession, callEndedWithError error:Error?)
+    func chatSession(_ chatSession: ChatSession, callEndedWithError error: Error?)
+	func shouldShowConnectingStatus(in chatSession: ChatSession)
     @objc optional func warnConnectionTimeout(in chatSession: ChatSession)
-    @objc optional func shouldShowConnectingStatus(in chatSession:ChatSession)
 }
 
 extension ChatSession {
@@ -662,13 +664,33 @@ extension ChatSession {
 		guard let realmCall = videoCall else {
 			return false
 		}
-		guard let _ = self.chat else {
+		guard let currentChat = self.chat else {
 			self.log(.error, "Missing chat")
 			return false
 		}
 
 		guard wasSkippable == true else {
-			self.log(.error, "not connected")
+			if videoCall?.supportSocket() == true, messageType == .Skip || messageType == .Accept {
+
+				let socket_channel = isDialedCall ? "videocall_pos_request" : "pos_match_request"
+				Socket.shared.send(message: [
+					"data": [
+						"type": socket_channel,
+						"attributes": [
+							"match_action": messageType.rawValue, // skip or ready
+							"chat_id": currentChat.chatId, // chat_id
+							"matched_user": [currentChat.user_id ?? ""], // array of user ids
+						]
+					]
+					], to: socket_channel, completion: { (error, _) in
+						guard error == nil else {
+							print("Error: Unable to send message")
+							return
+						}
+				})
+				return true
+			}
+			
 			return false
 		}
 
@@ -775,13 +797,16 @@ extension ChatSession {
 			}
 		}
 
-		if let realmCall = videoCall, realmCall.supportAgora() {
-			runAsynchronouslyOnVideoProcessingQueue {
-				HWCameraManager.shared().agora_capture = true
-			}
-		}else {
-			runAsynchronouslyOnVideoProcessingQueue {
-				HWCameraManager.shared().opentok_capture = true
+		// 如果是老版本，accept 时，发送 stream
+		if videoCall?.supportSocket() == false {
+			if let realmCall = videoCall, realmCall.supportAgora() {
+				runAsynchronouslyOnVideoProcessingQueue {
+					HWCameraManager.shared().agora_capture = true
+				}
+			}else {
+				runAsynchronouslyOnVideoProcessingQueue {
+					HWCameraManager.shared().opentok_capture = true
+				}
 			}
 		}
 

@@ -11,7 +11,13 @@
 #import <AVFoundation/AVFoundation.h>
 #import "GPUImageFilterGroup+Handler.h"
 
+#import <ImageIO/ImageIO.h>
+#import "Monkey-Swift.h"
+
 @interface HWCameraManager() <GPUImageVideoCameraDelegate, GPUImageFilterGroupDelgate>
+
+// 举报和截图
+@property (nonatomic, copy) void(^snapCallback)(NSData *_Nonnull);
 
 // 滤镜以及预览
 @property (nonatomic, strong) GPUImageView *gpuImageView;
@@ -19,10 +25,11 @@
 @property (nonatomic, strong) GPUImageFilterGroup *gpuImagefilter;
 @property (nonatomic, strong) GPUImageVideoCamera *gpuImageCamera;
 
+@property (nonatomic, assign) BOOL capturing;
+
 @end
 
 @implementation HWCameraManager {
-	BOOL _capturing;
 	uint32_t _imageWidth;
 	uint32_t _imageHeight;
 	
@@ -173,7 +180,7 @@
 		
 		_gpuImageCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:captureSession cameraPosition:AVCaptureDevicePositionFront];
 		_gpuImageCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
-//		_gpuImageCamera.delegate = self;
+		_gpuImageCamera.delegate = self;
 	}
 	return _gpuImageCamera;
 }
@@ -227,10 +234,81 @@
 	[self stopCamera];
 }
 
+#pragma mark - snap stram
+- (void)snapStream:(void (^)(NSData * _Nonnull))completed {
+	runAsynchronouslyOnVideoProcessingQueue(^{
+		self.snapCallback = completed;
+	});
+}
+
+
+#pragma mark - handle report screenshot、system screenshot
+#define clamp(a) (a > 255 ? 255 : (a < 0 ? 0 : a))
++ (UIImage *)imageFromPixelBuffer:(CVPixelBufferRef)pixelBuffer {
+	CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
+	
+	size_t width = CVPixelBufferGetWidth(pixelBuffer);
+	size_t height = CVPixelBufferGetHeight(pixelBuffer);
+	uint8_t *yBuffer = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
+	size_t yPitch = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
+	uint8_t *cbCrBuffer = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 1);
+	size_t cbCrPitch = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
+	
+	int bytesPerPixel = 4;
+	uint8_t *rgbBuffer = (uint8_t *)malloc(width * height * bytesPerPixel);
+	
+	for(int y = 0; y < height; y++) {
+		uint8_t *rgbBufferLine = &rgbBuffer[y * width * bytesPerPixel];
+		uint8_t *yBufferLine = &yBuffer[y * yPitch];
+		uint8_t *cbCrBufferLine = &cbCrBuffer[(y >> 1) * cbCrPitch];
+		
+		for(int x = 0; x < width; x++) {
+			int16_t y = yBufferLine[x];
+			int16_t cb = cbCrBufferLine[x & ~1] - 128;
+			int16_t cr = cbCrBufferLine[x | 1] - 128;
+			
+			uint8_t *rgbOutput = &rgbBufferLine[x*bytesPerPixel];
+			
+			int16_t r = (int16_t)roundf( y + cr *  1.4 );
+			int16_t g = (int16_t)roundf( y + cb * -0.343 + cr * -0.711 );
+			int16_t b = (int16_t)roundf( y + cb *  1.765);
+			
+			rgbOutput[0] = 0xff;
+			rgbOutput[1] = clamp(b);
+			rgbOutput[2] = clamp(g);
+			rgbOutput[3] = clamp(r);
+		}
+	}
+	
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+	CGContextRef context = CGBitmapContextCreate(rgbBuffer, width, height, 8, width * bytesPerPixel, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipLast);
+	
+	CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+	UIImage *cropImage = [UIImage imageWithCGImage:quartzImage scale:1.0 orientation:UIImageOrientationUp];
+	UIImage *convertedImage = [cropImage croppedImageWithFrame:CGRectMake(0, 0, 480, 640) angle:90 circularClip:false];
+	
+	CGContextRelease(context);
+	CGColorSpaceRelease(colorSpace);
+	CGImageRelease(quartzImage);
+	free(rgbBuffer);
+	CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
+	
+	return convertedImage;
+}
+
 #pragma mark - GPUImageVideoCameraDelegate
 - (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer {
-//	CVPixelBufferRef videoFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-//	[self upload:videoFrame];
+	[self handleSampleBufferInBackground:sampleBuffer];
+}
+
+- (void)handleSampleBufferInBackground:(CMSampleBufferRef)sampleBuffer {
+	if (self.snapCallback) {
+		CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+		UIImage *convertedImage = [HWCameraManager imageFromPixelBuffer:pixelBuffer];
+		NSData *imageData = UIImageJPEGRepresentation(convertedImage, 0.1);
+		self.snapCallback(imageData);
+		self.snapCallback = nil;
+	}
 }
 
 - (void)processPixelBuffer:(CVPixelBufferRef)pixelBuffer {
@@ -275,7 +353,7 @@
  */
 - (int32_t)startCapture {
 	runAsynchronouslyOnVideoProcessingQueue(^{
-		_capturing = YES;
+		self.capturing = YES;
 	});
 	return 0;
 }
@@ -284,7 +362,7 @@
  */
 - (int32_t)stopCapture {
 	runAsynchronouslyOnVideoProcessingQueue(^{
-		_capturing = NO;
+		self.capturing = NO;
 	});
 	return 0;
 }
@@ -292,7 +370,7 @@
  * Whether video is being captured.
  */
 - (BOOL)isCaptureStarted {
-	return _capturing && [self.gpuImageCamera isRunning] && _opentok_capture;
+	return self.capturing && [self.gpuImageCamera isRunning] && _opentok_capture;
 }
 
 /**

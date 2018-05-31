@@ -188,6 +188,16 @@ class RealmDataController: NSObject {
 					- Property 'RealmUser.tag' has been deleted
 					*/
 				}
+				if oldSchemaVersion < 21 {
+					// Nothing to do!
+					// Realm will automatically detect new properties and removed properties
+					// And will update the schema on disk automatically
+					/*
+					- Property 'RealmUser.delete_at' has been added
+					- Property 'RealmCall.notify_accept' has been added
+					- Property 'RealmVideoCall.notify_accept' has been added
+					*/
+				}
         }, objectTypes: self.realmObjectClasses)
         Realm.Configuration.defaultConfiguration = config
         do {	

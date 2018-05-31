@@ -35,7 +35,7 @@ class JSONAPIRequest {
 	@discardableResult init(url: String, method: HTTPMethod = .get, parameters: Parameters? = nil, options: [RequestOption]? = nil) {
 		
 		let client = Environment.bundleId
-		let version = APIController.shared.appVersion
+		let version = Environment.appVersion
 		
 		// Define variables which may be modified in some way by changing the `options` array.
 		var headers: HTTPHeaders = [

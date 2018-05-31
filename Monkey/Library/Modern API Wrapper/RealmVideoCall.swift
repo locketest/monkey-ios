@@ -34,6 +34,8 @@ protocol VideoCallProtocol {
 	
 	// 是否支持 agora
 	func supportAgora() -> Bool
+	
+	func supportSocket() -> Bool
 }
 
 class RealmVideoCall: MonkeyModel, VideoCallProtocol {
@@ -61,6 +63,7 @@ class RealmVideoCall: MonkeyModel, VideoCallProtocol {
 	
 	dynamic var bio: String?
 	dynamic var status: String?
+	dynamic var notify_accept: Bool = false
 	
 	dynamic var user: RealmUser?
 	dynamic var initiator: RealmUser?
@@ -84,6 +87,10 @@ class RealmVideoCall: MonkeyModel, VideoCallProtocol {
 	// 是否支持 agora
 	func supportAgora() -> Bool {
 		return video_service == "agora"
+	}
+	
+	func supportSocket() -> Bool {
+		return notify_accept == true
 	}
 	
 	required convenience init?(map: Map) {
