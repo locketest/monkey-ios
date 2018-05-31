@@ -49,6 +49,10 @@ public enum AnalyticEvent: String {
 	
 	case sentMessageConvo = "SENT_MESSAGE_CONVO"
 	case snapchatClickConvo = "SNAPCHAT_CLICK_CONVO"
+    
+    //  ----------------------------  delete account  ------------------------------
+    case deleteAccount = "delete_account"
+    case resumeAccount = "resume_account"
 }
 
 public enum AdjustEvent: String {
@@ -183,6 +187,9 @@ extension AnaliticsCenter {
 		
 		AnalyticEvent.sentMessageConvo,
 		AnalyticEvent.snapchatClickConvo,
+        
+        AnalyticEvent.deleteAccount,
+        AnalyticEvent.resumeAccount,
 	]
 	
 	fileprivate static let oneTimeEvents: Set<AnalyticEvent> = [

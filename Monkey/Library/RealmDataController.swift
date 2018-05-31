@@ -43,7 +43,7 @@ class RealmDataController: NSObject {
 
 		let config = Realm.Configuration(
 			syncConfiguration: nil,
-			schemaVersion: 20,
+			schemaVersion: 21,
 			migrationBlock: { migration, oldSchemaVersion in
 				if oldSchemaVersion < 1 {
 					// Nothing to do!

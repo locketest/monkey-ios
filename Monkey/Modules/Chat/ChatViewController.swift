@@ -277,31 +277,32 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             self.openURL("https://monkey.canny.io/requests", inVC: true)
         }))
 
-        alertController.addAction(UIAlertAction(title: "🚑 Safety", style: .default, handler: { (UIAlertAction) in
-
-            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            alertController.addAction(UIKit.UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-            }))
-            alertController.addAction(UIKit.UIAlertAction(title: "😐 Terms of Use", style: .default, handler: { (UIAlertAction) in
-                self.openURL("http://monkey.cool/terms", inVC: true)
-            }))
-            alertController.addAction(UIKit.UIAlertAction(title: "☹️ Privacy Policy", style: .default, handler: { (UIAlertAction) in
-                self.openURL("http://monkey.cool/privacy", inVC: true)
-            }))
-            alertController.addAction(UIKit.UIAlertAction(title: "😇 Safety Center", style: .default, handler: { (UIAlertAction) in
-                self.openURL("http://monkey.cool/safety", inVC: true)
-            }))
-            alertController.addAction(UIKit.UIAlertAction(title: "😁 Community Guidelines", style: .default, handler: { (UIAlertAction) in
-                self.openURL("http://monkey.cool/community", inVC: true)
-            }))
-            if let creditsURL = APIController.shared.currentExperiment?.credits_url {
-                alertController.addAction(UIKit.UIAlertAction(title: "Credits", style: .default, handler: { (UIAlertAction) in
-                    self.openURL(creditsURL, inVC: true)
-                }))
-            }
-            self.present(alertController, animated: true, completion: nil)
-
-        }))
+//        alertController.addAction(UIAlertAction(title: "🚑 Safety", style: .default, handler: { (UIAlertAction) in
+//
+//            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+//            alertController.addAction(UIKit.UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
+//            }))
+//            alertController.addAction(UIKit.UIAlertAction(title: "😐 Terms of Use", style: .default, handler: { (UIAlertAction) in
+//                self.openURL("http://monkey.cool/terms", inVC: true)
+//            }))
+//            alertController.addAction(UIKit.UIAlertAction(title: "☹️ Privacy Policy", style: .default, handler: { (UIAlertAction) in
+//                self.openURL("http://monkey.cool/privacy", inVC: true)
+//            }))
+//            alertController.addAction(UIKit.UIAlertAction(title: "😇 Safety Center", style: .default, handler: { (UIAlertAction) in
+//                self.openURL("http://monkey.cool/safety", inVC: true)
+//            }))
+//            alertController.addAction(UIKit.UIAlertAction(title: "😁 Community Guidelines", style: .default, handler: { (UIAlertAction) in
+//                self.openURL("http://monkey.cool/community", inVC: true)
+//            }))
+//            if let creditsURL = APIController.shared.currentExperiment?.credits_url {
+//                alertController.addAction(UIKit.UIAlertAction(title: "Credits", style: .default, handler: { (UIAlertAction) in
+//                    self.openURL(creditsURL, inVC: true)
+//                }))
+//            }
+//            self.present(alertController, animated: true, completion: nil)
+//
+//        }))
+        
         self.present(alertController, animated: true, completion: nil)
     }
 

@@ -4,7 +4,7 @@ SHELL_DIR=$(cd "$(dirname "$0")"; pwd)
 
 BUILD_PATH=${SHELL_DIR}/../build/
 
-msg=$(git log -1 --pretty=%s)
+msg=$(git log -1 --pretty=%s%b)
 
 SCHEME_RELEASE=Release
 SCHEME_SANDBOX=Sandbox

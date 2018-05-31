@@ -16,7 +16,6 @@ enum SettingsCellStyle {
     case imageRight
     case buttonRight
     case textFieldRight
-    case cancelSaveButton
 }
 
 enum SettingsCellType {
@@ -25,6 +24,7 @@ enum SettingsCellType {
     case acceptButton
     case nearbyButton
     case inviteFriends
+    case safety
     case linkInstagram
     case signOut
     
@@ -42,7 +42,7 @@ typealias DataTuple = (cellStyle: SettingsCellStyle, cellType: SettingsCellType,
 
 typealias DataTupleArray = [DataTuple]
 
-class SettingMainViewController: SwipeableViewController, SFSafariViewControllerDelegate, MFMessageComposeViewControllerDelegate {
+class SettingMainViewController: SwipeableViewController, MFMessageComposeViewControllerDelegate, InstagramAuthDelegate {
     
     let FootView = UIView()
     
@@ -125,9 +125,18 @@ class SettingMainViewController: SwipeableViewController, SFSafariViewController
         
         stuffArray.append((.basic, cellType:.inviteFriends, text: "🎉 Invite friends", image: "", other: ""))
         stuffArray.append((.basic, cellType:.linkInstagram, text: linstagramAccountState == nil ? "📸 Link instagram" : "🌅 Unlink instagram", image: "", other: ""))
+        stuffArray.append((.basic, cellType:.safety, text: "🚑 Safety", image: "", other: ""))
         stuffArray.append((.basic, cellType:.signOut, text: "🙈 Sign out", image: "", other: ""))
         
         self.dataArray.append(stuffArray)
+    }
+    
+    func authInstagramSuccess(code: String) {
+        
+    }
+    
+    func authInstagramFailure() {
+        
     }
     
     func initInviteFriendsVcFunc() {
@@ -155,7 +164,7 @@ class SettingMainViewController: SwipeableViewController, SFSafariViewController
         
         self.initInviteFriendsVcFunc()
         
-        self.tableViewHeightConstraint.constant = ScreenHeight < 666 ? (ScreenHeight - 44) : 569
+        self.tableViewHeightConstraint.constant = ScreenHeight < 666 ? (ScreenHeight - 44) : 633
         
         NotificationCenter.default.addObserver(self, selector: #selector(instagramNotificationReceived(_:)), name: .instagramLoginNotification, object: nil)
     }
@@ -228,6 +237,8 @@ extension SettingMainViewController : UITableViewDelegate, UITableViewDataSource
             break
         case .inviteFriends:
             self.presentToInviteFriendsVcFunc()
+        case .safety:
+            self.safetyClickFunc()
         case .linkInstagram:
             self.linkInstgramFunc(tableView: tableView, indexPath: indexPath)
         case .signOut:
@@ -235,6 +246,51 @@ extension SettingMainViewController : UITableViewDelegate, UITableViewDataSource
         default:
             break
         }
+    }
+    
+    func safetyClickFunc() {
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIKit.UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
+        }))
+        alertController.addAction(UIKit.UIAlertAction(title: "😐 Terms of Use", style: .default, handler: { (UIAlertAction) in
+            self.openURL("http://monkey.cool/terms", inVC: true)
+        }))
+        alertController.addAction(UIKit.UIAlertAction(title: "☹️ Privacy Policy", style: .default, handler: { (UIAlertAction) in
+            self.openURL("http://monkey.cool/privacy", inVC: true)
+        }))
+        alertController.addAction(UIKit.UIAlertAction(title: "😇 Safety Center", style: .default, handler: { (UIAlertAction) in
+            self.openURL("http://monkey.cool/safety", inVC: true)
+        }))
+        alertController.addAction(UIKit.UIAlertAction(title: "😁 Community Guidelines", style: .default, handler: { (UIAlertAction) in
+            self.openURL("http://monkey.cool/community", inVC: true)
+        }))
+        alertController.addAction(UIKit.UIAlertAction(title: "❌ Delete Account", style: .default, handler: { (UIAlertAction) in
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "DeleteAccountPopupViewController") as! DeleteAccountPopupViewController
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }))
+        if let creditsURL = APIController.shared.currentExperiment?.credits_url {
+            alertController.addAction(UIKit.UIAlertAction(title: "Credits", style: .default, handler: { (UIAlertAction) in
+                self.openURL(creditsURL, inVC: true)
+            }))
+        }
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func openURL(_ urlString: String, inVC: Bool)
+    {
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        if !inVC {
+            UIApplication.shared.openURL(url)
+            return
+        }
+        let vc = SFSafariViewController(url: url, entersReaderIfAvailable: false)
+        vc.modalPresentationCapturesStatusBarAppearance = true
+        vc.modalPresentationStyle = .overFullScreen
+        present(vc, animated: true, completion: nil)
     }
     
     func tolkToFunc(tableView: UITableView, indexPath: IndexPath) {
@@ -281,14 +337,19 @@ extension SettingMainViewController : UITableViewDelegate, UITableViewDataSource
         let textLabel = (tableView.dequeueReusableCell(withIdentifier: "basicCell") as! SettingBasicCell).itemLabel!
         
         if textLabel.text == "📸 Link instagram" {
-            guard let loginUrl = APIController.shared.currentExperiment?.instagram_login_url else {
+            guard let loginURL = APIController.shared.currentExperiment?.instagram_login_url else {
                 return
             }
             
-            let instagramWebViewController = SFSafariViewController(url: URL(string:loginUrl)!, entersReaderIfAvailable: false)
-            instagramWebViewController.modalPresentationStyle = .overFullScreen
-            instagramWebViewController.delegate = self
-            self.present(instagramWebViewController, animated: true, completion: nil)
+            let insController = InstagramAuthViewController()
+            let authURL =  URL(string: loginURL)
+            
+            insController.webURL = authURL
+            insController.authDelegate = self
+            
+            let insNav = UINavigationController(rootViewController: insController)
+            insNav.modalPresentationStyle = .overFullScreen
+            self.present(insNav, animated: true, completion: nil)
         } else {
             guard let user = APIController.shared.currentUser else {
                 return
@@ -345,8 +406,15 @@ extension SettingMainViewController : UITableViewDelegate, UITableViewDataSource
  */
 extension SettingMainViewController : SettingProfileCellDelegate {
     
+    func uploadedProfileImageSuccessFunc() {
+    }
+
     func editProfileBtnClickFunc() {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "SettingEditViewController") as! SettingEditViewController
+        vc.uploadImgClosure = {
+            self.dataArray[0][0].image = (APIController.shared.currentUser?.profile_photo_upload_url)!
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        }
         self.swipableViewControllerToPresentOnRight = vc
         self.present(vc, animated: true)
     }

@@ -11,6 +11,18 @@
 		1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76554620132B0600FAB045 /* MKMatchManager.swift */; };
 		1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76B194206A46560044AC7F /* RealmVideoCall.swift */; };
 		1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD655482046B2A900CAA2D5 /* Configs.swift */; };
+		341E735F20BBEF34001B8D55 /* SettingEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E735E20BBEF33001B8D55 /* SettingEditViewController.swift */; };
+		341E736020BBEF34001B8D55 /* SettingEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E735E20BBEF33001B8D55 /* SettingEditViewController.swift */; };
+		341E736220BBF575001B8D55 /* SettingEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E736120BBF575001B8D55 /* SettingEditCell.swift */; };
+		341E736320BBF575001B8D55 /* SettingEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E736120BBF575001B8D55 /* SettingEditCell.swift */; };
+		341E736720BD4320001B8D55 /* DeleteAccountPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E736620BD4320001B8D55 /* DeleteAccountPopupViewController.swift */; };
+		341E736820BD4320001B8D55 /* DeleteAccountPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E736620BD4320001B8D55 /* DeleteAccountPopupViewController.swift */; };
+		341E736D20BD496E001B8D55 /* ResumeMyAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E736C20BD496E001B8D55 /* ResumeMyAccountViewController.swift */; };
+		341E736E20BD496E001B8D55 /* ResumeMyAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E736C20BD496E001B8D55 /* ResumeMyAccountViewController.swift */; };
+		341E737220BD5696001B8D55 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737120BD5696001B8D55 /* UIViewExtension.swift */; };
+		341E737320BD5696001B8D55 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737120BD5696001B8D55 /* UIViewExtension.swift */; };
+		341E737820BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */; };
+		341E737920BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */; };
 		34B7F7DB20898CCA00A6B7B2 /* UIView+MJ.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */; };
 		34B7F7DC20898CCA00A6B7B2 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
@@ -120,8 +132,6 @@
 		D1025CCD20A1406400557B64 /* Setting.xib in Resources */ = {isa = PBXBuildFile; fileRef = D1025CCB20A1406400557B64 /* Setting.xib */; };
 		D1025CD820A1406C00557B64 /* SettingProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CCE20A1406B00557B64 /* SettingProfileCell.swift */; };
 		D1025CD920A1406C00557B64 /* SettingProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CCE20A1406B00557B64 /* SettingProfileCell.swift */; };
-		D1025CDA20A1406C00557B64 /* SettingEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CCF20A1406B00557B64 /* SettingEditViewController.swift */; };
-		D1025CDB20A1406C00557B64 /* SettingEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CCF20A1406B00557B64 /* SettingEditViewController.swift */; };
 		D1025CDC20A1406C00557B64 /* SettingImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD020A1406B00557B64 /* SettingImageCell.swift */; };
 		D1025CDD20A1406C00557B64 /* SettingImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD020A1406B00557B64 /* SettingImageCell.swift */; };
 		D1025CDE20A1406C00557B64 /* SettingButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD120A1406B00557B64 /* SettingButtonCell.swift */; };
@@ -130,8 +140,6 @@
 		D1025CE120A1406C00557B64 /* SettingHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD220A1406B00557B64 /* SettingHeadView.swift */; };
 		D1025CE220A1406C00557B64 /* SettingBasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD320A1406C00557B64 /* SettingBasicCell.swift */; };
 		D1025CE320A1406C00557B64 /* SettingBasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD320A1406C00557B64 /* SettingBasicCell.swift */; };
-		D1025CE420A1406C00557B64 /* SettingEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD420A1406C00557B64 /* SettingEditCell.swift */; };
-		D1025CE520A1406C00557B64 /* SettingEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD420A1406C00557B64 /* SettingEditCell.swift */; };
 		D1025CE620A1406C00557B64 /* SettingMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD520A1406C00557B64 /* SettingMainViewController.swift */; };
 		D1025CE720A1406C00557B64 /* SettingMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD520A1406C00557B64 /* SettingMainViewController.swift */; };
 		D1025CE820A1406C00557B64 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1025CD620A1406C00557B64 /* SettingModel.swift */; };
@@ -455,6 +463,12 @@
 		1C187BCB3CB68083954F9BC0 /* Pods_Monkey_Release.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Monkey_Release.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE97C1F3FCD83F9563287C4 /* Pods-Monkey.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.production.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.production.xcconfig"; sourceTree = "<group>"; };
+		341E735E20BBEF33001B8D55 /* SettingEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingEditViewController.swift; sourceTree = "<group>"; };
+		341E736120BBF575001B8D55 /* SettingEditCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingEditCell.swift; sourceTree = "<group>"; };
+		341E736620BD4320001B8D55 /* DeleteAccountPopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountPopupViewController.swift; sourceTree = "<group>"; };
+		341E736C20BD496E001B8D55 /* ResumeMyAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumeMyAccountViewController.swift; sourceTree = "<group>"; };
+		341E737120BD5696001B8D55 /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringExtension.swift; sourceTree = "<group>"; };
 		34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJ.m"; sourceTree = "<group>"; };
 		34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		34B7F7D920898CC900A6B7B2 /* UIView+MJ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJ.h"; sourceTree = "<group>"; };
@@ -570,12 +584,10 @@
 		C1292670210D20783E5E884E /* Pods-Monkey-Release.sandbox.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey-Release.sandbox.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey-Release/Pods-Monkey-Release.sandbox.xcconfig"; sourceTree = "<group>"; };
 		D1025CCB20A1406400557B64 /* Setting.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Setting.xib; sourceTree = "<group>"; };
 		D1025CCE20A1406B00557B64 /* SettingProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingProfileCell.swift; sourceTree = "<group>"; };
-		D1025CCF20A1406B00557B64 /* SettingEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingEditViewController.swift; sourceTree = "<group>"; };
 		D1025CD020A1406B00557B64 /* SettingImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingImageCell.swift; sourceTree = "<group>"; };
 		D1025CD120A1406B00557B64 /* SettingButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingButtonCell.swift; sourceTree = "<group>"; };
 		D1025CD220A1406B00557B64 /* SettingHeadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingHeadView.swift; sourceTree = "<group>"; };
 		D1025CD320A1406C00557B64 /* SettingBasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingBasicCell.swift; sourceTree = "<group>"; };
-		D1025CD420A1406C00557B64 /* SettingEditCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingEditCell.swift; sourceTree = "<group>"; };
 		D1025CD520A1406C00557B64 /* SettingMainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingMainViewController.swift; sourceTree = "<group>"; };
 		D1025CD620A1406C00557B64 /* SettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
 		D1025CD720A1406C00557B64 /* SettingCancelSaveCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCancelSaveCell.swift; sourceTree = "<group>"; };
@@ -737,6 +749,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		341E735B20BBAE25001B8D55 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				341E735E20BBEF33001B8D55 /* SettingEditViewController.swift */,
+				D1025CD520A1406C00557B64 /* SettingMainViewController.swift */,
+				341E736620BD4320001B8D55 /* DeleteAccountPopupViewController.swift */,
+				341E736C20BD496E001B8D55 /* ResumeMyAccountViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		341E735C20BBAE45001B8D55 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D1025CD620A1406C00557B64 /* SettingModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		341E735D20BBAE4E001B8D55 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D1025CCB20A1406400557B64 /* Setting.xib */,
+				341E736120BBF575001B8D55 /* SettingEditCell.swift */,
+				D1025CD320A1406C00557B64 /* SettingBasicCell.swift */,
+				D1025CD120A1406B00557B64 /* SettingButtonCell.swift */,
+				D1025CD720A1406C00557B64 /* SettingCancelSaveCell.swift */,
+				D1025CD020A1406B00557B64 /* SettingImageCell.swift */,
+				D1025CCE20A1406B00557B64 /* SettingProfileCell.swift */,
+				D1025CD220A1406B00557B64 /* SettingHeadView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		4CFD1997C021F7E7A16B61BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -807,22 +853,6 @@
 				BD8CBB27E816A5B447DFEDF7 /* Pods-Monkey-Sandbox.sandbox.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		D1025CA920A13FFD00557B64 /* Component */ = {
-			isa = PBXGroup;
-			children = (
-				D1025CCB20A1406400557B64 /* Setting.xib */,
-				D1025CD320A1406C00557B64 /* SettingBasicCell.swift */,
-				D1025CD120A1406B00557B64 /* SettingButtonCell.swift */,
-				D1025CD720A1406C00557B64 /* SettingCancelSaveCell.swift */,
-				D1025CD420A1406C00557B64 /* SettingEditCell.swift */,
-				D1025CD220A1406B00557B64 /* SettingHeadView.swift */,
-				D1025CD020A1406B00557B64 /* SettingImageCell.swift */,
-				D1025CD620A1406C00557B64 /* SettingModel.swift */,
-				D1025CCE20A1406B00557B64 /* SettingProfileCell.swift */,
-			);
-			path = Component;
 			sourceTree = "<group>";
 		};
 		D1025CF220A35EBD00557B64 /* Model Wrapper */ = {
@@ -954,6 +984,8 @@
 				8BE35E241DB9BF97002049B5 /* Achievements.swift */,
 				8B3A787C1DB32CB000FA68A7 /* SoundPlayer.swift */,
 				8499A58B1E86DED80088D0D2 /* TapticFeedback.swift */,
+				341E737120BD5696001B8D55 /* UIViewExtension.swift */,
+				341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1077,11 +1109,11 @@
 		D105860920A056C500E63ADC /* Setting */ = {
 			isa = PBXGroup;
 			children = (
-				D1025CA920A13FFD00557B64 /* Component */,
+				341E735D20BBAE4E001B8D55 /* Views */,
+				341E735C20BBAE45001B8D55 /* Models */,
+				341E735B20BBAE25001B8D55 /* Controllers */,
 				8BE02A451EE9FBC7004CF000 /* Settings.storyboard */,
 				D17E59A720AC2BA300B26501 /* SettingsViewController.swift */,
-				D1025CCF20A1406B00557B64 /* SettingEditViewController.swift */,
-				D1025CD520A1406C00557B64 /* SettingMainViewController.swift */,
 				990EC94B20997BC600CA5E0B /* InstagramAuthViewController.swift */,
 			);
 			path = Setting;
@@ -1917,6 +1949,7 @@
 				8BE02A4C1EEA42A2004CF000 /* SwipeableTransitionSlideAnimator.swift in Sources */,
 				8435C2EA1F14018100C80AC6 /* FriendsViewModel.swift in Sources */,
 				8B8B2D741EC52B910086547C /* CachedImageView.swift in Sources */,
+				341E736220BBF575001B8D55 /* SettingEditCell.swift in Sources */,
 				D1B79D5A20614F8200F209B4 /* GPUImageSixInputFilter.m in Sources */,
 				C0DAAB121F53816000739F42 /* RealmInstagramAccount.swift in Sources */,
 				8435C2E61F13D0FD00C80AC6 /* MessageTableViewCell.swift in Sources */,
@@ -1980,6 +2013,7 @@
 				8BE491301E86C39A002E9D78 /* GenderButton.swift in Sources */,
 				8B7DC74E1EF7200500A3F966 /* SwipeablePresentationController.swift in Sources */,
 				D4F35BCC1F5AF564003D3902 /* AsyncCarouselImageView.swift in Sources */,
+				341E737820BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */,
 				8B7DC74C1EF5CF9000A3F966 /* ChannelsTableViewCell.swift in Sources */,
 				D1B79D312060DACB00F209B4 /* IFEarlybirdFilter.m in Sources */,
 				8B46EAEA1E8767C00069C7D7 /* UsernameTextField.swift in Sources */,
@@ -1995,8 +2029,8 @@
 				8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */,
 				8BC260131E54122000B9CC16 /* Socket.swift in Sources */,
 				8435C2F01F144DA800C80AC6 /* FriendTableViewCell.swift in Sources */,
+				341E735F20BBEF34001B8D55 /* SettingEditViewController.swift in Sources */,
 				848727B11E86B1AD00F13501 /* ConfettiView.swift in Sources */,
-				D1025CE420A1406C00557B64 /* SettingEditCell.swift in Sources */,
 				BF8C38B51E9A0B620089B313 /* MainViewController+Location.swift in Sources */,
 				D1B79D022060C94800F209B4 /* MonkeyFilterCell.swift in Sources */,
 				D1025CDC20A1406C00557B64 /* SettingImageCell.swift in Sources */,
@@ -2009,9 +2043,9 @@
 				8BC4E2DC1DB121240018F2C3 /* Extensions.swift in Sources */,
 				8BC64B9E1E88A83A00120777 /* SelectableButton.swift in Sources */,
 				D105079F20034D5B0018A14F /* DateHelper.swift in Sources */,
-				D1025CDA20A1406C00557B64 /* SettingEditViewController.swift in Sources */,
 				D49796021F36304E00E5382E /* CallViewController.swift in Sources */,
 				8BE491351E8763A0002E9D78 /* MonkeyViewController.swift in Sources */,
+				341E737220BD5696001B8D55 /* UIViewExtension.swift in Sources */,
 				D43AD40B1F12B52600DE6BBD /* CallViewController+Clock.swift in Sources */,
 				1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */,
 				D1F7912620B3CE610097574B /* GPUImageFilterGroup+Handler.m in Sources */,
@@ -2024,6 +2058,7 @@
 				8B7DC7481EF5C9E000A3F966 /* RealmChannel.swift in Sources */,
 				C0197E371F60A435005F121A /* RealmBlock.swift in Sources */,
 				D1B79D322060DACB00F209B4 /* IFRiseFilter.m in Sources */,
+				341E736720BD4320001B8D55 /* DeleteAccountPopupViewController.swift in Sources */,
 				8435C2E81F13DBBC00C80AC6 /* ChatViewModel.swift in Sources */,
 				8BC95FFA1DF626DD00710628 /* WelcomeViewController.swift in Sources */,
 				C0BDAF5B1F4F51D500FA2F38 /* KeypadButton.swift in Sources */,
@@ -2039,6 +2074,7 @@
 				D1FCDBAA20933C1000CF1BD9 /* RealmMatchInfo.swift in Sources */,
 				D1B79D342060DACB00F209B4 /* IFImageFilter.m in Sources */,
 				D192A3DF2029AD8300791002 /* TextModeMessageCell.swift in Sources */,
+				341E736D20BD496E001B8D55 /* ResumeMyAccountViewController.swift in Sources */,
 				D1B79D5B20614F8200F209B4 /* GPUImageFiveInputFilter.m in Sources */,
 				8BE02A4E1EEA4B62004CF000 /* SwipeableInteractiveTransition.swift in Sources */,
 				BF8C38B71E9A188E0089B313 /* RealmDataController.swift in Sources */,
@@ -2084,6 +2120,7 @@
 				D1A22A5B20A03F8A004F0F05 /* SwipeableTransitionSlideAnimator.swift in Sources */,
 				D1A22A5C20A03F8A004F0F05 /* FriendsViewModel.swift in Sources */,
 				D1A22A5D20A03F8A004F0F05 /* CachedImageView.swift in Sources */,
+				341E736320BBF575001B8D55 /* SettingEditCell.swift in Sources */,
 				D1A22A5E20A03F8A004F0F05 /* GPUImageSixInputFilter.m in Sources */,
 				D1A22A5F20A03F8A004F0F05 /* RealmInstagramAccount.swift in Sources */,
 				D1A22A6020A03F8A004F0F05 /* MessageTableViewCell.swift in Sources */,
@@ -2147,6 +2184,7 @@
 				D1A22A9620A03F8A004F0F05 /* GenderButton.swift in Sources */,
 				D1A22A9720A03F8A004F0F05 /* SwipeablePresentationController.swift in Sources */,
 				D1A22A9820A03F8A004F0F05 /* AsyncCarouselImageView.swift in Sources */,
+				341E737920BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */,
 				D1A22A9920A03F8A004F0F05 /* ChannelsTableViewCell.swift in Sources */,
 				D1A22A9B20A03F8A004F0F05 /* IFEarlybirdFilter.m in Sources */,
 				D1A22A9C20A03F8A004F0F05 /* UsernameTextField.swift in Sources */,
@@ -2162,8 +2200,8 @@
 				D1A22AA420A03F8A004F0F05 /* PopupViewController.swift in Sources */,
 				D1A22AA620A03F8A004F0F05 /* Socket.swift in Sources */,
 				D1A22AA720A03F8A004F0F05 /* FriendTableViewCell.swift in Sources */,
+				341E736020BBEF34001B8D55 /* SettingEditViewController.swift in Sources */,
 				D1A22AA820A03F8A004F0F05 /* ConfettiView.swift in Sources */,
-				D1025CE520A1406C00557B64 /* SettingEditCell.swift in Sources */,
 				D1A22AA920A03F8A004F0F05 /* MainViewController+Location.swift in Sources */,
 				D1A22AAA20A03F8A004F0F05 /* MonkeyFilterCell.swift in Sources */,
 				D1025CDD20A1406C00557B64 /* SettingImageCell.swift in Sources */,
@@ -2176,9 +2214,9 @@
 				D1A22AB220A03F8A004F0F05 /* Extensions.swift in Sources */,
 				D1A22AB320A03F8A004F0F05 /* SelectableButton.swift in Sources */,
 				D1A22AB420A03F8A004F0F05 /* DateHelper.swift in Sources */,
-				D1025CDB20A1406C00557B64 /* SettingEditViewController.swift in Sources */,
 				D1A22AB520A03F8A004F0F05 /* CallViewController.swift in Sources */,
 				D1A22AB720A03F8A004F0F05 /* MonkeyViewController.swift in Sources */,
+				341E737320BD5696001B8D55 /* UIViewExtension.swift in Sources */,
 				D1A22AB920A03F8A004F0F05 /* CallViewController+Clock.swift in Sources */,
 				D1A22ABA20A03F8A004F0F05 /* APIController+UserCenter.swift in Sources */,
 				D1F7912720B3CE620097574B /* GPUImageFilterGroup+Handler.m in Sources */,
@@ -2191,6 +2229,7 @@
 				D1A22AC020A03F8A004F0F05 /* RealmChannel.swift in Sources */,
 				D1A22AC120A03F8A004F0F05 /* RealmBlock.swift in Sources */,
 				D1A22AC220A03F8A004F0F05 /* IFRiseFilter.m in Sources */,
+				341E736820BD4320001B8D55 /* DeleteAccountPopupViewController.swift in Sources */,
 				D1A22AC420A03F8A004F0F05 /* ChatViewModel.swift in Sources */,
 				D1A22AC520A03F8A004F0F05 /* WelcomeViewController.swift in Sources */,
 				D1A22AC620A03F8A004F0F05 /* KeypadButton.swift in Sources */,
@@ -2206,6 +2245,7 @@
 				D1A22AD020A03F8A004F0F05 /* RealmMatchInfo.swift in Sources */,
 				D1A22AD120A03F8A004F0F05 /* IFImageFilter.m in Sources */,
 				D1A22AD220A03F8A004F0F05 /* TextModeMessageCell.swift in Sources */,
+				341E736E20BD496E001B8D55 /* ResumeMyAccountViewController.swift in Sources */,
 				D1A22AD320A03F8A004F0F05 /* GPUImageFiveInputFilter.m in Sources */,
 				D1A22AD420A03F8A004F0F05 /* SwipeableInteractiveTransition.swift in Sources */,
 				D1A22AD520A03F8A004F0F05 /* RealmDataController.swift in Sources */,

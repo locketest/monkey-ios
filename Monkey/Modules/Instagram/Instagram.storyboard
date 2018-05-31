@@ -64,9 +64,31 @@
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KIl-EN-3Z8">
                                         <rect key="frame" x="0.0" y="76" width="355" height="0.0"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hoa-v8-YFV">
+                                                <rect key="frame" x="5" y="0.0" width="345" height="0.0"/>
+                                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <state key="normal">
+                                                    <color key="titleColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="5"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="bigImageBtnClickFunc:" destination="970-6V-VH5" eventType="touchUpInside" id="7ax-82-UAj"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="hoa-v8-YFV" secondAttribute="trailing" constant="5" id="558-fC-PfL"/>
                                             <constraint firstAttribute="height" id="BJ7-Qt-Vcb"/>
+                                            <constraint firstItem="hoa-v8-YFV" firstAttribute="top" secondItem="KIl-EN-3Z8" secondAttribute="top" id="a4h-5X-EJR"/>
+                                            <constraint firstItem="hoa-v8-YFV" firstAttribute="leading" secondItem="KIl-EN-3Z8" secondAttribute="leading" constant="5" id="iqa-wM-Tgt"/>
+                                            <constraint firstAttribute="bottom" secondItem="hoa-v8-YFV" secondAttribute="bottom" id="qNh-QD-Dgz"/>
                                         </constraints>
                                     </view>
                                     <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WXY-5c-a2S" userLabel="Tutorial Overlay View">
@@ -309,6 +331,8 @@
                         <outlet property="backgroundEmojiLabel" destination="eTL-45-G1X" id="K5a-ni-EKd"/>
                         <outlet property="backgroundTextView" destination="04R-7m-nry" id="XDf-NZ-1d9"/>
                         <outlet property="backgroundView" destination="Ilx-hJ-K7B" id="mmw-fX-BLa"/>
+                        <outlet property="bigImgButton" destination="hoa-v8-YFV" id="u7K-nG-144"/>
+                        <outlet property="bigImgButtonBottomConstraint" destination="qNh-QD-Dgz" id="hW2-gv-4zH"/>
                         <outlet property="instagramContainerView" destination="gwW-uy-Ww4" id="Z0p-sX-2zz"/>
                         <outlet property="instagramContainerViewVerticalCenterConstraint" destination="nxv-7U-DpN" id="uyv-qI-XlE"/>
                         <outlet property="instagramPhotosBgView" destination="KIl-EN-3Z8" id="Pv2-jO-yLH"/>

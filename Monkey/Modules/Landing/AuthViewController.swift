@@ -219,8 +219,11 @@ class AuthViewController: MonkeyViewController {
 		}
 		
 		AnaliticsCenter.loginAccount()
-		
-		if APIController.shared.currentUser?.isCompleteProfile() == false {
+        
+        if let _ = APIController.shared.currentUser?.delete_at.value {
+            let vc = UIStoryboard(name: "Settings", bundle: nil).instantiateViewController(withIdentifier: "ResumeMyAccountViewController") as! ResumeMyAccountViewController
+            self.present(vc, animated: false)
+        } else if APIController.shared.currentUser?.isCompleteProfile() == false {
 			// 资料不全，编辑信息
 			let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
 			accountVC.shouldDismissAfterEntry = true

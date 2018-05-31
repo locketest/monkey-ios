@@ -10,6 +10,7 @@ import UIKit
 
 protocol SettingProfileCellDelegate : NSObjectProtocol {
     func editProfileBtnClickFunc()
+    func uploadedProfileImageSuccessFunc()
 }
 
 class SettingProfileCell: UITableViewCell, ProfilePhotoButtonViewDelegate {
@@ -73,6 +74,12 @@ class SettingProfileCell: UITableViewCell, ProfilePhotoButtonViewDelegate {
         self.profilePhotoView.profileImage = selectedImage
         self.profilePhotoView.uploadProfileImage {
             print("Uploaded profile image")
+            
+            if self.delegate != nil {
+                self.delegate!.uploadedProfileImageSuccessFunc()
+            } else {
+                print("代理为空")
+            }
         }
     }
     

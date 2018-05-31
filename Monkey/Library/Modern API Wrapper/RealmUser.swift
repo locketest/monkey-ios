@@ -23,6 +23,8 @@ class RealmUser: MonkeyModel {
 	
 	var age = RealmOptional<Int>()
 	var bananas = RealmOptional<Int>()
+    
+    var delete_at = RealmOptional<Double>()
 	
 	var seconds_in_app = RealmOptional<Int>()
 	

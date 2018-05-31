@@ -23,6 +23,7 @@ import RealmSwift
 import MessageUI
 import ObjectMapper
 import CoreLocation
+import SafariServices
 import UserNotifications
 
 enum ReportType: Int {
@@ -60,12 +61,13 @@ public let ScreenWidth = UIScreen.main.bounds.width
 public let ScreenHeight = UIScreen.main.bounds.height
 
 public let RemoteNotificationTag = "RemoteNotification" // 推送消息通知key
+public let CurrentVersionAlertViewTag = "CurrentVersionAlertView"
 public let KillAppBananaNotificationTag = "KillAppBananaNotificationTag"
 public let BananaAlertDataTag = "BananaAlertData" // Adjust promotion link下载，Bananas提醒tag
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
-class MainViewController: SwipeableViewController, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate {
+class MainViewController: SwipeableViewController, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate, SFSafariViewControllerDelegate {
 
 	func webSocketDidRecieveVideoCall(videoCall: Any, data: [String : Any]) {
 		guard IncomingCallManager.shared.chatSession == nil else {
@@ -360,7 +362,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		NotificationManager.shared.viewManager = self
 		NotificationManager.shared.chatSessionLoadingDelegate = self
 		IncomingCallManager.shared.delegate = self
-		self.swipableViewControllerToPresentOnRight = UIStoryboard(name: "Channels", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
+		self.swipableViewControllerToPresentOnRight = UIStoryboard(name: "Channels", bundle: .main).instantiateInitialViewController() as? SwipeableViewController     
 		self.swipableViewControllerToPresentOnLeft = UIStoryboard(name: "Chat", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
 		self.swipableViewControllerToPresentOnBottom = UIStoryboard(name: "Settings", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
 		self.swipableViewControllerToPresentOnTop = FilterViewController.init()
@@ -422,12 +424,58 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.startFindingChats(forReason: "location-services")
 		NotificationCenter.default.addObserver(self, selector: #selector(handleRemoteNotificationFunc), name: NSNotification.Name(rawValue: RemoteNotificationTag), object: nil)
 	}
-
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-
-		self.handleFirstNameExistFunc()
-	}
+     
+     override func viewWillAppear(_ animated: Bool) {
+          super.viewWillAppear(animated)
+          
+          self.currentVersionAlertViewFunc()
+          
+          self.handleFirstNameExistFunc()
+     }
+     
+     func currentVersionAlertViewFunc() {
+          
+          if !UserDefaults.standard.bool(forKey: CurrentVersionAlertViewTag) {
+               
+               self.stopFindingChats(andDisconnect: true, forReason: "Safety update notice")
+               
+               let alertController = UIAlertController(title: "Safety update notice", message: "For your account safety and support more safety services for you, Monkey already update our safety strategy and privacy.", preferredStyle: .alert)
+               
+               alertController.addAction(UIAlertAction(title: "See more details", style: .destructive, handler: { (UIAlertAction) in
+                    self.openURL("http://monkey.cool/privacy", inVC: true)
+               }))
+               
+               alertController.addAction(UIAlertAction(title: "Confirm", style: .cancel, handler: { (UIAlertAction) in
+                    UserDefaults.standard.setValue(true, forKey: CurrentVersionAlertViewTag)
+                    self.startFindingChats(forReason: "Safety update notice")
+               }))
+               
+               let alertWindow = UIWindow(frame: UIScreen.main.bounds)
+               alertWindow.rootViewController = MonkeyViewController()
+               alertWindow.windowLevel = UIWindowLevelAlert
+               alertWindow.makeKeyAndVisible()
+               alertWindow.rootViewController?.present(alertController, animated: true, completion: nil)
+          }
+     }
+     
+     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+          self.currentVersionAlertViewFunc()
+     }
+     
+     func openURL(_ urlString: String, inVC: Bool) {
+          guard let url = URL(string: urlString) else {
+               return
+          }
+          if !inVC {
+               UIApplication.shared.openURL(url)
+               return
+          }
+          let vc = SFSafariViewController(url: url, entersReaderIfAvailable: false)
+          vc.modalPresentationCapturesStatusBarAppearance = true
+          vc.modalPresentationStyle = .overFullScreen
+          vc.delegate = self
+          present(vc, animated: true, completion: nil)
+     }
 
 	func handleFirstNameExistFunc() {
 		if APIController.shared.currentUser?.first_name == nil {

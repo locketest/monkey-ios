@@ -8,18 +8,18 @@ PODS:
   - AlamofireObjectMapper (5.0.0):
     - Alamofire (~> 4.1)
     - ObjectMapper (~> 3.0)
-  - Amplitude-iOS (4.2.0)
+  - Amplitude-iOS (4.2.1)
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
     - Bolts/Tasks (= 1.9.0)
   - Bolts/AppLinks (1.9.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
-  - Crashlytics (3.10.1):
-    - Fabric (~> 1.7.5)
+  - Crashlytics (3.10.2):
+    - Fabric (~> 1.7.7)
   - CropViewController (2.3.6)
   - DeviceKit (1.7.0)
-  - Fabric (1.7.6)
+  - Fabric (1.7.7)
   - FBNotifications (1.0.1)
   - FBSDKCoreKit (4.33.0):
     - Bolts (~> 1.7)
@@ -110,7 +110,7 @@ DEPENDENCIES:
   - Starscream
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - AccountKit
     - Adjust
     - AgoraRtcEngine_iOS
@@ -158,12 +158,12 @@ SPEC CHECKSUMS:
   AgoraRtcEngine_iOS: 616331997992150073b68aa5737929fdee1491c8
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
-  Amplitude-iOS: 45f10ac763db6f9ddfa06f2e4d63ed5f8d3c7bf6
+  Amplitude-iOS: 84da24ca8557fa3741888502c30c0b8b365acd7d
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
+  Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
   CropViewController: e6d4bd512d15a1709e9ddf71fe7d98ffd05dda0f
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
-  Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
+  Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
   FBSDKCoreKit: 572b047a7e029bc44542bcf8a59414e7ff2b543e
   Firebase: d6861c2059d8c32d1e6dd8932e22ada346d90a3a
@@ -185,6 +185,6 @@ SPEC CHECKSUMS:
   RealmSwift: 3322562622fda2ad596985ead4d8d8be30cf838c
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
 
-PODFILE CHECKSUM: 668864a819ccc8312ab0cdd31404ee4b477ae86d
+PODFILE CHECKSUM: 6c96afb30d99ad6eef68707fb62161320b1898fa
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.5.0

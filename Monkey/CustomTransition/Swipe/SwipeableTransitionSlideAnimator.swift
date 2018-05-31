@@ -79,7 +79,7 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 		print(directionalViewOffset)
 		
 		if !isToMainViewController && isPresenting {
-			if fromViewController.isPanningHorizontally && (toViewController is SettingsViewController) == false && (toViewController is FilterViewController) == false { // left/right (second conditional for tap to bring up settings)
+			if fromViewController.isPanningHorizontally && (toViewController is SettingMainViewController) == false && (toViewController is FilterViewController) == false { // left/right (second conditional for tap to bring up settings)
 				toView.frame.origin.x = directionalViewOffset
 				toViewController.view.frame.origin.y = 0
 			} else {
@@ -90,7 +90,7 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 		}
 		
 		// set the final offset for the arrow within this transition
-		if let controller = fromViewController as? MainViewController, let toController = toViewController as? SettingsViewController {
+		if let controller = fromViewController as? MainViewController, let toController = toViewController as? SettingMainViewController {
 			controller.bottomArrowPadding.constant = toController.contentHeight + 20
 		} else if let controller = toViewController as? MainViewController {
 			controller.bottomArrowPadding.constant = 30
@@ -124,7 +124,7 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 		}) { (completed) in
 			transitionContext.completeTransition(!self.transitionContext!.transitionWasCancelled)
 			if transitionContext.transitionWasCancelled {
-				if let controller = toViewController as? MainViewController, fromViewController is SettingsViewController {
+				if let controller = toViewController as? MainViewController, fromViewController is SettingMainViewController {
 					controller.bottomArrowPadding.constant = fromViewController.contentHeight + 20
 					controller.view.setNeedsLayout()
 				}

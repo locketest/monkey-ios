@@ -22,6 +22,9 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     @IBOutlet var locationLabel: UILabel!
     /// The image view that async loads all the images, then cycles between them with taps
 //    @IBOutlet var instagramImageView: AsyncCarouselImageView!
+    /// The big image of instagramPhoto
+    @IBOutlet weak var bigImgButton: UIButton!
+    @IBOutlet weak var bigImgButtonBottomConstraint: NSLayoutConstraint!
     /// The instagramPhoto background view
     @IBOutlet var instagramPhotosBgView: UIView!
     /// The instagramPhoto background view height constraint
@@ -50,6 +53,10 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     var isMonkeyKingBool = false
     
     var followMyIGTagBool = true
+    
+    var dataTupleArray : [PhotoIdAndUrlTuple]! = []
+    
+    var bigImageTuple = (isHidden:true, fitBigImageHeight:CGFloat(0), maxBigImageHeight:CGFloat(0))
     
     let ButtonBgColor = UIColor(red: 107 / 255, green: 68 / 255, blue: 1, alpha: 0.07)
  
@@ -126,6 +133,9 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     }
     
     func initData() {
+        
+        self.dataTupleArray.removeAll()
+        
         if let accountId = user?.instagram_account?.instagram_account_id {
             JSONAPIRequest(url: "\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/instagram_accounts/\(accountId)", options: [
                 .header("Authorization", APIController.authorization)
@@ -137,20 +147,18 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
                         
                         if let includes = jsonAPIDocument.included {
                             
-                            var dataTupleArray : [PhotoIdAndUrlTuple]! = []
-                            
                             if includes.count > 0 {
                                 for (index, include) in includes.enumerated() {
                                     if index < (self.followMyIGTagBool ? 8 : 9) { // 如果最后一张图是followMyIG，前面最多显示八张，否则最多显示九张
-                                        dataTupleArray.append((photosId: include.id!, photoUrl: include.attributes!["standard_resolution_image_url"]! as! String))
+                                        self.dataTupleArray.append((photosId: include.id!, photoUrl: include.attributes!["standard_resolution_image_url"]! as! String))
                                     } else { break } // 避免图片过多虽然没有添加图片但循环还是在继续
                                 }
                                 
                                 if self.followMyIGTagBool {
-                                    dataTupleArray.append((photosId: "", photoUrl: ""))
+                                    self.dataTupleArray.append((photosId: "", photoUrl: ""))
                                 }
                                 
-                                self.addInstagramPhotosFunc(dataTupleArray: dataTupleArray)
+                                self.addInstagramPhotosFunc()
                             } else {
                                 self.instagramPhotosHeightConstraint.constant = 0
                             }
@@ -160,9 +168,9 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         }
     }
     
-    func addInstagramPhotosFunc(dataTupleArray:[PhotoIdAndUrlTuple]) {
+    func addInstagramPhotosFunc() {
         
-        if dataTupleArray.count > 0 {
+        if self.dataTupleArray.count > 0 {
 
             let Padding : CGFloat = 2 // 控件之间的间距
 
@@ -173,7 +181,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
             let imageButtonW : CGFloat = (self.instagramPhotosBgView.frame.size.width - Margin * 2 - Padding * (totleColumns - 1)) / totleColumns
             let imageButtonH : CGFloat = imageButtonW
 
-            for (index, value) in dataTupleArray.enumerated() {
+            for (index, value) in self.dataTupleArray.enumerated() {
 
                 let imageButton = UIButton()
                 
@@ -187,12 +195,16 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
                 let imageButtonX : CGFloat = Margin + CGFloat(col) * (imageButtonW + Padding)
                 let imageButtonY : CGFloat = CGFloat(row) * (imageButtonH + Padding)
                 
+                imageButton.tag = index
+                
                 if value.photoUrl == "" {
                     imageButton.setImage(UIImage(named: "followMyIGBtn"), for: .normal)
-                    imageButton.addTarget(self, action: #selector(followMyIGClickFunc), for: .touchUpInside)
                 } else {
+                    imageButton.titleLabel?.text = value.photoUrl
 					imageButton.kf.setImage(with: URL(string: value.photoUrl), for: .normal, placeholder: UIImage(named: "insDefultImg")!)
 				}
+                
+                imageButton.addTarget(self, action: #selector(imageButtonClickFunc), for: .touchUpInside)
                 
                 imageButton.frame = CGRect(x: imageButtonX, y: imageButtonY, width: imageButtonW, height: imageButtonH)
 
@@ -200,10 +212,46 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
             }
 
             self.instagramPhotosHeightConstraint.constant = (imageButtonH + Padding) * CGFloat(self.countTotalCol(total: dataTupleArray.count, columns: Int(totleColumns)))
+            
+            self.bigImageTuple = (isHidden: true, fitBigImageHeight: self.instagramPhotosHeightConstraint.constant, maxBigImageHeight: (imageButtonH + Padding) * CGFloat(self.countTotalCol(total: 9, columns: Int(totleColumns))))
         }
     }
     
-    func followMyIGClickFunc(sender:UIButton) {
+    func imageButtonClickFunc(sender:UIButton) {
+        
+        if self.followMyIGTagBool && (sender.tag == (self.dataTupleArray.count - 1)){
+            self.openInstagramURLFunc()
+        } else {
+            self.showImageButtonFunc(sender: sender)
+        }
+    }
+    
+    func showImageButtonFunc(sender:UIButton) {
+        
+        self.bigImageTuple.isHidden = !self.bigImageTuple.isHidden
+        self.bigImgButton.isHidden = self.bigImageTuple.isHidden
+        
+        self.bigImgButtonBottomConstraint.constant = 2
+        self.instagramPhotosHeightConstraint.constant = self.bigImageTuple.maxBigImageHeight
+        
+        self.instagramPhotosBgView.bringSubview(toFront: self.bigImgButton)
+        self.bigImgButton.kf.setBackgroundImage(with: URL(string: sender.titleLabel!.text!), for: .normal, placeholder: UIImage(named: "insDefultImg")!)
+        
+        self.instagramPhotosBgView.layoutIfNeeded()
+    }
+    
+    @IBAction func bigImageBtnClickFunc(_ sender: UIButton) {
+        
+        self.instagramPhotosHeightConstraint.constant = self.bigImageTuple.fitBigImageHeight
+        self.bigImgButtonBottomConstraint.constant = 0
+        
+        self.instagramPhotosBgView.layoutIfNeeded()
+        
+        self.bigImageTuple.isHidden = true
+        self.bigImgButton.isHidden = true
+    }
+    
+    func openInstagramURLFunc(){
         
         var instagramURL : URL!
         
