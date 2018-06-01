@@ -159,9 +159,7 @@ class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegat
 							let authorization = "Bearer \(token)"
 							let isNewUser = (jsonAPIDocument.dataResource?.json["action"] as? String) == "register"
 							APIController.signCodeSended(isNewUser: isNewUser)
-
 							APIController.authorization = authorization
-							AnaliticsCenter.loginAccount()
 							UserDefaults.standard.set(user_id, forKey: "user_id")
 							UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
 

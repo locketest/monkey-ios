@@ -1061,7 +1061,7 @@ by 5 teenagers in NYC?</string>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CE7-Gb-XVj" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="140" height="56"/>
-                                                <color key="backgroundColor" red="0.29803921570000003" green="0.2784313725" blue="0.97647058819999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="0.39215686274509803" green="0.29019607843137252" blue="0.97647058819999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="56" id="Jtd-Cm-tF7"/>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="140" id="jVL-SN-9eI"/>
@@ -1112,7 +1112,7 @@ by 5 teenagers in NYC?</string>
                                             <action selector="endCall:" destination="zTu-EK-AVb" eventType="touchUpInside" id="Ujx-Fl-CGr"/>
                                         </connections>
                                     </button>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aa2-H7-j91" customClass="StatusCornerView" customModule="Monkey" customModuleProvider="target">
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aa2-H7-j91">
                                         <rect key="frame" x="22" y="28" width="103" height="179"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="275-Qy-Cfr">

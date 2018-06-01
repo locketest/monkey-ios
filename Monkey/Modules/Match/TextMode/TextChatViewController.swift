@@ -328,13 +328,13 @@ class TextChatViewController: MonkeyViewController {
 				Achievements.shared.addFirstSnapchat = true
 				guard let `self` = self else { return }
 				if let chatSession = self.chatSession, chatSession.status == .connected {
-					let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
+					self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
 				}
 			}))
 			let mainVC = self.presentingViewController as? MainViewController
 			mainVC?.showAlert(alert: addFirstSnapchatAlert)
 		}else {
-			let _ = self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
+			self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
 		}
 	}
 	

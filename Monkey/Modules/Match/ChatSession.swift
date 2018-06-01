@@ -64,7 +64,6 @@ class ChatSession: NSObject {
 	var isReportedByOther = false
 	var isUnMuteSound = false
 	var matchMode: MatchMode = .VideoMode
-    var justAddFriend = false
 
     var message_send = 0
     var message_receive = 0
@@ -142,8 +141,6 @@ class ChatSession: NSObject {
 
     /// When a disconnect is completed async, this will be the result (consumed or consumedWithError)
     fileprivate var disconnectStatus: ChatSessionStatus?
-
-    fileprivate(set) var theirSnapchatUsername: String?
 
     /// The count of checks such as time and subscriber connection that have been completed (should be zero, one, or two)
     fileprivate var initiatorReadyChecks = 0 {
@@ -281,10 +278,7 @@ class ChatSession: NSObject {
 		self.matchMode = chat.match_room_mode
 		self.matchedTime = NSDate().timeIntervalSince1970
 		
-		if let friend = videoCall?.matchedFriendship {
-			self.theirSnapchatUsername = friend.user?.snapchat_username
-			self.chat?.sharedSnapchat = true
-			self.chat?.theySharedSnapchat = true
+		if videoCall?.matchedFriendship != nil {
 			self.friendMatched = true
 		}
 		
@@ -732,12 +726,7 @@ extension ChatSession {
 			}
 		case .AddFriend:
 			self.chat?.theySharedSnapchat = true
-			self.theirSnapchatUsername = body
-			if self.chat?.sharedSnapchat == true {
-				self.log(.info, "Openning snapchat")
-				self.friendMatched = true
-				self.justAddFriend = true
-			}
+			self.friendMatched = self.chat?.sharedSnapchat ?? false
 		case .Accept:
 			self.matchUserDidAccept = true
 			self.initiatorReadyChecks += 1
@@ -823,17 +812,14 @@ extension ChatSession {
 
 	- Returns: isWaiting. Wether the other person still has to tap Add Snapchat.
 	*/
-	func sendSnapchat(username: String) -> Bool {
+	func sendSnapchat(username: String) {
 		if isReportedChat {
-			return false
+			return
 		}
 
 		self.send(messageType: MessageType.AddFriend, body: username)
-
 		self.chat?.sharedSnapchat = true
 		self.friendMatched = self.chat?.theySharedSnapchat ?? false
-
-		return !self.friendMatched
 	}
 
 	func sentUnMute() {

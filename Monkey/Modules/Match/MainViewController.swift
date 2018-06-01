@@ -356,7 +356,8 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.matchModeContainer.layer.borderWidth = 3;
 		self.matchModeContainer.layer.borderColor = UIColor.clear.cgColor
 
-		if RemoteConfigManager.shared.text_chat_mode == false || RemoteConfigManager.shared.text_chat_test == .text_chat_test_C {
+		// 如果 text chat mode 开关关闭，或者分配到实验 B
+		if RemoteConfigManager.shared.text_chat_mode == false || Achievements.shared.textModeTestPlan == .text_chat_test_C {
 			self.matchModeSwitch.isEnabled = false
 			self.matchModeSwitch.isHidden = true
 		}else {
@@ -843,7 +844,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
-		APIController.trackSignUpFinish()
 		self.refreshEventModeStatus()
 		self.checkNotifiPermission()
 	}
@@ -1141,27 +1141,27 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	func dismissCallViewController(for chatSession: ChatSession) {
 		HWCameraManager.shared().removePixellate()
 		HWCameraManager.shared().changeCameraPosition(to: .front)
-
+		
 		if chatSession.isReportedChat, chatSession.friendMatched, let userID = self.chatSession?.realmCall?.user?.user_id, chatSession.isReportedByOther == false {
 			self.showAfterReportFriendAlert(userID: userID)
-        }else if let realmVideoCall = chatSession.realmVideoCall, let userID = realmVideoCall.initiator?.user_id, chatSession.isReportedChat, chatSession.isReportedByOther == false {
-               /// it is a video call
-               self.showAfterReportFriendAlert(userID: userID)
-          }
-
+		}else if let realmVideoCall = chatSession.realmVideoCall, let userID = realmVideoCall.initiator?.user_id, chatSession.isReportedChat, chatSession.isReportedByOther == false {
+			/// it is a video call
+			self.showAfterReportFriendAlert(userID: userID)
+		}
+		
 		guard self.matchViewController != nil else {
 			self.skipped()
 			return
 		}
-
+		
 		self.waitingText.isHidden = true
 		self.connectText.isHidden = true
 		//
 		print("Disconnecting event fired")
 		self.start()
-
+		
 		chatSession.chat?.update(callback: nil)
-
+		
 		if chatSession.wasSkippable {
 			self.resetFact()
 		}
@@ -1172,7 +1172,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		let presentingViewController = self.matchViewController?.presentingViewController
 		self.factTextView.text = self.nextFact
 		let callViewController = self.matchViewController
-
+		
 		if chatSession.matchMode == .VideoMode && chatSession.hadAddTime == false {
 			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}else if chatSession.matchMode == .TextMode && chatSession.isUnMuteSound == false,
@@ -1183,7 +1183,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			(Date.init().timeIntervalSince1970 - connectTime) <= 30 {
 			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}
-
+		
 		UIView.animate(withDuration: 0.3, animations: {
 			callViewController?.isPublisherViewEnlarged = true
 			callViewController?.view.layoutIfNeeded()
@@ -1196,19 +1196,19 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 				}) { (Bool) in
 					self.containerView.setNeedsLayout()
 					self.matchViewController = nil
-
+					
 					if chatSession.shouldShowRating == true {
 						self.stopFindingChats(andDisconnect:false, forReason:"rating-notification")
 						NotificationManager.shared.showRatingNotification(chatSession) { [weak self] in
 							self?.startFindingChats(forReason: "rating-notification")
 						}
 					}
-
-					if chatSession.justAddFriend == true ,
+					
+					if chatSession.friendMatched == true,
 						UserDefaults.standard.bool(forKey: showRateAlertReason.addFriendJust.rawValue) == false{
 						UserDefaults.standard.set(true, forKey: showRateAlertReason.addFriendJust.rawValue)
 						self.showRateAlert()
-					}else if Configs.contiLogTimes() == 3,
+					} else if Configs.contiLogTimes() == 3,
 						UserDefaults.standard.bool(forKey: showRateAlertReason.contiLoginThreeDay.rawValue) == false {
 						UserDefaults.standard.set(true,forKey: showRateAlertReason.contiLoginThreeDay.rawValue)
 						self.showRateAlert()
@@ -1216,7 +1216,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 				}
 			}
 		}
-
+		
 		self.startFindingChats(forReason: "re-start")
 	}
 	/// Inserts HWCameraManager.shared().localPreviewView at the back of the ViewController's view and sets it's constraints.

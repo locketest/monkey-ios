@@ -13,65 +13,48 @@ extension APIController {
 	
 	static let kCodeVerifyJustNow = "kCodeVerifyJustNow"
 	static let kNewAccountCodeVerify = "kNewAccountCodeVerify"
-	static let kSignAsLogin = "kSignAsLogin"
-	static let kNewAccountSignUpFinish = "kNewAccountSignUpFinish"
 	
-    private static let userDef = UserDefaults.standard
-    
-    private class func signAsNewUser() {
-        userDef.set(true, forKey: kNewAccountCodeVerify)
-        userDef.set(true, forKey: kNewAccountSignUpFinish)
-		if RemoteConfigManager.shared.text_chat_mode == true && RemoteConfigManager.shared.text_chat_test == .text_chat_test_B {
-			Achievements.shared.selectMatchMode = .TextMode
+	private static let userDef = UserDefaults.standard
+	
+	class func signCodeSended(isNewUser: Bool) {
+		userDef.set(true, forKey: kCodeVerifyJustNow)
+		userDef.set(isNewUser, forKey: kNewAccountCodeVerify)
+		AnaliticsCenter.loginAccount()
+		trackSignUpFinish(isNewUser: isNewUser)
+	}
+	
+	class func trackCodeVerifyIfNeed(isProfileComplete: Bool) {
+		if userDef.bool(forKey: kCodeVerifyJustNow) == false {
+			return
 		}
-    }
-    
-    class func signCodeSended(isNewUser: Bool) {
-        userDef.set(true, forKey: kCodeVerifyJustNow)
-        
-        if isNewUser {
-            self.signAsNewUser()
-        }
-    }
-    
-    class func trackCodeVerifyIfNeed(result: Bool, isProfileComp: Bool) {
-        if !userDef.bool(forKey: kCodeVerifyJustNow) {
-            return
-        }
-        userDef.set(false, forKey: kCodeVerifyJustNow)
-        
-        let isAccountNew = userDef.bool(forKey: kNewAccountCodeVerify)
-        userDef.set(false, forKey: kNewAccountCodeVerify)
-        
-        //  code verify success ,sign as login
-		userDef.set(result, forKey: kSignAsLogin)
-        
-        AnaliticsCenter.log(withEvent: .codeVerify, andParameter: [
-            "is_account_new" : isAccountNew ? "true" : "false",
-            "is_profile_complete" : isProfileComp ? "true" : "false"
-            ])
-    }
-    
-    class func trackSignUpFinish() {
-        if !userDef.bool(forKey: kSignAsLogin) {
-            return;
-        }
-        
-        userDef.set(false, forKey: kSignAsLogin)
-        
-        let isAccountNew = userDef.bool(forKey: kNewAccountSignUpFinish)
-        
-        AnaliticsCenter.log(withEvent: .signUpFinish, andParameter: [
-            "is_account_new": "\(isAccountNew)",
-			"experiment": "\(RemoteConfigManager.shared.text_chat_test.rawValue)",
-            ])
+		userDef.set(false, forKey: kCodeVerifyJustNow)
 		
-		if isAccountNew {
+		let isAccountNew = userDef.bool(forKey: kNewAccountCodeVerify)
+		AnaliticsCenter.log(withEvent: .codeVerify, andParameter: [
+			"is_account_new" : isAccountNew,
+			"is_profile_complete" : isProfileComplete,
+			])
+	}
+	
+	class func trackSignUpFinish(isNewUser: Bool) {
+		var signUpParameter = [
+			"is_account_new": "\(isNewUser)",
+		]
+		if isNewUser {
 			Achievements.shared.registerTime = NSDate().timeIntervalSince1970
+			
+			// 如果是新用户，保存分配到的实验
+			let text_chat_test_plan = RemoteConfigManager.shared.text_chat_test
+			// 打点参数
+			signUpParameter["experiment"] = text_chat_test_plan.rawValue
+			Achievements.shared.textModeTestPlan = text_chat_test_plan
+			// 如果是实验 B，默认打开 text mode
+			if text_chat_test_plan == .text_chat_test_B {
+				Achievements.shared.selectMatchMode = .TextMode
+			}
 		}else {
 			Achievements.shared.registerTime = 0
 		}
-        
-        userDef.set(false, forKey: kNewAccountSignUpFinish)
-    }
+		AnaliticsCenter.log(withEvent: .signUpFinish, andParameter: signUpParameter)
+	}
 }

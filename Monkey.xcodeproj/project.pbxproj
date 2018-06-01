@@ -23,8 +23,6 @@
 		341E737320BD5696001B8D55 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737120BD5696001B8D55 /* UIViewExtension.swift */; };
 		341E737820BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */; };
 		341E737920BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */; };
-		34B7F7DB20898CCA00A6B7B2 /* UIView+MJ.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */; };
-		34B7F7DC20898CCA00A6B7B2 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
 		5D419F63CE951F23C4C7D274 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */; };
 		73E22875347F9C59CCA69773 /* Pods_Monkey_Sandbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D1AFCAC9E343F31F82E5CC /* Pods_Monkey_Sandbox.framework */; };
@@ -226,7 +224,6 @@
 		D1A22A7C20A03F8A004F0F05 /* Apns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BB895871DBD2E1800FC5E53 /* Apns.swift */; };
 		D1A22A7D20A03F8A004F0F05 /* ProfilePhotoButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847EABF91EBE813F000F9575 /* ProfilePhotoButtonView.swift */; };
 		D1A22A7E20A03F8A004F0F05 /* FilterCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CFC2060243700F209B4 /* FilterCollectionView.swift */; };
-		D1A22A7F20A03F8A004F0F05 /* UIView+MJ.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */; };
 		D1A22A8020A03F8A004F0F05 /* SwipeableTransitionDismissAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B2ED8BD1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift */; };
 		D1A22A8120A03F8A004F0F05 /* IFNashvilleFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D2B2060DACB00F209B4 /* IFNashvilleFilter.m */; };
 		D1A22A8220A03F8A004F0F05 /* TextChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DA20286E0600791002 /* TextChatViewController.swift */; };
@@ -257,7 +254,6 @@
 		D1A22A9F20A03F8A004F0F05 /* MKMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76554620132B0600FAB045 /* MKMatchManager.swift */; };
 		D1A22AA020A03F8A004F0F05 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B46EAEB1E8770360069C7D7 /* Colors.swift */; };
 		D1A22AA120A03F8A004F0F05 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CF6205FDD0500F209B4 /* FilterViewController.swift */; };
-		D1A22AA220A03F8A004F0F05 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */; };
 		D1A22AA320A03F8A004F0F05 /* InstagramPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01873701F4F2B92008C8790 /* InstagramPopupViewController.swift */; };
 		D1A22AA420A03F8A004F0F05 /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B19B66F1EBCFA4300493A3A /* PopupViewController.swift */; };
 		D1A22AA620A03F8A004F0F05 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC260121E54122000B9CC16 /* Socket.swift */; };
@@ -467,10 +463,6 @@
 		341E736C20BD496E001B8D55 /* ResumeMyAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumeMyAccountViewController.swift; sourceTree = "<group>"; };
 		341E737120BD5696001B8D55 /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringExtension.swift; sourceTree = "<group>"; };
-		34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJ.m"; sourceTree = "<group>"; };
-		34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
-		34B7F7D920898CC900A6B7B2 /* UIView+MJ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJ.h"; sourceTree = "<group>"; };
-		34B7F7DA20898CC900A6B7B2 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
 		36BDAAEC1AB6615D506ADC62 /* Pods-Monkey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.release.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.release.xcconfig"; sourceTree = "<group>"; };
 		52D1AFCAC9E343F31F82E5CC /* Pods_Monkey_Sandbox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Monkey_Sandbox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79CF9C670055FE2BC0618C68 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -877,13 +869,10 @@
 		D10585E220A04BE000E63ADC /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				34B7F7DA20898CC900A6B7B2 /* UIView+Extension.h */,
-				34B7F7D820898CC900A6B7B2 /* UIView+Extension.m */,
-				34B7F7D920898CC900A6B7B2 /* UIView+MJ.h */,
-				34B7F7D720898CC800A6B7B2 /* UIView+MJ.m */,
 				8B46EAEB1E8770360069C7D7 /* Colors.swift */,
 				8BC4E2DB1DB121240018F2C3 /* Extensions.swift */,
 				D105079E20034D5B0018A14F /* DateHelper.swift */,
+				341E737120BD5696001B8D55 /* UIViewExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -981,7 +970,6 @@
 				8BE35E241DB9BF97002049B5 /* Achievements.swift */,
 				8B3A787C1DB32CB000FA68A7 /* SoundPlayer.swift */,
 				8499A58B1E86DED80088D0D2 /* TapticFeedback.swift */,
-				341E737120BD5696001B8D55 /* UIViewExtension.swift */,
 				341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */,
 			);
 			path = Tools;
@@ -1980,7 +1968,6 @@
 				8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */,
 				847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */,
 				D1B79CFD2060243700F209B4 /* FilterCollectionView.swift in Sources */,
-				34B7F7DB20898CCA00A6B7B2 /* UIView+MJ.m in Sources */,
 				8B2ED8BE1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift in Sources */,
 				D1B79D402060DACB00F209B4 /* IFNashvilleFilter.m in Sources */,
 				D10490F020ADB5F000381F9E /* OpenTokService.swift in Sources */,
@@ -2018,7 +2005,6 @@
 				D1025CE220A1406C00557B64 /* SettingBasicCell.swift in Sources */,
 				8B46EAEC1E8770360069C7D7 /* Colors.swift in Sources */,
 				D1B79CF7205FDD0500F209B4 /* FilterViewController.swift in Sources */,
-				34B7F7DC20898CCA00A6B7B2 /* UIView+Extension.m in Sources */,
 				D1025CE820A1406C00557B64 /* SettingModel.swift in Sources */,
 				C01873711F4F2B92008C8790 /* InstagramPopupViewController.swift in Sources */,
 				8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */,
@@ -2150,7 +2136,6 @@
 				D1A22A7C20A03F8A004F0F05 /* Apns.swift in Sources */,
 				D1A22A7D20A03F8A004F0F05 /* ProfilePhotoButtonView.swift in Sources */,
 				D1A22A7E20A03F8A004F0F05 /* FilterCollectionView.swift in Sources */,
-				D1A22A7F20A03F8A004F0F05 /* UIView+MJ.m in Sources */,
 				D1A22A8020A03F8A004F0F05 /* SwipeableTransitionDismissAnimator.swift in Sources */,
 				D1A22A8120A03F8A004F0F05 /* IFNashvilleFilter.m in Sources */,
 				D10490F120ADB5F000381F9E /* OpenTokService.swift in Sources */,
@@ -2188,7 +2173,6 @@
 				D1025CE320A1406C00557B64 /* SettingBasicCell.swift in Sources */,
 				D1A22AA020A03F8A004F0F05 /* Colors.swift in Sources */,
 				D1A22AA120A03F8A004F0F05 /* FilterViewController.swift in Sources */,
-				D1A22AA220A03F8A004F0F05 /* UIView+Extension.m in Sources */,
 				D1025CE920A1406C00557B64 /* SettingModel.swift in Sources */,
 				D1A22AA320A03F8A004F0F05 /* InstagramPopupViewController.swift in Sources */,
 				D1A22AA420A03F8A004F0F05 /* PopupViewController.swift in Sources */,

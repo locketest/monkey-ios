@@ -109,15 +109,12 @@ class RemoteConfigManager {
 	}
 	
 	var text_chat_test: TextChatTestPlan {
-		if let value = remoteConfig.configValue(forKey: "text_chat_test").stringValue {
-			return TextChatTestPlan.init(rawPlan: value)
-		}else {
-			return .default
-		}
+		let text_chat_test = remoteConfig.configValue(forKey: "text_chat_test").stringValue
+		return TextChatTestPlan.init(rawPlan: text_chat_test)
 	}
 	
 	enum TextChatTestPlan: String {
-		init(rawPlan: String) {
+		init(rawPlan: String?) {
 			switch rawPlan {
 			case "text_chat_test_A":
 				self = .text_chat_test_A

@@ -104,27 +104,17 @@ class AuthViewController: MonkeyViewController {
 				return
 			}
 			
-			// 存储用户资料到共享 app groups 存储区
-			Achievements.shared.group_first_name = currentUser.first_name;
-			Achievements.shared.group_username = currentUser.username;
-			Achievements.shared.group_user_id = currentUser.user_id;
-			Achievements.shared.group_birth_date = currentUser.birth_date?.timeIntervalSince1970;
-			Achievements.shared.group_gender = currentUser.gender;
-			Achievements.shared.group_profile_photo = currentUser.profile_photo_url;
-			
 			// 如果资料完整
 			if currentUser.isCompleteProfile() {
-				APIController.trackCodeVerifyIfNeed(result: true, isProfileComp: true)
+				APIController.trackCodeVerifyIfNeed(isProfileComplete: true)
 				
 			}else {
-				APIController.trackCodeVerifyIfNeed(result: true, isProfileComp: false)
+				APIController.trackCodeVerifyIfNeed(isProfileComplete: false)
 				
 				// 资料不全，编辑信息
 				let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
 				(self.presentedViewController as? MainViewController)?.present(accountVC, animated: true, completion: nil)
 			}
-			
-			print("Updates completed in background")
 		}
 	}
 	
