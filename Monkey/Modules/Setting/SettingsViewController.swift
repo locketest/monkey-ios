@@ -189,16 +189,24 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
             }
         }
 
-		NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
+		self.addKeyboardListenFunc()
     }
 
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 
-		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
-		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+		self.removeKeyboardListenFunc()
 	}
+    
+    func addKeyboardListenFunc() {
+        NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
+    }
+    
+    func removeKeyboardListenFunc() {
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+    }
 
 	func refreshEditStatus() {
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/\(UserOptions.api_version.rawValue)/\(UserOptions.requst_subfix)", options: [
@@ -575,6 +583,9 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         alertController.addAction(UIKit.UIAlertAction(title: "❌ Delete Account", style: .default, handler: { (UIAlertAction) in
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "DeleteAccountPopupViewController") as! DeleteAccountPopupViewController
             vc.modalPresentationStyle = .overFullScreen
+            vc.keyboardClosure = {
+                $0 ? self.addKeyboardListenFunc() : self.removeKeyboardListenFunc()
+            }
             self.present(vc, animated: true, completion: nil)
         }))
         if let creditsURL = APIController.shared.currentExperiment?.credits_url {

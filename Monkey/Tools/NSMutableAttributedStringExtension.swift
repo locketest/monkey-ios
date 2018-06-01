@@ -8,6 +8,7 @@
 
 let SystemFont13 = UIFont.systemFont(ofSize: 13)
 let SystemFont15 = UIFont.systemFont(ofSize: 15)
+let SystemFont16 = UIFont.systemFont(ofSize: 16)
 let SystemFont17 = UIFont.systemFont(ofSize: 17)
 
 let BoldSystemFont13 = UIFont.boldSystemFont(ofSize: 13)

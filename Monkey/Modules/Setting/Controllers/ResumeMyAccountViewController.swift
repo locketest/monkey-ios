@@ -64,7 +64,7 @@ class ResumeMyAccountViewController: MonkeyViewController {
             let date = Date(timeIntervalSince1970: timeInterval)
             
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "E,MMM dd,yyyy"
+            dateFormatter.dateFormat = "MMM dd, yyyy"
             
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineSpacing = 5

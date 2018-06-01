@@ -8,6 +8,8 @@
 
 import UIKit
 
+typealias KeyboardClosure = (_ isAdd:Bool) -> Void
+
 class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegate {
     
     let DurationTime = 0.35
@@ -24,6 +26,8 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
     
     var selectedReasonBtn = UIButton()
     
+    var keyboardClosure: KeyboardClosure?
+    
     @IBOutlet weak var checkBoxBgView: UIView!
     
     @IBOutlet weak var textFieldBgView: UIView!
@@ -33,6 +37,10 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
     @IBOutlet weak var stepTwoTextView: UITextView!
     
     @IBOutlet weak var stepThreeTextField: UITextField!
+    
+    @IBOutlet weak var tooManySpamButton: UIButton!
+    
+    @IBOutlet weak var whyYouWantToDeleteLabel: UILabel!
     
     @IBOutlet weak var stepTwoDeleteButton: BigYellowButton!
     
@@ -155,9 +163,7 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
                     break
                 case .success(_):
                     
-                    if self?.selectedReasonBtn.tag != 6 {
-                        AnaliticsCenter.log(withEvent: .deleteAccount, andParameter: ["reason":self?.selectedReasonBtn.currentTitle ?? ""])
-                    }
+                    AnaliticsCenter.log(withEvent: .deleteAccount, andParameter: ["reason":self?.selectedReasonBtn.currentTitle ?? ""])
                     
                     RealmDataController.shared.deleteAllData() { (error) in
                         guard error == nil else {
@@ -201,10 +207,12 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
         } else {
             self.confirmBgView.isHidden = true
             
-            UIView.animate(withDuration: DurationTime) {
-                self.checkBoxBgView.height = 0
-                self.checkBoxBgView.isHidden = true
-                self.textFieldBgView.y = self.checkBoxBgView.y
+            if ScreenHeight < 666 {
+                UIView.animate(withDuration: DurationTime) {
+                    self.checkBoxBgView.height = 0
+                    self.checkBoxBgView.isHidden = true
+                    self.textFieldBgView.y = self.checkBoxBgView.y
+                }
             }
         }
     }
@@ -212,10 +220,12 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
     func keyboardWillHideFunc(notification:NSNotification) {
         
         if !self.isIntoStepThreeBool {
-            UIView.animate(withDuration: DurationTime) {
-                self.checkBoxBgView.height = self.checkBoxBgViewHeight
-                self.checkBoxBgView.isHidden = false
-                self.textFieldBgView.y = self.checkBoxBgView.maxY
+            if ScreenHeight < 666 {
+                UIView.animate(withDuration: DurationTime) {
+                    self.checkBoxBgView.height = self.checkBoxBgViewHeight
+                    self.checkBoxBgView.isHidden = false
+                    self.textFieldBgView.y = self.checkBoxBgView.maxY
+                }
             }
         }
     }
@@ -223,18 +233,35 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
+        if self.keyboardClosure != nil {
+            self.keyboardClosure!(true)
+        }
+        
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        self.checkBoxBgViewHeight = self.checkBoxBgView.height
+    }
+    
     func initView() {
+        
+        if self.keyboardClosure != nil {
+            self.keyboardClosure!(false)
+        }
+        
+        if ScreenHeight < 666 {
+            self.whyYouWantToDeleteLabel.font = SystemFont16
+            self.tooManySpamButton.titleLabel?.font = SystemFont16
+        }
         
         DispatchQueue.main.async {
             self.reasonBgView.x = -self.HiddenXValue
             self.confirmBgView.x = -self.HiddenXValue
         }
-        
-        self.checkBoxBgViewHeight = self.checkBoxBgView.height
         
         self.stepThreeLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Please type into ", textTwo: "DELETE", textThree:" on the text box todelete your account.", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
         
