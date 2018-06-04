@@ -340,7 +340,6 @@ class ChatSession: NSObject {
 	}
 
     deinit {
-		Socket.shared.delChatMessageDelegate(chatMessageDelegate: self)
         print("chat session deinit")
     }
 
@@ -495,6 +494,7 @@ class ChatSession: NSObject {
 
 	fileprivate func finishDisconnecting() {
 		log(.info, "Disconnecting")
+		Socket.shared.delChatMessageDelegate(chatMessageDelegate: self)
 		guard let realmCall = videoCall else {
 			// Disconnect in progress.
 			self.log(.error, "Disconnects must have consumed status")

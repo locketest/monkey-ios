@@ -85,7 +85,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                 chatSession.loadingDelegate = self
 
                 self.callButton.backgroundColor = Colors.purple
-                self.initiateCallTimer() // call timer just loops noises
                 self.callButton.isJiggling = true
             }
 
@@ -581,7 +580,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             return
         }
         self.callButton.isJiggling = true
-        self.initiateCallTimer()
         self.viewModel.initiateCall()
     }
 
@@ -620,7 +618,7 @@ extension ChatViewController: ChatSessionLoadingDelegate {
         self.callButton.isSpinning = false
         self.callButton.isJiggling = false
         self.stopCallSound()
-        if !chatSession.matchUserDidAccept {
+        if chatSession.didConnect == false {
             self.sendCancelCallMessage()
         }
 
@@ -684,7 +682,6 @@ extension ChatViewController: ChatSessionLoadingDelegate {
     }
 
     internal func initiateCallTimer() {
-
         self.stopCallSound()
         self.callTimer = Timer(timeInterval: 2.52, target: self, selector: #selector(playCallSound), userInfo: nil, repeats: true)
         RunLoop.main.add(self.callTimer!, forMode: .commonModes)
@@ -692,10 +689,6 @@ extension ChatViewController: ChatSessionLoadingDelegate {
     }
 
     func playCallSound() {
-        DispatchQueue.global().async {
-            try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient, with: [.mixWithOthers])
-            try? AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
-        }
         SoundPlayer.shared.play(sound: .call)
     }
 

@@ -209,11 +209,6 @@ class ChatViewModel {
 
     /// Makes the API request and returns the parameters necessary for initializing a chat session.
     func initiateCall() {
-        DispatchQueue.global().async {
-            try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient, with: [.mixWithOthers])
-            try? AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
-        }
-
         guard let friendshipId = self.friendship?.friendship_id else {
             print("Error: Missing friendship id.")
             return

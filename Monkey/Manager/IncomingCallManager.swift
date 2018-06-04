@@ -62,33 +62,33 @@ class IncomingCallManager {
         self.reactToIncomingCall(incomingCall)
     }
     
-    func reactToIncomingCall(_ realmCall: RealmVideoCall) {
-        
-        guard self.delegate != nil, showingNotification == nil, self.skipCallIds.contains(realmCall.chat_id!) != true else {
-            return
-        }
-    
-        self.chatSession = self.createChatSession(fromVideoCall: realmCall)
-        let chatSession = self.chatSession!
-        
-        if self.delegate?.incomingCallManager(self, shouldShowNotificationFor: chatSession) == true {
-           self.initiateCallTimer()
-           self.showingNotification = NotificationManager.shared.showCallNotification(chatSession: chatSession, completion: { [unowned self] (response) in
-                if response == .accepted {
-                    self.stopCallSound()
-                    self.showingNotification?.notificationDescriptionLabel.text = "connecting..."
-                    self.showingNotification?.callButton.isJiggling = false
-                    self.showingNotification?.callButton.isSpinning = true
-                    self.delegate?.incomingCallManager(self, transitionToChatSession: chatSession)
-                    self.chatSession = nil
-                } else {
-                    chatSession.disconnect(.consumed)
-                    self.dismissShowingNotificationForChatSession(chatSession)
-                }
-            self.stopCallSound()
-            })
-        } 
-    }
+	func reactToIncomingCall(_ realmCall: RealmVideoCall) {
+		
+		guard self.delegate != nil, showingNotification == nil, self.skipCallIds.contains(realmCall.chat_id!) != true else {
+			return
+		}
+		
+		self.chatSession = self.createChatSession(fromVideoCall: realmCall)
+		let chatSession = self.chatSession!
+		
+		if self.delegate?.incomingCallManager(self, shouldShowNotificationFor: chatSession) == true {
+			self.initiateCallTimer()
+			self.showingNotification = NotificationManager.shared.showCallNotification(chatSession: chatSession, completion: { [unowned self] (response) in
+				if response == .accepted {
+					self.stopCallSound()
+					self.showingNotification?.notificationDescriptionLabel.text = "connecting..."
+					self.showingNotification?.callButton.isJiggling = false
+					self.showingNotification?.callButton.isSpinning = true
+					self.delegate?.incomingCallManager(self, transitionToChatSession: chatSession)
+					self.chatSession = nil
+				} else {
+					chatSession.disconnect(.consumed)
+					self.dismissShowingNotificationForChatSession(chatSession)
+				}
+				self.stopCallSound()
+			})
+		}
+	}
     
     ///  if user ignore video call , call this func
 	func cancelVideoCall(chatsession: ChatSession) {

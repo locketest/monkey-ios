@@ -106,6 +106,7 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		self.imageView.stopAnimating()
+		self.permissionLabel.text = nil
 	}
 
     override func didReceiveMemoryWarning() {

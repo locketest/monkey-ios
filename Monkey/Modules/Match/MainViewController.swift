@@ -70,31 +70,29 @@ typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 class MainViewController: SwipeableViewController, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate, SFSafariViewControllerDelegate {
 
 	func webSocketDidRecieveVideoCall(videoCall: Any, data: [String : Any]) {
-		guard IncomingCallManager.shared.chatSession == nil else {
+		guard IncomingCallManager.shared.chatSession == nil, let videoc = videoCall as? RealmVideoCall else {
 			return
 		}
 		
 		// present call view controller
-		if let videoc = videoCall as? RealmVideoCall {
-			if let chatsession = IncomingCallManager.shared.createChatSession(fromVideoCall: videoc) {
-				let callnoti = NotificationManager.shared.showCallNotification(chatSession: chatsession, completion: { (callResponse) in
-					switch callResponse {
-					case .accepted:
-						if self.chatSession != nil {
-							self.chatSession?.disconnect(.consumed)
-						}
-						self.chatSession = chatsession
-						chatsession.loadingDelegate = self
-						chatsession.accept()
-					case .declined:
-//						IncomingCallManager.shared.cancelVideoCall(chatsession: chatsession)
-						chatsession.disconnect(.consumed)
+		if let chatsession = IncomingCallManager.shared.createChatSession(fromVideoCall: videoc) {
+			let callnoti = NotificationManager.shared.showCallNotification(chatSession: chatsession, completion: { (callResponse) in
+				switch callResponse {
+				case .accepted:
+					if self.chatSession != nil {
+						self.chatSession?.disconnect(.consumed)
 					}
-				})
-
-				IncomingCallManager.shared.showingNotification = callnoti
-				self.callNotification = callnoti
-			}
+					self.chatSession = chatsession
+					chatsession.loadingDelegate = self
+					chatsession.accept()
+				case .declined:
+//					IncomingCallManager.shared.cancelVideoCall(chatsession: chatsession)
+					chatsession.disconnect(.consumed)
+				}
+			})
+			
+			IncomingCallManager.shared.showingNotification = callnoti
+			self.callNotification = callnoti
 		}
 	}
 	
@@ -257,7 +255,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 
 	fileprivate var friendships: Results<RealmFriendship>?
-	var isSkip:Bool = false {
+	var isSkip: Bool = false {
 		didSet {
 			self.statusChanged(isSkip: isSkip)
 
