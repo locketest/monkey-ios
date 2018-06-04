@@ -1264,8 +1264,10 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 
 	func shouldShowConnectingStatus(in chatSession: ChatSession) {
-		self.waitingText.isHidden = true
-		self.connectText.isHidden = false
+		if self.presentedViewController == nil {
+			self.waitingText.isHidden = true
+			self.connectText.isHidden = false
+		}
 	}
 
 	@IBAction func matchModeChanged(_ sender: MatchModeSwitch) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="YDh-DF-csn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="YDh-DF-csn">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -1415,74 +1415,19 @@
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IWV-ZC-Xs8">
                                         <rect key="frame" x="25" y="51" width="315" height="503"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ket-Ck-Hxy">
-                                                <rect key="frame" x="0.0" y="0.0" width="56" height="21"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="56" id="Wbk-CU-bSI"/>
-                                                </constraints>
-                                                <string key="text">	• 	</string>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eca-QL-rBY">
-                                                <rect key="frame" x="56" y="0.0" width="259" height="101.66666666666667"/>
-                                                <string key="text">"To further protect your account safety, Monkey has updated its safety services and privacy policy. You can now delete your account.</string>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F4i-Jb-sC5">
-                                                <rect key="frame" x="0.0" y="101.66666666666666" width="56" height="21"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="56" id="aVV-Pe-4SH"/>
-                                                </constraints>
-                                                <string key="text">	• 	</string>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M28-PL-TeU">
-                                                <rect key="frame" x="56" y="101.66666666666664" width="259" height="223.33333333333337"/>
-                                                <string key="text">The account deletion process will begin 30 days after you submit your account deletion request. During this time your account will be held in a de-activated state with no access. You can choose to cancel your account deletion anytime during these 30 days. Your account will be deleted permanently after 30 days of your request.</string>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dsu-dd-O6b">
-                                                <rect key="frame" x="0.0" y="325" width="56" height="21"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="56" id="NBf-w5-P7E"/>
-                                                </constraints>
-                                                <string key="text">	• 	</string>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Would you still like to delete your Monkey account?&quot;" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eBC-nc-Uwv">
-                                                <rect key="frame" x="56" y="325" width="259" height="40.666666666666686"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eBC-nc-Uwv">
+                                                <rect key="frame" x="0.0" y="0.0" width="312.33333333333331" height="284.33333333333331"/>
+                                                <mutableString key="text">  To further protect your account safety, Monkey has updated its safety services and privacy policy. You can now delete your account.\r\n\r\n  The account deletion process will begin 30 days after you submit your account deletion request. During this time your account will be held in a de-activated state with no access. You can choose to cancel your account deletion anytime during these 30 days. Your account will be deleted permanently after 30 days of your request.\r\n\r\n  Would you still like to delete your Monkey account?</mutableString>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstItem="eBC-nc-Uwv" firstAttribute="top" secondItem="M28-PL-TeU" secondAttribute="bottom" id="1Hq-TJ-SFk"/>
-                                            <constraint firstAttribute="trailing" secondItem="M28-PL-TeU" secondAttribute="trailing" id="1pe-WO-jho"/>
-                                            <constraint firstItem="ket-Ck-Hxy" firstAttribute="leading" secondItem="IWV-ZC-Xs8" secondAttribute="leading" id="5v5-9u-n2B"/>
-                                            <constraint firstItem="M28-PL-TeU" firstAttribute="top" secondItem="eca-QL-rBY" secondAttribute="bottom" id="7So-mV-TVt"/>
-                                            <constraint firstItem="Dsu-dd-O6b" firstAttribute="top" secondItem="M28-PL-TeU" secondAttribute="bottom" id="Eaq-lw-8Nw"/>
-                                            <constraint firstItem="M28-PL-TeU" firstAttribute="leading" secondItem="F4i-Jb-sC5" secondAttribute="trailing" id="Eug-vv-9N9"/>
-                                            <constraint firstItem="eca-QL-rBY" firstAttribute="top" secondItem="IWV-ZC-Xs8" secondAttribute="top" id="J7r-WR-QUQ"/>
-                                            <constraint firstItem="F4i-Jb-sC5" firstAttribute="top" secondItem="eca-QL-rBY" secondAttribute="bottom" id="LxS-hh-GqM"/>
-                                            <constraint firstItem="ket-Ck-Hxy" firstAttribute="top" secondItem="IWV-ZC-Xs8" secondAttribute="top" id="Pc6-rx-XMe"/>
+                                            <constraint firstItem="eBC-nc-Uwv" firstAttribute="top" secondItem="IWV-ZC-Xs8" secondAttribute="top" id="KPZ-hX-H6k"/>
                                             <constraint firstAttribute="trailing" secondItem="eBC-nc-Uwv" secondAttribute="trailing" id="XZ9-M3-jnA"/>
+                                            <constraint firstItem="eBC-nc-Uwv" firstAttribute="leading" secondItem="IWV-ZC-Xs8" secondAttribute="leading" id="b86-hG-5Rz"/>
                                             <constraint firstAttribute="bottom" secondItem="eBC-nc-Uwv" secondAttribute="bottom" id="ceY-SW-TlJ"/>
-                                            <constraint firstItem="eca-QL-rBY" firstAttribute="leading" secondItem="ket-Ck-Hxy" secondAttribute="trailing" id="f4L-ZX-OR6"/>
-                                            <constraint firstItem="eBC-nc-Uwv" firstAttribute="leading" secondItem="Dsu-dd-O6b" secondAttribute="trailing" id="oif-Q5-tia"/>
-                                            <constraint firstAttribute="trailing" secondItem="eca-QL-rBY" secondAttribute="trailing" id="saO-kd-vXX"/>
-                                            <constraint firstItem="Dsu-dd-O6b" firstAttribute="leading" secondItem="IWV-ZC-Xs8" secondAttribute="leading" id="vxc-a9-3b8"/>
-                                            <constraint firstItem="F4i-Jb-sC5" firstAttribute="leading" secondItem="IWV-ZC-Xs8" secondAttribute="leading" id="yAw-ZI-Awq"/>
                                         </constraints>
                                     </scrollView>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GFn-FO-bQx" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
@@ -1540,10 +1485,10 @@
                                     <constraint firstAttribute="bottom" secondItem="roR-fi-QBn" secondAttribute="bottom" id="TAe-CY-nuz"/>
                                     <constraint firstAttribute="trailing" secondItem="5He-cn-Itf" secondAttribute="trailing" constant="15" id="WMF-64-IMs"/>
                                     <constraint firstItem="IWV-ZC-Xs8" firstAttribute="leading" secondItem="Wzb-WR-zEX" secondAttribute="leading" constant="25" id="WeR-Jt-d9G"/>
-                                    <constraint firstAttribute="trailing" secondItem="eca-QL-rBY" secondAttribute="trailing" constant="25" id="YNw-5n-qgy"/>
                                     <constraint firstItem="Rtb-hj-4Ln" firstAttribute="leading" secondItem="Wzb-WR-zEX" secondAttribute="leading" constant="8" id="d2t-gU-cqt"/>
                                     <constraint firstAttribute="trailing" secondItem="roR-fi-QBn" secondAttribute="trailing" id="ieS-CL-J6B"/>
                                     <constraint firstItem="roR-fi-QBn" firstAttribute="top" secondItem="Wzb-WR-zEX" secondAttribute="top" id="lue-P3-Llx"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="eBC-nc-Uwv" secondAttribute="trailing" constant="25" id="mOw-Vd-YHV"/>
                                     <constraint firstItem="IWV-ZC-Xs8" firstAttribute="top" secondItem="gBH-PE-agC" secondAttribute="bottom" constant="21" id="qXy-r8-snP"/>
                                     <constraint firstAttribute="trailing" secondItem="IWV-ZC-Xs8" secondAttribute="trailing" constant="25" id="sAV-Bi-4Rz"/>
                                     <constraint firstItem="gBH-PE-agC" firstAttribute="top" secondItem="Wzb-WR-zEX" secondAttribute="top" id="tGf-HQ-yta"/>
@@ -1851,7 +1796,7 @@
                                             <action selector="endEditBtnClickFunc:" destination="H3u-sS-1Kw" eventType="touchUpInside" id="Jpb-EY-Sob"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please type into DELETE on the text box todelete your account." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SkY-ET-zbE">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please type into DELETE on the text box to delete your account." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SkY-ET-zbE">
                                         <rect key="frame" x="25" y="51" width="315" height="40.666666666666657"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1990,6 +1935,7 @@
                         </userDefinedRuntimeAttributes>
                     </view>
                     <connections>
+                        <outlet property="ConfirmTipLabel" destination="eBC-nc-Uwv" id="WMJ-lP-n9W"/>
                         <outlet property="checkBoxBgView" destination="GGu-IJ-WaP" id="Pjz-Ks-sT7"/>
                         <outlet property="confirmBgView" destination="5Hq-yQ-qW7" id="Bon-i3-gZR"/>
                         <outlet property="reasonBgView" destination="jFT-lG-kVU" id="OyJ-8v-7md"/>

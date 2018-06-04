@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uTr-4E-JMI">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -653,7 +653,7 @@ by 5 teenagers in NYC?</string>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="Ulj-5R-07I">
                                                 <rect key="frame" x="40" y="647" width="295" height="0.0"/>
                                                 <subviews>
-                                                    <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SSL-hy-Vte" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                    <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SSL-hy-Vte" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="-40" y="-647" width="140" height="56"/>
                                                         <color key="backgroundColor" red="0.50196081400000003" green="0.0" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                                         <constraints>
@@ -677,7 +677,7 @@ by 5 teenagers in NYC?</string>
                                                             <action selector="skipButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="oOp-WT-wMM"/>
                                                         </connections>
                                                     </button>
-                                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QMF-mv-VbF" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                    <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QMF-mv-VbF" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="-40" y="-647" width="140" height="56"/>
                                                         <color key="backgroundColor" red="0.57952511309999999" green="0.21596130729999999" blue="0.99958437680000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>

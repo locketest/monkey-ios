@@ -183,6 +183,7 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
             self.addMinuteButton.isHidden = true
             self.snapchatButton.isHidden = true
             self.endCallButton.isHidden = false
+			self.policeButton.isHidden = true
             self.handleInstagramPopupBtnHiddenFunc(isHidden: self.endCallButton.isHidden)
         }
 		

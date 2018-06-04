@@ -28,7 +28,9 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
     
     var keyboardClosure: KeyboardClosure?
     
-    @IBOutlet weak var checkBoxBgView: UIView!
+	@IBOutlet weak var ConfirmTipLabel: UILabel!
+	
+	@IBOutlet weak var checkBoxBgView: UIView!
     
     @IBOutlet weak var textFieldBgView: UIView!
     
@@ -248,6 +250,7 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
     }
     
     func initView() {
+		self.ConfirmTipLabel.text = "To further protect your account safety, Monkey has updated its safety services and privacy policy. You can now delete your account.\n\nThe account deletion process will begin 30 days after you submit your account deletion request. During this time your account will be held in a de-activated state with no access. You can choose to cancel your account deletion anytime during these 30 days. Your account will be deleted permanently after 30 days of your request.\n\nWould you still like to delete your Monkey account?"
         
         if self.keyboardClosure != nil {
             self.keyboardClosure!(false)
@@ -263,7 +266,7 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
             self.confirmBgView.x = -self.HiddenXValue
         }
         
-        self.stepThreeLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Please type into ", textTwo: "DELETE", textThree:" on the text box todelete your account.", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
+        self.stepThreeLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Please type into ", textTwo: "DELETE", textThree:" on the text box to delete your account.", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
         
