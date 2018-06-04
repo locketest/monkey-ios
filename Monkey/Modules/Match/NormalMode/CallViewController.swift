@@ -16,7 +16,7 @@ protocol CallViewControllerDelegate: class {
     func startFindingChats(forReason:String)
 }
 
-class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSessionCallDelegate, MatchViewControllerProtocol {
+class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchViewControllerProtocol {
     var commonTree: RealmChannel?
 
     // MARK: Interface Elements
@@ -59,7 +59,6 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
 	}
     
     var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧"
-    let truthOrDareView = TruthOrDareView.instanceFromNib()
     var soundPlayer = SoundPlayer.shared
     weak var callDelegate:CallViewControllerDelegate?
     let throttleFunction = throttle(delay: 0.25, queue: DispatchQueue.main) {
@@ -76,7 +75,6 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
                 return
             }
 
-            chatSession?.add(messageHandler: self.effectsCoordinator)
             chatSession?.toggleFrontCamera(front: true)
             if chatSession?.isDialedCall == true || chatSession?.matchMode == .EventMode {
                 self.clockTime = 0
@@ -85,7 +83,6 @@ class CallViewController: MonkeyViewController, TruthOrDareDelegate, ChatSession
     }
 
     var clockTime:Int = 15000
-    var effectsCoordinator = EffectsCoordinator()
     var ticker:Timer?
     var isAnimatingMinuteAdd = false
     var animator: UIDynamicAnimator!

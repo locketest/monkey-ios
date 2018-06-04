@@ -84,6 +84,7 @@ class ResumeMyAccountViewController: MonkeyViewController {
         RealmDataController.shared.deleteAllData() { (error) in
             APIController.authorization = nil
             UserDefaults.standard.removeObject(forKey: "user_id")
+			Socket.shared.fetchCollection = false
         }
     }
 }

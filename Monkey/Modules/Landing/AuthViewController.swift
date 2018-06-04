@@ -148,6 +148,7 @@ class AuthViewController: MonkeyViewController {
 			}
 			APIController.authorization = nil
 			UserDefaults.standard.removeObject(forKey: "user_id")
+			Socket.shared.fetchCollection = false
 			// This is okay because it should currently only happen when switching between servers. however, in the future it could happen if we invalidate old logins so eventually recovery should be possible.
 			self.presentedViewController?.dismiss(animated: true, completion: {
 				print("INVALID SESSION: Reset to welcome screen")

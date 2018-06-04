@@ -612,8 +612,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 				}
 				APIController.authorization = nil
 				UserDefaults.standard.removeObject(forKey: "user_id")
-				Apns.update(callback: nil)
-				
+				Socket.shared.fetchCollection = false
 				
 				let rootVC = self.view.window?.rootViewController
 				rootVC?.presentedViewController?.dismiss(animated: false, completion: {

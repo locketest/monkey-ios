@@ -63,7 +63,7 @@ class RealmVideoCall: MonkeyModel, VideoCallProtocol {
 	
 	dynamic var bio: String?
 	dynamic var status: String?
-	dynamic var notify_accept: Bool = false
+	let notify_accept = RealmOptional<Bool>()
 	
 	dynamic var user: RealmUser?
 	dynamic var initiator: RealmUser?
@@ -90,7 +90,7 @@ class RealmVideoCall: MonkeyModel, VideoCallProtocol {
 	}
 	
 	func supportSocket() -> Bool {
-		return notify_accept == true
+		return notify_accept.value == true
 	}
 	
 	required convenience init?(map: Map) {

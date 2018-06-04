@@ -41,8 +41,6 @@
 		8B1769461ED16B98005EF8D4 /* RealmMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1769451ED16B98005EF8D4 /* RealmMessage.swift */; };
 		8B19B6701EBCFA4300493A3A /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B19B66F1EBCFA4300493A3A /* PopupViewController.swift */; };
 		8B19B6781EBD5F3D00493A3A /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B19B6771EBD5F3D00493A3A /* PopupTransitionPresentPopupOnPopupAnimator.swift */; };
-		8B24D4C61E3197FB006EFCFA /* TruthOrDare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B24D4C51E3197FB006EFCFA /* TruthOrDare.swift */; };
-		8B24D4C81E319812006EFCFA /* TruthOrDare.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8B24D4C71E319812006EFCFA /* TruthOrDare.xib */; };
 		8B2ED8BE1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B2ED8BD1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift */; };
 		8B3A78741DB2F87C00FA68A7 /* clock.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8B3A78701DB2F87C00FA68A7 /* clock.mp3 */; };
 		8B3A78751DB2F87C00FA68A7 /* win.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8B3A78711DB2F87C00FA68A7 /* win.mp3 */; };
@@ -71,8 +69,6 @@
 		8B7DC74A1EF5CADB00A3F966 /* ChannelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7DC7491EF5CADB00A3F966 /* ChannelsViewController.swift */; };
 		8B7DC74C1EF5CF9000A3F966 /* ChannelsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7DC74B1EF5CF9000A3F966 /* ChannelsTableViewCell.swift */; };
 		8B7DC74E1EF7200500A3F966 /* SwipeablePresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7DC74D1EF7200500A3F966 /* SwipeablePresentationController.swift */; };
-		8B8664BB1F04902D00E5AC12 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8664BA1F04902D00E5AC12 /* Effect.swift */; };
-		8B8664BD1F04AB9700E5AC12 /* PixelationEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8664BC1F04AB9700E5AC12 /* PixelationEffect.swift */; };
 		8B8B2D741EC52B910086547C /* CachedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8B2D731EC52B910086547C /* CachedImageView.swift */; };
 		8BAA4C721E5545AC0072F3F6 /* APIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAA4C711E5545AC0072F3F6 /* APIController.swift */; };
 		8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BB895871DBD2E1800FC5E53 /* Apns.swift */; };
@@ -102,7 +98,6 @@
 		8BE9FE7F1DDF698400B55280 /* ChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE9FE7E1DDF698400B55280 /* ChatSession.swift */; };
 		8BEB20041EFC6067001AAC3C /* BackgroundColorGradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BEB20031EFC6067001AAC3C /* BackgroundColorGradientLayer.swift */; };
 		8BFD6D561EF98B9F002C9F9C /* MonkeyVideoRender.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D551EF98B9E002C9F9C /* MonkeyVideoRender.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		8BFD6D681EFB280D002C9F9C /* EffectsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */; };
 		8BFD6D6D1EFB2DF0002C9F9C /* MonkeySubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */; };
 		926434F6647F6A00FB3D858C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C07119D48848FAD5F3C2D15D /* QuartzCore.framework */; };
 		990EC94C20997BC600CA5E0B /* InstagramAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990EC94B20997BC600CA5E0B /* InstagramAuthViewController.swift */; };
@@ -185,13 +180,11 @@
 		D192A3E7202AD1CE00791002 /* MatchViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E6202AD1CE00791002 /* MatchViewControllerProtocol.swift */; };
 		D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E8202ADF1000791002 /* SmallYellowButton.swift */; };
 		D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D192A3EB202B015A00791002 /* KeyboardManager.m */; };
-		D1A22A5320A03F8A004F0F05 /* TruthOrDare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B24D4C51E3197FB006EFCFA /* TruthOrDare.swift */; };
 		D1A22A5520A03F8A004F0F05 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2ED1F1443F200C80AC6 /* FriendsViewController.swift */; };
 		D1A22A5620A03F8A004F0F05 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47833E11F2BF276007F37DB /* NotificationManager.swift */; };
 		D1A22A5720A03F8A004F0F05 /* JSONAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6A57A11EAEBF3E00136311 /* JSONAPI.swift */; };
 		D1A22A5820A03F8A004F0F05 /* TextChatViewController+Reporting.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E4202ACE5E00791002 /* TextChatViewController+Reporting.swift */; };
 		D1A22A5920A03F8A004F0F05 /* IFInkwellFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D182060DACB00F209B4 /* IFInkwellFilter.m */; };
-		D1A22A5A20A03F8A004F0F05 /* EffectsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */; };
 		D1A22A5B20A03F8A004F0F05 /* SwipeableTransitionSlideAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE02A4B1EEA42A2004CF000 /* SwipeableTransitionSlideAnimator.swift */; };
 		D1A22A5C20A03F8A004F0F05 /* FriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8435C2E91F14018100C80AC6 /* FriendsViewModel.swift */; };
 		D1A22A5D20A03F8A004F0F05 /* CachedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8B2D731EC52B910086547C /* CachedImageView.swift */; };
@@ -290,7 +283,6 @@
 		D1A22ACA20A03F8A004F0F05 /* MatchModeSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3E0202A0E1A00791002 /* MatchModeSwitch.swift */; };
 		D1A22ACB20A03F8A004F0F05 /* GPUImageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D4B2060E1E500F209B4 /* GPUImageHelper.m */; };
 		D1A22ACC20A03F8A004F0F05 /* MonkeySubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */; };
-		D1A22ACD20A03F8A004F0F05 /* PixelationEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8664BC1F04AB9700E5AC12 /* PixelationEffect.swift */; };
 		D1A22ACE20A03F8A004F0F05 /* RealmExperiment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6FC3E21EADAB6E00429964 /* RealmExperiment.swift */; };
 		D1A22AD020A03F8A004F0F05 /* RealmMatchInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FCDBA920933C1000CF1BD9 /* RealmMatchInfo.swift */; };
 		D1A22AD120A03F8A004F0F05 /* IFImageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B79D122060DACB00F209B4 /* IFImageFilter.m */; };
@@ -308,7 +300,6 @@
 		D1A22ADE20A03F8A004F0F05 /* InstagramAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990EC94B20997BC600CA5E0B /* InstagramAuthViewController.swift */; };
 		D1A22ADF20A03F8A004F0F05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6EB50D1DB0817F0051C8D2 /* AppDelegate.swift */; };
 		D1A22AE020A03F8A004F0F05 /* MessageNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47833DD1F2BD3F7007F37DB /* MessageNotificationView.swift */; };
-		D1A22AE120A03F8A004F0F05 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8664BA1F04902D00E5AC12 /* Effect.swift */; };
 		D1A22AE220A03F8A004F0F05 /* MonkeyVideoRender.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BFD6D551EF98B9E002C9F9C /* MonkeyVideoRender.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D1A22AE320A03F8A004F0F05 /* BigYellowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC4E2D51DB08CC30018F2C3 /* BigYellowButton.swift */; };
 		D1A22AE420A03F8A004F0F05 /* APIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAA4C711E5545AC0072F3F6 /* APIController.swift */; };
@@ -329,7 +320,6 @@
 		D1A22AF720A03F8A004F0F05 /* swipe.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8BC4BA4B1E1B5CEE00891566 /* swipe.wav */; };
 		D1A22AF820A03F8A004F0F05 /* sword.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8BC4BA4C1E1B5CEE00891566 /* sword.wav */; };
 		D1A22AF920A03F8A004F0F05 /* call.m4a in Resources */ = {isa = PBXBuildFile; fileRef = C063D7581F3D459900D94BF1 /* call.m4a */; };
-		D1A22AFA20A03F8A004F0F05 /* TruthOrDare.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8B24D4C71E319812006EFCFA /* TruthOrDare.xib */; };
 		D1A22AFB20A03F8A004F0F05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B6EB5161DB0817F0051C8D2 /* LaunchScreen.storyboard */; };
 		D1A22AFC20A03F8A004F0F05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B6EB5141DB0817F0051C8D2 /* Assets.xcassets */; };
 		D1A22AFD20A03F8A004F0F05 /* magic.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 8B756CA61DFB323400BA7503 /* magic.m4a */; };
@@ -481,8 +471,6 @@
 		8B1769451ED16B98005EF8D4 /* RealmMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmMessage.swift; sourceTree = "<group>"; };
 		8B19B66F1EBCFA4300493A3A /* PopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
 		8B19B6771EBD5F3D00493A3A /* PopupTransitionPresentPopupOnPopupAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupTransitionPresentPopupOnPopupAnimator.swift; sourceTree = "<group>"; };
-		8B24D4C51E3197FB006EFCFA /* TruthOrDare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TruthOrDare.swift; sourceTree = "<group>"; };
-		8B24D4C71E319812006EFCFA /* TruthOrDare.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TruthOrDare.xib; sourceTree = "<group>"; };
 		8B2ED8BD1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeableTransitionDismissAnimator.swift; sourceTree = "<group>"; };
 		8B3A78701DB2F87C00FA68A7 /* clock.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = clock.mp3; sourceTree = "<group>"; };
 		8B3A78711DB2F87C00FA68A7 /* win.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = win.mp3; sourceTree = "<group>"; };
@@ -514,8 +502,6 @@
 		8B7DC7491EF5CADB00A3F966 /* ChannelsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
 		8B7DC74B1EF5CF9000A3F966 /* ChannelsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelsTableViewCell.swift; sourceTree = "<group>"; };
 		8B7DC74D1EF7200500A3F966 /* SwipeablePresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeablePresentationController.swift; sourceTree = "<group>"; };
-		8B8664BA1F04902D00E5AC12 /* Effect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Effect.swift; sourceTree = "<group>"; };
-		8B8664BC1F04AB9700E5AC12 /* PixelationEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelationEffect.swift; sourceTree = "<group>"; };
 		8B8B2D731EC52B910086547C /* CachedImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachedImageView.swift; sourceTree = "<group>"; };
 		8BAA4C711E5545AC0072F3F6 /* APIController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIController.swift; sourceTree = "<group>"; };
 		8BB895871DBD2E1800FC5E53 /* Apns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Apns.swift; sourceTree = "<group>"; };
@@ -547,7 +533,6 @@
 		8BEB20031EFC6067001AAC3C /* BackgroundColorGradientLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundColorGradientLayer.swift; sourceTree = "<group>"; };
 		8BFD6D551EF98B9E002C9F9C /* MonkeyVideoRender.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 5; lastKnownFileType = sourcecode.c.objc; path = MonkeyVideoRender.m; sourceTree = "<group>"; };
 		8BFD6D571EF98BB1002C9F9C /* MonkeyVideoRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonkeyVideoRender.h; sourceTree = "<group>"; };
-		8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EffectsCoordinator.swift; sourceTree = "<group>"; };
 		8BFD6D6C1EFB2DF0002C9F9C /* MonkeySubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeySubscriber.swift; sourceTree = "<group>"; };
 		990EC94B20997BC600CA5E0B /* InstagramAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramAuthViewController.swift; sourceTree = "<group>"; };
 		AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -1172,7 +1157,6 @@
 			children = (
 				D105861520A05C7900E63ADC /* RoomManager */,
 				D105861420A05C7900E63ADC /* Render */,
-				D105861620A05C7900E63ADC /* Effects */,
 			);
 			path = Functions;
 			sourceTree = "<group>";
@@ -1194,16 +1178,6 @@
 			path = RoomManager;
 			sourceTree = "<group>";
 		};
-		D105861620A05C7900E63ADC /* Effects */ = {
-			isa = PBXGroup;
-			children = (
-				8B8664BA1F04902D00E5AC12 /* Effect.swift */,
-				8B8664BC1F04AB9700E5AC12 /* PixelationEffect.swift */,
-				8BFD6D671EFB280D002C9F9C /* EffectsCoordinator.swift */,
-			);
-			path = Effects;
-			sourceTree = "<group>";
-		};
 		D105861820A05D2D00E63ADC /* CustomUI */ = {
 			isa = PBXGroup;
 			children = (
@@ -1211,7 +1185,6 @@
 				D4F35BCB1F5AF564003D3902 /* AsyncCarouselImageView.swift */,
 				8BEB20031EFC6067001AAC3C /* BackgroundColorGradientLayer.swift */,
 				D105861C20A05DE000E63ADC /* Control */,
-				D105861A20A05DE000E63ADC /* Game */,
 				D105861D20A05DE000E63ADC /* Labe */,
 				D105861E20A05DE000E63ADC /* Notification */,
 				D105862220A05DE000E63ADC /* Onboarding */,
@@ -1227,23 +1200,6 @@
 				D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */,
 			);
 			path = Switch;
-			sourceTree = "<group>";
-		};
-		D105861A20A05DE000E63ADC /* Game */ = {
-			isa = PBXGroup;
-			children = (
-				D105861B20A05DE000E63ADC /* TruthOrDare */,
-			);
-			path = Game;
-			sourceTree = "<group>";
-		};
-		D105861B20A05DE000E63ADC /* TruthOrDare */ = {
-			isa = PBXGroup;
-			children = (
-				8B24D4C51E3197FB006EFCFA /* TruthOrDare.swift */,
-				8B24D4C71E319812006EFCFA /* TruthOrDare.xib */,
-			);
-			path = TruthOrDare;
 			sourceTree = "<group>";
 		};
 		D105861C20A05DE000E63ADC /* Control */ = {
@@ -1579,7 +1535,6 @@
 				8BC4BA4D1E1B5CEE00891566 /* swipe.wav in Resources */,
 				8BC4BA4E1E1B5CEE00891566 /* sword.wav in Resources */,
 				C063D7591F3D459900D94BF1 /* call.m4a in Resources */,
-				8B24D4C81E319812006EFCFA /* TruthOrDare.xib in Resources */,
 				8B6EB5181DB0817F0051C8D2 /* LaunchScreen.storyboard in Resources */,
 				8B6EB5151DB0817F0051C8D2 /* Assets.xcassets in Resources */,
 				8B756CA71DFB323400BA7503 /* magic.m4a in Resources */,
@@ -1624,7 +1579,6 @@
 				D1A22AF720A03F8A004F0F05 /* swipe.wav in Resources */,
 				D1A22AF820A03F8A004F0F05 /* sword.wav in Resources */,
 				D1A22AF920A03F8A004F0F05 /* call.m4a in Resources */,
-				D1A22AFA20A03F8A004F0F05 /* TruthOrDare.xib in Resources */,
 				D1A22AFB20A03F8A004F0F05 /* LaunchScreen.storyboard in Resources */,
 				D1A22AFC20A03F8A004F0F05 /* Assets.xcassets in Resources */,
 				D1A22AFD20A03F8A004F0F05 /* magic.m4a in Resources */,
@@ -1923,13 +1877,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B24D4C61E3197FB006EFCFA /* TruthOrDare.swift in Sources */,
 				8435C2EE1F1443F200C80AC6 /* FriendsViewController.swift in Sources */,
 				D47833E21F2BF276007F37DB /* NotificationManager.swift in Sources */,
 				8B6A57A21EAEBF3E00136311 /* JSONAPI.swift in Sources */,
 				D192A3E5202ACE5E00791002 /* TextChatViewController+Reporting.swift in Sources */,
 				D1B79D382060DACB00F209B4 /* IFInkwellFilter.m in Sources */,
-				8BFD6D681EFB280D002C9F9C /* EffectsCoordinator.swift in Sources */,
 				8BE02A4C1EEA42A2004CF000 /* SwipeableTransitionSlideAnimator.swift in Sources */,
 				8435C2EA1F14018100C80AC6 /* FriendsViewModel.swift in Sources */,
 				8B8B2D741EC52B910086547C /* CachedImageView.swift in Sources */,
@@ -2050,7 +2002,6 @@
 				D10490F320AEA57300381F9E /* MatchManager.swift in Sources */,
 				D1B79D4C2060E1E600F209B4 /* GPUImageHelper.m in Sources */,
 				8BFD6D6D1EFB2DF0002C9F9C /* MonkeySubscriber.swift in Sources */,
-				8B8664BD1F04AB9700E5AC12 /* PixelationEffect.swift in Sources */,
 				8B6FC3E31EADAB6E00429964 /* RealmExperiment.swift in Sources */,
 				D1FCDBAA20933C1000CF1BD9 /* RealmMatchInfo.swift in Sources */,
 				D1B79D342060DACB00F209B4 /* IFImageFilter.m in Sources */,
@@ -2072,7 +2023,6 @@
 				D1025CDE20A1406C00557B64 /* SettingButtonCell.swift in Sources */,
 				8B6EB50E1DB0817F0051C8D2 /* AppDelegate.swift in Sources */,
 				D47833DE1F2BD3F7007F37DB /* MessageNotificationView.swift in Sources */,
-				8B8664BB1F04902D00E5AC12 /* Effect.swift in Sources */,
 				8BFD6D561EF98B9F002C9F9C /* MonkeyVideoRender.m in Sources */,
 				8BC4E2D61DB08CC30018F2C3 /* BigYellowButton.swift in Sources */,
 				8BAA4C721E5545AC0072F3F6 /* APIController.swift in Sources */,
@@ -2091,13 +2041,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D1A22A5320A03F8A004F0F05 /* TruthOrDare.swift in Sources */,
 				D1A22A5520A03F8A004F0F05 /* FriendsViewController.swift in Sources */,
 				D1A22A5620A03F8A004F0F05 /* NotificationManager.swift in Sources */,
 				D1A22A5720A03F8A004F0F05 /* JSONAPI.swift in Sources */,
 				D1A22A5820A03F8A004F0F05 /* TextChatViewController+Reporting.swift in Sources */,
 				D1A22A5920A03F8A004F0F05 /* IFInkwellFilter.m in Sources */,
-				D1A22A5A20A03F8A004F0F05 /* EffectsCoordinator.swift in Sources */,
 				D1A22A5B20A03F8A004F0F05 /* SwipeableTransitionSlideAnimator.swift in Sources */,
 				D1A22A5C20A03F8A004F0F05 /* FriendsViewModel.swift in Sources */,
 				D1A22A5D20A03F8A004F0F05 /* CachedImageView.swift in Sources */,
@@ -2218,7 +2166,6 @@
 				D10490F420AEA57300381F9E /* MatchManager.swift in Sources */,
 				D1A22ACB20A03F8A004F0F05 /* GPUImageHelper.m in Sources */,
 				D1A22ACC20A03F8A004F0F05 /* MonkeySubscriber.swift in Sources */,
-				D1A22ACD20A03F8A004F0F05 /* PixelationEffect.swift in Sources */,
 				D1A22ACE20A03F8A004F0F05 /* RealmExperiment.swift in Sources */,
 				D1A22AD020A03F8A004F0F05 /* RealmMatchInfo.swift in Sources */,
 				D1A22AD120A03F8A004F0F05 /* IFImageFilter.m in Sources */,
@@ -2240,7 +2187,6 @@
 				D1025CDF20A1406C00557B64 /* SettingButtonCell.swift in Sources */,
 				D1A22ADF20A03F8A004F0F05 /* AppDelegate.swift in Sources */,
 				D1A22AE020A03F8A004F0F05 /* MessageNotificationView.swift in Sources */,
-				D1A22AE120A03F8A004F0F05 /* Effect.swift in Sources */,
 				D1A22AE220A03F8A004F0F05 /* MonkeyVideoRender.m in Sources */,
 				D1A22AE320A03F8A004F0F05 /* BigYellowButton.swift in Sources */,
 				D1A22AE420A03F8A004F0F05 /* APIController.swift in Sources */,

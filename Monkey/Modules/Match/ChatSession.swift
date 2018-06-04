@@ -289,6 +289,8 @@ class ChatSession: NSObject {
 		}
 
 		if isDialedCall == true {
+			self.matchUserDidAccept = true
+			self.initiatorReadyChecks += 1
 			// Wait up to 30 seconds before giving up on connecting to the session
 			DispatchQueue.main.asyncAfter(deadline: .after(seconds: 30)) { [weak self] in
 				guard let `self` = self else { return }
@@ -434,23 +436,6 @@ class ChatSession: NSObject {
         case .skippable:
             break
         }
-    }
-
-    var messageHandlers = Array<MessageHandler>()
-    func add(messageHandler: MessageHandler) {
-        for existingMessageHandler in self.messageHandlers {
-            guard existingMessageHandler.chatSessionMessagingPrefix != messageHandler.chatSessionMessagingPrefix else {
-                print("Duplicate message handler prefix.")
-                return
-            }
-        }
-        messageHandler.chatSession = self
-
-        self.messageHandlers.append(messageHandler)
-    }
-
-    func send(message: String, from messageHandler: MessageHandler, withType type: String) {
-
     }
 
 	/**
@@ -636,14 +621,6 @@ protocol ChatSessionCallDelegate: class {
 	func received(textMessage: TextMessage, in chatSession: ChatSession)
 }
 
-protocol MessageHandler: class {
-	var chatSession: ChatSession? { get set }
-    var chatSessionMessagingPrefix: String { get }
-    func chatSession(_ chatSession: ChatSession, received message: String, from connection: OTConnection, withType type: String)
-    func chatSession(_ chatSession: ChatSession, statusChangedTo status: ChatSessionStatus)
-    func chatSesssion(_ chatSesssion: ChatSession, connectionCreated connection: OTConnection)
-}
-
 @objc protocol ChatSessionLoadingDelegate: class {
     func presentCallViewController(for chatSession: ChatSession)
     func dismissCallViewController(for chatSession: ChatSession)
@@ -725,11 +702,15 @@ extension ChatSession {
 				}
 			}
 		case .AddFriend:
-			self.chat?.theySharedSnapchat = true
-			self.friendMatched = self.chat?.sharedSnapchat ?? false
+			if chat?.theySharedSnapchat == false {
+				self.chat?.theySharedSnapchat = true
+				self.friendMatched = self.chat?.sharedSnapchat ?? false
+			}
 		case .Accept:
-			self.matchUserDidAccept = true
-			self.initiatorReadyChecks += 1
+			if matchUserDidAccept == false {
+				self.matchUserDidAccept = true
+				self.initiatorReadyChecks += 1
+			}
 		case .UnMute:
 			self.chat?.theyUnMute = true
 			if self.chat?.unMute == true {
@@ -977,9 +958,6 @@ extension ChatSession: OTSessionDelegate {
 			self.finishDisconnecting()
 			return
 		}
-		for messageHandler in messageHandlers {
-			messageHandler.chatSesssion(self, connectionCreated: connection)
-		}
 
 		self.subscriberConnection = connection
 		self.sessionConnectSuccessful()
@@ -1006,16 +984,6 @@ extension ChatSession: OTSessionDelegate {
 		guard let type = type else {
 			self.log(.error, "Signal missing type")
 			return
-		}
-		guard let message = string else {
-			self.log(.error, "Received a signal (OpenTok messaging) without a message string")
-			return
-		}
-		for messageHandler in messageHandlers {
-			if type.hasPrefix(messageHandler.chatSessionMessagingPrefix) {
-				messageHandler.chatSession(self, received: message, from: connection, withType: type.replacingFirstOccurrence(of: "\(messageHandler.chatSessionMessagingPrefix)-", withString: ""))
-				return
-			}
 		}
 
 		self.receive(messageType: MessageType.init(type: type) ?? MessageType.Normal, body: string)

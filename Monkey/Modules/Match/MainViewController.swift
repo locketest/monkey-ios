@@ -1045,6 +1045,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			}
 			APIController.authorization = nil
 			UserDefaults.standard.removeObject(forKey: "user_id")
+			Socket.shared.fetchCollection = false
 
 			self.dismiss(animated: true, completion: nil)
 		}

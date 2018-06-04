@@ -291,7 +291,9 @@ extension CommonAPIRequestProtocol {
 					case .error(let parseError):
 						completion(.error(parseError))
 					case .success(let newObjects):
-						completion(.success(newObjects.first! as! T))
+						if let object = newObjects.first as? T {
+							completion(.success(object))
+						}
 					}
 				}
 			}

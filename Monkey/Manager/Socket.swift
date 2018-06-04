@@ -43,7 +43,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 	private (set) var messageId = 1
 	// 是否有写入权限
 	private (set) var isAuthorized = false
-	private var fetchCollection = false
+	var fetchCollection = false
 
 	// 单例
 	static let shared = Socket()

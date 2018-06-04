@@ -98,7 +98,6 @@ class TextChatViewController: MonkeyViewController {
 	var winEmojis = "🎉👻🌟😀💎♥️🎊🎁🐬🙉🔥"
 	var animator: UIDynamicAnimator!
 	var isAnimatingUnMuted = false
-	var effectsCoordinator = EffectsCoordinator()
 	
 	func isIphoneX() -> Bool {
 		return Device() == Device.iPhoneX
@@ -146,7 +145,6 @@ class TextChatViewController: MonkeyViewController {
 		let random: Int = Int(arc4random_uniform(UInt32(self.tips.count)))
 		self.conversationTip.text = self.tips[random]
 		
-		chatSession?.add(messageHandler: self)
 		if let subView = self.chatSession?.remoteView {
 			self.containerView.insertSubview(subView, belowSubview: policeButton)
 			subView.frame = UIScreen.main.bounds
@@ -684,18 +682,3 @@ extension TextChatViewController: MatchViewControllerProtocol {
 	}
 }
 
-extension TextChatViewController: MessageHandler {
-	var chatSessionMessagingPrefix: String {
-		return "TextModeMessage"
-	}
-	
-	func chatSession(_ chatSession: ChatSession, received message: String, from connection: OTConnection, withType type: String) {
-		
-	}
-	func chatSession(_ chatSession: ChatSession, statusChangedTo status: ChatSessionStatus) {
-		
-	}
-	func chatSesssion(_ chatSesssion: ChatSession, connectionCreated connection: OTConnection) {
-		
-	}
-}

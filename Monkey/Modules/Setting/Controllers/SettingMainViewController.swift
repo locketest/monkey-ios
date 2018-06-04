@@ -386,6 +386,7 @@ extension SettingMainViewController : UITableViewDelegate, UITableViewDataSource
                 }
                 APIController.authorization = nil
                 UserDefaults.standard.removeObject(forKey: "user_id")
+				Socket.shared.fetchCollection = false
                 
                 let rootVC = self.view.window?.rootViewController
                 rootVC?.presentedViewController?.dismiss(animated: false, completion: {
