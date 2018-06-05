@@ -10,7 +10,7 @@ import UIKit
 
 @IBDesignable class BigYellowButton: UIButton {
     
-    var emojiLabel:EmojiLabel?
+    var emojiLabel: EmojiLabel?
 
     /// Toggles the button opacity and touch down animations.
     override var isEnabled: Bool {
@@ -175,5 +175,6 @@ import UIKit
             self.layer.cornerRadius = 6
         }
         self.activityIndicatorView.center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
+		self.titleLabel?.clipsToBounds = false
     }
 }

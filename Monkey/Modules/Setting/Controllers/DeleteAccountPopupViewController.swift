@@ -140,7 +140,8 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
     }
     
     func confirmRequestFunc() {
-        
+		self.stepThreeDeleteButton.isLoading = true
+		
         let reason = self.selectedReasonBtn.tag == 6 ? self.selectedReasonBtn.currentTitle ?? "" : self.selectedReasonBtn.tag.description
         
         let parameters : [String:Any] = [
@@ -160,6 +161,7 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
         JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/accounts/me", method: .delete, parameters: parameters, options: [
             .header("Authorization", APIController.authorization),
             ]).addCompletionHandler {[weak self] (response) in
+				self?.stepThreeDeleteButton.isLoading = false
                 switch response {
                 case .error(_):
                     break

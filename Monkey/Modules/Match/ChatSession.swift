@@ -151,6 +151,13 @@ class ChatSession: NSObject {
             }
         }
     }
+	
+	func didReceiveAccept() {
+		if matchUserDidAccept == false {
+			self.matchUserDidAccept = true
+			self.initiatorReadyChecks += 1
+		}
+	}
 
 	fileprivate var didReceiveRemoteVideo = false {
 		didSet {
@@ -289,8 +296,6 @@ class ChatSession: NSObject {
 		}
 
 		if isDialedCall == true {
-			self.matchUserDidAccept = true
-			self.initiatorReadyChecks += 1
 			// Wait up to 30 seconds before giving up on connecting to the session
 			DispatchQueue.main.asyncAfter(deadline: .after(seconds: 30)) { [weak self] in
 				guard let `self` = self else { return }
@@ -574,6 +579,7 @@ class ChatSession: NSObject {
 			return
 		}
 
+		// if begin connecting, waiting for connecting
 		let callLoadingTimeout = Double(RemoteConfigManager.shared.match_connect_time)
 		DispatchQueue.main.asyncAfter(deadline: .after(seconds: callLoadingTimeout)) { [weak self] in
 			guard let `self` = self else { return }
@@ -707,10 +713,7 @@ extension ChatSession {
 				self.friendMatched = self.chat?.sharedSnapchat ?? false
 			}
 		case .Accept:
-			if matchUserDidAccept == false {
-				self.matchUserDidAccept = true
-				self.initiatorReadyChecks += 1
-			}
+			self.didReceiveAccept()
 		case .UnMute:
 			self.chat?.theyUnMute = true
 			if self.chat?.unMute == true {
@@ -756,13 +759,16 @@ extension ChatSession {
 			self.response = .accepted
 			self.acceptTime = NSDate().timeIntervalSince1970
 
-			if self.matchUserDidAccept == false, self.isDialedCall == false {
-				DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_waiting_time))) { [weak self] in
-					guard let `self` = self else { return }
-					if self.matchUserDidAccept == false {
-						self.disconnectReason = .matchNotReady
-						self.disconnect(.consumed)
-					}
+			// if other not accept, and is not dialed call
+			guard self.matchUserDidAccept == false, self.isDialedCall == false else {
+				return
+			}
+			// waiting for accept
+			DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_waiting_time))) { [weak self] in
+				guard let `self` = self else { return }
+				if self.matchUserDidAccept == false {
+					self.disconnectReason = .matchNotReady
+					self.disconnect(.consumed)
 				}
 			}
 		}

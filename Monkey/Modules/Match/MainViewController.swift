@@ -91,6 +91,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 				}
 			})
 			
+			chatsession.didReceiveAccept()
 			IncomingCallManager.shared.showingNotification = callnoti
 			self.callNotification = callnoti
 		}

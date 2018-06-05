@@ -23,17 +23,18 @@ class ResumeMyAccountViewController: MonkeyViewController {
     @IBAction func btnClickFunc(_ sender: BigYellowButton) {
         switch sender.tag {
         case 1:
-            self.resumeMyAccountFunc()
+            self.resumeMyAccountFunc(sender)
         default:
             self.signOutFunc()
         }
     }
     
-    func resumeMyAccountFunc() {
-        
+    func resumeMyAccountFunc(_ sender: BigYellowButton) {
+        sender.isLoading = true
         JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/accounts/me/resume", method: .post, options: [
             .header("Authorization", self.tempAuthorization),
             ]).addCompletionHandler {[weak self] (response) in
+				sender.isLoading = false
                 switch response {
                 case .error(_):
                     break
