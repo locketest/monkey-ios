@@ -66,11 +66,27 @@
                                                                         <constraint firstAttribute="width" constant="48" id="j9E-Jh-PNM"/>
                                                                     </constraints>
                                                                 </view>
+                                                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BKq-CE-QH8">
+                                                                    <rect key="frame" x="51" y="48" width="10" height="10"/>
+                                                                    <color key="backgroundColor" red="1" green="0.98823529409999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" secondItem="BKq-CE-QH8" secondAttribute="height" multiplier="1:1" id="SB2-GB-ccb"/>
+                                                                        <constraint firstAttribute="width" constant="10" id="Zeu-aE-qam"/>
+                                                                    </constraints>
+                                                                    <userDefinedRuntimeAttributes>
+                                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                                            <integer key="value" value="5"/>
+                                                                        </userDefinedRuntimeAttribute>
+                                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                                    </userDefinedRuntimeAttributes>
+                                                                </view>
                                                             </subviews>
                                                             <constraints>
+                                                                <constraint firstItem="BKq-CE-QH8" firstAttribute="trailing" secondItem="3Be-z4-zua" secondAttribute="trailing" constant="-1" id="4PM-ey-UWu"/>
                                                                 <constraint firstAttribute="bottom" secondItem="WHn-tT-9g8" secondAttribute="bottom" constant="18" id="Atk-58-B2c"/>
                                                                 <constraint firstAttribute="bottom" secondItem="3Be-z4-zua" secondAttribute="bottom" constant="18" id="BoT-It-4nR"/>
                                                                 <constraint firstItem="3Be-z4-zua" firstAttribute="leading" secondItem="ixS-fc-UHc" secondAttribute="leading" constant="14" id="DSZ-Qs-zJB"/>
+                                                                <constraint firstItem="BKq-CE-QH8" firstAttribute="top" secondItem="3Be-z4-zua" secondAttribute="top" constant="1" id="Fae-Z6-KUX"/>
                                                                 <constraint firstItem="ipg-ZY-ZMF" firstAttribute="leading" secondItem="3Be-z4-zua" secondAttribute="trailing" constant="12" id="Wic-ij-cSE"/>
                                                                 <constraint firstItem="ipg-ZY-ZMF" firstAttribute="top" secondItem="ixS-fc-UHc" secondAttribute="top" constant="52.5" id="YOT-qe-jCb"/>
                                                                 <constraint firstItem="rxj-5S-ruE" firstAttribute="top" secondItem="ipg-ZY-ZMF" secondAttribute="bottom" constant="1" id="a5Z-Wt-VJk"/>
@@ -468,6 +484,7 @@
                         <outlet property="linkInstgramLabel" destination="LpO-nS-c0u" id="ke0-X2-DDa"/>
                         <outlet property="profilePhoto" destination="3Be-z4-zua" id="DMd-xi-RQq"/>
                         <outlet property="profileView" destination="gyy-0x-vkc" id="o9c-Yl-mL4"/>
+                        <outlet property="remindPointView" destination="BKq-CE-QH8" id="3W7-Qy-mqT"/>
                         <outlet property="scrollViewHeightConstraint" destination="bnO-wI-r67" id="4ji-PQ-MlN"/>
                         <outlet property="stuffView" destination="kYl-X6-h61" id="zr7-gi-EDY"/>
                         <outlet property="tableView" destination="quo-Qf-nxF" id="x1v-xJ-WCa"/>
@@ -1417,7 +1434,7 @@
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eBC-nc-Uwv">
                                                 <rect key="frame" x="0.0" y="0.0" width="312.33333333333331" height="284.33333333333331"/>
-                                                <mutableString key="text">  To further protect your account safety, Monkey has updated its safety services and privacy policy. You can now delete your account.\r\n\r\n  The account deletion process will begin 30 days after you submit your account deletion request. During this time your account will be held in a de-activated state with no access. You can choose to cancel your account deletion anytime during these 30 days. Your account will be deleted permanently after 30 days of your request.\r\n\r\n  Would you still like to delete your Monkey account?</mutableString>
+                                                <string key="text">  To further protect your account safety, Monkey has updated its safety services and privacy policy. You can now delete your account.\r\n\r\n  The account deletion process will begin 30 days after you submit your account deletion request. During this time your account will be held in a de-activated state with no access. You can choose to cancel your account deletion anytime during these 30 days. Your account will be deleted permanently after 30 days of your request.\r\n\r\n  Would you still like to delete your Monkey account?</string>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>

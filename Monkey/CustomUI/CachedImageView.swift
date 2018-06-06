@@ -244,6 +244,14 @@ class ImageCache {
         callbacks.append(imageCacheRequest)
     }
     func set(url: String, imageData data: Data, callback: (ImageCacheResult) -> Void) {
+        
+        if self.realm == nil {
+            do {
+                try setupRealm()
+            } catch(_) {
+            }
+        }
+        
         guard let cachedImagesDirectory = self.cachedImagesDirectory else {
             callback(.error(APIError(code: "-1", status: nil, message: "Cached images directory is nil.")))
             return

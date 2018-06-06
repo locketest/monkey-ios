@@ -51,8 +51,8 @@ public enum AnalyticEvent: String {
 	case snapchatClickConvo = "SNAPCHAT_CLICK_CONVO"
     
     //  ----------------------------  delete account  ------------------------------
-    case deleteAccount = "delete_account"
-    case resumeAccount = "resume_account"
+    case deleteAccount = "REMOVE_ACCOUNT_REQUEST"
+    case resumeAccount = "REMOVE_ACCOUNT_CANCEL"
 }
 
 public enum AdjustEvent: String {

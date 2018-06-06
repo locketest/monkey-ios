@@ -89,7 +89,14 @@ import CropViewController
             guard self.cachedImageView == nil else {
                 return
             }
-            addPhotoButton?.setImage(UIImage(named: "ProfileImageDefault", in: Bundle(for: type(of: self)), compatibleWith: self.traitCollection), for: .normal)
+            
+            var defaultImage = "ProfileImageDefaultMale"
+            
+            if APIController.shared.currentUser?.gender == Gender.female.rawValue {
+                defaultImage = "ProfileImageDefaultFemale"
+            }
+            
+            addPhotoButton?.setImage(UIImage(named: defaultImage), for: .normal)
         }
     }
 

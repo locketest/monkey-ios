@@ -19,7 +19,9 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 	@IBOutlet var containerView: MakeUIViewGreatAgain!
 	@IBOutlet weak var stuffView: MakeUIViewGreatAgain!
 
-	@IBOutlet weak var scrollViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var remindPointView: UIView!
+    
+    @IBOutlet weak var scrollViewHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var contentScrollview: UIScrollView!
 	@IBOutlet weak var editButtons: UIButton!
 	@IBOutlet weak var timeOnMonkey: UILabel!
@@ -138,6 +140,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
         let tapGesture = UITapGestureRecognizer(target: self,action:#selector(handleTapGesture))
         self.profileView.addGestureRecognizer(tapGesture)
+        
+        self.remindPointView.isHidden = APIController.shared.currentUser?.profile_photo_url == nil ? false : true
     }
     func handleTapGesture(){
         self.panningTowardsSide = .top
@@ -269,6 +273,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
     func profilePhotoButtonView(_ profilePhotoButtonView: ProfilePhotoButtonView, selectedImage: UIImage) {
         self.profilePhoto.profileImage = selectedImage
+        self.remindPointView.isHidden = true
         self.profilePhoto.uploadProfileImage {
             print("Uploaded profile image")
         }
