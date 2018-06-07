@@ -51,8 +51,6 @@ class Chat {
     var theySharedSnapchat = false
 	// 主动请求加好友
     var sharedSnapchat = false
-	// 是否更新刷新好友状态
-	var hasRefreshFriendships = false
 	
 	// 对方是否请求解除静音
 	var theyUnMute = false
@@ -73,9 +71,14 @@ class Chat {
     var first_name: String?
     var user_id: String?
 	// 是否点击过举报按钮
-	var showReport = false
+	var showReport = 0
+	var reportReason: ReportType?
 	// 是否已经 accpet
 	var accept = false
+	
+	var initialFilter = Achievements.shared.selectMonkeyFilter
+	var switch_camera_click = 0
+	var my_pce_out = false
 	
 	// create at
 	var beginTime = Date.init()
@@ -156,14 +159,7 @@ class Chat {
 			case .error(let error):
 				callback?(error.localizedDescription)
 			case .success( _):
-				if snapchatValue == .both && (self?.hasRefreshFriendships == false || self == nil) {
-					self?.hasRefreshFriendships = true
-					RealmFriendship.fetchAll(completion: { (result:JSONAPIResult<[RealmFriendship]>) in
-						callback?(nil)
-					})
-				}else {
-					callback?(nil)
-				}
+				callback?(nil)
 			}
 		}
     }

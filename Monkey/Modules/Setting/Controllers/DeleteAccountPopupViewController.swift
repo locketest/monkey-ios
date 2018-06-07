@@ -167,7 +167,7 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
                     break
                 case .success(_):
                     
-                    AnaliticsCenter.log(withEvent: .deleteAccount, andParameter: ["reason":self?.selectedReasonBtn.currentTitle ?? ""])
+                    AnalyticsCenter.log(withEvent: .deleteAccount, andParameter: ["reason":self?.selectedReasonBtn.currentTitle ?? ""])
                     
                     RealmDataController.shared.deleteAllData() { (error) in
                         guard error == nil else {
@@ -176,8 +176,9 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
                         }
                         
                         APIController.authorization = nil
-                        UserDefaults.standard.removeObject(forKey: "user_id")
 						Socket.shared.fetchCollection = false
+                        UserDefaults.standard.removeObject(forKey: "user_id")
+						UserDefaults.standard.removeObject(forKey: "apns_token")
                         
                         let rootVC = self?.view.window?.rootViewController
                         rootVC?.presentedViewController?.dismiss(animated: false, completion: {

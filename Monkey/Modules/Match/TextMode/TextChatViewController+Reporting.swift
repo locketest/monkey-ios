@@ -15,6 +15,8 @@ extension TextChatViewController {
 	
 	@IBAction func report(_ sender: BigYellowButton) {
 		
+		self.chatSession?.chat?.showReport += 1
+		
 		guard let chatId = self.chatSession?.chat?.chatId else {
 			print("Error: No chat id available")
 			return
@@ -52,6 +54,7 @@ extension TextChatViewController {
 	
 	func sendReport(reason: ReportType, chat_id: String) {
 		self.callDelegate?.startFindingChats(forReason: "reporting")
+		chatSession?.chat?.reportReason = reason
 		
 		guard let authorization = APIController.authorization else {
 			return

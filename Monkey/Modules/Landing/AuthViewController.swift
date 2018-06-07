@@ -147,8 +147,9 @@ class AuthViewController: MonkeyViewController {
 				return
 			}
 			APIController.authorization = nil
-			UserDefaults.standard.removeObject(forKey: "user_id")
 			Socket.shared.fetchCollection = false
+			UserDefaults.standard.removeObject(forKey: "user_id")
+			UserDefaults.standard.removeObject(forKey: "apns_token")
 			// This is okay because it should currently only happen when switching between servers. however, in the future it could happen if we invalidate old logins so eventually recovery should be possible.
 			self.presentedViewController?.dismiss(animated: true, completion: {
 				print("INVALID SESSION: Reset to welcome screen")
@@ -209,7 +210,7 @@ class AuthViewController: MonkeyViewController {
 			return
 		}
 		
-		AnaliticsCenter.loginAccount()
+		AnalyticsCenter.loginAccount()
         
         if let _ = APIController.shared.currentUser?.delete_at.value {
             let vc = UIStoryboard(name: "Settings", bundle: nil).instantiateViewController(withIdentifier: "ResumeMyAccountViewController") as! ResumeMyAccountViewController

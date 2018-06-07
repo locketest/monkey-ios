@@ -180,19 +180,37 @@ import CropViewController
      - Parameter from: how the user initiated setting a profile photo
      */
     func setProfilePhoto() {
-
+		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
+			"type": "avatar",
+			])
+		let isAccountNew = APIController.userDef.bool(forKey: APIController.kNewAccountCodeVerify)
+		
         let controller = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let camera = UIAlertAction(title: "Camera", style: .default) { (action) in
 			self.showPickerOption()
+			AnalyticsCenter.log(withEvent: .settingAvatarClick, andParameter: [
+				"type": isAccountNew ? "new" : "old",
+				"info": "Camera",
+				])
         }
         controller.addAction(camera)
 
         let library = UIAlertAction(title: "Photo Library", style: .default) { (action) in
 			self.showPickerOption(sourceType: .photoLibrary)
+			AnalyticsCenter.log(withEvent: .settingAvatarClick, andParameter: [
+				"type": isAccountNew ? "new" : "old",
+				"info": "Photo Library",
+				])
         }
         controller.addAction(library)
 
-        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+		let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
+			AnalyticsCenter.log(withEvent: .settingAvatarClick, andParameter: [
+				"type": isAccountNew ? "new" : "old",
+				"info": "Cancel",
+				])
+		}
+		
         controller.addAction(cancel)
 
         presentingViewController?.present(controller, animated: true, completion: nil)

@@ -16,11 +16,14 @@ import RealmSwift
 typealias AKFVCType = UIViewController & AKFViewController
 
 class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegate {
+	
     @IBOutlet var nextButton: BigYellowButton!
     @IBOutlet var confettiView: ConfettiView!
     @IBOutlet var containerView: UIView!
 	@IBOutlet weak var termsTextView: UITextView!
 	@IBOutlet weak var indicator: UIActivityIndicatorView!
+	
+	var enterTime: Date!
 
 	var accountKitAuthSuccess = false
 	var accountKit = AKFAccountKit(responseType: .accessToken)
@@ -54,7 +57,9 @@ class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegat
         loginViewController?.setTheme(theme)
 
 		configTermsView()
-        
+		
+		enterTime = Date.init()
+		AnalyticsCenter.log(event: .landingPageShow)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -68,6 +73,12 @@ class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegat
 		super.viewWillDisappear(animated)
 
 		indicator.stopAnimating()
+	}
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		enterTime = Date.init()
 	}
 
     override func viewWillAppear(_ animated: Bool) {
@@ -106,6 +117,9 @@ class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegat
     }
 
     @IBAction func nextVC(_ sender: BigYellowButton) {
+		AnalyticsCenter.log(withEvent: .landingPageClick, andParameter: [
+			"session": Int(Date.init().timeIntervalSince1970 - enterTime.timeIntervalSince1970),
+			])
         UIView.animate(withDuration: 0.4, animations: {
             self.containerView.layer.opacity = 0
         }) { (Bool) in
@@ -188,13 +202,23 @@ extension WelcomeViewController: AKFViewControllerDelegate {
 		print("Login succcess with AccessToken")
 		accountKitAuthSuccess = true
 		self.validateAccountkitAuth(accessToken.tokenString)
+		
+		AnalyticsCenter.log(withEvent: .loginCompletion, andParameter: [
+			"type": "success",
+			])
 	}
 
 	private func viewController(_ viewController: UIViewController!, didFailWithError error: NSError!) {
+		AnalyticsCenter.log(withEvent: .loginCompletion, andParameter: [
+			"type": error.localizedDescription,
+			])
 		print("We have an error \(error)")
 	}
 
 	func viewControllerDidCancel(_ viewController: UIViewController!) {
+		AnalyticsCenter.log(withEvent: .loginCompletion, andParameter: [
+			"type": "cancel",
+			])
 		print("The user cancel the login")
 	}
 }

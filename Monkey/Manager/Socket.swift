@@ -169,7 +169,7 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 			self.fetchCollection = true
 		}
 
-		self.webSocket.write(string: [0, "authorization",[
+		self.webSocket.write(string: [0, "authorization", [
 			"authorization": authorization,
 			"last_data_received_at": Date().iso8601,
 			]].toJSON)
@@ -244,6 +244,8 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 			}
 		case "friendship_deleted":
 			self.refreshFriendships()
+		case "relationship_new":
+			self.refreshFriendships()
 		case "reported":
 			self.uploadScreenShot(data: data, channel: channel)
 		case "pos_match_request":
@@ -311,8 +313,6 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 				
 				jsonData["data"] = realmCall
 			}
-		}else if channel == "relationship_new" {
-			return
 		}
 		
 		RealmDataController.shared.apply(JSONAPIDocument(json: jsonData)) { result in

@@ -338,6 +338,7 @@ class TextChatViewController: MonkeyViewController {
 	
 	// Next Button
 	@IBAction func endCall(_ sender: BigYellowButton) {
+		self.chatSession?.chat?.my_pce_out = true
 		self.endCallButton.isEnabled = false
 		self.chatSession?.disconnect(.consumed)
 	}

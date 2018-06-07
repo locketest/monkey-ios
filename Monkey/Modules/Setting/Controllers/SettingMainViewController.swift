@@ -75,7 +75,7 @@ class SettingMainViewController: SwipeableViewController, MFMessageComposeViewCo
         result: MessageComposeResult)
     {
         if result == .sent {
-            AnaliticsCenter.log(event: .inviteFriendSuccess)
+            AnalyticsCenter.log(event: .inviteFriendSuccess)
         }
         self.dismiss(animated: true, completion: nil)
     }
@@ -378,7 +378,7 @@ extension SettingMainViewController : UITableViewDelegate, UITableViewDataSource
         alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: {
             (UIAlertAction) in
             
-            AnaliticsCenter.log(event: .signOut)
+            AnalyticsCenter.log(event: .signOut)
             RealmDataController.shared.deleteAllData() { (error) in
                 guard error == nil else {
                     error?.log()

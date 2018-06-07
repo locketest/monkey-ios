@@ -14,12 +14,12 @@ extension APIController {
 	static let kCodeVerifyJustNow = "kCodeVerifyJustNow"
 	static let kNewAccountCodeVerify = "kNewAccountCodeVerify"
 	
-	private static let userDef = UserDefaults.standard
+	static let userDef = UserDefaults.standard
 	
 	class func signCodeSended(isNewUser: Bool) {
 		userDef.set(true, forKey: kCodeVerifyJustNow)
 		userDef.set(isNewUser, forKey: kNewAccountCodeVerify)
-		AnaliticsCenter.loginAccount()
+		AnalyticsCenter.loginAccount()
 		trackSignUpFinish(isNewUser: isNewUser)
 	}
 	
@@ -30,7 +30,7 @@ extension APIController {
 		userDef.set(false, forKey: kCodeVerifyJustNow)
 		
 		let isAccountNew = userDef.bool(forKey: kNewAccountCodeVerify)
-		AnaliticsCenter.log(withEvent: .codeVerify, andParameter: [
+		AnalyticsCenter.log(withEvent: .codeVerify, andParameter: [
 			"is_account_new" : isAccountNew,
 			"is_profile_complete" : isProfileComplete,
 			])
@@ -55,6 +55,6 @@ extension APIController {
 		}else {
 			Achievements.shared.registerTime = 0
 		}
-		AnaliticsCenter.log(withEvent: .signUpFinish, andParameter: signUpParameter)
+		AnalyticsCenter.log(withEvent: .signUpFinish, andParameter: signUpParameter)
 	}
 }

@@ -97,8 +97,8 @@ class ChatSession: NSObject {
 					toAddInfo["match_success_time&friend"] = 1
 				}
 
-				AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
-				AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
+				AnalyticsCenter.add(amplitudeUserProperty: toAddInfo)
+				AnalyticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
 			}
 		}
 
@@ -122,8 +122,8 @@ class ChatSession: NSObject {
 					toAddInfo["match_success_time&friend"] = 1
 				}
 
-				AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
-				AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
+				AnalyticsCenter.add(amplitudeUserProperty: toAddInfo)
+				AnalyticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
 
 				self.track(matchEvent: .matchFirstAddFriend)
 				
@@ -271,7 +271,61 @@ class ChatSession: NSObject {
 	}
 
 	func track(matchEvent: AnalyticEvent) {
-		AnaliticsCenter.log(withEvent: matchEvent, andParameter: commonParameters(for: matchEvent))
+		AnalyticsCenter.log(withEvent: matchEvent, andParameter: commonParameters(for: matchEvent))
+	}
+	
+	func trackMatchingSession() {
+		guard let chat = chat, let currentUser = APIController.shared.currentUser else {
+			return
+		}
+		
+		var Mode_type = "1"
+		let selectMatchMode = Achievements.shared.selectMatchMode ?? .VideoMode
+		if selectMatchMode == .TextMode {
+			Mode_type = "2"
+		}else if selectMatchMode == .EventMode {
+			Mode_type = "3"
+		}
+		
+		var match_duration = 0
+		if let connectTime = connectTime {
+			match_duration = Int(Date().timeIntervalSince1970 - connectTime)
+		}
+		
+		var report_type = "Non-report"
+		if chat.showReport > 0 {
+			report_type = chat.reportReason?.eventTrackValue() ?? "Cancel"
+		}
+		
+		var commonParameters: [String: Any] = [
+			"duration": match_duration,
+			"friend_add_request": chat.sharedSnapchat ? "1" : "0",
+			"friend_add_success": friendMatched,
+			"matching_report_click": chat.showReport,
+			"matching_report_type": report_type,
+			"matching_switch_camera_click": chat.switch_camera_click,
+			"matching_switch_camera_result": chat.switch_camera_click % 2 == 0 ? "Front" : "back",
+			"Mode_type": Mode_type,
+			]
+		
+		if friendMatched {
+			commonParameters["pce out"] = (chat.my_pce_out ? currentUser.user_id : chat.user_id) ?? ""
+		}
+		
+		var cuttentFilter = Achievements.shared.selectMonkeyFilter
+		if matchMode == .TextMode {
+			commonParameters["sound_open_click"] = chat.unMuteRequest
+			commonParameters["sound_open_success"] = chat.unMute
+			commonParameters["message_send"] = chat.sendedMessage
+			commonParameters["message_receive"] = chat.receivedMessage
+		}else if matchMode == .VideoMode {
+			commonParameters["matching_vfilter_click"] = chat.initialFilter == cuttentFilter ? "keep" : "Change"
+			commonParameters["matching_vfilter_info"] = cuttentFilter
+			commonParameters["time_add_count"] = chat.minutesAdded
+			commonParameters["time_add_success_times"] = min(chat.minutesAdded, chat.theirMinutesAdded)
+		}
+		
+		AnalyticsCenter.log(withEvent: .matchingSession, andParameter: commonParameters)
 	}
 
     required init(apiKey: String, sessionId: String, chat: Chat, token: String, loadingDelegate: ChatSessionLoadingDelegate, isDialedCall: Bool) {
@@ -349,9 +403,10 @@ class ChatSession: NSObject {
     }
 
 	func toggleCameraPosition() {
+		chat?.switch_camera_click += 1
 		HWCameraManager.shared().rotateCameraPosition()
 	}
-	func toggleFrontCamera(front:Bool) {
+	func toggleFrontCamera(front: Bool) {
 		HWCameraManager.shared().changeCameraPosition(to: .front)
 	}
 
@@ -421,8 +476,8 @@ class ChatSession: NSObject {
 				toAddInfo["match_success_eventmode"] = 1
 			}
 
-			AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
-			AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
+			AnalyticsCenter.add(amplitudeUserProperty: toAddInfo)
+			AnalyticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
 
 			self.track(matchEvent: .matchFirstSuccess)
 			self.track(matchEvent: .matchSuccess)
@@ -476,7 +531,7 @@ class ChatSession: NSObject {
 				match_duration = Int(Date().timeIntervalSince1970 - connectTime)
 			}
 			var toAddInfo = ["match_duration_total": match_duration]
-			AnaliticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
+			AnalyticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
 
 			if self.matchMode == .TextMode {
 				toAddInfo["match_duration_total_text"] = match_duration
@@ -485,9 +540,10 @@ class ChatSession: NSObject {
 			}else {
 				toAddInfo["match_duration_total_eventmode"] = match_duration
 			}
-			AnaliticsCenter.add(amplitudeUserProperty: toAddInfo)
+			AnalyticsCenter.add(amplitudeUserProperty: toAddInfo)
 
 			self.track(matchEvent: .matchInfo)
+			self.trackMatchingSession()
 			self.disconnectStatus = status
 			self.updateStatusTo(.disconnecting)
 		} else {
@@ -537,10 +593,6 @@ class ChatSession: NSObject {
 	}
 
 	func sessionConnectSuccessful() {
-		AnaliticsCenter.log(withEvent: .opentokConnected, andParameter: [
-			"duration": Int(NSDate().timeIntervalSince1970 - self.matchedTime!),
-			])
-
 		self.wasSkippable = true
 		self.updateStatusTo(.skippable)
 		if self.response == .skipped {
@@ -557,8 +609,8 @@ class ChatSession: NSObject {
 
 	func startConnect() {
 		self.loadingDelegate?.shouldShowConnectingStatus(in: self)
-		AnaliticsCenter.add(amplitudeUserProperty: ["match_connect": 1])
-		AnaliticsCenter.add(firstdayAmplitudeUserProperty: ["match_connect": 1])
+		AnalyticsCenter.add(amplitudeUserProperty: ["match_connect": 1])
+		AnalyticsCenter.add(firstdayAmplitudeUserProperty: ["match_connect": 1])
 		self.track(matchEvent: .matchConnect)
 		
 		if videoCall?.supportSocket() == true {
@@ -760,15 +812,14 @@ extension ChatSession {
 			self.acceptTime = NSDate().timeIntervalSince1970
 
 			// if other not accept, and is not dialed call
-			guard self.matchUserDidAccept == false, self.isDialedCall == false else {
-				return
-			}
-			// waiting for accept
-			DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_waiting_time))) { [weak self] in
-				guard let `self` = self else { return }
-				if self.matchUserDidAccept == false {
-					self.disconnectReason = .matchNotReady
-					self.disconnect(.consumed)
+			if self.matchUserDidAccept == false, self.isDialedCall == false {
+				// waiting for accept
+				DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_waiting_time))) { [weak self] in
+					guard let `self` = self else { return }
+					if self.matchUserDidAccept == false {
+						self.disconnectReason = .matchNotReady
+						self.disconnect(.consumed)
+					}
 				}
 			}
 		}
@@ -999,11 +1050,6 @@ extension ChatSession: OTSessionDelegate {
 		self.log(.info, "session didFailWithError \(error)")
 		self.disconnect(.consumedWithError)
 		// sessionDidDisconnect (sometimes) called right after
-		AnaliticsCenter.log(withEvent: .opentokError, andParameter: [
-			"channel": "session",
-			"code": error.code,
-			"duration": Int(NSDate().timeIntervalSince1970 - self.matchedTime!),
-			])
 	}
 }
 
@@ -1031,11 +1077,6 @@ extension ChatSession: OTSubscriberKitDelegate {
 	func subscriber(_ subscriber: OTSubscriberKit, didFailWithError error : OTError) {
 		self.log(.info, "subscriber didFailWithError \(error)")
 		self.disconnect(.consumedWithError)
-		AnaliticsCenter.log(withEvent: .opentokError, andParameter: [
-			"channel": "subscriber",
-			"code": error.code,
-			"duration": Int(NSDate().timeIntervalSince1970 - self.matchedTime!),
-			])
 	}
 
 	func publisher(_ publisher: OTPublisherKit, streamCreated stream: OTStream) {
@@ -1052,11 +1093,6 @@ extension ChatSession: OTSubscriberKitDelegate {
 	func publisher(_ publisher: OTPublisherKit, didFailWithError error: OTError) {
 		self.log(.info, "publisher didFailWithError \(error)")
 		self.disconnect(.consumedWithError)
-		AnaliticsCenter.log(withEvent: .opentokError, andParameter: [
-			"channel": "publisher",
-			"code": error.code,
-			"duration": Int(NSDate().timeIntervalSince1970 - self.matchedTime!),
-			])
 	}
 }
 

@@ -152,6 +152,10 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             instagramVC.friendshipId = friendship.friendship_id
             instagramVC.userId = friendship.user?.user_id
             instagramVC.isMonkeyKingBool = friendship.user?.isMonkeyKing() ?? false
+			
+			AnalyticsCenter.log(withEvent: .insgramClick, andParameter: [
+				"entrance": "friend list",
+				])
             
             self.present(instagramVC, animated: true, completion: {
                 self.initialLongPressLocation = locationPoint
@@ -217,14 +221,21 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
 	}
     
     func openChat(_ friendship: RealmFriendship) {
-        
+		
+		AnalyticsCenter.log(event: .friendListClick)
+		
         let storyboard = UIStoryboard(name: "Chat", bundle: Bundle.main)
         let chatViewController = storyboard.instantiateViewController(withIdentifier: "chat") as! ChatViewController
         chatViewController.viewModel.friendshipId = friendship.friendship_id
-        
-        if let user = friendship.user {
-            chatViewController.isMonkeyKingBool = user.user_id == "2" ? true : false
-        }
+		
+		var isMonkeyKing = friendship.user?.user_id == "2"
+		chatViewController.isMonkeyKingBool = isMonkeyKing
+		if isMonkeyKing {
+			let isAccountNew = APIController.userDef.bool(forKey: APIController.kNewAccountCodeVerify)
+			AnalyticsCenter.log(withEvent: .monkeyKingEnter, andParameter: [
+				"type": isAccountNew ? "new" : "old",
+				])
+		}
         
         if let chatId = self.initialConversationOptions?["chat_id"] as? String {
             chatViewController.acceptChat(chatId: chatId)

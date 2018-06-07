@@ -16,6 +16,7 @@ class FilterViewController: SwipeableViewController {
 	
 //	var arrowButton: BigYellowButton = BigYellowButton.init(frame: CGRect.zero)
 	var filterCollection: FilterCollectionView = FilterCollectionView.init(frame: CGRect.zero)
+	var initialFilter = Achievements.shared.selectMonkeyFilter
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,16 @@ class FilterViewController: SwipeableViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		self.filterCollection.resetSpotedFilter()
+	}
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		var currentFilter = Achievements.shared.selectMonkeyFilter
+		var keep = initialFilter == currentFilter
+		AnalyticsCenter.log(withEvent: .videoFilterSelect, andParameter: [
+			"type": keep ? "keep" : "change",
+			"name": currentFilter,
+			])
 	}
 	
 	func configureApperance() {

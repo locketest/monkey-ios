@@ -40,7 +40,7 @@ class ResumeMyAccountViewController: MonkeyViewController {
                     break
                 case .success(_):
                     
-                    AnaliticsCenter.log(event: .resumeAccount)
+                    AnalyticsCenter.log(event: .resumeAccount)
                     
                     self?.signOutFunc()
                 }
@@ -84,8 +84,9 @@ class ResumeMyAccountViewController: MonkeyViewController {
         
         RealmDataController.shared.deleteAllData() { (error) in
             APIController.authorization = nil
-            UserDefaults.standard.removeObject(forKey: "user_id")
 			Socket.shared.fetchCollection = false
+            UserDefaults.standard.removeObject(forKey: "user_id")
+			UserDefaults.standard.removeObject(forKey: "apns_token")
         }
     }
 }

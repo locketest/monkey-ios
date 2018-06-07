@@ -167,7 +167,7 @@ extension CallViewController: CountingLabelDelegate {
     
     func addMinute() {
 		// requested to add minute
-//		AnaliticsCenter.log(event: .requestedMinuteDuringCall)
+//		AnalyticsCenter.log(event: .requestedMinuteDuringCall)
         self.disableAddMinute()
         let _ = self.chatSession?.sendMinute() ?? false
     }

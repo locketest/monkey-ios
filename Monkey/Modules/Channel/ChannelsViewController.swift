@@ -33,17 +33,8 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
                 error.log()
             }
         }
-        
-        if var channels = APIController.shared.currentUser?.channels {
-            if channels.count > 1 {
-                channels = List.init()
-                self.updateChannels(selectedChannels:channels )
-            }
-            self.selectedChannels = Array(channels)
-        }
-        
+		
         self.addBottomPadding()
-        
         UserDefaults.standard.set(true, forKey: "HadShowNewTreeRuleRemindLabel")
     }
     
@@ -62,19 +53,30 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         
         return super.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+	
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		
+		AnalyticsCenter.log(withEvent: .treeClick, andParameter: [
+			"title": self.selectedChannels.first?.title ?? APIController.shared.currentUser?.channels.first?.title ?? "General",
+			])
 		
 		let list = List<RealmChannel>()
 		list.append(objectsIn: self.selectedChannels)
 		
-        updateChannels(selectedChannels: list)
+		updateChannels(selectedChannels: list)
+	}
+	
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+		
     }
     
     override func isSwipingDidChange() {
         self.tableView.isScrollEnabled = !self.isSwiping
     }
+	
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "channelCell", for: indexPath) as! ChannelsTableViewCell
         cell.backgroundColor = .clear
@@ -108,7 +110,6 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         
         self.selectedChannels.removeAll()
         self.selectedChannels.append(channel)
-//        self.updateChannels(selectedChannels: List(selectedChannels))
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -122,8 +123,6 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         }
         
         self.selectedChannels = self.selectedChannels.filter { $0 != channel }
-//        self.updateChannels(selectedChannels: List(selectedChannels))
-        
     }
     
     func updateChannels(selectedChannels: List<RealmChannel>) {

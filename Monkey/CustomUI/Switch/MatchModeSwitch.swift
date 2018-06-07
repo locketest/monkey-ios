@@ -21,6 +21,7 @@ import UIKit
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		self.configureApperance()
 		
 	}
 	
@@ -31,7 +32,6 @@ import UIKit
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
-		self.configureApperance()
 	}
 	
 	func configureApperance() {
@@ -45,6 +45,7 @@ import UIKit
 		modeLabel.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightMedium)
 		modeLabel.textColor = UIColor.white
 		modeLabel.text = "Text"
+		modeLabel.frame = CGRect.init(x: 14, y: 10, width: 38, height: 20)
 		modeLabel.autoresizingMask = [.flexibleTopMargin, .flexibleBottomMargin]
 		modeLabel.isUserInteractionEnabled = false
 		
@@ -62,6 +63,7 @@ import UIKit
 		modeEmoji.frame = CGRect.init(x: textMode ? 72 : 54, y: 5, width: 24, height: 30)
 		modeEmoji.autoresizingMask = [.flexibleTopMargin, .flexibleBottomMargin]
 		modeEmoji.isUserInteractionEnabled = false
+		
 	}
 	
 	func switchToMode(matchMode: MatchMode?) {

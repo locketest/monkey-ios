@@ -383,6 +383,7 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
     }
     
     @IBAction func endCall(_ sender: BigYellowButton) {
+		self.chatSession?.chat?.my_pce_out = true
         self.endCallButton.isEnabled = false
         self.endCallButton.layer.opacity = 0.5
         self.chatSession?.disconnect(.consumed)

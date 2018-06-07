@@ -292,7 +292,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         return !self.editStatus
     }
 
-    func instagramNotificationReceived(_ notification:Notification) {
+    func instagramNotificationReceived(_ notification: Notification) {
         guard let loginParameters = notification.object as? [String:Any] else {
             print("Error: notification posted without an object")
             return
@@ -311,8 +311,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.linkInstagramToUser(code)
     }
 
-    func linkInstagramToUser(_ code:String) {
-
+    func linkInstagramToUser(_ code: String) {
         let parameters: [String: Any] = [
             "data": [
                 "type": "instagram_accounts",
@@ -324,9 +323,15 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			switch result {
 			case .success(_):
 				self.linkInstgramLabel.text = "🌅 Unlink instagram"
+				AnalyticsCenter.log(withEvent: .settingLinkInsComplete, andParameter: [
+					"type": "true",
+					])
 				break
 			case .error(let error):
 				error.log()
+				AnalyticsCenter.log(withEvent: .settingLinkInsComplete, andParameter: [
+					"type": "false",
+					])
 				let instagramFailedAlert = UIAlertController(title: "😬 Error linking Instagram", message: "Please try again", preferredStyle: .alert)
 				instagramFailedAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
 				self.present(instagramFailedAlert, animated: true)
@@ -346,8 +351,9 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		}
 		
 		var attributes: [RealmUser.Attribute] = []
-		var editFirstName :Bool = false
-		var editBirthDay :Bool = false
+		var editFirstName: Bool = false
+		var editBirthDay: Bool = false
+		
 		if let newFirstName = self.firstNameField.text, newFirstName != currentUser.first_name {
 			attributes.append(.first_name(newFirstName))
 			editFirstName = true
@@ -369,6 +375,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		if let newSnapchatName = self.snapChatUserName.text, newSnapchatName != currentUser.snapchat_username {
 			attributes.append(.snapchat_username(newSnapchatName))
 		}
+		
+		let isAccountNew = APIController.userDef.bool(forKey: APIController.kNewAccountCodeVerify)
+		AnalyticsCenter.log(withEvent: .settingEditProfileClick, andParameter: [
+			"type": isAccountNew ? "new" : "old",
+			"info": "...",
+			])
 		
 		if attributes.count > 0 {
 			saveBtn.isLoading = true
@@ -417,7 +429,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 					self.refreshEditStatus()
 					self.view.endEditing(true)
 				}
-				AnaliticsCenter.update(userProperty: userProperty)
+				AnalyticsCenter.update(userProperty: userProperty)
 			}
 		}else {
 			self.editCancelButtonClick()
@@ -425,6 +437,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 	}
 
     @IBAction func editProfileTapped(_ sender: UIButton) {
+		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
+			"type": "edit",
+			])
+		
 		let  settingRect:CGRect = CGRect(x:-self.view.frame.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height);
 		sender.isUserInteractionEnabled = false
 		self.view.layoutIfNeeded()
@@ -516,7 +532,14 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith
         result: MessageComposeResult) {
 		if result == .sent {
-			AnaliticsCenter.log(event: .inviteFriendSuccess)
+			AnalyticsCenter.log(event: .inviteFriendSuccess)
+			AnalyticsCenter.log(withEvent: .inviteFriendClick, andParameter: [
+				"type": "true",
+				])
+		}else {
+			AnalyticsCenter.log(withEvent: .inviteFriendClick, andParameter: [
+				"type": "false",
+				])
 		}
 		controller.dismiss(animated: true, completion: nil)
     }
@@ -546,11 +569,20 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
     }
 
     @IBAction func inviteFriendsBtnClickFunc(_ sender: UIButton) {
-		AnaliticsCenter.log(event: .inviteFriendClick)
+		AnalyticsCenter.log(event: .inviteFriendClick)
+		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
+			"type": "invite_friends",
+			])
+		
 		self.showInviteFriendsViewController()
     }
 
     @IBAction func linkInstgramBtnClickFunc(_ sender: UIButton) {
+		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
+			"type": "link_Ins",
+			])
+		AnalyticsCenter.log(event: .settingLinkInsClick)
+		
         if self.linkInstgramLabel.text == "📸 Link instagram" {
             self.linkInstagram()
         } else {
@@ -564,6 +596,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
     }
 	
     func authInstagramFailure() {
+		AnalyticsCenter.log(withEvent: .settingLinkInsComplete, andParameter: [
+			"type": "false",
+			])
+		
 		self.refreshEditStatus()
 		self.resetEditProfileFrame()
     }
@@ -602,22 +638,34 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
     }
     
     @IBAction func signOutClickFunc(_ sender: UIButton) {
+		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
+			"type": "sign_out",
+			])
+		
 		let alertController = UIAlertController(title: "You sure you want to log out?", message: nil, preferredStyle: .actionSheet)
 		
-		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (cancelAlert) in
+			AnalyticsCenter.log(withEvent: .settingSignOutClick, andParameter: [
+				"type": "cancel",
+				])
+		}))
 		
 		alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: {
 			(UIAlertAction) in
 			
-			AnaliticsCenter.log(event: .signOut)
+			AnalyticsCenter.log(event: .signOut)
+			AnalyticsCenter.log(withEvent: .settingSignOutClick, andParameter: [
+				"type": "yes",
+				])
 			RealmDataController.shared.deleteAllData() { (error) in
 				guard error == nil else {
 					error?.log()
 					return
 				}
 				APIController.authorization = nil
-				UserDefaults.standard.removeObject(forKey: "user_id")
 				Socket.shared.fetchCollection = false
+				UserDefaults.standard.removeObject(forKey: "user_id")
+				UserDefaults.standard.removeObject(forKey: "apns_token")
 				
 				let rootVC = self.view.window?.rootViewController
 				rootVC?.presentedViewController?.dismiss(animated: false, completion: {
@@ -669,11 +717,20 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			}
 
 			cell.acceptSwitch.switchValueChanged = {
+				
 				if indexPath.row == 1 {
 					// auto accept
 					Achievements.shared.autoAcceptMatch = $0
+					
+					AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
+						"type": "auto_match",
+						])
 				}else {
 					Achievements.shared.nearbyMatch = $0
+					
+					AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
+						"type": "nearby",
+						])
 				}
 			}
             return cell;
@@ -681,7 +738,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
     }
 
     /// Dismiss settings view controller if tapped in empty area
-    @IBAction func dismissTapped(sender:UITapGestureRecognizer) {
+    @IBAction func dismissTapped(sender: UITapGestureRecognizer) {
         guard sender.state == .ended else {
             return
         }
@@ -695,7 +752,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         }
     }
 
-    func crateEditProfileUI(){
+    func crateEditProfileUI() {
         let firstNameLab:UILabel = UILabel.init(frame:CGRect(x: 16, y: 0, width: 119, height: 64))
         firstNameLab.text = "😊 Name :"
         firstNameLab.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
@@ -941,7 +998,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         return true
     }
 
-    func updateTextFieldTip(textField:UITextField){
+    func updateTextFieldTip(textField: UITextField){
         if textField == self.firstNameField  {
             if self.firstNameField.charactersCount <= 2{
                 self.firstNameTipLab.text = "Invalid format"
@@ -1045,7 +1102,7 @@ enum SettingsTableViewCellType {
     case acceptButton
 }
 
-class  SettingAcceptButtonCell: UITableViewCell {
+class SettingAcceptButtonCell: UITableViewCell {
     var data: SettingsTableViewCellData?
     var titleLabel : UILabel!
     var acceptSwitch : MonkeySwitch!
@@ -1117,14 +1174,29 @@ class SettingTalkToCell: UITableViewCell {
 		self.contentView.addSubview(fullButton)
         fullButton.addTarget(self, action:#selector(genderPerferenceBtnClick), for: .touchUpInside)
     }
-    func genderPerferenceBtnClick(){
+	
+    func genderPerferenceBtnClick() {
+		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
+			"type": "talk_to",
+			])
+		
         let alertController = UIAlertController(title: "Talk to", message: "Tap who you'd rather talk to", preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (cancelAlert) in
+			
+			AnalyticsCenter.log(withEvent: .settingTalkToClick, andParameter: [
+				"type": "cancel",
+				])
+		}))
 
         alertController.addAction(UIAlertAction(title: "👫 Both", style: .default, handler: { (UIAlertAction) in
             APIController.shared.currentUser?.update(attributes: [.show_gender(nil)], completion: { $0?.log() })
 
             self.genderButton.setImage(#imageLiteral(resourceName: "GenderPreferenceButton"), for: .normal)
+			
+			AnalyticsCenter.log(withEvent: .settingTalkToClick, andParameter: [
+				"type": "Both",
+				])
         }))
 
         alertController.addAction(UIAlertAction(title: "👱 Guys", style: .default, handler: { (UIAlertAction) in
@@ -1133,6 +1205,10 @@ class SettingTalkToCell: UITableViewCell {
             self.genderButton.setImage(#imageLiteral(resourceName: "Guys"), for: .normal)
 
             self.handleSubAlertFunc(isGirls: false)
+			
+			AnalyticsCenter.log(withEvent: .settingTalkToClick, andParameter: [
+				"type": "Guys",
+				])
         }))
 
         alertController.addAction(UIAlertAction(title: "👱‍♀️ Girls", style: .default, handler: { (UIAlertAction) in
@@ -1141,6 +1217,10 @@ class SettingTalkToCell: UITableViewCell {
             self.genderButton.setImage(#imageLiteral(resourceName: "Girls"), for: .normal)
 
             self.handleSubAlertFunc(isGirls: true)
+			
+			AnalyticsCenter.log(withEvent: .settingTalkToClick, andParameter: [
+				"type": "Girls",
+				])
         }))
 
         self.alertKeyAndVisibleFunc(alert: alertController)

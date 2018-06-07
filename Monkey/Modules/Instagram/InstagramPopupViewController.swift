@@ -319,13 +319,18 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     }
     
     @IBAction func snapchatBtnClickFunc(_ sender: BigYellowButton) {
-        
-        guard let username = user?.snapchat_username else {
+		
+		let entrance = presentingViewController is ChatViewController ? "convopage" : "friend list"
+		AnalyticsCenter.log(withEvent: .snapchatClick, andParameter: [
+			"entrance": entrance,
+			])
+		
+        guard let snapchat_username = user?.snapchat_username else {
             print("Error: could not get snapchat username to add")
             return
         }
         
-        guard let url = URL(string: "snapchat://add/\(username)") else {
+        guard let url = URL(string: "snapchat://add/\(snapchat_username)") else {
             print("Error: could not get snapchat username to add")
             return
         }
@@ -333,7 +338,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         if UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.openURL(url)
         } else {
-            let backupUrl = URL(string: "https://www.snapchat.com/add/\(username)")!
+            let backupUrl = URL(string: "https://www.snapchat.com/add/\(snapchat_username)")!
             UIApplication.shared.openURL(backupUrl)
         }
     }

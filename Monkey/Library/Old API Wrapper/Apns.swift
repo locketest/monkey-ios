@@ -36,8 +36,8 @@ class Apns {
         ]
         if let authorization = APIController.authorization {
             headers["Authorization"] = authorization
-
         }
+		
         Alamofire.request("\(Environment.baseURL)/api/v1.0/apns", method: .post, parameters: paramaters, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
             if let error = response.result.error {
                 callback?(error.localizedDescription)

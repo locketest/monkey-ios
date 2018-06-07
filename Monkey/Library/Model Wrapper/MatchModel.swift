@@ -98,7 +98,8 @@ class MatchModel: MonkeyModel {
 	var user: MatchUser?
 	
 	// user defined property
-	var showReport = false
+	var showReport = 0
+	var reportReason: ReportType?
 	var accept = false
 	
 	// create at

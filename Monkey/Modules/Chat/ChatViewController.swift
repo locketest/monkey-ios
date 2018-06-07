@@ -52,6 +52,8 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     var pendingCallId:String?
     /// Is dismissing keyboard
     var isAnimatingDown = false
+	
+	var isTrackingMessage = false
 
     var callTimer:Timer?
 
@@ -266,47 +268,28 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     }
 
     @IBAction func aboutUsBtnClickFunc(_ sender: BigYellowButton) {
-
+		
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertController.addAction(UIAlertAction(title: "💖 Rate Us", style: .default, handler: { (UIAlertAction) in
+			AnalyticsCenter.log(withEvent: .monkeyKingClick, andParameter: [
+				"type": "rate",
+				])
+			
             self.openURL("https://itunes.apple.com/us/app/id1165924249?action=write-review", inVC: true)
         }))
         alertController.addAction(UIAlertAction(title: "📲 Support", style: .default, handler: { (UIAlertAction) in
+			AnalyticsCenter.log(withEvent: .monkeyKingClick, andParameter: [
+				"type": "support",
+				])
+			
             self.openURL("https://monkey.canny.io/requests", inVC: true)
         }))
-
-//        alertController.addAction(UIAlertAction(title: "🚑 Safety", style: .default, handler: { (UIAlertAction) in
-//
-//            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-//            alertController.addAction(UIKit.UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-//            }))
-//            alertController.addAction(UIKit.UIAlertAction(title: "😐 Terms of Use", style: .default, handler: { (UIAlertAction) in
-//                self.openURL("http://monkey.cool/terms", inVC: true)
-//            }))
-//            alertController.addAction(UIKit.UIAlertAction(title: "☹️ Privacy Policy", style: .default, handler: { (UIAlertAction) in
-//                self.openURL("http://monkey.cool/privacy", inVC: true)
-//            }))
-//            alertController.addAction(UIKit.UIAlertAction(title: "😇 Safety Center", style: .default, handler: { (UIAlertAction) in
-//                self.openURL("http://monkey.cool/safety", inVC: true)
-//            }))
-//            alertController.addAction(UIKit.UIAlertAction(title: "😁 Community Guidelines", style: .default, handler: { (UIAlertAction) in
-//                self.openURL("http://monkey.cool/community", inVC: true)
-//            }))
-//            if let creditsURL = APIController.shared.currentExperiment?.credits_url {
-//                alertController.addAction(UIKit.UIAlertAction(title: "Credits", style: .default, handler: { (UIAlertAction) in
-//                    self.openURL(creditsURL, inVC: true)
-//                }))
-//            }
-//            self.present(alertController, animated: true, completion: nil)
-//
-//        }))
         
         self.present(alertController, animated: true, completion: nil)
     }
 
-    func openURL(_ urlString: String, inVC: Bool)
-    {
+    func openURL(_ urlString: String, inVC: Bool) {
         guard let url = URL(string: urlString) else {
             return
         }
@@ -357,6 +340,10 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             instagramVC.friendshipId = friendshipId
             instagramVC.userId = friendship.user?.user_id
             instagramVC.isMonkeyKingBool = self.isMonkeyKingBool!
+			
+			AnalyticsCenter.log(withEvent: .insgramClick, andParameter: [
+				"entrance": "convopage",
+				])
 
             self.present(instagramVC, animated: true, completion: {
                 self.initialLongPressLocation = locationPoint
@@ -467,6 +454,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         }
         NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
+	
     func applicationWillEnterForeground() {
         self.viewModel.markRead()
     }
@@ -540,6 +528,14 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         guard let messageText = self.chatTextField.text, self.chatTextField.text.isEmpty == false else {
             return
         }
+		
+		if isTrackingMessage == false {
+			isTrackingMessage = true
+			AnalyticsCenter.log(withEvent: .friendChatClick, andParameter: [
+				"type": "message",
+				])
+		}
+		
         if messageText == "/random" { // An easter egg for users to send a random message if they type
             self.viewModel.sendText(nil)
         } else {
@@ -547,7 +543,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         }
         self.isShowingPlaceholderText = true
 
-		AnaliticsCenter.log(event: .sentMessageConvo)
+		AnalyticsCenter.log(event: .sentMessageConvo)
 
         self.view.layoutIfNeeded()
     }
@@ -562,10 +558,22 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     }
 
     @IBAction func addSnapchat(_ sender: Any) {
+		AnalyticsCenter.log(withEvent: .friendChatClick, andParameter: [
+			"type": "snapchat",
+			])
+		AnalyticsCenter.log(event: .snapchatClickConvo)
+		AnalyticsCenter.log(withEvent: .snapchatClick, andParameter: [
+			"entrance": "convopage",
+			])
+		
         self.viewModel.addSnapchat()
     }
 
     @IBAction func makeCall(_ sender: JigglyButton) {
+		AnalyticsCenter.log(withEvent: .friendChatClick, andParameter: [
+			"type": "video_call",
+			])
+		
         if let chatSession = self.chatSession {
             if chatSession.response == .accepted && chatSession.status != .consumed && chatSession.status != .consumedWithError {
                 chatSession.disconnect(.consumed)
@@ -588,8 +596,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.viewModel.sendText(nil)
         sender.isEnabled = false
     }
-
-
 }
 
 /// Mark - ChatSessionLoadingDelegate

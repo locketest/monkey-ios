@@ -133,7 +133,7 @@ class SettingEditViewController: SwipeableViewController, UITextFieldDelegate {
                 
                 self.handleCancelStateFunc()
                 
-                AnaliticsCenter.update(userProperty: userProperty)
+                AnalyticsCenter.update(userProperty: userProperty)
             }
         } else {
             self.handleCancelStateFunc()

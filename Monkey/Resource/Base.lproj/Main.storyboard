@@ -552,6 +552,29 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBC-65-2jJ" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="65" y="250" width="246" height="177"/>
                                                 <subviews>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="-88" translatesAutoresizingMaskIntoConstraints="NO" id="87Q-r9-u4p">
+                                                        <rect key="frame" x="119" y="0.0" width="8" height="48"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🔥" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MqW-VL-7IY">
+                                                                <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                                                <color key="backgroundColor" red="0.3921568627" green="0.2901960784" blue="0.94509803920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="width" constant="48" id="c8C-mC-Fr6"/>
+                                                                    <constraint firstAttribute="height" constant="48" id="udC-Pg-Fcy"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ProfileImageDefaultMale" translatesAutoresizingMaskIntoConstraints="NO" id="3gz-ch-jr1">
+                                                                <rect key="frame" x="-40" y="0.0" width="48" height="48"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="48" id="eWU-oc-LdM"/>
+                                                                    <constraint firstAttribute="width" constant="48" id="gab-qc-WTO"/>
+                                                                </constraints>
+                                                            </imageView>
+                                                        </subviews>
+                                                    </stackView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌🍌🐒" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wQB-BV-u1O" customClass="LoadingTextLabel" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="0.0" width="246" height="48"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="40"/>
@@ -610,9 +633,34 @@ by 5 teenagers in NYC?</string>
                                                     <constraint firstAttribute="bottom" secondItem="wqO-t4-SQR" secondAttribute="bottom" constant="12" id="jez-ml-Mmh"/>
                                                     <constraint firstItem="wQB-BV-u1O" firstAttribute="leading" secondItem="kBC-65-2jJ" secondAttribute="leading" id="ni6-mH-2Ky"/>
                                                     <constraint firstItem="qe6-B7-y4X" firstAttribute="top" secondItem="wQB-BV-u1O" secondAttribute="bottom" constant="5" id="ooo-FJ-vbe"/>
+                                                    <constraint firstItem="87Q-r9-u4p" firstAttribute="top" secondItem="kBC-65-2jJ" secondAttribute="top" id="sBO-x2-Fxn"/>
                                                     <constraint firstItem="qe6-B7-y4X" firstAttribute="centerX" secondItem="kBC-65-2jJ" secondAttribute="centerX" id="sqA-kl-df3"/>
+                                                    <constraint firstItem="87Q-r9-u4p" firstAttribute="centerX" secondItem="kBC-65-2jJ" secondAttribute="centerX" id="tzD-BW-iCR"/>
                                                     <constraint firstItem="wqO-t4-SQR" firstAttribute="top" secondItem="qe6-B7-y4X" secondAttribute="bottom" constant="19" id="yjX-74-Hs3"/>
                                                     <constraint firstItem="wQB-BV-u1O" firstAttribute="centerX" secondItem="kBC-65-2jJ" secondAttribute="centerX" id="ziH-FY-qbY"/>
+                                                </constraints>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f4c-85-zZT">
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👆" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dcQ-Ox-VZE">
+                                                        <rect key="frame" x="165" y="322" width="45" height="48"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap to start!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t79-LT-ks2">
+                                                        <rect key="frame" x="134.5" y="371.5" width="106" height="24"/>
+                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="t79-LT-ks2" firstAttribute="top" secondItem="dcQ-Ox-VZE" secondAttribute="bottom" constant="2" id="4W7-wB-geO"/>
+                                                    <constraint firstItem="t79-LT-ks2" firstAttribute="centerX" secondItem="f4c-85-zZT" secondAttribute="centerX" id="YyD-Je-AUb"/>
+                                                    <constraint firstItem="t79-LT-ks2" firstAttribute="centerY" secondItem="f4c-85-zZT" secondAttribute="centerY" constant="50" id="bii-wq-v1T"/>
+                                                    <constraint firstItem="dcQ-Ox-VZE" firstAttribute="centerX" secondItem="f4c-85-zZT" secondAttribute="centerX" id="s9E-gg-CrU"/>
                                                 </constraints>
                                             </view>
                                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="psw-iu-AsM" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
@@ -650,60 +698,6 @@ by 5 teenagers in NYC?</string>
                                                     <action selector="filterButtonTapped:" destination="TT7-O9-9zR" eventType="touchUpInside" id="GCW-iI-N4h"/>
                                                 </connections>
                                             </button>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="Ulj-5R-07I">
-                                                <rect key="frame" x="40" y="647" width="295" height="0.0"/>
-                                                <subviews>
-                                                    <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SSL-hy-Vte" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="-40" y="-647" width="140" height="56"/>
-                                                        <color key="backgroundColor" red="0.50196081400000003" green="0.0" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="56" id="F8f-rY-nW3"/>
-                                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="140" id="dQz-vs-dgt"/>
-                                                        </constraints>
-                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
-                                                        <state key="normal" title="Next">
-                                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </state>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="➡️ "/>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                                                <color key="value" red="1" green="1" blue="1" alpha="0.20000000000000001" colorSpace="calibratedRGB"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                                <real key="value" value="2"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                        </userDefinedRuntimeAttributes>
-                                                        <connections>
-                                                            <action selector="skipButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="oOp-WT-wMM"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QMF-mv-VbF" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                                        <rect key="frame" x="-40" y="-647" width="140" height="56"/>
-                                                        <color key="backgroundColor" red="0.57952511309999999" green="0.21596130729999999" blue="0.99958437680000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="56" id="PFe-tg-wJp"/>
-                                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="140" id="R9Z-Z4-crl"/>
-                                                        </constraints>
-                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
-                                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <state key="normal" title="Accept">
-                                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </state>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="😊"/>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="emojiY">
-                                                                <integer key="value" value="-2"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                        </userDefinedRuntimeAttributes>
-                                                        <connections>
-                                                            <action selector="acceptButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="MoT-wb-ya8"/>
-                                                        </connections>
-                                                    </button>
-                                                </subviews>
-                                                <constraints>
-                                                    <constraint firstItem="QMF-mv-VbF" firstAttribute="width" secondItem="SSL-hy-Vte" secondAttribute="width" id="tUq-GI-0pd"/>
-                                                </constraints>
-                                            </stackView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2CN-Mj-9Gg" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="164" y="607" width="46" height="30"/>
                                                 <constraints>
@@ -724,6 +718,76 @@ by 5 teenagers in NYC?</string>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SSL-hy-Vte" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="40" y="563" width="140" height="56"/>
+                                                <color key="backgroundColor" red="0.50196081400000003" green="0.0" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="56" id="F8f-rY-nW3"/>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="140" id="dQz-vs-dgt"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                                <state key="normal" title="Reject">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="🚫"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                        <color key="value" red="1" green="1" blue="1" alpha="0.20000000000000001" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                        <real key="value" value="2"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="emojiY">
+                                                        <real key="value" value="-2"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="rejectButtonTapped:" destination="TT7-O9-9zR" eventType="touchUpInside" id="nGK-3V-E70"/>
+                                                </connections>
+                                            </button>
+                                            <button hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QMF-mv-VbF" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="194" y="563" width="140" height="56"/>
+                                                <color key="backgroundColor" red="0.57952511309999999" green="0.21596130729999999" blue="0.99958437680000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="56" id="PFe-tg-wJp"/>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="140" id="R9Z-Z4-crl"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                                <state key="normal" title="Accept">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="😊"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="emojiY">
+                                                        <real key="value" value="-2"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="acceptButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="MoT-wb-ya8"/>
+                                                </connections>
+                                            </button>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BlI-CX-sfX">
+                                                <rect key="frame" x="165" y="602" width="44" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="44" id="TJM-fg-HMp"/>
+                                                    <constraint firstAttribute="height" constant="44" id="ubf-4D-DuC"/>
+                                                </constraints>
+                                                <state key="normal">
+                                                    <attributedString key="attributedTitle">
+                                                        <fragment content="Skip">
+                                                            <attributes>
+                                                                <color key="NSColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                <font key="NSFont" size="13" name="SFUIText-Medium"/>
+                                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                                <integer key="NSUnderline" value="1"/>
+                                                            </attributes>
+                                                        </fragment>
+                                                    </attributedString>
+                                                </state>
+                                                <connections>
+                                                    <action selector="skipButtonTapped:" destination="TT7-O9-9zR" eventType="touchUpInside" id="h8E-51-AKO"/>
+                                                </connections>
+                                            </button>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5GL-k1-GiO" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                                 <rect key="frame" x="281" y="34" width="74" height="40"/>
                                                 <subviews>
@@ -791,7 +855,6 @@ by 5 teenagers in NYC?</string>
                                                     </label>
                                                     <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zBt-xd-eGR" customClass="MonkeySwitch" customModule="Monkey" customModuleProvider="target">
                                                         <rect key="frame" x="90" y="6" width="42" height="30"/>
-                                                        <color key="backgroundColor" red="0.44995594024658203" green="0.072316683828830719" blue="0.78099358081817627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="42" id="Bmo-9U-dZL"/>
                                                             <constraint firstAttribute="height" constant="30" id="g6s-uY-TUd"/>
@@ -888,24 +951,28 @@ by 5 teenagers in NYC?</string>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="Ulj-5R-07I" firstAttribute="leading" relation="lessThanOrEqual" secondItem="ZLF-OB-nU9" secondAttribute="leading" priority="995" constant="40" id="4Md-d2-2G7"/>
+                                            <constraint firstItem="BlI-CX-sfX" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="2z6-zZ-2Vj"/>
                                             <constraint firstItem="0hd-FL-4Jc" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="4tI-rq-KbN"/>
                                             <constraint firstItem="6tQ-sH-Kem" firstAttribute="top" secondItem="psw-iu-AsM" secondAttribute="top" id="4xU-Jw-MFd"/>
+                                            <constraint firstAttribute="bottom" secondItem="QMF-mv-VbF" secondAttribute="bottom" constant="48" id="65M-wH-nuZ"/>
                                             <constraint firstItem="Era-aI-5mW" firstAttribute="centerY" secondItem="4OG-VV-HHr" secondAttribute="centerY" id="8Fv-Kx-pTV"/>
+                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="QMF-mv-VbF" secondAttribute="trailing" constant="24" id="8Ux-Zy-pRM"/>
+                                            <constraint firstAttribute="bottom" secondItem="BlI-CX-sfX" secondAttribute="bottom" constant="21" id="Aww-7f-uVi"/>
                                             <constraint firstAttribute="bottom" secondItem="2CN-Mj-9Gg" secondAttribute="bottom" constant="30" id="DUk-aP-Ab3"/>
-                                            <constraint firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Ulj-5R-07I" secondAttribute="trailing" priority="995" constant="40" id="EOV-E3-60V"/>
                                             <constraint firstAttribute="bottom" secondItem="psw-iu-AsM" secondAttribute="bottom" constant="20" id="FCf-TC-v4E"/>
                                             <constraint firstAttribute="trailing" secondItem="psw-iu-AsM" secondAttribute="trailing" constant="20" id="Hfz-gV-8Ij"/>
+                                            <constraint firstItem="BlI-CX-sfX" firstAttribute="leading" secondItem="SSL-hy-Vte" secondAttribute="trailing" constant="-15" id="KqJ-iZ-gAL"/>
                                             <constraint firstItem="6tQ-sH-Kem" firstAttribute="leading" secondItem="psw-iu-AsM" secondAttribute="trailing" constant="-10" id="Krb-Xj-j6p"/>
+                                            <constraint firstAttribute="bottom" secondItem="SSL-hy-Vte" secondAttribute="bottom" constant="48" id="MOt-aX-TLX"/>
                                             <constraint firstAttribute="trailing" secondItem="W2d-kQ-BTg" secondAttribute="trailing" constant="20" id="N48-kN-mgm"/>
                                             <constraint firstAttribute="trailing" secondItem="otb-Kx-f1J" secondAttribute="trailing" constant="20" id="OYe-46-inO"/>
-                                            <constraint firstAttribute="bottom" secondItem="Ulj-5R-07I" secondAttribute="bottom" constant="20" id="PX1-cf-hXB"/>
                                             <constraint firstAttribute="trailing" secondItem="5GL-k1-GiO" secondAttribute="trailing" constant="20" id="PnS-M6-wpr"/>
                                             <constraint firstItem="4OG-VV-HHr" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="SLG-59-Plb"/>
-                                            <constraint firstAttribute="bottom" secondItem="Ulj-5R-07I" secondAttribute="bottom" constant="20" id="U4G-Le-GSm"/>
                                             <constraint firstItem="otb-Kx-f1J" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="Usm-YH-qfK"/>
-                                            <constraint firstItem="Ulj-5R-07I" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="Yxw-6h-JqM"/>
+                                            <constraint firstItem="f4c-85-zZT" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" id="Y1S-fm-7dY"/>
+                                            <constraint firstAttribute="bottom" secondItem="f4c-85-zZT" secondAttribute="bottom" id="ZrA-Gh-m9B"/>
                                             <constraint firstAttribute="bottom" secondItem="IDy-13-zRY" secondAttribute="bottom" constant="20" id="eAX-wX-J8M"/>
+                                            <constraint firstItem="QMF-mv-VbF" firstAttribute="leading" secondItem="BlI-CX-sfX" secondAttribute="trailing" constant="-15" id="gXg-Rg-Ioc"/>
                                             <constraint firstItem="IDy-13-zRY" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="guH-Zs-FDt"/>
                                             <constraint firstItem="W2d-kQ-BTg" firstAttribute="top" secondItem="5GL-k1-GiO" secondAttribute="bottom" constant="6" id="had-iN-n8z"/>
                                             <constraint firstAttribute="bottom" secondItem="Uh6-Lu-Kac" secondAttribute="bottom" constant="-6" id="hjg-0g-L2G"/>
@@ -920,9 +987,12 @@ by 5 teenagers in NYC?</string>
                                             <constraint firstItem="otb-Kx-f1J" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="209.5" id="oga-Gb-49Z"/>
                                             <constraint firstItem="kBC-65-2jJ" firstAttribute="centerY" secondItem="ZLF-OB-nU9" secondAttribute="centerY" constant="5" id="poN-Bg-9gS"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="r3c-Jx-4VP"/>
+                                            <constraint firstItem="SSL-hy-Vte" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="24" id="rLs-lm-pBF"/>
+                                            <constraint firstItem="f4c-85-zZT" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" id="t7Q-nP-VJb"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="top" secondItem="4OG-VV-HHr" secondAttribute="bottom" constant="10" id="ucC-27-WkF"/>
                                             <constraint firstItem="Uh6-Lu-Kac" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="vmf-wM-sUo"/>
                                             <constraint firstItem="kBC-65-2jJ" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="yYX-q4-AAz"/>
+                                            <constraint firstAttribute="trailing" secondItem="f4c-85-zZT" secondAttribute="trailing" id="zGR-go-8Cy"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -953,6 +1023,7 @@ by 5 teenagers in NYC?</string>
                         <outlet property="channelUpdateRemindV" destination="6tQ-sH-Kem" id="6R5-TF-Pl4"/>
                         <outlet property="chatButton" destination="IDy-13-zRY" id="Xtq-9E-v9s"/>
                         <outlet property="colorGradientView" destination="e3d-za-UK6" id="4Yv-Zd-oTA"/>
+                        <outlet property="commonTreeTip" destination="MqW-VL-7IY" id="Dmp-1p-MLM"/>
                         <outlet property="connectText" destination="Era-aI-5mW" id="qi7-BD-a4C"/>
                         <outlet property="containerView" destination="N5m-MM-8GO" id="bW5-GI-0Xk"/>
                         <outlet property="eventModeDescription" destination="Qz8-D5-Rq6" id="HVZ-bi-XgA"/>
@@ -963,6 +1034,7 @@ by 5 teenagers in NYC?</string>
                         <outlet property="factTextBottom" destination="yjX-74-Hs3" id="eni-UY-Jws"/>
                         <outlet property="factTextView" destination="qe6-B7-y4X" id="PUU-ew-Zb1"/>
                         <outlet property="filterButton" destination="0hd-FL-4Jc" id="M5A-yy-Mpw"/>
+                        <outlet property="fingerLabel" destination="dcQ-Ox-VZE" id="g41-rq-eXJ"/>
                         <outlet property="loadingContentView" destination="kBC-65-2jJ" id="a0G-6t-FNc"/>
                         <outlet property="loadingTextLabel" destination="wQB-BV-u1O" id="8gH-r0-Hip"/>
                         <outlet property="matchModeContainer" destination="wqO-t4-SQR" id="vHk-7K-Zej"/>
@@ -973,11 +1045,14 @@ by 5 teenagers in NYC?</string>
                         <outlet property="matchModePopupTop" destination="oga-Gb-49Z" id="1gr-d4-4wu"/>
                         <outlet property="matchModeSwitch" destination="W2d-kQ-BTg" id="jXU-IK-xTz"/>
                         <outlet property="matchModeTip" destination="C6c-AE-7sk" id="acn-Qu-8gZ"/>
+                        <outlet property="matchUserPhoto" destination="3gz-ch-jr1" id="ep5-8u-6RG"/>
                         <outlet property="pageViewIndicator" destination="Uh6-Lu-Kac" id="3L2-Up-F8D"/>
+                        <outlet property="rejectButton" destination="SSL-hy-Vte" id="q90-BQ-zRB"/>
                         <outlet property="settingsButton" destination="psw-iu-AsM" id="BXU-cv-1A2"/>
-                        <outlet property="skipButton" destination="SSL-hy-Vte" id="tcF-JJ-NtZ"/>
+                        <outlet property="skipButton" destination="BlI-CX-sfX" id="YbP-II-2Hg"/>
                         <outlet property="skippedText" destination="4OG-VV-HHr" id="oUr-NU-SUe"/>
                         <outlet property="skippedTextBottomConstraint" destination="ucC-27-WkF" id="88B-JP-U0N"/>
+                        <outlet property="startView" destination="f4c-85-zZT" id="ZSa-R7-Uqr"/>
                         <outlet property="waitingText" destination="DYS-hp-fSP" id="P1r-iM-bl4"/>
                     </connections>
                 </viewController>
@@ -2120,6 +2195,7 @@ by 5 teenagers in NYC?</string>
     <resources>
         <image name="ArrowButton" width="47" height="30"/>
         <image name="FriendsButton" width="40" height="40"/>
+        <image name="ProfileImageDefaultMale" width="144" height="144"/>
         <image name="TreesButton" width="40" height="40"/>
         <image name="filter_icon_inchat_bg" width="40" height="40"/>
     </resources>

@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		FirebaseApp.configure()
 		Fabric.with([Crashlytics.self])
 		RemoteConfigManager.shared.fetchLatestConfig()
-		AnaliticsCenter.logLaunchApp()
+		AnalyticsCenter.logLaunchApp()
 
 		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as? [AnyHashable : Any] {
 			handleNotification(application: application, userInfo: userInfo)
@@ -115,7 +115,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 		
 		let currentDeviceTokenString = deviceToken.base64EncodedString()
-		guard let prevTokenString = UserDefaults.standard.string(forKey: "apns_token"), prevTokenString != currentDeviceTokenString else {
+		guard let prevTokenString = UserDefaults.standard.string(forKey: "apns_token"), prevTokenString != currentDeviceTokenString, APIController.authorization != nil else {
 			return
 		}
 		
@@ -210,7 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	//
 	func logNotificationClick(userInfo: [AnyHashable: Any]) {
 		let notificationUserInfo = NotificationUserInfo(userInfo: userInfo)
-		AnaliticsCenter.log(withEvent: .notifyClick, andParameter: ["source": notificationUserInfo.source])
+		AnalyticsCenter.log(withEvent: .notifyClick, andParameter: ["source": notificationUserInfo.source])
 	}
 
 	// will open first URL possible

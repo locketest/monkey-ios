@@ -55,6 +55,7 @@ class LoadingTextLabel: UILabel {
     }
     
     func setDefaultTicks() {
+		self.isHidden = false
         self.nextTicks = defaultTicks
     }
     

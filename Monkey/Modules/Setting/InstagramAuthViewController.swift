@@ -9,15 +9,16 @@
 import UIKit
 import DeviceKit
 
-protocol  InstagramAuthDelegate:class{
-    func authInstagramSuccess(code:String)
+protocol InstagramAuthDelegate: class{
+    func authInstagramSuccess(code: String)
     func authInstagramFailure()
 }
-class InstagramAuthViewController: MonkeyViewController,UIWebViewDelegate {
-    var webView:UIWebView!
-    var indicator:UIActivityIndicatorView!
-    var webURL:URL?
-    var authDelegate:InstagramAuthDelegate?
+
+class InstagramAuthViewController: MonkeyViewController, UIWebViewDelegate {
+    var webView: UIWebView!
+    var indicator: UIActivityIndicatorView!
+    var webURL: URL?
+    var authDelegate: InstagramAuthDelegate?
     
     func isIphoneX() -> Bool {
         return Device() == Device.iPhoneX

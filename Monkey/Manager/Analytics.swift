@@ -14,15 +14,45 @@ import Adjust
 
 /// Analytics Event Name
 public enum AnalyticEvent: String {
+	//  ----------------------------  welcome  ------------------------------
+	case landingPageShow = "landingpage_show"
+	case landingPageClick = "landingpage_loginbtn_click"
+	
     //  ----------------------------  login  ------------------------------
     case codeVerify = "CODE_VERIFY"
+	case loginCompletion = "Login_Completion"
     case signUpFinish = "SIGNUP_FINISH"
 	case signOut = "SIGN_OUT"
 	
 	//  ----------------------------  launch  ------------------------------
 	case notifyClick = "NOTIFY_CLICK"
+	
+	//  ----------------------------  user interaction  ------------------------------
+	case videoFilterClick = "stage2_video_filter_click"
+	case videoFilterSelect = "stage2_video_filter_select"
+	case textModeClick = "text_mode_btn_click"
+	case eventModeClick = "event_mode_btn_click"
+	case treeClick = "tree_click"
+	case friendListClick = "friend_list_click"
+	case friendChatClick = "friend_convopage_click"
+	case insgramClick = "friend_ins_profile"
+	case monkeyKingEnter = "friend_monkeyking_click"
+	case monkeyKingClick = "monkeybtn_click"
+	case snapchatClick = "monkey_snapchat_btn_click"
+	case settingClick = "setting_click"
+	case settingEditProfileClick = "editprofile_click"
+	case settingAvatarClick = "setting_avatar_click"
+	case settingTalkToClick = "setting_talkto_click"
+	case settingSignOutClick = "setting_signout_click"
+	case settingLinkInsClick = "setting_linkIns_click"
+	case settingLinkInsComplete = "setting_linkIns_complete"
+	case settingInviteClick = "setting_invitefriends_click"
+	
+	case ratePopClick = "rate_pop_show_click"
+	case clickMatchSelect = "select_btn"
     
     //  ----------------------------  Match  ------------------------------
+	case matchingSession = "matching_session"
     case matchFirstRequest = "MATCH_1ST_REQUEST"
     case matchFirstRecieved = "MATCH_1ST_RECEIVED"
     case matchFirstSuccess = "MATCH_1ST_SUCCESS" /// First match success
@@ -38,10 +68,6 @@ public enum AnalyticEvent: String {
     case matchSuccess = "MATCH_SUCCESS"
 	case matchInfo = "MATCH_INFO"
 	
-	case opentokError = "OPENTOK_ERROR"
-	case opentokConnected = "OPENTOK_CONNECTED"
-    case matchRequestSocketStatus = "match_request_socket_status"
-	
 	case inviteFriendClick = "INVITE_FRIEND_CLICK"
 	case inviteFriendSuccess = "INVITE_FRIEND_SUCCESS"
 	
@@ -55,14 +81,10 @@ public enum AnalyticEvent: String {
     case resumeAccount = "REMOVE_ACCOUNT_CANCEL"
 }
 
-public enum AdjustEvent: String {
-    case none = ""
-}
-
 /**
 公共方法，提供给外部使用
 */
-class AnaliticsCenter {
+class AnalyticsCenter {
 	
 	class func logLaunchApp() {
 		self.prepereAmplitude()
@@ -107,7 +129,7 @@ class AnaliticsCenter {
 				let Monkey_signup_date = Date.init(timeIntervalSince1970: create_at)
 				userInfo["Monkey_signup_date"] = Monkey_signup_date.toString(format: DateFormatType.custom("yyyyMMddHHmmss"))
 			}
-			AnaliticsCenter.update(userProperty: userInfo)
+			AnalyticsCenter.update(userProperty: userInfo)
 		}
 	}
 	
@@ -153,14 +175,42 @@ class AnaliticsCenter {
 /*
 私有属性和方法
 */
-extension AnaliticsCenter {
+extension AnalyticsCenter {
 	fileprivate static let allEvents: Set<AnalyticEvent> = [
+		AnalyticEvent.landingPageShow,
+		AnalyticEvent.landingPageClick,
+		
 		AnalyticEvent.codeVerify,
+		AnalyticEvent.loginCompletion,
 		AnalyticEvent.signUpFinish,
 		AnalyticEvent.signOut,
 		
 		AnalyticEvent.notifyClick,
 		
+		AnalyticEvent.videoFilterClick,
+		AnalyticEvent.videoFilterSelect,
+		AnalyticEvent.textModeClick,
+		AnalyticEvent.eventModeClick,
+		AnalyticEvent.treeClick,
+		AnalyticEvent.friendListClick,
+		AnalyticEvent.friendChatClick,
+		AnalyticEvent.insgramClick,
+		AnalyticEvent.monkeyKingEnter,
+		AnalyticEvent.monkeyKingClick,
+		AnalyticEvent.snapchatClick,
+		AnalyticEvent.settingClick,
+		AnalyticEvent.settingEditProfileClick,
+		AnalyticEvent.settingAvatarClick,
+		AnalyticEvent.settingTalkToClick,
+		AnalyticEvent.settingSignOutClick,
+		AnalyticEvent.settingLinkInsClick,
+		AnalyticEvent.settingLinkInsComplete,
+		AnalyticEvent.settingInviteClick,
+		
+		AnalyticEvent.ratePopClick,
+		AnalyticEvent.clickMatchSelect,
+		
+		AnalyticEvent.matchingSession,
 		AnalyticEvent.matchFirstRequest,
 		AnalyticEvent.matchFirstRecieved,
 		AnalyticEvent.matchFirstSuccess,
@@ -176,10 +226,6 @@ extension AnaliticsCenter {
 		AnalyticEvent.matchSuccess,
 		AnalyticEvent.matchInfo,
 		
-		AnalyticEvent.opentokError,
-		AnalyticEvent.opentokConnected,
-        AnalyticEvent.matchRequestSocketStatus,
-		
 		AnalyticEvent.inviteFriendClick,
 		AnalyticEvent.inviteFriendSuccess,
 		
@@ -187,12 +233,14 @@ extension AnaliticsCenter {
 		
 		AnalyticEvent.sentMessageConvo,
 		AnalyticEvent.snapchatClickConvo,
-        
-        AnalyticEvent.deleteAccount,
-        AnalyticEvent.resumeAccount,
+		
+		AnalyticEvent.deleteAccount,
+		AnalyticEvent.resumeAccount,
 	]
 	
 	fileprivate static let oneTimeEvents: Set<AnalyticEvent> = [
+		AnalyticEvent.landingPageShow,
+		
 		AnalyticEvent.matchFirstRequest,
 		AnalyticEvent.matchFirstRecieved,
 		AnalyticEvent.matchFirstSuccess,
@@ -215,7 +263,7 @@ extension AnaliticsCenter {
 			return nil
 		}
 	}
-	fileprivate static var loggedEventsList: Set<String> = AnaliticsCenter.cachedEventsList() ?? Set<String>() {
+	fileprivate static var loggedEventsList: Set<String> = AnalyticsCenter.cachedEventsList() ?? Set<String>() {
 		didSet {
 			UserDefaults.standard.set(Array(self.loggedEventsList), forKey: "MKLoggedEventsTypeList")
 			UserDefaults.standard.synchronize()
@@ -223,11 +271,11 @@ extension AnaliticsCenter {
 	}
 	
 	fileprivate class func markLogged(event: AnalyticEvent) {
-		AnaliticsCenter.loggedEventsList.insert(event.rawValue)
+		AnalyticsCenter.loggedEventsList.insert(event.rawValue)
 	}
 	
 	fileprivate class func clearLoggedEvents() {
-		AnaliticsCenter.loggedEventsList.removeAll()
+		AnalyticsCenter.loggedEventsList.removeAll()
 	}
 	
 	fileprivate static let eventProcessingContext: DispatchQueue = DispatchQueue.init(label: "mk_queue_event_handle")
@@ -240,37 +288,50 @@ extension AnaliticsCenter {
 /*
 Amplitude 操作
 */
-extension AnaliticsCenter {
-	fileprivate static let exceptAmplitudeEvents: Set<AnalyticEvent> = [
-		AnalyticEvent.signOut,
+extension AnalyticsCenter {
+	fileprivate static let amplitudeEvents: Set<AnalyticEvent> = [
+		AnalyticEvent.landingPageShow,
+		AnalyticEvent.landingPageClick,
 		
-		AnalyticEvent.matchRequestTotal,
-		AnalyticEvent.matchRequest,
-		AnalyticEvent.matchReceivedTotal,
-		AnalyticEvent.matchReceived,
-		AnalyticEvent.matchConnect,
-		AnalyticEvent.matchConnectTimeOut,
-		AnalyticEvent.matchSuccess,
-//		AnalyticEvent.matchInfo,
-        AnalyticEvent.matchRequestSocketStatus,
+		AnalyticEvent.codeVerify,
+		AnalyticEvent.loginCompletion,
+		AnalyticEvent.signUpFinish,
 		
-		AnalyticEvent.inviteFriendClick,
-		AnalyticEvent.inviteFriendSuccess,
+		AnalyticEvent.notifyClick,
+		AnalyticEvent.ratePopClick,
 		
-		AnalyticEvent.bananaPopupEnter,
+		AnalyticEvent.videoFilterClick,
+		AnalyticEvent.videoFilterSelect,
+		AnalyticEvent.textModeClick,
+		AnalyticEvent.eventModeClick,
 		
-		AnalyticEvent.sentMessageConvo,
-		AnalyticEvent.snapchatClickConvo,
+		AnalyticEvent.treeClick,
+		AnalyticEvent.friendListClick,
+		AnalyticEvent.friendChatClick,
+		AnalyticEvent.insgramClick,
+		AnalyticEvent.monkeyKingEnter,
+		AnalyticEvent.monkeyKingClick,
+		AnalyticEvent.snapchatClick,
+		AnalyticEvent.settingClick,
+		AnalyticEvent.settingEditProfileClick,
+		AnalyticEvent.settingAvatarClick,
+		AnalyticEvent.settingTalkToClick,
+		AnalyticEvent.settingSignOutClick,
+		AnalyticEvent.settingLinkInsClick,
+		AnalyticEvent.settingLinkInsComplete,
+		AnalyticEvent.settingInviteClick,
+		
+		AnalyticEvent.matchFirstRequest,
+		AnalyticEvent.matchFirstRecieved,
+		AnalyticEvent.matchFirstSuccess,
+		AnalyticEvent.matchFirstAddTime,
+		AnalyticEvent.matchFirstAddFriend,
+		AnalyticEvent.matchInfo,
 	]
 	
 	fileprivate class func log(forAmpitude event: AnalyticEvent, andParameter parameter: [String: Any]?) {
-		if event == .opentokConnected || event == .opentokError || event == .matchRequestSocketStatus{
-			if let currentUser = APIController.shared.currentUser, let user_id = currentUser.user_id, user_id.hasSuffix("0") == false, user_id.hasSuffix("5") == false {
-				return
-			}
-		}
 		
-		if self.exceptAmplitudeEvents.contains(event) == false || Environment.environment == .sandbox {
+		if self.amplitudeEvents.contains(event) == true || Environment.environment == .sandbox {
 			if (parameter != nil) {
 				Amplitude.shared.logEvent(event.rawValue, withEventProperties: parameter!)
 			}else {
@@ -279,7 +340,7 @@ extension AnaliticsCenter {
 		}
 	}
     
-    fileprivate class func log(forAdjust event: AdjustEvent, andParameter param: [String: Any]?) {
+    fileprivate class func log(forAdjust event: AnalyticEvent, andParameter param: [String: Any]?) {
         let adjEvt = ADJEvent.init(eventToken: event.rawValue)
         param?.forEach({ (key,value) in
             adjEvt?.addCallbackParameter(key, value: "\(value)")
@@ -361,9 +422,41 @@ extension AnaliticsCenter {
 /*
 Facebook 操作
 */
-extension AnaliticsCenter {
+extension AnalyticsCenter {
 	
-	fileprivate static let facebookEvents: Set<AnalyticEvent> = AnaliticsCenter.allEvents
+	fileprivate static let facebookEvents: Set<AnalyticEvent> = [
+		AnalyticEvent.codeVerify,
+		AnalyticEvent.signUpFinish,
+		AnalyticEvent.notifyClick,
+		AnalyticEvent.signOut,
+		
+		AnalyticEvent.clickMatchSelect,
+		AnalyticEvent.matchingSession,
+	
+		AnalyticEvent.matchFirstRequest,
+		AnalyticEvent.matchFirstRecieved,
+		AnalyticEvent.matchFirstSuccess,
+		AnalyticEvent.matchFirstAddTime,
+		AnalyticEvent.matchFirstAddFriend,
+		
+		AnalyticEvent.matchRequest,
+		AnalyticEvent.matchReceived,
+		AnalyticEvent.matchConnect,
+		AnalyticEvent.matchConnectTimeOut,
+		AnalyticEvent.matchSuccess,
+		AnalyticEvent.matchInfo,
+		
+		AnalyticEvent.inviteFriendClick,
+		AnalyticEvent.inviteFriendSuccess,
+		
+		AnalyticEvent.bananaPopupEnter,
+		
+		AnalyticEvent.sentMessageConvo,
+		AnalyticEvent.snapchatClickConvo,
+		
+		AnalyticEvent.deleteAccount,
+		AnalyticEvent.resumeAccount,
+	]
 	
 	fileprivate class func log(forFacebook event: AnalyticEvent, andParameter parameter: [String: Any]?) {
         if self.facebookEvents.contains(event) {
