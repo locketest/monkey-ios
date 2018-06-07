@@ -92,7 +92,7 @@ enum discoveryState: Int {
 // userId:isClickSettingBtn
 typealias StringArray = [String]
 
-let StringArraySplitCharacter : Character = ":"
+public let StringArraySplitCharacter : Character = ":"
 
 public let ScreenWidth = UIScreen.main.bounds.width
 public let ScreenHeight = UIScreen.main.bounds.height
@@ -276,7 +276,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
 				if currentUserId == currentArray.first!.description {
 					stringArray.remove(at: index)
-					stringArray.append("\(currentUserId)\(StringArraySplitCharacter)1")
+                    stringArray.append("\(currentUserId)\(StringArraySplitCharacter)1\(StringArraySplitCharacter)0")
 					UserDefaults.standard.setValue(stringArray, forKey: AccessUserAvatarArrayTag)
 				}
 			}
@@ -544,21 +544,21 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 				if !userIdArray.contains(currentUserId) {
 					self.isUploadImgBoolFunc(isUploadImgBool: isUploadImgBool, anyArray: anyArray)
 
-					self.handleAcceptButtonStateFunc(state: true)
+//                         self.handleAcceptButtonStateFunc(state: true)
 				} else { // 包含
 					stringArray.forEach { (string) in
 
 						let currentArray = string.split(separator: StringArraySplitCharacter)
 
 						if currentUserId == currentArray.first!.description {
-							self.handleAcceptButtonStateFunc(state: currentArray.last!.description == "0" ? true : false)
+                              self.handleAcceptButtonStateFunc(state: currentArray[1].description == "1" ? true : false)
 						}
 					}
 				}
 			} else {
 				self.isUploadImgBoolFunc(isUploadImgBool: isUploadImgBool, anyArray: anyArray)
 
-				self.handleAcceptButtonStateFunc(state: true)
+//                    self.handleAcceptButtonStateFunc(state: true)
 			}
 		}
 	}
@@ -570,13 +570,14 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	// 进入条件，没有头像 || anyArray不存在 || anyArray存在但不包括当前userId
 	func isUploadImgBoolFunc(isUploadImgBool:Bool, anyArray:[Any]?) {
 		if isUploadImgBool {
-			self.updateAccessUserAvatarArrayTagFunc(anyArray: anyArray)
+          self.updateAccessUserAvatarArrayTagFunc(isUploadImgBool: isUploadImgBool, anyArray: anyArray)
 		} else {
-			self.showUploadImgAlertFunc(anyArray: anyArray)
+          self.showUploadImgAlertFunc(isUploadImgBool: isUploadImgBool, anyArray: anyArray)
+
 		}
 	}
 
-	func showUploadImgAlertFunc(anyArray:[Any]?) {
+    func showUploadImgAlertFunc(isUploadImgBool:Bool, anyArray:[Any]?) {
 
 		let alertController = UIAlertController(title: "📸 Missing Profile Pic 📸", message: "yo add a profile pic so people on your friends list remember you 👀🤳", preferredStyle: .alert)
 
@@ -589,13 +590,15 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		}))
 
 		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-			self.updateAccessUserAvatarArrayTagFunc(anyArray:anyArray)
+            self.updateAccessUserAvatarArrayTagFunc(isUploadImgBool: isUploadImgBool, anyArray: anyArray)
+            self.handleAcceptButtonStateFunc(state: true)
+
 		}))
 
 		self.alertKeyAndVisibleFunc(alert: alertController)
 	}
 
-	func updateAccessUserAvatarArrayTagFunc(anyArray:[Any]?) {
+    func updateAccessUserAvatarArrayTagFunc(isUploadImgBool:Bool, anyArray:[Any]?) {
 
 		var stringArray : StringArray!
 
@@ -605,7 +608,12 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			stringArray = []
 		}
 
-		stringArray.append("\((APIController.shared.currentUser?.user_id)!)\(StringArraySplitCharacter)0")
+        // 区分用户状态的userId、点击了arrowButton标识、上传头像标识
+        let value = "\((APIController.shared.currentUser?.user_id)!)\(StringArraySplitCharacter)\(isUploadImgBool ? "1" : "0")\(StringArraySplitCharacter)\(isUploadImgBool ? "1" : "0")"
+     
+        if !stringArray.contains(value) {
+             stringArray.append(value)
+        }
 
 		UserDefaults.standard.setValue(stringArray, forKey: AccessUserAvatarArrayTag)
 	}
@@ -1850,12 +1858,13 @@ extension MainViewController : CropViewControllerDelegate {
 
 		cropViewController.title = "Move and Scale";
 		cropViewController.doneButtonTitle = "Choose";
-		cropViewController.cancelButtonTitle = "Cacel";
+		cropViewController.cancelButtonTitle = "Cancel";
 
 		from.pushViewController(cropViewController, animated: true)
 	}
 
 	func cropViewController(_ cropViewController: CropViewController, didFinishCancelled cancelled: Bool) {
+        self.handleAccessUserAvatarFunc(isUploadImgBool: false)
 		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
 	}
 	func cropViewController(_ cropViewController: CropViewController, didCropToCircularImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
