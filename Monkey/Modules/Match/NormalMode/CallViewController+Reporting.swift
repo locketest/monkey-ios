@@ -136,7 +136,7 @@ extension CallViewController {
 				"data": [
 					"type": "screenshots",
 					"attributes": [
-						"reason":source.rawValue
+						"reason": source.rawValue
 					]
 				]
 			]

@@ -331,7 +331,7 @@ extension AnalyticsCenter {
 	
 	fileprivate class func log(forAmpitude event: AnalyticEvent, andParameter parameter: [String: Any]?) {
 		
-		if self.amplitudeEvents.contains(event) == true || Environment.environment == .sandbox {
+		if self.amplitudeEvents.contains(event) == true {
 			if (parameter != nil) {
 				Amplitude.shared.logEvent(event.rawValue, withEventProperties: parameter!)
 			}else {

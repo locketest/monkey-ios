@@ -354,9 +354,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		var editFirstName: Bool = false
 		var editBirthDay: Bool = false
 		
+		var event_info = ""
 		if let newFirstName = self.firstNameField.text, newFirstName != currentUser.first_name {
 			attributes.append(.first_name(newFirstName))
 			editFirstName = true
+			event_info.append("name=\(newFirstName)")
 		}
 		
 		if let newBirthdayStr = self.birthdayField.text {
@@ -368,22 +370,24 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 				if (newBirthdayStr != oldBirthdayStr) {
 					attributes.append(.birth_date(self.datePicker.date as NSDate))
 					editBirthDay = true
+					event_info.append("birth=\(newBirthdayStr)")
 				}
 			}
 		}
 		
 		if let newSnapchatName = self.snapChatUserName.text, newSnapchatName != currentUser.snapchat_username {
 			attributes.append(.snapchat_username(newSnapchatName))
+			event_info.append("snapchat=\(newSnapchatName)")
 		}
-		
-		let isAccountNew = APIController.userDef.bool(forKey: APIController.kNewAccountCodeVerify)
-		AnalyticsCenter.log(withEvent: .settingEditProfileClick, andParameter: [
-			"type": isAccountNew ? "new" : "old",
-			"info": "...",
-			])
 		
 		if attributes.count > 0 {
 			saveBtn.isLoading = true
+			
+			let isAccountNew = APIController.userDef.bool(forKey: APIController.kNewAccountCodeVerify)
+			AnalyticsCenter.log(withEvent: .settingEditProfileClick, andParameter: [
+				"type": isAccountNew ? "new" : "old",
+				"info": event_info,
+				])
 			
 			currentUser.update(attributes: attributes) { (error) in
 				// 保存请求返回结果
@@ -1181,7 +1185,6 @@ class SettingTalkToCell: UITableViewCell {
 			])
 		
         let alertController = UIAlertController(title: "Talk to", message: "Tap who you'd rather talk to", preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (cancelAlert) in
 			
 			AnalyticsCenter.log(withEvent: .settingTalkToClick, andParameter: [

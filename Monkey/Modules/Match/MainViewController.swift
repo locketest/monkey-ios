@@ -739,9 +739,13 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			self.match_event = realm.object(ofType: RealmMatchInfo.self, forPrimaryKey: RealmMatchInfo.type)?.events
 			self.refreshEventModeStatus()
 		}
+		
+		guard let authorization = APIController.authorization else {
+			return
+		}
 
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/experiments/\(Environment.appVersion)/match", options: [
-			.header("Authorization", APIController.authorization),
+			.header("Authorization", authorization),
 			]).addCompletionHandler { (result) in
 				switch result {
 				case .error(let error):
@@ -884,7 +888,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			return
 		}
 
-		if (self.chatRequest != nil || self.chatSession != nil) {
+		if (self.chatRequest != nil || self.chatSession != nil || APIController.authorization == nil) {
 			print("Already finding because chatRequest or Retrieving new session before finished with old session.")
 			return
 		}
@@ -926,13 +930,15 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		guard self.request_id == nil else {
 			self.request_id = nil
 			self.cancelMatchRequest()
-			JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/match_cancel", method: .post, options: [
-				.header("Authorization", APIController.authorization),
-				]).addCompletionHandler { (_) in
-					guard let completion = completion else {
-						return
-					}
-					completion()
+			if let authorization = APIController.authorization {
+				JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/match_cancel", method: .post, options: [
+					.header("Authorization", authorization),
+					]).addCompletionHandler { (_) in
+						guard let completion = completion else {
+							return
+						}
+						completion()
+				}
 			}
 			return
 		}

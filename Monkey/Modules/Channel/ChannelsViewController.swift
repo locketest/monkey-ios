@@ -24,7 +24,11 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
             self.tableView.reloadData()
         }
         self.channels = realm?.objects(RealmChannel.self).filter(NSPredicate(format: "is_active = true")).sorted(byKeyPath: "updated_at", ascending: true)
-        
+		
+		if var channels = APIController.shared.currentUser?.channels {
+			self.selectedChannels = Array(channels)
+		}
+
         RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>) in
             switch result {
             case .success(_):
