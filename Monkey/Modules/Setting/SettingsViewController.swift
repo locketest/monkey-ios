@@ -142,36 +142,17 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.profileView.addGestureRecognizer(tapGesture)
         
         self.handleYelloPointStateFunc()
-        
-        APIController.shared.currentUser!.reload { (error) in
-            error?.log()
-            print("*** = \(APIController.shared.currentUser?.profile_photo_url)")
-        }
     }
     
     func handleYelloPointStateFunc() {
-        
-        if APIController.shared.currentUser?.profile_photo_url != nil {
-            self.remindPointView.isHidden = true
-        } else {
-            
-            let anyArray = UserDefaults.standard.array(forKey: AccessUserAvatarArrayTag)
-            
-            if anyArray != nil {
-                
-                let boolArray = anyArray as! BoolArray
-                
-                print("*** boolArray = \(boolArray)")
-                
-                self.remindPointView.isHidden = boolArray[0]
-            }
-            
+        if APIController.shared.currentUser?.profile_photo_url == nil {
+            self.remindPointView.isHidden = false
         }
     }
     
     func handleTapGesture(){
-        self.panningTowardsSide = .top
-       self.dismiss(animated: true, completion: nil)
+		self.panningTowardsSide = .top
+		self.dismiss(animated: true, completion: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -212,6 +193,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
                         print("Get user profile photo error : \(error)")
                     case .success(let cacheImage):
                         if let image = cacheImage.image {
+							self?.remindPointView.isHidden = true
                             self?.profilePhoto.setProfile(image: image)
                         }
                     }

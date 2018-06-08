@@ -89,14 +89,22 @@ enum discoveryState: Int {
 	case chatting = 6
 }
 
-typealias BoolArray = [Bool]
+/**
+*	is_show_alert: bool
+*	is_tap_setting: bool
+*/
+typealias UserAvatarTag = [String: Bool]
+
+/**
+*	user_id: UserAvatarTag
+*/
+public let AccessUserAvatarArrayTag = "AccessUserAvatarArray"
 
 public let StringArraySplitCharacter : Character = ":"
 
 public let ScreenWidth = UIScreen.main.bounds.width
 public let ScreenHeight = UIScreen.main.bounds.height
 
-public let AccessUserAvatarArrayTag = "AccessUserAvatarArray"
 public let RemoteNotificationTag = "RemoteNotification" // 推送消息通知key
 public let CurrentVersionAlertViewTag = "CurrentVersionAlertView"
 public let KillAppBananaNotificationTag = "KillAppBananaNotificationTag"
@@ -257,23 +265,16 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 	
 	@IBAction func arrowButtonTapped(sender: Any) {
-		
 		self.present(self.swipableViewControllerToPresentOnBottom!, animated: true, completion: nil)
 		
-		if APIController.shared.currentUser?.profile_photo_url == nil {
-			
-			if let anyArray = UserDefaults.standard.array(forKey: AccessUserAvatarArrayTag) {
-				
-				var boolArray = anyArray as! BoolArray
-				
-				boolArray[1] = true
-				
-				UserDefaults.standard.setValue(boolArray, forKey: AccessUserAvatarArrayTag)
-				
-				self.handleAcceptButtonStateFunc(state: false)
-			}
+		if let user_id = APIController.shared.currentUser?.user_id {
+			var userAvatarTagInfo = UserDefaults.standard.dictionary(forKey: AccessUserAvatarArrayTag) as? [String: UserAvatarTag] ?? [String: UserAvatarTag]()
+			var myAvatarTag = userAvatarTagInfo[user_id] ?? UserAvatarTag()
+			myAvatarTag["is_tap_setting"] = true
+			userAvatarTagInfo[user_id] = myAvatarTag
+			UserDefaults.standard.setValue(userAvatarTagInfo, forKey: AccessUserAvatarArrayTag)
+			self.handleAcceptButtonStateFunc(state: false)
 		}
-		
 	}
 	
 	override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)?) {
@@ -482,7 +483,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			}
 		}
 		
-		self.handleAccessUserAvatarFunc(isUpload: false)
+		self.handleAccessUserAvatar()
 		self.loadBananaData(isNotificationBool: false)
 		self.handleBananaAlertFunc()
 		self.setupBananas()
@@ -519,39 +520,30 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.handleFirstNameExistFunc()
 	}
 	
-	func handleAccessUserAvatarFunc(isUpload:Bool) {
-		
-		if APIController.shared.currentUser?.profile_photo_url == nil {
-			
-			let anyArray = UserDefaults.standard.array(forKey: AccessUserAvatarArrayTag)
-			
-			if anyArray != nil {
-				
-				let boolArray = anyArray as! BoolArray
-				
-				if !boolArray[0] {
-					self.isUploadImgBoolFunc(anyArray: anyArray, isUpload: isUpload)
-				}
-			} else {
-				self.isUploadImgBoolFunc(anyArray: anyArray, isUpload: isUpload)
+	func handleAccessUserAvatar() {
+		if APIController.shared.currentUser?.profile_photo_url == nil, let user_id = APIController.shared.currentUser?.user_id {
+			var userAvatarTagInfo = UserDefaults.standard.dictionary(forKey: AccessUserAvatarArrayTag) as? [String: UserAvatarTag] ?? [String: UserAvatarTag]()
+			if let myAvatarTag = userAvatarTagInfo[user_id] {
+				let is_tap_setting = myAvatarTag["is_tap_setting"]
+				self.handleAcceptButtonStateFunc(state: is_tap_setting == false)
+			}else {
+				let myAvatarTag = [
+					"is_show_alert": true,
+					"is_tap_setting": false,
+//					"is_upload_avatar": false,
+				]
+				userAvatarTagInfo[user_id] = myAvatarTag
+				UserDefaults.standard.setValue(userAvatarTagInfo, forKey: AccessUserAvatarArrayTag)
+				self.showUploadImgAlert()
 			}
 		}
 	}
 	
-	func isUploadImgBoolFunc(anyArray:[Any]?, isUpload:Bool) {
-		if isUpload {
-			self.updateAccessUserAvatarArrayTagFunc(anyArray: anyArray, isUpload: isUpload)
-		} else {
-			self.showUploadImgAlertFunc(anyArray: anyArray, isUpload: isUpload)
-			
-		}
-	}
-	
-	func handleAcceptButtonStateFunc(state:Bool) {
+	func handleAcceptButtonStateFunc(state: Bool) {
 		self.arrowButton?.setImage(UIImage(named: state ? "ArrowButtonSel" : "ArrowButton"), for: .normal)
 	}
 	
-	func showUploadImgAlertFunc(anyArray:[Any]?, isUpload:Bool) {
+	func showUploadImgAlert() {
 		
 		let alertController = UIAlertController(title: "📸 Missing Profile Pic 📸", message: "yo add a profile pic so people on your friends list remember you 👀🤳", preferredStyle: .alert)
 		
@@ -564,28 +556,10 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		}))
 		
 		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-			self.updateAccessUserAvatarArrayTagFunc(anyArray: anyArray, isUpload: isUpload)
 			self.handleAcceptButtonStateFunc(state: true)
-			
 		}))
 		
 		self.alertKeyAndVisibleFunc(alert: alertController)
-	}
-	
-	func updateAccessUserAvatarArrayTagFunc(anyArray:[Any]?, isUpload:Bool) {
-		
-		var boolArray : BoolArray!
-		
-		if anyArray != nil {
-			
-			boolArray = anyArray as! BoolArray
-			
-			if isUpload { boolArray[0] = true }
-		} else {
-			boolArray = [isUpload, false]
-		}
-		
-		UserDefaults.standard.setValue(boolArray, forKey: AccessUserAvatarArrayTag)
 	}
 	
 	func currentVersionAlertViewFunc() {
@@ -1827,8 +1801,8 @@ extension MainViewController : UIImagePickerControllerDelegate, UINavigationCont
 	}
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-		self.handleAccessUserAvatarFunc(isUpload: false)
 		picker.dismiss(animated: true, completion: nil)
+		self.showUploadImgAlert()
 	}
 	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -1855,9 +1829,10 @@ extension MainViewController : CropViewControllerDelegate {
 	}
 	
 	func cropViewController(_ cropViewController: CropViewController, didFinishCancelled cancelled: Bool) {
-		self.handleAccessUserAvatarFunc(isUpload: false)
 		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
+		self.showUploadImgAlert()
 	}
+	
 	func cropViewController(_ cropViewController: CropViewController, didCropToCircularImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
 		self.profileImage = image
 		self.uploadProfileImageFunc()
@@ -1877,7 +1852,6 @@ extension MainViewController : CropViewControllerDelegate {
 		}
 		
 		let profilePhoto = UIImageJPEGRepresentation(self.profileImage!, 0.1)!
-		self.handleAccessUserAvatarFunc(isUpload: true)
 		ImageCache.shared.set(url: uploadURL, imageData: profilePhoto, callback: { (result) in
 			print("Uploaded profile image")
 		})
