@@ -1201,8 +1201,18 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.stopFindingChats(andDisconnect: false, forReason: "receive-match")
 		self.listTree(tree: call.user?.channels.first?.channel_id ?? "")
 		self.matchUserPhoto.isHidden = false
-		self.matchUserPhoto.kf.setImage(with: URL.init(string: call.user?.profile_photo_url ?? ""), placeholder: UIImage.init(named: "ProfileImageDefault"))
 		
+		if let profile_photo_url = call.user?.profile_photo_url {
+			self.matchUserPhoto.kf.setImage(with: URL.init(string: profile_photo_url), placeholder: UIImage.init(named: "ProfileImageDefault"))
+		}else {
+			var imageName = "ProfileImageDefaultMale"
+			
+			if call.user?.gender == Gender.female.rawValue {
+				imageName = "ProfileImageDefaultFemale"
+			}
+			self.matchUserPhoto.image = UIImage.init(named: imageName)
+		}
+
 		var bio = "connecting"
 		if let first_name = call.user?.first_name, let gender = call.user?.gender {
 			var age = call.user?.age.value ?? 18
@@ -1712,16 +1722,12 @@ extension MainViewController {
 	}
 	
 	func listTree(tree: String) {
-		
-		guard let curTree = APIController.shared.currentUser?.channels.first, tree == curTree.channel_id else {
-			print("no common tree")
-			return
+		if let curTree = APIController.shared.currentUser?.channels.first, tree == curTree.channel_id {
+			self.chatSession?.common_tree = curTree.title
+			self.curCommonTree = curTree
+			self.commonTreeTip.text = curTree.emoji
+			self.commonTreeTip.isHidden = false
 		}
-		
-		self.chatSession?.common_tree = curTree.title
-		self.curCommonTree = curTree
-		self.commonTreeTip.text = curTree.emoji
-		self.commonTreeTip.isHidden = false
 	}
 	
 	func hideTreeLabels() {

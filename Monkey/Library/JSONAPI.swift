@@ -128,7 +128,7 @@ class JSONAPIDocument {
 	}
 	/// json.data is NSNull
 	var isResourceNull: Bool {
-		return json["data"] is NSNull
+		return json["data"] is NSNull || (dataResourceCollection != nil && dataResourceCollection.count == 0)
 	}
 	/// json.data is NSNull
 	var isResourceUndefined: Bool {

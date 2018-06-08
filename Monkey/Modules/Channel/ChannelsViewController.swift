@@ -66,10 +66,12 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			"title": self.selectedChannels.first?.title ?? APIController.shared.currentUser?.channels.first?.title ?? "General",
 			])
 		
-		let list = List<RealmChannel>()
-		list.append(objectsIn: self.selectedChannels)
-		
-		updateChannels(selectedChannels: list)
+		if self.selectedChannels.first?.channel_id != APIController.shared.currentUser?.channels.first?.channel_id {
+			let list = List<RealmChannel>()
+			list.append(objectsIn: self.selectedChannels)
+			
+			updateChannels(selectedChannels: list)
+		}
 	}
 	
     override func viewWillDisappear(_ animated: Bool) {
