@@ -686,7 +686,7 @@ by 5 teenagers in NYC?</string>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0hd-FL-4Jc" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                                <rect key="frame" x="20" y="40" width="40" height="40"/>
+                                                <rect key="frame" x="20" y="34" width="40" height="40"/>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.30102204623287671" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="40" id="g1I-ph-30f"/>
@@ -983,7 +983,7 @@ by 5 teenagers in NYC?</string>
                                             <constraint firstItem="DYS-hp-fSP" firstAttribute="centerX" secondItem="4OG-VV-HHr" secondAttribute="centerX" id="mIz-vt-epe"/>
                                             <constraint firstItem="5GL-k1-GiO" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="34" id="mfa-BL-9Bs"/>
                                             <constraint firstItem="Era-aI-5mW" firstAttribute="centerX" secondItem="4OG-VV-HHr" secondAttribute="centerX" id="mnQ-SR-lVU"/>
-                                            <constraint firstItem="0hd-FL-4Jc" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="40" id="o3C-WD-Tsn"/>
+                                            <constraint firstItem="0hd-FL-4Jc" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="34" id="o3C-WD-Tsn"/>
                                             <constraint firstItem="otb-Kx-f1J" firstAttribute="top" secondItem="ZLF-OB-nU9" secondAttribute="top" constant="209.5" id="oga-Gb-49Z"/>
                                             <constraint firstItem="kBC-65-2jJ" firstAttribute="centerY" secondItem="ZLF-OB-nU9" secondAttribute="centerY" constant="5" id="poN-Bg-9gS"/>
                                             <constraint firstItem="2CN-Mj-9Gg" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="r3c-Jx-4VP"/>

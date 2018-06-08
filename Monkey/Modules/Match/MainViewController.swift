@@ -341,6 +341,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 				self.matchModePopup.isHidden = true
 				self.eventModePopup.isHidden = true
 				self.channelUpdateRemindV.isHidden = true
+				self.loadingTextLabel.isHidden = true
 
 				let matchMode = self.chatSession?.matchMode ?? .VideoMode
 				if matchMode == .VideoMode {
@@ -380,6 +381,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 				self.pageViewIndicator.isHidden = false
 				self.bananaView.isHidden = false
 				self.channelUpdateRemindV.isHidden = false
+				self.loadingTextLabel.isHidden = false
 
 				if self.matchModeSwitch.isEnabled {
 					self.matchModeSwitch.isHidden = false
@@ -526,7 +528,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.handleFirstNameExistFunc()
 	}
 
-	func handleAccessUserAvatarFunc(isUploadImgBool:Bool) {
+	func handleAccessUserAvatarFunc(isUploadImgBool: Bool) {
 
 		if APIController.shared.currentUser?.profile_photo_url == nil {
 
@@ -1405,9 +1407,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 
 		self.waitingText.isHidden = true
 		self.connectText.isHidden = true
-		//
-		print("Disconnecting event fired")
-		self.start()
 
 		chatSession.chat?.update(callback: nil)
 
@@ -1417,6 +1416,10 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		if chatSession.response != .skipped && !chatSession.didConnect {
 			self.skipped()
 		}
+		if startView.isHidden == true {
+			self.start()
+		}
+		
 		print("Consumed")
 		let presentingViewController = self.matchViewController?.presentingViewController
 		self.factTextView.text = self.nextFact
@@ -1741,7 +1744,6 @@ extension MainViewController {
 	}
 
 	func listTree(tree: String) {
-		self.loadingTextLabel.isHidden = true
 		
 		guard let curTree = APIController.shared.currentUser?.channels.first, tree == curTree.channel_id else {
 			print("no common tree")
@@ -1900,7 +1902,11 @@ extension MainViewController : CropViewControllerDelegate {
 			return
 		}
 
-		let profilePhoto = UIImageJPEGRepresentation(self.profileImage!, 0.5)!
+		let profilePhoto = UIImageJPEGRepresentation(self.profileImage!, 0.1)!
+		self.handleAccessUserAvatarFunc(isUploadImgBool: true)
+		ImageCache.shared.set(url: uploadURL, imageData: profilePhoto, callback: { (result) in
+			print("Uploaded profile image")
+		})
 
 		Alamofire.upload(profilePhoto,
 						 to: uploadURL,
@@ -1912,10 +1918,7 @@ extension MainViewController : CropViewControllerDelegate {
 			.responseData { response in
 				switch response.result {
 				case .success:
-					ImageCache.shared.set(url: uploadURL, imageData: profilePhoto, callback: { (result) in
-						self.handleAccessUserAvatarFunc(isUploadImgBool: true)
-						print("Uploaded profile image")
-					})
+					break
 				case .failure(let error):
 					let alertController = UIAlertController(title: "Couldn't upload profile image.", message: error.localizedDescription, preferredStyle: .alert)
 					alertController.addAction(UIAlertAction(title: "Retry", style: .default, handler: { (UIAlertAction) in
