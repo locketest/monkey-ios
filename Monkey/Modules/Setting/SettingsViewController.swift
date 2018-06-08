@@ -568,11 +568,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         result: MessageComposeResult) {
 		if result == .sent {
 			AnalyticsCenter.log(event: .inviteFriendSuccess)
-			AnalyticsCenter.log(withEvent: .inviteFriendClick, andParameter: [
+			AnalyticsCenter.log(withEvent: .settingInviteClick, andParameter: [
 				"type": "true",
 				])
 		}else {
-			AnalyticsCenter.log(withEvent: .inviteFriendClick, andParameter: [
+			AnalyticsCenter.log(withEvent: .settingInviteClick, andParameter: [
 				"type": "false",
 				])
 		}

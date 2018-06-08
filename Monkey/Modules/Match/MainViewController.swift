@@ -705,7 +705,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 
 	func refreshEventModeStatus() {
-		guard let current_event = self.match_event else {
+		guard let current_event = self.match_event, APIController.shared.currentUser != nil else {
 			return
 		}
 
@@ -1231,10 +1231,25 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.stopFindingChats(andDisconnect: false, forReason: "receive-match")
 		self.listTree(tree: call.user?.channels.first?.channel_id ?? "")
 		self.matchUserPhoto.isHidden = false
-		self.matchUserPhoto.kf.setImage(with: URL.init(string: call.user?.profile_photo_url ?? ""), placeholder: UIImage.init(named: "ProfileImageDefaultMale"))
+		self.matchUserPhoto.kf.setImage(with: URL.init(string: call.user?.profile_photo_url ?? ""), placeholder: UIImage.init(named: "ProfileImageDefault"))
 
-		var bio = "Connecting"
-		if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
+		var bio = "connecting"
+		if let first_name = call.user?.first_name, let gender = call.user?.gender {
+			var age = call.user?.age.value ?? 18
+			if RemoteConfigManager.shared.app_in_review == true {
+				if age < 19, age > 0 {
+					age = abs(Int.arc4random() % 5) + 19
+				}
+			}
+			
+			let gender = gender == Gender.female.rawValue ? "👱‍♀️" : "👱"
+			var location = call.user?.location ?? "world"
+			if call.user?.isAmerican() == true, let state = call.user?.state {
+				location = state
+			}
+			
+			bio = "\(first_name),  \(age)  \(gender)\n\(location)"
+		} else if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
 			bio = convertBio
 			if RemoteConfigManager.shared.app_in_review == true {
 				let user_age_str = convertBio.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "")
@@ -1244,10 +1259,10 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 					bio = convertBio.replacingCharacters(in: age_range, with: "\(new_age)")
 				}
 			}
-
-			if let match_distance = call.match_distance.value, match_distance > 0, Achievements.shared.nearbyMatch == true {
-				bio = bio.appending("\n🏡\(match_distance)m")
-			}
+		}
+		
+		if let match_distance = call.match_distance.value, match_distance > 0, Achievements.shared.nearbyMatch == true {
+			bio = bio.appending("\n🏡\(match_distance)m")
 		}
 
 		self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: call.user?.first_name, gender: call.user?.gender, age: call.user?.age.value, location: call.user?.location, profile_image_url: call.user?.profile_photo_url, user_id: call.user?.user_id, match_mode: call.match_mode), token: call.channelToken, loadingDelegate: self, isDialedCall: false)

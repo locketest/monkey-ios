@@ -280,10 +280,9 @@ class ChatSession: NSObject {
 		}
 		
 		var Mode_type = "1"
-		let selectMatchMode = Achievements.shared.selectMatchMode ?? .VideoMode
-		if selectMatchMode == .TextMode {
+		if matchMode == .TextMode {
 			Mode_type = "2"
-		}else if selectMatchMode == .EventMode {
+		}else if matchMode == .EventMode {
 			Mode_type = "3"
 		}
 		
@@ -297,10 +296,10 @@ class ChatSession: NSObject {
 			report_type = chat.reportReason?.eventTrackValue() ?? "Cancel"
 		}
 		
-		var commonParameters: [String: Any] = [
+		var sessionParameters: [String: Any] = [
 			"duration": match_duration,
 			"friend_add_request": chat.sharedSnapchat ? "1" : "0",
-			"friend_add_success": friendMatched,
+			"friend_add_success": chat.sharedSnapchat && chat.theySharedSnapchat ? "true" : "false",
 			"matching_report_click": chat.showReport,
 			"matching_report_type": report_type,
 			"matching_switch_camera_click": chat.switch_camera_click,
@@ -309,23 +308,23 @@ class ChatSession: NSObject {
 			]
 		
 		if friendMatched {
-			commonParameters["pce out"] = (chat.my_pce_out ? currentUser.user_id : chat.user_id) ?? ""
+			sessionParameters["pce out"] = (chat.my_pce_out ? currentUser.user_id : chat.user_id) ?? ""
 		}
 		
-		var cuttentFilter = Achievements.shared.selectMonkeyFilter
+		let cuttentFilter = Achievements.shared.selectMonkeyFilter
 		if matchMode == .TextMode {
-			commonParameters["sound_open_click"] = chat.unMuteRequest
-			commonParameters["sound_open_success"] = chat.unMute
-			commonParameters["message_send"] = chat.sendedMessage
-			commonParameters["message_receive"] = chat.receivedMessage
+			sessionParameters["sound_open_click"] = chat.unMute ? "true" : "false"
+			sessionParameters["sound_open_success"] = chat.unMute && chat.theyUnMute ? "true" : "false"
+			sessionParameters["message_send"] = chat.sendedMessage
+			sessionParameters["message_receive"] = chat.receivedMessage
 		}else if matchMode == .VideoMode {
-			commonParameters["matching_vfilter_click"] = chat.initialFilter == cuttentFilter ? "keep" : "Change"
-			commonParameters["matching_vfilter_info"] = cuttentFilter
-			commonParameters["time_add_count"] = chat.minutesAdded
-			commonParameters["time_add_success_times"] = min(chat.minutesAdded, chat.theirMinutesAdded)
+			sessionParameters["matching_vfilter_click"] = chat.initialFilter == cuttentFilter ? "keep" : "Change"
+			sessionParameters["matching_vfilter_info"] = cuttentFilter
+			sessionParameters["time_add_count"] = chat.minutesAdded
+			sessionParameters["time_add_success_times"] = min(chat.minutesAdded, chat.theirMinutesAdded)
 		}
 		
-		AnalyticsCenter.log(withEvent: .matchingSession, andParameter: commonParameters)
+		AnalyticsCenter.log(withEvent: .matchingSession, andParameter: sessionParameters)
 	}
 
     required init(apiKey: String, sessionId: String, chat: Chat, token: String, loadingDelegate: ChatSessionLoadingDelegate, isDialedCall: Bool) {
@@ -723,6 +722,10 @@ extension ChatSession {
 			return false
 		}
 
+		if messageType == .Text {
+			chat?.sendedMessage += 1
+		}
+		
 		if realmCall.supportAgora() {
 			let message: [String: Any] = [
 				"type": messageType.rawValue,
@@ -791,6 +794,7 @@ extension ChatSession {
 			}
 		case .Text:
 			self.message_receive += 1
+			self.chat?.receivedMessage += 1
 			let messageInfo = [
 				"type": messageType.rawValue,
 				"body": body ?? "",

@@ -257,7 +257,7 @@ extension ProfilePhotoButtonView: CropViewControllerDelegate {
 		
 		cropViewController.title = "Move and Scale";
 		cropViewController.doneButtonTitle = "Choose";
-		cropViewController.cancelButtonTitle = "Cacel";
+		cropViewController.cancelButtonTitle = "Cancel";
 		
 		from.pushViewController(cropViewController, animated: true)
 	}
