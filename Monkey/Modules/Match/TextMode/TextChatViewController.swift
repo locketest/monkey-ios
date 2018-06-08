@@ -559,6 +559,7 @@ extension TextChatViewController: MatchViewControllerProtocol {
 			self.celebrateAddFriend()
 		}else {
             self.addFriendButtonHeightConstraint.constant = self.isLinkInstagramBool ? 60 : 0
+			self.friendButton.alpha = 0
             self.instagramPopupButton.isHidden = !self.isLinkInstagramBool
 			self.view.setNeedsLayout()
 		}

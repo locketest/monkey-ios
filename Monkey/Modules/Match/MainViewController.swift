@@ -526,7 +526,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			if let myAvatarTag = userAvatarTagInfo[user_id] {
 				let is_tap_setting = myAvatarTag["is_tap_setting"]
 				self.handleAcceptButtonStateFunc(state: is_tap_setting == false)
-			}else {
+			}else if UserDefaults.standard.bool(forKey: CurrentVersionAlertViewTag) == true {
 				let myAvatarTag = [
 					"is_show_alert": true,
 					"is_tap_setting": false,
@@ -577,6 +577,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			alertController.addAction(UIAlertAction(title: "Confirm", style: .cancel, handler: { (UIAlertAction) in
 				UserDefaults.standard.setValue(true, forKey: CurrentVersionAlertViewTag)
 				self.startFindingChats(forReason: "Safety update notice")
+				self.handleAccessUserAvatar()
 			}))
 			
 			self.alertKeyAndVisibleFunc(alert: alertController)
