@@ -157,18 +157,13 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
             
             let anyArray = UserDefaults.standard.array(forKey: AccessUserAvatarArrayTag)
             
-            let currentUserId = (APIController.shared.currentUser?.user_id)!
-            
             if anyArray != nil {
                 
-                let stringArray = anyArray as! StringArray
+                let boolArray = anyArray as! BoolArray
                 
-                stringArray.forEach { (string) in
-                    let array = string.split(separator: StringArraySplitCharacter)
-                    if array.first?.description == currentUserId {
-                        self.remindPointView.isHidden = array.last?.description == "1" ? true : false
-                    }
-                }
+                print("*** boolArray = \(boolArray)")
+                
+                self.remindPointView.isHidden = boolArray[0]
             }
             
         }

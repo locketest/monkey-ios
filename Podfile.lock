@@ -110,7 +110,7 @@ DEPENDENCIES:
   - Starscream
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - AccountKit
     - Adjust
     - AgoraRtcEngine_iOS
@@ -187,4 +187,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 6c96afb30d99ad6eef68707fb62161320b1898fa
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.5.0
