@@ -80,11 +80,7 @@ class ChatSession: NSObject {
     var response: Response? {
         didSet {
 			if response == .skipped {
-				if self.wasSkippable {
-					self.sendSkip()
-				}else {
-					self.disconnect(.consumed)
-				}
+				self.sendSkip()
 			}
         }
     }
@@ -634,7 +630,7 @@ class ChatSession: NSObject {
 		let callLoadingTimeout = Double(RemoteConfigManager.shared.match_connect_time)
 		DispatchQueue.main.asyncAfter(deadline: .after(seconds: callLoadingTimeout)) { [weak self] in
 			guard let `self` = self else { return }
-			if self.status == .skippable {
+			if self.status == .skippable || self.status == .loading {
 				print("Call loading timed out")
 				self.disconnect(.consumed)
 			}

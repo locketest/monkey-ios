@@ -215,7 +215,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	weak var matchViewController: MatchViewController?
 	
 	weak var callNotification: CallNotificationView?
-	var mySkip = false
 	var incomingCallId: String?
 	var incomingCallBio: String?
 	var nextSessionToPresent: ChatSession?
@@ -1101,7 +1100,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			])
 		
 		MKMatchManager.shareManager.afmCount = 0
-		self.mySkip = true
 		self.resetFact()
 		self.chatSession?.response = .skipped
 		self.chatSession?.chat?.skipped = true
@@ -1117,7 +1115,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			])
 		
 		MKMatchManager.shareManager.afmCount = 0
-		self.mySkip = true
 		self.resetFact()
 		self.chatSession?.response = .skipped
 		self.chatSession?.chat?.skipped = true
@@ -1354,7 +1351,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		}
 		
 		guard self.matchViewController != nil else {
-			self.skipped()
+			self.skipped(show: false)
 			return
 		}
 		
@@ -1367,7 +1364,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			self.resetFact()
 		}
 		if chatSession.response != .skipped && !chatSession.didConnect {
-			self.skipped()
+			self.skipped(show: false)
 		}
 		if startView.isHidden == true {
 			self.start()
@@ -1409,8 +1406,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 						}
 					}
 					
-					if chatSession.friendMatched == true,
-						UserDefaults.standard.bool(forKey: showRateAlertReason.addFriendJust.rawValue) == false{
+					if chatSession.chat?.sharedSnapchat == true, chatSession.chat?.theySharedSnapchat == true, UserDefaults.standard.bool(forKey: showRateAlertReason.addFriendJust.rawValue) == false {
 						UserDefaults.standard.set(true, forKey: showRateAlertReason.addFriendJust.rawValue)
 						self.showRateAlert(reason: .addFriendJust)
 					} else if Configs.contiLogTimes() == 3,
@@ -1445,9 +1441,9 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.connectText.isHidden = true
 		if !chatSession.didConnect {
 			if timeout {
-				self.timeOut()
+				self.timeOut(show: chatSession.response != nil)
 			}else {
-				self.skipped()
+				self.skipped(show: chatSession.response != ChatSession.Response.skipped)
 			}
 		}
 		let isCurrentSession = chatSession == self.chatSession
@@ -1711,35 +1707,31 @@ extension MainViewController {
 		self.loadingTextLabel.setDefaultTicks()
 	}
 	
-	func timeOut() {
+	func timeOut(show: Bool = true) {
 		DispatchQueue.main.async {
 			self.start()
-			if !self.mySkip {
+			if show {
 				self.skippedText.layer.opacity = 1.0
 			}
 			self.skippedText.text = "Time out!!"
 			self.factTextView.text = self.nextFact
-			self.mySkip = false
 			UIView.animate(withDuration: 2.0, animations: {
 				self.skippedText.layer.opacity = 0.0
-				self.view.layoutIfNeeded()
 			})
 			self.hideTreeLabels()
 		}
 	}
 	
-	func skipped() {
+	func skipped(show: Bool = true) {
 		DispatchQueue.main.async {
 			self.start()
-			if !self.mySkip {
+			if show {
 				self.skippedText.layer.opacity = 1.0
 			}
 			self.skippedText.text = "Skipped!!"
-			self.mySkip = false
 			self.factTextView.text = self.nextFact
 			UIView.animate(withDuration: 2.0, animations: {
 				self.skippedText.layer.opacity = 0.0
-				self.view.layoutIfNeeded()
 			})
 			self.hideTreeLabels()
 		}
