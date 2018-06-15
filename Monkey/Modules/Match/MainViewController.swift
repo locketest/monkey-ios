@@ -1186,7 +1186,17 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		}
 
 		var bio = "connecting"
-		if let first_name = call.user?.first_name, let gender = call.user?.gender {
+		if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
+			bio = convertBio
+			if RemoteConfigManager.shared.app_in_review == true {
+				let user_age_str = convertBio.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "")
+				//				print("match a user with age \(user_age_str)")
+				if let age_range = convertBio.range(of: user_age_str), let user_age = Int(user_age_str), user_age < 19, user_age > 0 {
+					let new_age = abs(Int.arc4random() % 5) + 19
+					bio = convertBio.replacingCharacters(in: age_range, with: "\(new_age)")
+				}
+			}
+		} else if let first_name = call.user?.first_name, let gender = call.user?.gender {
 			var age = call.user?.age.value ?? 18
 			if RemoteConfigManager.shared.app_in_review == true {
 				if age < 19, age > 0 {
@@ -1201,16 +1211,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			}
 			
 			bio = "\(first_name),  \(age)  \(gender)\n\(location)"
-		} else if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
-			bio = convertBio
-			if RemoteConfigManager.shared.app_in_review == true {
-				let user_age_str = convertBio.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "")
-				//				print("match a user with age \(user_age_str)")
-				if let age_range = convertBio.range(of: user_age_str), let user_age = Int(user_age_str), user_age < 19, user_age > 0 {
-					let new_age = abs(Int.arc4random() % 5) + 19
-					bio = convertBio.replacingCharacters(in: age_range, with: "\(new_age)")
-				}
-			}
 		}
 		
 		if let match_distance = call.match_distance.value, match_distance > 0, Achievements.shared.nearbyMatch == true {
@@ -1715,7 +1715,7 @@ extension MainViewController {
 			}
 			self.skippedText.text = "Time out!!"
 			self.factTextView.text = self.nextFact
-			UIView.animate(withDuration: 2.0, animations: {
+			UIView.animate(withDuration: 1.5, animations: {
 				self.skippedText.layer.opacity = 0.0
 			})
 			self.hideTreeLabels()
@@ -1730,7 +1730,7 @@ extension MainViewController {
 			}
 			self.skippedText.text = "Skipped!!"
 			self.factTextView.text = self.nextFact
-			UIView.animate(withDuration: 2.0, animations: {
+			UIView.animate(withDuration: 1.5, animations: {
 				self.skippedText.layer.opacity = 0.0
 			})
 			self.hideTreeLabels()

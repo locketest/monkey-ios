@@ -62,7 +62,7 @@ class Chat {
 	// 是否被对方举报
 	var reported = false
 	
-	// 是否被过
+	// 是否主动点击 skipped
     var skipped = false
 	
 	var age: Int?

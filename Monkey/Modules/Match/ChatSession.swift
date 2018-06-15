@@ -81,6 +81,7 @@ class ChatSession: NSObject {
         didSet {
 			if response == .skipped {
 				self.sendSkip()
+				self.disconnect(.consumed)
 			}
         }
     }
