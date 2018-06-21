@@ -141,6 +141,11 @@ extension CallViewController: CountingLabelDelegate {
                 // self.soundPlayer.play(sound: .fail)
             } else if clockTime == 400 {
                 self.chatSession?.disconnect(.consumed)
+				LogManager.shared.addLog(type: .CustomLog, subTitle: "time over", info: [
+					"video_service": self.chatSession?.videoCall?.video_service ?? "",
+					"notify_accept": self.chatSession?.videoCall?.supportSocket() ?? false,
+					"show_skip": false,
+					])
             }
         }
     }

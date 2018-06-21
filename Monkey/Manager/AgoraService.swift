@@ -85,6 +85,8 @@ extension AgoraService: ChannelServiceManager {
 
 extension AgoraService: AgoraRtcEngineDelegate {
 	func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinedOfUid uid: UInt, elapsed: Int) {
+//		engine.muteRemoteAudioStream(uid, mute: true)
+		self.mute(user: 0, mute: true)
 		observer?.remoteUserDidJoined(user: Int(uid))
 	}
 

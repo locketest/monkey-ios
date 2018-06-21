@@ -1,8 +1,8 @@
 PODS:
   - AccountKit (4.31.0)
-  - Adjust (4.14.0):
-    - Adjust/Core (= 4.14.0)
-  - Adjust/Core (4.14.0)
+  - Adjust (4.14.1):
+    - Adjust/Core (= 4.14.1)
+  - Adjust/Core (4.14.1)
   - AgoraRtcEngine_iOS (2.2.1)
   - Alamofire (4.7.2)
   - AlamofireObjectMapper (5.0.0):
@@ -21,7 +21,7 @@ PODS:
   - DeviceKit (1.7.0)
   - Fabric (1.7.7)
   - FBNotifications (1.0.1)
-  - FBSDKCoreKit (4.33.0):
+  - FBSDKCoreKit (4.34.0):
     - Bolts (~> 1.7)
   - Firebase/Core (5.2.0):
     - Firebase/CoreOnly
@@ -70,7 +70,7 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
-  - ObjectMapper (3.2.0)
+  - ObjectMapper (3.3.0)
   - ObjectMapperAdditions/Core (4.1.0):
     - ObjectMapper
   - ObjectMapperAdditions/Realm (4.1.0):
@@ -79,11 +79,11 @@ PODS:
     - RealmSwift
   - OpenTok (2.14.0)
   - Protobuf (3.6.0)
-  - Realm (3.7.1):
-    - Realm/Headers (= 3.7.1)
-  - Realm/Headers (3.7.1)
-  - RealmSwift (3.7.1):
-    - Realm (= 3.7.1)
+  - Realm (3.7.4):
+    - Realm/Headers (= 3.7.4)
+  - Realm/Headers (3.7.4)
+  - RealmSwift (3.7.4):
+    - Realm (= 3.7.4)
   - Starscream (3.0.5)
 
 DEPENDENCIES:
@@ -154,7 +154,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AccountKit: f3e48047e6fb1c433dff37c61158fd32bbc482cf
-  Adjust: 337a7b26bdd27c37b278e0cd8f0e53879d9be351
+  Adjust: 2bef0f835fc7dcbfe871bf14e6960fabbcbd2c23
   AgoraRtcEngine_iOS: 11c250ee1f02602712eae4713523946edfcce723
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
@@ -165,7 +165,7 @@ SPEC CHECKSUMS:
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
   Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
-  FBSDKCoreKit: 572b047a7e029bc44542bcf8a59414e7ff2b543e
+  FBSDKCoreKit: 0ff57f093b85c8c9d5aba697d3edf68a8960ce78
   Firebase: 25ed0412036d7d008568d1fb4d2e9d81ea8a0a2c
   FirebaseABTesting: 1f50b8d50f5e3469eea54e7463a7b7fe221d1f5e
   FirebaseAnalytics: b3628aea54c50464c32c393fb2ea032566e7ecc2
@@ -177,12 +177,12 @@ SPEC CHECKSUMS:
   GPUImage: f6034f21f92df6171520f604226ae64b90b35911
   Kingfisher: 976d828df2b24834c6a3f2fc4d82cdbd26552be1
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
-  ObjectMapper: 5cccd2de6f253eda859df8116a5a554d9769e859
+  ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
   ObjectMapperAdditions: db4243e10ebd9abf7e5e7938e4b0a4bbfd840980
   OpenTok: f4c0f42fd2e4e4d2682b12dcb94313aa88558e14
   Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
-  Realm: 906be37d52f17f25484ac01643a7f26a9d3bfbd5
-  RealmSwift: 1c2b6bae3dc55bb87e080ffa96537d71442f6dce
+  Realm: a469bb59e33f9926102ccaea4349822c53b9117e
+  RealmSwift: a45861b21c180f5cf0f122144b9759fa8dde3e9e
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
 
 PODFILE CHECKSUM: 6c96afb30d99ad6eef68707fb62161320b1898fa

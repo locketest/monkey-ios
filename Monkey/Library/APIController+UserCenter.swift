@@ -16,6 +16,7 @@ extension APIController {
 	
 	static let userDef = UserDefaults.standard
 	
+	
 	class func signCodeSended(isNewUser: Bool) {
 		userDef.set(true, forKey: kCodeVerifyJustNow)
 		userDef.set(isNewUser, forKey: kNewAccountCodeVerify)

@@ -124,6 +124,7 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
         self.currentViewController = self
         self.transitioningDelegate = self
         self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(panGestureRecognizer:)))
+		self.panGestureRecognizer.maximumNumberOfTouches = 1
         self.panGestureRecognizer.delegate = self
         self.view.addGestureRecognizer(panGestureRecognizer)
     }

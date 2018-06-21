@@ -163,7 +163,7 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
         Socket.shared.isEnabled = true
         self.clockLabel.font = UIFont.monospacedDigitSystemFont(ofSize: self.clockLabel.font.pointSize, weight: UIFontWeightMedium)
         animator = UIDynamicAnimator(referenceView: self.containerView)
-        self.ticker = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(tick), userInfo: nil,   repeats: true)
+        self.ticker = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(tick), userInfo: nil, repeats: true)
 //        // make sure timer always runs correctly
         RunLoop.main.add(self.ticker!, forMode: .commonModes)
         self.endCallButton.isHidden = true

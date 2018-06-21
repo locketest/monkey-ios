@@ -15,7 +15,7 @@ import RealmSwift
 
 typealias AKFVCType = UIViewController & AKFViewController
 
-class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegate {
+class WelcomeViewController: MonkeyViewController {
 	
     @IBOutlet var nextButton: BigYellowButton!
     @IBOutlet var confettiView: ConfettiView!
@@ -84,9 +84,7 @@ class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegat
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Begin animating when view is about to appear
-        
-        self.currentVersionAlertViewFunc()
-
+		
         if APIController.authorization != nil {
 			self.dismiss(animated: false, completion: nil)
 		}else if (accountKitAuthSuccess) {
@@ -96,24 +94,6 @@ class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegat
 			confettiView.isAnimating = true
 			self.containerView.layer.opacity = 1
 		}
-    }
-    
-    func currentVersionAlertViewFunc() {
-        
-        if !UserDefaults.standard.bool(forKey: CurrentVersionAlertViewTag) {
-            
-            let alertController = UIAlertController(title: "Safety update notice", message: "For your account safety and support more safety services for you, Monkey already update our safety strategy and privacy.", preferredStyle: .alert)
-            
-            alertController.addAction(UIAlertAction(title: "See more details", style: .destructive, handler: { (UIAlertAction) in
-                self.openURL("http://monkey.cool/privacy", inVC: true)
-            }))
-            
-            alertController.addAction(UIAlertAction(title: "Confirm", style: .cancel, handler: { (UIAlertAction) in
-                UserDefaults.standard.setValue(true, forKey: CurrentVersionAlertViewTag)
-            }))
-            
-            self.present(alertController, animated: true, completion: nil)
-        }
     }
 
     @IBAction func nextVC(_ sender: BigYellowButton) {
@@ -174,6 +154,7 @@ class WelcomeViewController: MonkeyViewController, SFSafariViewControllerDelegat
 							let isNewUser = (jsonAPIDocument.dataResource?.json["action"] as? String) == "register"
 							APIController.signCodeSended(isNewUser: isNewUser)
 							APIController.authorization = authorization
+							
 							UserDefaults.standard.set(user_id, forKey: "user_id")
 							UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
 
@@ -268,10 +249,6 @@ extension WelcomeViewController: UITextViewDelegate {
 		self.openTextViewURL(url)
 		return false
 	}
-    
-    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        self.currentVersionAlertViewFunc()
-    }
 
 	func openTextViewURL(_ URL: URL) {
 		let host = URL.host
@@ -293,7 +270,6 @@ extension WelcomeViewController: UITextViewDelegate {
 		let vc = SFSafariViewController(url: url, entersReaderIfAvailable: false)
 		vc.modalPresentationCapturesStatusBarAppearance = true
 		vc.modalPresentationStyle = .overFullScreen
-        vc.delegate = self
 		present(vc, animated: true, completion: nil)
 	}
 }

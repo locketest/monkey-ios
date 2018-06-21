@@ -126,7 +126,7 @@ class NotificationManager {
     /// Called from main vc for now (in future, callvc), shows a notification allowing a user to rate the call passed in as 'chatId' as nice or mean
     func showRatingNotification(_ chatSession:ChatSession, completion:@escaping ()->Void) {
        // self.viewManager?.stopFindingChats(andDisconnect: false, forReason: "notification")
-        guard let chat = chatSession.chat, chatSession.shouldShowRating == true else {
+        guard let chat = chatSession.chat else {
             return
         }
 

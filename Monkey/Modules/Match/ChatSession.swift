@@ -10,12 +10,6 @@ import Foundation
 import RealmSwift
 import ObjectMapper
 
-enum MonkeyMatchMode : String {
-    case videoMode = "videomode"
-    case chatMode = "chatmode"
-    case funmeetMode = "funmeetmode"
-}
-
 class ChatSession: NSObject {
     weak var callDelegate: ChatSessionCallDelegate?
     weak var loadingDelegate: ChatSessionLoadingDelegate?
@@ -53,20 +47,37 @@ class ChatSession: NSObject {
 		return nil
 	}
 
+	// 配到的时间
 	var matchedTime: TimeInterval?
+	// 点击 accept 的时间
 	var acceptTime: TimeInterval?
+	// connect 的时间
 	var connectTime: TimeInterval?
 
-    var didConnect = false
+	// 是不是 video call
+	var isDialedCall = false
+	// 对方是否进入当前 channel
+	var wasSkippable = false
+	// 对方是否 accept
     var matchUserDidAccept = false
-    var isDialedCall = false
+	// 是否 auto skip 了对方
+	var  auto_skip = false
+	// 是否见到脸
+	var didConnect = false
+	// 是否举报了对方
     var isReportedChat = false
+	// 是否被对方举报了
 	var isReportedByOther = false
+	// 是否 unmute 成功
 	var isUnMuteSound = false
+	// 当前 match mode
 	var matchMode: MatchMode = .VideoMode
 
+	// 发送文本消息的个数
     var message_send = 0
+	// 收到文本消息的个数
     var message_receive = 0
+	// 相同的 channel
     var common_tree: String?
 
 	var agoraService = AgoraService.shared
@@ -74,18 +85,43 @@ class ChatSession: NSObject {
     var connections = [OTConnection]()
     weak var subscriber: MonkeySubscriber?
     weak var subscriberConnection: OTConnection?
-    var subscriberData: Dictionary<String, String>?
-    var status: ChatSessionStatus = .loading
-    var disconnectReason: DisconnectReason?
+	
+	// 当前配对状态
+	/**
+	*	.loading 默认状态
+	*	.skippable 对方进入房间
+	*	.connected 已经见到对方
+	*	.disconnecting 正在断开连接
+	*	.consumed 断开连接
+	*	.consumedWithError 因为 opentok 问题导致退出
+	*/
+	var status: ChatSessionStatus = .loading
+	
+	// 当前配对状态
+	/**
+	*	.connecting 正在连接
+	*	.connected 连接成功
+	*	.disconnecting 正在断连
+	*	.disconnected 断连成功
+	*/
+	fileprivate var sessionStatus: SessionStatus = .disconnected
+	
+	/// When a disconnect is completed async, this will be the result (consumed or consumedWithError)
+	fileprivate var disconnectStatus: ChatSessionStatus?
+	
+	// 我的操作 skip / accept
     var response: Response? {
         didSet {
 			if response == .skipped {
+				// 当我点击了 accept 或者 skip，取消 responseTimeout 定时
+				NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(responseTimeout), object: nil)
 				self.sendSkip()
 				self.disconnect(.consumed)
 			}
         }
     }
-    var wasSkippable = false
+	
+	// 是否加成功过时间
 	var hadAddTime = false {
 		willSet {
 			if self.hadAddTime == false && newValue == true {
@@ -106,23 +142,10 @@ class ChatSession: NSObject {
 		}
 	}
 
-    var shouldShowRating: Bool {
-        return false;
-    }
-
+	// 是否是好友
     var friendMatched = false {
         didSet {
             if let callDelegate = self.callDelegate, friendMatched == true {
-
-				var toAddInfo = ["match_success_add_friend": 1]
-				if self.hadAddTime == true {
-					toAddInfo["match_success_time&friend"] = 1
-				}
-
-				AnalyticsCenter.add(amplitudeUserProperty: toAddInfo)
-				AnalyticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
-
-				self.track(matchEvent: .matchFirstAddFriend)
 				
 				if videoCall?.matchedFriendship != nil {
 					callDelegate.friendMatched(in: self)
@@ -131,24 +154,36 @@ class ChatSession: NSObject {
 						callDelegate.friendMatched(in: self)
 					})
 				}
+
+				if chat?.sharedSnapchat == true && chat?.theySharedSnapchat == true {
+					
+					var toAddInfo = ["match_success_add_friend": 1]
+					if self.hadAddTime == true {
+						toAddInfo["match_success_time&friend"] = 1
+					}
+					
+					AnalyticsCenter.add(amplitudeUserProperty: toAddInfo)
+					AnalyticsCenter.add(firstdayAmplitudeUserProperty: toAddInfo)
+					
+					self.track(matchEvent: .matchFirstAddFriend)
+				}
             }
         }
     }
-	fileprivate var sessionStatus: SessionStatus = .disconnected
-
-    /// When a disconnect is completed async, this will be the result (consumed or consumedWithError)
-    fileprivate var disconnectStatus: ChatSessionStatus?
 
     /// The count of checks such as time and subscriber connection that have been completed (should be zero, one, or two)
     fileprivate var initiatorReadyChecks = 0 {
         didSet {
             if self.initiatorReadyChecks == 2 {
+				NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(waitResponseTimeout), object: nil)
+				NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(dialedCallTimeout), object: nil)
 				self.startConnect()
                 self.tryConnecting()
             }
         }
     }
-	
+
+	// 收到对方的 accept 消息
 	func didReceiveAccept() {
 		if matchUserDidAccept == false {
 			self.matchUserDidAccept = true
@@ -156,6 +191,7 @@ class ChatSession: NSObject {
 		}
 	}
 
+	// 收到对方的视频流
 	fileprivate var didReceiveRemoteVideo = false {
 		didSet {
 			if didReceiveRemoteVideo {
@@ -176,9 +212,10 @@ class ChatSession: NSObject {
         case warning
         case info
     }
-    enum Response {
-        case skipped
-        case accepted
+	
+	enum Response: String {
+        case skipped = "skipped"
+        case accepted = "accepted"
     }
 
 	func commonParameters(for event: AnalyticEvent) -> [String: String] {
@@ -200,10 +237,11 @@ class ChatSession: NSObject {
 			"user_country": currentUser?.location ?? "",
 			"user_ban": "\(is_banned)",
             "match_type": match_type,
-			"auto_accept": Achievements.shared.autoAcceptMatch ? "false" : "true",
+			"auto_accept": Achievements.shared.autoAcceptMatch ? "true" : "false",
 			"user_gender_option": APIController.shared.currentUser?.show_gender ?? "both",
 			"user_tree": APIController.shared.currentUser?.channels.first?.channel_id ?? "",
             "match_same_tree": common_tree ?? "",
+			"nearby_status": Achievements.shared.nearbyMatch ? "true" : "false",
 		]
 
 		if let _ = self.realmCall, let chat = chat {
@@ -270,29 +308,29 @@ class ChatSession: NSObject {
 	func track(matchEvent: AnalyticEvent) {
 		AnalyticsCenter.log(withEvent: matchEvent, andParameter: commonParameters(for: matchEvent))
 	}
-	
+
 	func trackMatchingSession() {
 		guard let chat = chat, let currentUser = APIController.shared.currentUser else {
 			return
 		}
-		
+
 		var Mode_type = "1"
 		if matchMode == .TextMode {
 			Mode_type = "2"
 		}else if matchMode == .EventMode {
 			Mode_type = "3"
 		}
-		
+
 		var match_duration = 0
 		if let connectTime = connectTime {
 			match_duration = Int(Date().timeIntervalSince1970 - connectTime)
 		}
-		
+
 		var report_type = "Non-report"
 		if chat.showReport > 0 {
 			report_type = chat.reportReason?.eventTrackValue() ?? "Cancel"
 		}
-		
+
 		var sessionParameters: [String: Any] = [
 			"duration": match_duration,
 			"friend_add_request": chat.sharedSnapchat ? "1" : "0",
@@ -303,11 +341,11 @@ class ChatSession: NSObject {
 			"matching_switch_camera_result": chat.switch_camera_click % 2 == 0 ? "Front" : "back",
 			"Mode_type": Mode_type,
 			]
-		
+
 		if friendMatched {
 			sessionParameters["pce out"] = (chat.my_pce_out ? currentUser.user_id : chat.user_id) ?? ""
 		}
-		
+
 		let cuttentFilter = Achievements.shared.selectMonkeyFilter
 		if matchMode == .TextMode {
 			sessionParameters["sound_open_click"] = chat.unMute ? "true" : "false"
@@ -320,7 +358,7 @@ class ChatSession: NSObject {
 			sessionParameters["time_add_count"] = chat.minutesAdded
 			sessionParameters["time_add_success_times"] = min(chat.minutesAdded, chat.theirMinutesAdded)
 		}
-		
+
 		AnalyticsCenter.log(withEvent: .matchingSession, andParameter: sessionParameters)
 	}
 
@@ -334,50 +372,115 @@ class ChatSession: NSObject {
         self.loadingDelegate = loadingDelegate
 		self.matchMode = chat.match_room_mode
 		self.matchedTime = NSDate().timeIntervalSince1970
-		
+
+		// 是否匹配到好友
 		if videoCall?.matchedFriendship != nil {
 			self.friendMatched = true
 		}
-		
+
+		// 如果支持 accept 前置，就添加 socket 监听，否则直接进入 channel
 		if videoCall?.supportSocket() == false {
 			self.joinChannel()
 		}else {
 			Socket.shared.addChatMessageDelegate(chatMessageDelegate: self)
 		}
 
+		// 等待响应超时
 		if isDialedCall == true {
 			// Wait up to 30 seconds before giving up on connecting to the session
-			DispatchQueue.main.asyncAfter(deadline: .after(seconds: 30)) { [weak self] in
-				guard let `self` = self else { return }
-				if self.status == .loading || self.status == .skippable {
-					print("Call loading timed out")
-					self.disconnect(.consumedWithError)
-				}
-			}
+			self.perform(#selector(dialedCallTimeout), with: nil, afterDelay: 30)
 		}else {
-			// accept 超时
-			DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_accept_time))) { [weak self] in
-				guard let `self` = self else { return }
-				if self.response == nil {
-					self.disconnect(.consumed)
-					print("Inactivity detected")
-					MKMatchManager.shareManager.afmCount += 1
-					if MKMatchManager.shareManager.needShowAFMAlert {
-						self.loadingDelegate?.warnConnectionTimeout?(in: self)
-						MKMatchManager.shareManager.afmCount = 0
-					}
-				}
-			}
+			// 操作超时
+			let responseTime = Double(RemoteConfigManager.shared.match_accept_time)
+			self.perform(#selector(responseTimeout), with: nil, afterDelay: responseTime)
 		}
     }
 	
+	func dialedCallTimeout() {
+		// 对方没有 accept 或者自己没有 accept video call
+		if self.status == .loading || self.status == .skippable {
+			print("Call loading timed out")
+			self.disconnect(.consumed)
+		}
+	}
+	
+	func responseTimeout() {
+		// 没有操作，并且对方也没有 skip
+		if self.response == nil && (self.status == .loading || self.status == .skippable) {
+			self.auto_skip = true
+
+			AnalyticsCenter.log(withEvent: .matchWaitTimeout, andParameter: [
+				"reason": "myself timeout"
+				])
+			
+			LogManager.shared.addLog(type: .CustomLog, subTitle: "operation timeout - 5s", info: [
+				"video_service": self.videoCall?.video_service ?? "",
+				"notify_accept": self.videoCall?.supportSocket() ?? false,
+				"operation": "auto skip",
+				"show_skip": false,
+				])
+			
+			MKMatchManager.shareManager.afmCount += 1
+			if MKMatchManager.shareManager.needShowAFMAlert {
+				self.loadingDelegate?.warnConnectionTimeout?(in: self)
+				MKMatchManager.shareManager.afmCount = 0
+			}
+			
+			self.sendSkip()
+		}
+	}
+	
+	func waitResponseTimeout() {
+		// 如果对方没有 accept
+		if self.matchUserDidAccept == false && (self.status == .loading || self.status == .skippable) {
+			self.disconnect(.consumed)
+			
+			AnalyticsCenter.log(withEvent: .matchWaitTimeout, andParameter: [
+				"reason": "the other timeout",
+				])
+			
+			LogManager.shared.addLog(type: .CustomLog, subTitle: "wait accept timeout", info: [
+				"video_service": self.videoCall?.video_service ?? "",
+				"notify_accept": self.videoCall?.supportSocket() ?? false,
+				"show_timeout": true,
+				])
+		}
+	}
+	
+	func connectingTimeout() {
+		// 连接超时(此时对方有可能进入房间，也有可能没进入房间)
+		if self.status == .loading || self.status == .skippable {
+			
+			var reason = "no face"
+			if (self.sessionStatus == .connecting) {
+				reason = "failed myself"
+			}else if (self.status == .loading) {
+				reason = "failed the other"
+			}
+			AnalyticsCenter.log(withEvent: .matchConnectingFailed, andParameter: [
+				"reason": reason,
+				])
+			self.track(matchEvent: .matchConnectTimeOut)
+			
+			LogManager.shared.addLog(type: .CustomLog, subTitle: "connect timeout", info: [
+				"video_service": self.videoCall?.video_service ?? "",
+				"notify_accept": self.videoCall?.supportSocket() ?? false,
+				"show_timeout": true,
+				])
+			
+			print("Call loading timed out")
+			self.disconnect(.consumed)
+		}
+	}
+	
+	// 老版本
 	func joinChannel() {
 		guard let realmCall = videoCall else {
 			self.log(.error, "Could not connect to session")
 			self.disconnect(.consumed)
 			return
 		}
-		
+
 		if realmCall.supportAgora() {
 			agoraService.joinChannel(matchModel: realmCall) { [weak self] in
 				guard let `self` = self else { return }
@@ -411,9 +514,9 @@ class ChatSession: NSObject {
             self.log(.info, "Initiator not ready")
             return
         }
-		
+
 		// 双方都 accept，但是没有收到对方的流
-        guard self.didReceiveRemoteVideo else {
+        guard self.didReceiveRemoteVideo == true else {
             self.log(.info, "Stream not ready")
             return
         }
@@ -511,6 +614,11 @@ class ChatSession: NSObject {
 			return
 		}
 
+		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(responseTimeout), object: nil)
+		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(waitResponseTimeout), object: nil)
+		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(connectingTimeout), object: nil)
+		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(dialedCallTimeout), object: nil)
+		
 //		if self.wasSkippable == false {
 //			// Wait a few seconds to see if they connect so we can tell them we are leaving.
 //			self.disconnectStatus = status
@@ -562,7 +670,7 @@ class ChatSession: NSObject {
 			HWCameraManager.shared().opentok_capture = false
 			HWCameraManager.shared().agora_capture = false
 		}
-		
+
 		if realmCall.supportAgora() {
 			self.agoraService.leaveChannel {
 				self.sessionStatus = .disconnected
@@ -588,27 +696,41 @@ class ChatSession: NSObject {
 		self.sessionStatus = .connected
 	}
 
+	// 和对方建立连接成功
 	func sessionConnectSuccessful() {
 		self.wasSkippable = true
 		self.updateStatusTo(.skippable)
+		
 		if self.response == .skipped {
+			// 连接成功时，如果发现 response 是 skip，补发 skip
 			self.sendSkip()
 		}else if self.response == .accepted, videoCall?.supportSocket() == false {
+			// 如果是老版本，补发 accept
 			self.accept()
 		}
 	}
 
+	// 开始收到对方的视频流
 	func startReceiveRemoteVideo() {
-		self.log(.info, "session streamCreated")
-		self.didReceiveRemoteVideo = true
+		if self.didReceiveRemoteVideo == false {
+			self.log(.info, "session streamCreated")
+			self.didReceiveRemoteVideo = true
+		}
 	}
 
+	// 如果两个人都 accept，开始连接
 	func startConnect() {
 		self.loadingDelegate?.shouldShowConnectingStatus(in: self)
 		AnalyticsCenter.add(amplitudeUserProperty: ["match_connect": 1])
 		AnalyticsCenter.add(firstdayAmplitudeUserProperty: ["match_connect": 1])
 		self.track(matchEvent: .matchConnect)
+
+		// 如果是老版本，已经收到对方的视频流，直接返回
+		guard self.status != .connected else {
+			return
+		}
 		
+		// 如果是新版本，开始连接时才会进入 channel
 		if videoCall?.supportSocket() == true {
 			self.joinChannel()
 
@@ -622,20 +744,10 @@ class ChatSession: NSObject {
 				}
 			}
 		}
-		
-		guard self.status != .connected else {
-			return
-		}
 
 		// if begin connecting, waiting for connecting
 		let callLoadingTimeout = Double(RemoteConfigManager.shared.match_connect_time)
-		DispatchQueue.main.asyncAfter(deadline: .after(seconds: callLoadingTimeout)) { [weak self] in
-			guard let `self` = self else { return }
-			if self.status == .skippable || self.status == .loading {
-				print("Call loading timed out")
-				self.disconnect(.consumed)
-			}
-		}
+		self.perform(#selector(connectingTimeout), with: nil, afterDelay: callLoadingTimeout)
 	}
 }
 
@@ -657,15 +769,9 @@ enum ChatSessionStatus {
     case disconnecting
 }
 
-enum DisconnectReason {
-    case initiatorNotReady
-    case matchNotReady
-}
-
 /**
  ChatSessionDelegate enum description
  */
-
 protocol ChatSessionCallDelegate: class {
 	func friendMatched(in chatSession: ChatSession?)
 	func minuteAdded(in chatSession: ChatSession)
@@ -695,6 +801,7 @@ extension ChatSession {
 		}
 
 		guard wasSkippable == true else {
+			// 如果是老版本，并且对方不在房间内， skip 和 accept 消息通过 socket 发送
 			if videoCall?.supportSocket() == true, messageType == .Skip || messageType == .Accept {
 
 				let socket_channel = isDialedCall ? "videocall_pos_request" : "pos_match_request"
@@ -715,14 +822,15 @@ extension ChatSession {
 				})
 				return true
 			}
-			
+
 			return false
 		}
 
 		if messageType == .Text {
 			chat?.sendedMessage += 1
 		}
-		
+
+		// 分别通过 agora 或 opentok 发送房间内消息
 		if realmCall.supportAgora() {
 			let message: [String: Any] = [
 				"type": messageType.rawValue,
@@ -776,6 +884,14 @@ extension ChatSession {
 			}
 		case .Skip:
 			self.disconnect(.consumed)
+			
+			LogManager.shared.addLog(type: .CustomLog, subTitle: "receive skip", info: [
+				"video_service": self.videoCall?.video_service ?? "",
+				"notify_accept": self.videoCall?.supportSocket() ?? false,
+				"operation": self.response?.rawValue ?? "no operation",
+				"connected": self.didConnect,
+				"show_skip": self.didConnect ? false : true,
+				])
 		case .Report:
 			self.chat?.reported = true
 			self.isReportedChat = true
@@ -808,6 +924,7 @@ extension ChatSession {
 	}
 
 	func accept() {
+		// 如果还没有 response
 		if self.response == nil {
 			self.response = .accepted
 			self.acceptTime = NSDate().timeIntervalSince1970
@@ -815,13 +932,8 @@ extension ChatSession {
 			// if other not accept, and is not dialed call
 			if self.matchUserDidAccept == false, self.isDialedCall == false {
 				// waiting for accept
-				DispatchQueue.main.asyncAfter(deadline: .after(seconds: Double(RemoteConfigManager.shared.match_waiting_time))) { [weak self] in
-					guard let `self` = self else { return }
-					if self.matchUserDidAccept == false {
-						self.disconnectReason = .matchNotReady
-						self.disconnect(.consumed)
-					}
-				}
+				let waitResponseTime = Double(RemoteConfigManager.shared.match_waiting_time)
+				self.perform(#selector(waitResponseTimeout), with: nil, afterDelay: waitResponseTime)
 			}
 		}
 
@@ -838,6 +950,7 @@ extension ChatSession {
 			}
 		}
 
+		// 如果能发送 accept，尝试进入 connecting
 		if self.send(messageType: MessageType.Accept) {
 			self.log(.info, "Ready")
 			self.initiatorReadyChecks += 1
@@ -928,8 +1041,15 @@ extension ChatSession {
 	}
 
 	fileprivate func sendSkip() {
-
 		self.send(messageType: MessageType.Skip)
+
+		LogManager.shared.addLog(type: .CustomLog, subTitle: "send skip", info: [
+			"video_service": self.videoCall?.video_service ?? "",
+			"notify_accept": self.videoCall?.supportSocket() ?? false,
+			"operation": self.response?.rawValue ?? "no operation",
+			"connected": self.didConnect,
+			"show_skip": false,
+			])
 		self.disconnect(.consumed)
 	}
 }
@@ -988,6 +1108,11 @@ extension ChatSession: OTSessionDelegate {
 				return
 			}
 			self.disconnect(.consumedWithError)
+			LogManager.shared.addLog(type: .CustomLog, subTitle: "join opentok error", info: [
+				"video_service": self.videoCall?.video_service ?? "",
+				"notify_accept": self.videoCall?.supportSocket() ?? false,
+				"show_skip": true,
+				])
 			self.log(.error, "Do subscribe error \(error)")
 		}
 	}
@@ -1087,7 +1212,7 @@ extension ChatSession: OTSubscriberKitDelegate {
 	func publisher(_ publisher: OTPublisherKit, streamDestroyed stream: OTStream) {
 		self.log(.info, "publisher streamDestroyed")
 		if self.status != .consumed && self.status != .consumedWithError {
-			self.disconnect(.consumed)
+			self.disconnect(.consumedWithError)
 		}
 	}
 
@@ -1106,13 +1231,19 @@ extension ChatSession: ChannelServiceProtocol {
 	}
 
 	func remoteUserDidJoined(user user_id: Int) {
-		self.agoraService.mute(user: 0, mute: true)
+//		self.agoraService.mute(user: 0, mute: true)
 		self.sessionConnectSuccessful()
 	}
 
 	func remoteUserDidQuited(user user_id: Int, droped: Bool) {
 		self.log(.info, "agora disconnect")
 		self.disconnect(.consumedWithError)
+
+		LogManager.shared.addLog(type: .CustomLog, subTitle: "other left", info: [
+			"video_service": self.videoCall?.video_service ?? "",
+			"notify_accept": self.videoCall?.supportSocket() ?? false,
+			"show_skip": false,
+			])
 	}
 
 	func didReceiveRemoteVideo(user user_id: Int) {

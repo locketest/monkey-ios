@@ -6,6 +6,7 @@
 #import "KeyboardManager.h"
 #import "HWCameraManager.h"
 //#import "AgoraService.h"
+#import "HWTipView.h"
 
 #import <OpenTok/OpenTok.h>
 #import <GPUImage/GPUImage.h>
