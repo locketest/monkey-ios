@@ -35,6 +35,8 @@ class MessageNotificationView: MakeUIViewGreatAgain, UIGestureRecognizerDelegate
     
     class func instanceFromNib() -> MessageNotificationView {
         let view = UINib(nibName: "MessageNotificationView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as! MessageNotificationView
+		view.profileImageView.layer.cornerRadius = 24
+		view.profileImageView.layer.masksToBounds = true
         return view
     }
     

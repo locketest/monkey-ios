@@ -179,7 +179,7 @@ class RealmUser: MonkeyModel {
 						return [
 							"type": "channels",
 							"id": channel.channel_id!,
-							]
+						]
 					}
 				]
 			}

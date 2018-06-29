@@ -10,6 +10,7 @@ import UIKit
 import Foundation
 import RealmSwift
 import SafariServices
+import Kingfisher
 import DeviceKit
 
 class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UITextViewDelegate, IncomingCallManagerDelegate {
@@ -174,7 +175,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 			print("Error: ", error)
 		}
 
-        let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: self.profileNameLabel.text, profile_image_url: self.profileImageView.url, user_id: realmVideoCall.initiator?.user_id), token: realmVideoCall.channelToken, loadingDelegate: self, isDialedCall: true)
+        let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: self.profileNameLabel.text, profile_image_url: nil, user_id: realmVideoCall.initiator?.user_id), token: realmVideoCall.channelToken, loadingDelegate: self, isDialedCall: true)
         self.chatSession = chatSession
 		
 		chatSession.accept() // we accept before setting it because didSet checks to see if it's been accepted to differientiate bw initiated and incoming calls
@@ -187,8 +188,15 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.chatTableView.delegate = self
         self.chatTableView.dataSource = self
 
-        self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.height / 2.0
+        self.profileImageView.layer.cornerRadius = 24
         self.profileImageView.layer.masksToBounds = true
+		
+		var imageName = "ProfileImageDefaultMale"
+		if self.viewModel.friendship?.user?.gender == Gender.female.rawValue {
+			imageName = "ProfileImageDefaultFemale"
+		}
+		self.profileImageView.placeholder = imageName
+		self.profileImageView.url = self.viewModel.friendship?.user?.profile_photo_url
 
         // Slide down immediately on scroll down
         //TODO: Make interactive https://stackoverflow.com/a/19576934/1767028
@@ -449,7 +457,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
         if let friendship = self.viewModel.friendship {
             let user = friendship.user
-            self.profileImageView.url = user?.profile_photo_url
+			
             self.profileNameLabel.text = user?.first_name ?? user?.snapchat_username ?? user?.username ?? ""
         }
         NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)

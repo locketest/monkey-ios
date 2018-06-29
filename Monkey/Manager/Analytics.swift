@@ -331,7 +331,6 @@ extension AnalyticsCenter {
 		AnalyticEvent.matchFirstSuccess,
 		AnalyticEvent.matchFirstAddTime,
 		AnalyticEvent.matchFirstAddFriend,
-		AnalyticEvent.matchInfo,
 	]
 	
 	fileprivate class func log(forAmpitude event: AnalyticEvent, andParameter parameter: [String: Any]?) {

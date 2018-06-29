@@ -89,8 +89,13 @@ class NotificationManager {
         guard let friendship = self.friendships?.filter(filter).first else {
             return
         }
-            
-        notificationView.profileImageView.url = friendship.user?.profile_photo_url
+		
+		var imageName = "ProfileImageDefaultMale"
+		if friendship.user?.gender == Gender.female.rawValue {
+			imageName = "ProfileImageDefaultFemale"
+		}
+		notificationView.profileImageView.placeholder = imageName
+		notificationView.profileImageView.url = friendship.user?.profile_photo_url
 
         if let firstName = friendship.user?.first_name {
             notificationView.profileNameLabel.text = firstName
@@ -215,7 +220,14 @@ class NotificationManager {
             let realm = try? Realm()
             let filter = NSPredicate(format:"user_id == \"\(userID)\"")
             let user = realm?.objects(RealmUser.self).filter(filter).first
-            notification.profileImageView.url = user?.profile_photo_url
+			
+			var imageName = "ProfileImageDefaultMale"
+			if user?.gender == Gender.female.rawValue {
+				imageName = "ProfileImageDefaultFemale"
+			}
+			notification.profileImageView.placeholder = imageName
+			notification.profileImageView.url = user?.profile_photo_url
+
             notification.profileNameLabel.text = user?.first_name ?? "Your friend"
         }
         

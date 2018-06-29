@@ -186,6 +186,15 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.resetEditProfileFrame()
         if !headImageInited {
             headImageInited = true
+			
+			var imageName = "ProfileImageDefaultMale"
+			if APIController.shared.currentUser?.gender == Gender.female.rawValue {
+				imageName = "ProfileImageDefaultFemale"
+			}
+			if let placeholder = UIImage.init(named: imageName) {
+				self.profilePhoto.setProfile(image: placeholder)
+			}
+			
             if let photoURL = APIController.shared.currentUser?.profile_photo_upload_url {
                 _ = ImageCache.shared.load(url: photoURL, callback: {[weak self] (result) in
                     switch result {
@@ -198,7 +207,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
                         }
                     }
                 })
-            }
+			}
         }
 
 		self.addKeyboardListenFunc()

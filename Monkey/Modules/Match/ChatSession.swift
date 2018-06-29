@@ -239,7 +239,7 @@ class ChatSession: NSObject {
             "match_type": match_type,
 			"auto_accept": Achievements.shared.autoAcceptMatch ? "true" : "false",
 			"user_gender_option": APIController.shared.currentUser?.show_gender ?? "both",
-			"user_tree": APIController.shared.currentUser?.channels.first?.channel_id ?? "",
+			"user_tree": APIController.shared.currentUser?.channels.first?.title ?? "",
             "match_same_tree": common_tree ?? "",
 			"nearby_status": Achievements.shared.nearbyMatch ? "true" : "false",
 		]
@@ -340,6 +340,8 @@ class ChatSession: NSObject {
 			"matching_switch_camera_click": chat.switch_camera_click,
 			"matching_switch_camera_result": chat.switch_camera_click % 2 == 0 ? "Front" : "back",
 			"Mode_type": Mode_type,
+			"user_tree": APIController.shared.currentUser?.channels.first?.title ?? "",
+			"nearby_status": Achievements.shared.nearbyMatch ? "true" : "false",
 			]
 
 		if friendMatched {

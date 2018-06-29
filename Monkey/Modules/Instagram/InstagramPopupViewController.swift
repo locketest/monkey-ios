@@ -344,23 +344,20 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     }
     
     @IBAction func toggleChannelLabelSpacing(_ tapGestureRecognizer: UITapGestureRecognizer) {
-        guard let channels = self.user?.channels else {
-            return
-        }
-        
-        if channels.count > 1 {
-            UIView.animate(withDuration: 0.25, delay: 0.0, options:.curveEaseOut, animations: {
-                self.nameLabel.alpha = self.nameLabel.alpha == 1.0 ? 0.25 : 1.0
-                self.profileImageView.alpha = self.profileImageView.alpha == 1.0 ? 0.25 : 1.0
-                self.locationLabel.alpha = self.locationLabel.alpha == 1.0 ? 0.25 : 1.0
-            })
-        }
+		
     }
     
     func setLabelsAndImages() {
         // if available, set values before we reload
 		self.nameLabel.text = self.user?.first_name ?? "Your friend"
-		self.profileImageView.url = self.friendship?.user?.profile_photo_url ?? self.user?.profile_photo_url
+		var imageName = "ProfileImageDefaultMale"
+		if self.user?.gender == Gender.female.rawValue {
+			imageName = "ProfileImageDefaultFemale"
+		}
+		self.profileImageView.placeholder = imageName
+		self.profileImageView.url = self.user?.profile_photo_url
+		self.profileImageView.layer.cornerRadius = 24
+		self.profileImageView.layer.masksToBounds = true
 		self.locationLabel.text = ""
 		
 		guard isMonkeyKingBool == false else {

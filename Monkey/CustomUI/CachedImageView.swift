@@ -31,6 +31,7 @@ class CachedImageView: MakeUIViewGreatAgain {
         }
     }
     private var imageCacheRequest: ImageCacheRequest?
+	var placeholder: String?
     @IBInspectable var url: String? {
         didSet {
 
@@ -67,7 +68,7 @@ class CachedImageView: MakeUIViewGreatAgain {
     
     private func showDefaultImage() {
         self.status = .image
-        self.imageView.image = UIImage(named: "ProfileImageDefault", in: .main, compatibleWith: self.traitCollection)
+        self.imageView.image = UIImage(named: placeholder ?? "ProfileImageDefault", in: .main, compatibleWith: self.traitCollection)
     }
     
     private let errorView = UILabel()

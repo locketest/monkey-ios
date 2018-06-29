@@ -279,7 +279,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)?) {
 		if viewControllerToPresent == self.swipableViewControllerToPresentOnRight {
 			self.channelUpdateRemindV.alpha = 0
-		}else if viewControllerToPresent == self.swipableViewControllerToPresentOnLeft{
+		}else if viewControllerToPresent == self.swipableViewControllerToPresentOnLeft {
 			self.chatButton.imageView?.image = #imageLiteral(resourceName: "FriendsButton")
 		}
 		
@@ -420,12 +420,15 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.matchModeContainer.layer.borderWidth = 3;
 		self.matchModeContainer.layer.borderColor = UIColor.clear.cgColor
 		
+		self.commonTreeTip.isHidden = true
 		self.commonTreeTip.layer.cornerRadius = 24
 		self.commonTreeTip.layer.masksToBounds = true
+		
+		self.matchUserPhoto.isHidden = true
 		self.matchUserPhoto.layer.cornerRadius = 24
 		self.matchUserPhoto.layer.masksToBounds = true
-		self.commonTreeTip.isHidden = true
-		self.matchUserPhoto.isHidden = true
+		self.matchUserPhoto.layer.shadowRadius = 4
+		self.matchUserPhoto.layer.shadowColor = UIColor.init(white: 0, alpha: 0.25).cgColor
 		
 		self.factTextView.isHidden = true
 		self.loadingTextLabel.isHidden = true
@@ -520,41 +523,22 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	func handleAccessUserAvatar() {
 		if APIController.shared.currentUser?.profile_photo_url == nil, let user_id = APIController.shared.currentUser?.user_id {
 			var userAvatarTagInfo = UserDefaults.standard.dictionary(forKey: AccessUserAvatarArrayTag) as? [String: UserAvatarTag] ?? [String: UserAvatarTag]()
+			var is_tap_setting = false
 			if let myAvatarTag = userAvatarTagInfo[user_id] {
-				let is_tap_setting = myAvatarTag["is_tap_setting"]
-				self.handleAcceptButtonStateFunc(state: is_tap_setting == false)
+				is_tap_setting = myAvatarTag["is_tap_setting"] ?? false
 			}else {
 				let myAvatarTag = [
 					"is_tap_setting": false,
 				]
 				userAvatarTagInfo[user_id] = myAvatarTag
 				UserDefaults.standard.setValue(userAvatarTagInfo, forKey: AccessUserAvatarArrayTag)
-				self.showUploadImgAlert()
 			}
+			self.handleAcceptButtonStateFunc(state: is_tap_setting == false)
 		}
 	}
 	
 	func handleAcceptButtonStateFunc(state: Bool) {
 		self.arrowButton?.setImage(UIImage(named: state ? "ArrowButtonSel" : "ArrowButton"), for: .normal)
-	}
-	
-	func showUploadImgAlert() {
-		
-		let alertController = UIAlertController(title: "📸 Missing Profile Pic 📸", message: "yo add a profile pic so people on your friends list remember you 👀🤳", preferredStyle: .alert)
-		
-		alertController.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { (UIAlertAction) in
-			self.showPickerOption(sourceType: .photoLibrary)
-		}))
-		
-		alertController.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (UIAlertAction) in
-			self.showPickerOption()
-		}))
-		
-		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-			self.handleAcceptButtonStateFunc(state: true)
-		}))
-		
-		self.alertKeyAndVisibleFunc(alert: alertController)
 	}
 	
 	func alertKeyAndVisibleFunc(alert:UIAlertController) {
@@ -563,20 +547,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		alertWindow.windowLevel = UIWindowLevelAlert
 		alertWindow.makeKeyAndVisible()
 		alertWindow.rootViewController?.present(alert, animated: true, completion: nil)
-	}
-	
-	func openURL(_ urlString: String, inVC: Bool) {
-		guard let url = URL(string: urlString) else {
-			return
-		}
-		if !inVC {
-			UIApplication.shared.openURL(url)
-			return
-		}
-		let vc = SFSafariViewController(url: url, entersReaderIfAvailable: false)
-		vc.modalPresentationCapturesStatusBarAppearance = true
-		vc.modalPresentationStyle = .overFullScreen
-		present(vc, animated: true, completion: nil)
 	}
 	
 	func handleFirstNameExistFunc() {
@@ -1160,16 +1130,13 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		self.listTree(tree: call.user?.channels.first?.channel_id ?? "")
 		self.matchUserPhoto.isHidden = false
 		
-		if let profile_photo_url = call.user?.profile_photo_url {
-			self.matchUserPhoto.kf.setImage(with: URL.init(string: profile_photo_url), placeholder: UIImage.init(named: "ProfileImageDefault"))
-		}else {
-			var imageName = "ProfileImageDefaultMale"
-			
-			if call.user?.gender == Gender.female.rawValue {
-				imageName = "ProfileImageDefaultFemale"
-			}
-			self.matchUserPhoto.image = UIImage.init(named: imageName)
+		var imageName = "ProfileImageDefaultMale"
+		if call.user?.gender == Gender.female.rawValue {
+			imageName = "ProfileImageDefaultFemale"
 		}
+		let placeholder = UIImage.init(named: imageName)
+		let profile_photo_url = URL.init(string: call.user?.profile_photo_url ?? "")
+		self.matchUserPhoto.kf.setImage(with: profile_photo_url, placeholder: placeholder)
 
 		var bio = "connecting"
 		if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
@@ -1758,97 +1725,5 @@ extension MainViewController: SlideViewManager {
 	
 	func shouldExecuteNotification() -> Bool {
 		return self.chatSession?.status != .connected
-	}
-}
-
-extension MainViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-	
-	func showPickerOption(sourceType: UIImagePickerControllerSourceType = .camera) {
-		let cameraImagePicker = UIImagePickerController()
-		cameraImagePicker.delegate = self
-		cameraImagePicker.sourceType = sourceType
-		cameraImagePicker.allowsEditing = false
-		self.present(cameraImagePicker, animated: true, completion: nil)
-	}
-	
-	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-		picker.dismiss(animated: true, completion: nil)
-		self.showUploadImgAlert()
-	}
-	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-		if let selectImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-			self.showImageProcess(handle: selectImage, from: picker)
-		} else {
-			picker.dismiss(animated: true, completion: nil)
-		}
-	}
-}
-
-extension MainViewController : CropViewControllerDelegate {
-	
-	func showImageProcess(handle: UIImage, from: UINavigationController) {
-		let cropViewController = CropViewController.init(croppingStyle: .circular, image: handle)
-		cropViewController.delegate = self;
-		cropViewController.rotateButtonsHidden = true;
-		
-		cropViewController.title = "Move and Scale";
-		cropViewController.doneButtonTitle = "Choose";
-		cropViewController.cancelButtonTitle = "Cancel";
-		
-		from.pushViewController(cropViewController, animated: true)
-	}
-	
-	func cropViewController(_ cropViewController: CropViewController, didFinishCancelled cancelled: Bool) {
-		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
-		self.showUploadImgAlert()
-	}
-	
-	func cropViewController(_ cropViewController: CropViewController, didCropToCircularImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
-		self.profileImage = image
-		self.uploadProfileImageFunc()
-		cropViewController.navigationController?.dismiss(animated: true, completion: nil)
-	}
-	
-	func uploadProfileImageFunc() {
-		
-		guard let uploadURL = APIController.shared.currentUser?.profile_photo_upload_url else {
-			print("Error: could not get URL to upload profile photo.")
-			return
-		}
-		
-		guard self.profileImage != nil else {
-			print("Error: select photo error.")
-			return
-		}
-		
-		let profilePhoto = UIImageJPEGRepresentation(self.profileImage!, 0.1)!
-		ImageCache.shared.set(url: uploadURL, imageData: profilePhoto, callback: { (result) in
-			print("Uploaded profile image")
-		})
-		
-		Alamofire.upload(profilePhoto,
-						 to: uploadURL,
-						 method: .put,
-						 headers: [
-							"Content-Type": "image/jpeg",
-							])
-			.validate(statusCode: 200..<300)
-			.responseData { response in
-				switch response.result {
-				case .success:
-					break
-				case .failure(let error):
-					let alertController = UIAlertController(title: "Couldn't upload profile image.", message: error.localizedDescription, preferredStyle: .alert)
-					alertController.addAction(UIAlertAction(title: "Retry", style: .default, handler: { (UIAlertAction) in
-						APIController.shared.currentUser!.reload { (error) in
-							error?.log()
-							self.uploadProfileImageFunc()
-						}
-					}))
-					self.presentingViewController?.present(alertController, animated: true, completion: nil)
-					return
-				}
-		}
 	}
 }
