@@ -223,7 +223,7 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	func initCircleFunc() {
 		
-		if let photo = APIController.shared.currentUser?.profile_photo_url { self.meImageView.kf.setImage(with: URL(string: photo)) }
+		if let photo = APIController.shared.currentUser?.profile_photo_url { self.meImageView.kf.setImage(with: URL(string: photo), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!) }
 		
 		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
 		self.meAndSomeoneBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.meImageView, lineWidth: 1.3, strokeColor: MeCircleColor, padding: 5))
@@ -247,7 +247,7 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		queue.async {
 			
-			JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/users?ids=\(friendIdArray)", method: .get, options: [
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/users?ids=\(friendIdArray)", method: .get, options: [
 				.header("Authorization", AuthString),
 				]).addCompletionHandler { (response) in
 					switch response {
@@ -267,7 +267,7 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		queue.async {
 			
-			JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/friend2p_pair", method: .get, options: [
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_pair", method: .get, options: [
 				.header("Authorization", AuthString),
 				]).addCompletionHandler { (response) in
 					switch response {
@@ -287,7 +287,7 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		queue.async {
 			
-			JSONAPIRequest(url: "http://192.168.200.191:8080/api/v2/2p/friend2p_request", method: .get, options: [
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_request", method: .get, options: [
 				.header("Authorization", AuthString),
 				]).addCompletionHandler { (response) in
 					switch response {
@@ -382,7 +382,7 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	func loadFriendsListFunc() {
 		
-		JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/friendship", method: .get, options: [
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/friendship", method: .get, options: [
 			.header("Authorization", AuthString),
 			]).addCompletionHandler { (response) in
 				switch response {
@@ -523,7 +523,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			}
 		}
 		
-		JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/friend2p_pair/\(isInviteeBool ? model.idString! : model.friendshipIdString!)", method: isInviteeBool ? .patch : .post, options: [
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_pair/\(isInviteeBool ? model.idString! : model.friendshipIdString!)", method: isInviteeBool ? .patch : .post, options: [
 			.header("Authorization", AuthString),
 			]).addCompletionHandler { (response) in
 				switch response {
@@ -541,7 +541,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 	func dashboardInviteListCellBtnClickFunc(friendshipIdString: String) {
 		print("*** friendshipIdString = \(friendshipIdString)")
 		
-		JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/friend2p_request/\(friendshipIdString)", method: .post, options: [
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_request/\(friendshipIdString)", method: .post, options: [
 			.header("Authorization", AuthString),
 			]).addCompletionHandler { (response) in
 				switch response {

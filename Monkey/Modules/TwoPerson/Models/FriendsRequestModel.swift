@@ -25,17 +25,17 @@ class FriendsRequestModel: NSObject {
 	
 	var statusInt : Int?
 	
-	class func friendsRequestModel(dict:[String:AnyObject], nameString:String?, pathString:String?) -> FriendsRequestModel {
+	class func friendsRequestModel(dict:[String:AnyObject], nameString:String? = nil, pathString:String? = nil) -> FriendsRequestModel {
 		
 		let friendsRequestModel = FriendsRequestModel()
 		
 		friendsRequestModel.nameString = nameString
 		friendsRequestModel.pathString = pathString
 		
-		friendsRequestModel.idString = dict["id"] as? String
+		friendsRequestModel.idString = dict["user_id"] as? String
 		friendsRequestModel.friendshipIdString = dict["friendshipId"] as? String
-		friendsRequestModel.inviteeIdString = dict["inviteeId"] as? String
-		friendsRequestModel.timestampDouble = dict["timestamp"] as? Double
+		friendsRequestModel.inviteeIdString = dict["invitee_id"] as? String
+		friendsRequestModel.timestampDouble = dict["next_invite_at"] as? Double
 		friendsRequestModel.statusInt = dict["status"] as? Int
 		
 		return friendsRequestModel

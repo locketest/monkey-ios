@@ -154,8 +154,9 @@ class RealmExperiment: MonkeyModel {
     dynamic var mc_invite_desc:String?
     dynamic var mc_invite_btn_pos_text:String?
 	
-	dynamic var contact_2p_ems_content:String?
-	dynamic var contact_2p_ems_link:String?
+	var contact_invite_remain_times = RealmOptional<Int>()
+	dynamic var contact_2p_sms_content1:String?
+	dynamic var contact_2p_sms_content2:String?
 	
 	required convenience init?(map: Map) {
 		self.init()

@@ -26,11 +26,11 @@ class RealmUser: MonkeyModel {
     
     var delete_at = RealmOptional<Double>()
 	
-//	var online = RealmOptional<Bool>()
-//	var enabled_two_p = RealmOptional<Bool>()
-//	var unlocked_two_p = RealmOptional<Bool>()
-//	var two_p_user_group_type = RealmOptional<Int>() // 1 planA, 2planB
-//	var match_type = RealmOptional<Int>() // 1 1p, 2 2p
+	var online = RealmOptional<Bool>(false)
+	var enabled_two_p = RealmOptional<Bool>(false)
+	var unlocked_two_p = RealmOptional<Bool>(false)
+	var two_p_user_group_type = RealmOptional<Int>(1) // 1 planA, 2planB
+	var match_type = RealmOptional<Int>(1) // 1 1p, 2 2p
 	
 	var seconds_in_app = RealmOptional<Int>()
 	
@@ -139,6 +139,8 @@ class RealmUser: MonkeyModel {
 		case birth_date(NSDate?)
 		case seconds_in_app(Int?)
 		
+		case match_type(Int?)
+		
 		case channels(List<RealmChannel>)
 	}
 	
@@ -179,6 +181,9 @@ class RealmUser: MonkeyModel {
 				attributesJSON["birth_date"] = birth_date?.iso8601 ?? NSNull()
 			case .seconds_in_app(let seconds_in_app):
 				attributesJSON["seconds_in_app"] = seconds_in_app ?? NSNull()
+				
+			case .match_type(let match_type):
+				attributesJSON["match_type"] = match_type ?? NSNull()
 				
 			case .channels(let channels):
 				relationshipsJSON["channels"] = [

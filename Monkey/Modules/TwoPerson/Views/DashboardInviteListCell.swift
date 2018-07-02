@@ -20,7 +20,7 @@ class DashboardInviteListCell: UITableViewCell {
 	
 	@IBOutlet weak var nameLabel: UILabel!
 	
-	@IBOutlet weak var headImageView: UIImageView!
+	@IBOutlet weak var headImageView: CachedImageView!
 	
 	@IBOutlet weak var actionButton: BigYellowButton!
 
@@ -30,13 +30,12 @@ class DashboardInviteListCell: UITableViewCell {
 		}
 		set(newDashboardInviteListModel){
 			
-			self.selectionStyle = .none
-			
 			self.nameLabel.text = newDashboardInviteListModel.nameString
 			
 			self.friendshipIdString = newDashboardInviteListModel.friendshipIdString
 			
-			self.headImageView.kf.setImage(with: URL(string: newDashboardInviteListModel.pathString!), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!)
+			self.headImageView.placeholder = Tools.getGenderDefaultImageFunc()
+			self.headImageView.url = newDashboardInviteListModel.pathString
 			
 			// statusInt为0表示未操作，此时按钮不能点，为1，再判断timestamp，可以点击的时间，如果小于当前时间，就可以点，否则还是不能点
 			if newDashboardInviteListModel.statusInt == 0 {

@@ -113,7 +113,7 @@ class InviteFriendsViewController: MonkeyViewController {
 		
 		if contacts == nil { // 说明没有请求过联系人，去请求联系人
 			
-			JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/contact", method: .get, options: [
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .get, options: [
 				.header("Authorization", AuthString),
 				]).addCompletionHandler { (response) in
 					switch response {
@@ -174,7 +174,7 @@ class InviteFriendsViewController: MonkeyViewController {
 extension InviteFriendsViewController : MyContactsCellDelegate {
 	
 	func sendInviteContactFunc(idString: String) {
-		JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/contact/\(idString)", method: .post, options: [
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact/\(idString)", method: .post, options: [
 			.header("Authorization", AuthString),
 			]).addCompletionHandler { (response) in
 				switch response {
@@ -196,11 +196,9 @@ extension InviteFriendsViewController : MyContactsCellDelegate {
 			
 			self.sendInviteContactFunc(idString: idString)
 			
-			let body = currentExperiment.contact_2p_ems_content! + currentExperiment.contact_2p_ems_link!
-			
 			let inviteFriendsViewController = MFMessageComposeViewController()
 			inviteFriendsViewController.recipients = [phoneString]
-			inviteFriendsViewController.body = body
+			inviteFriendsViewController.body = currentExperiment.contact_2p_sms_content2!
 			self.present(inviteFriendsViewController, animated: true)
 		}
 	}
@@ -289,7 +287,7 @@ extension InviteFriendsViewController {
 			
 //			print("*** sortedArray = \(sortedArray)")
 			
-			JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/contact", method: .put, parameters: ["data":sortedArray], options: [
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .put, parameters: ["data":sortedArray], options: [
 				.header("Authorization", AuthString),
 				]).addCompletionHandler { (response) in
 					switch response {

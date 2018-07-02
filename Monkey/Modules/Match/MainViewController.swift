@@ -428,6 +428,7 @@ class MainViewController: SwipeableViewController, ChatSessionLoadingDelegate {
 		self.updateBananas()
 		self.setupFriendships()
 		self.loadCurrentEventMode()
+//		self.handleTwopStatusFunc()
 		
 		self.skippedText.layer.opacity = 0.0
 		Socket.shared.isEnabled = true
@@ -952,18 +953,19 @@ class MainViewController: SwipeableViewController, ChatSessionLoadingDelegate {
 		self.setFactText(self.nextFact)
 	}
 	
-	@IBAction func twoPersonBtnClickFunc(_ sender: BigYellowButton) {
-		
-		self.twoPersonButton.backgroundColor = UIColor.white
-		
-		//		let user = APIController.shared.currentUser
-		
-		// user下添加un2plock字段，判断un2plock状态确定跳转不同界面
-		
-		//		let vc = UIStoryboard(name: "TwoPerson", bundle: nil).instantiateInitialViewController() as! TwoPersonPlanViewController
-		//		vc.modalPresentationStyle = .overFullScreen
-		//		self.present(vc, animated: true, completion: nil)
-		
+	func presentToTwoPersonPlanVcFunc(isPlanB: Bool = false) {
+		let vc = UIStoryboard(name: "TwoPerson", bundle: nil).instantiateInitialViewController() as! TwoPersonPlanViewController
+		vc.modalPresentationStyle = .overFullScreen
+		vc.isPlanBIsUnLockedTuple = (isPlanB, false)
+		vc.backClosure = {
+			self.twoPersonButton.backgroundColor = UIColor.yellow
+			self.twoPersonButton.isHidden = false
+			self.redDotLabel.isHidden = false
+		}
+		self.present(vc, animated: true, completion: nil)
+	}
+	
+	func presentToDashboardMainVcFunc() {
 		let vc = UIStoryboard(name: "TwoPerson", bundle: nil).instantiateViewController(withIdentifier: "DashboardMainViewController") as! DashboardMainViewController
 		vc.modalPresentationStyle = .overFullScreen
 		vc.backClosure = {
@@ -972,6 +974,100 @@ class MainViewController: SwipeableViewController, ChatSessionLoadingDelegate {
 			self.redDotLabel.isHidden = false
 		}
 		self.present(vc, animated: true, completion: nil)
+	}
+	
+	func getUnhandledFriendsRequestCountFunc() {
+		
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations", method: .get, options: [
+			.header("Authorization", AuthString),
+			]).addCompletionHandler { (response) in
+				switch response {
+				case .error(let error):
+					print("*** error : = \(error.message)")
+				case .success(let jsonAPIDocument):
+					
+					print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					
+					let array = jsonAPIDocument.json["data"] as! [[String: AnyObject]]
+					
+					if array.count > 0 {
+						
+						var models : [FriendsRequestModel] = []
+						
+						array.forEach({ (contact) in
+							let userId = APIController.shared.currentUser!.user_id
+							let friendsRequestModel = FriendsRequestModel.friendsRequestModel(dict: contact)
+							
+							if userId == friendsRequestModel.inviteeIdString && 0 == friendsRequestModel.statusInt {
+								models.append(friendsRequestModel)
+							}
+						})
+						
+						if models.count > 0 {
+							self.redDotLabel.isHidden = false
+							self.redDotLabel.text = models.count.description
+						} else {
+							self.redDotLabel.isHidden = true
+						}
+					}
+				}
+		}
+	}
+	
+	func handleTargetVcFunc() {
+		
+		let user = APIController.shared.currentUser!
+		
+		if user.unlocked_two_p.value! {
+			self.presentToDashboardMainVcFunc()
+		} else {
+			if user.two_p_user_group_type.value! == 1 { // plan A
+				self.presentToTwoPersonPlanVcFunc(isPlanB: false)
+			} else {  // plan B
+				self.presentToTwoPersonPlanVcFunc(isPlanB: true)
+			}
+		}
+	}
+	
+	/**
+	 2p相关状态
+	*/
+	func handleTwopStatusFunc() {
+		
+		let user = APIController.shared.currentUser!
+		
+		if user.enabled_two_p.value! {
+			self.twoPersonButton.isHidden = false
+			
+			if user.match_type.value == 2 {
+				self.handleTargetVcFunc()
+			}
+			
+			// 请求friends request接口，判断status为0的请求个数
+			self.getUnhandledFriendsRequestCountFunc()
+		}
+	}
+	
+	@IBAction func twoPersonBtnClickFunc(_ sender: BigYellowButton) {
+		
+		self.twoPersonButton.backgroundColor = UIColor.white
+		
+		let user = APIController.shared.currentUser!
+		
+		var attributes: [RealmUser.Attribute] = []
+		
+		attributes.append(.match_type(2))
+		
+		user.update(attributes: attributes) { (error) in
+			print("*** error = \(error?.status ?? "no error status")")
+		}
+		
+		// 睿，sandbox测试打开
+//		self.handleTargetVcFunc()
+		
+//		self.presentToTwoPersonPlanVcFunc()
+		
+		self.presentToDashboardMainVcFunc()
 	}
 	
 	@IBAction func acceptButtonTapped(sender: Any) {

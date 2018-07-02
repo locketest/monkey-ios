@@ -26,7 +26,7 @@ class MyContactsCell: UITableViewCell {
 	
 	@IBOutlet weak var funnelLabel: UILabel!
 	
-	@IBOutlet weak var headImageView: UIImageView!
+	@IBOutlet weak var headImageView: CachedImageView!
 	
 	@IBOutlet weak var inviteButton: BigYellowButton!
 	
@@ -36,8 +36,6 @@ class MyContactsCell: UITableViewCell {
 		}
 		set(newMyContactsModel){
 			
-			self.selectionStyle = .none
-			
 			self.idString = newMyContactsModel.idString
 			
 			self.phoneString = newMyContactsModel.phoneString
@@ -45,8 +43,6 @@ class MyContactsCell: UITableViewCell {
 			self.nameLabel.text = newMyContactsModel.nameString
 			
 			self.phoneLabel.text = newMyContactsModel.phoneString
-			
-			self.headImageView.kf.setImage(with: URL(string: newMyContactsModel.pathString!), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!)
 			
 			if let timeStamp = newMyContactsModel.timestampDouble {
 				
@@ -71,9 +67,9 @@ class MyContactsCell: UITableViewCell {
 			guard newMyContactsModel.phoneString != nil else { return }
 			
 			if FileManager.default.fileExists(atPath: ContactsImageRootPath + "/" + newMyContactsModel.phoneString!) {
-				self.headImageView.image = UIImage(contentsOfFile: ContactsImageRootPath + "/" + newMyContactsModel.phoneString!)
+				self.headImageView.url = ContactsImageRootPath + "/" + newMyContactsModel.phoneString!
 			} else {
-				self.headImageView.image = UIImage(named: "insDefultImg")
+				self.headImageView.placeholder = Tools.getGenderDefaultImageFunc()
 			}
 		}
 	}

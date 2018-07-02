@@ -30,7 +30,7 @@ class DashboardFriendsListCell: UITableViewCell {
 	
 	@IBOutlet weak var emojiLabel: EmojiLabel!
 	
-	@IBOutlet weak var headImageView: UIImageView!
+	@IBOutlet weak var headImageView: CachedImageView!
 	
 	@IBOutlet weak var actionButton: JigglyButton!
 	
@@ -44,15 +44,14 @@ class DashboardFriendsListCell: UITableViewCell {
 		}
 		set(newDashboardFriendsListModel){
 			
-			self.selectionStyle = .none
-			
 			self.tempDashboardFriendsListModel = newDashboardFriendsListModel
 			
 			self.actionButton.emojiLabel = self.emojiLabel
 			
 			self.nameLabel.text = newDashboardFriendsListModel.nameString
 			
-			self.headImageView.kf.setImage(with: URL(string: newDashboardFriendsListModel.pathString!), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!)
+			self.headImageView.placeholder = Tools.getGenderDefaultImageFunc()
+			self.headImageView.url = newDashboardFriendsListModel.pathString
 			
 			// 根据状态控制actionButton的样式和内容，如果status为0未操作，timestampDouble时间还未到，inviteeId是自己，表示是被邀请的item
 			let date = Date(timeIntervalSince1970: newDashboardFriendsListModel.timestampDouble! / 1000)

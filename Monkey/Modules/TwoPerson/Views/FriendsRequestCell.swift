@@ -20,7 +20,7 @@ class FriendsRequestCell: UITableViewCell {
 
 	@IBOutlet weak var nameLabel: UILabel!
 	
-	@IBOutlet weak var headImageView: UIImageView!
+	@IBOutlet weak var headImageView: CachedImageView!
 	
 	var friendsRequestModel : FriendsRequestModel {
 		get {
@@ -28,13 +28,12 @@ class FriendsRequestCell: UITableViewCell {
 		}
 		set(newFriendsRequestModel){
 			
-			self.selectionStyle = .none
-			
 			self.idString = newFriendsRequestModel.idString
 			
 			self.nameLabel.text = newFriendsRequestModel.nameString
 			
-			self.headImageView.kf.setImage(with: URL(string: newFriendsRequestModel.pathString!), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!)
+			self.headImageView.placeholder = Tools.getGenderDefaultImageFunc()
+			self.headImageView.url = newFriendsRequestModel.pathString
 		}
 	}
 

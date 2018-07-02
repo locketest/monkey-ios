@@ -9,6 +9,7 @@
 import UIKit
 import Contacts
 import MessageUI
+import RealmSwift
 
 import UIKit
 
@@ -167,7 +168,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	
 	func initCircleFunc() {
 		
-		if let photo = APIController.shared.currentUser?.profile_photo_url { self.planAMeImageView.kf.setImage(with: URL(string: photo)) }
+		if let photo = APIController.shared.currentUser?.profile_photo_url { self.planAMeImageView.kf.setImage(with: URL(string: photo), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!) }
 		
 		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
 		self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planAMeImageView, lineWidth: 1.3, strokeColor: MeCircleColor, padding: 4))
@@ -195,7 +196,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	func loadFriendsRequestFunc() {
 		
 		// 拿到friends list里的friendship_id跟后端返回的friendship_id对比，相等就拿头像和名字，跟模型一起传到model里填充完整模型
-		JSONAPIRequest(url: "http://192.168.200.191:8080/api/v2/2p/friend2p_request", method: .get, options: [
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_request", method: .get, options: [
 			.header("Authorization", AuthString),
 			]).addCompletionHandler { (response) in
 				switch response {
@@ -277,7 +278,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		if contacts == nil { // 说明没有请求过联系人，去请求联系人
 			
-			JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/contact", method: .get, options: [
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .get, options: [
 				.header("Authorization", AuthString),
 				]).addCompletionHandler { (response) in
 					switch response {
@@ -521,6 +522,16 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 						self.topTitleLabel.font = UIFont.boldSystemFont(ofSize: 28)
 					} else {
 						self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " \(remainTimes) ", textThree:"Friends to try your first 2P mode!", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
+						
+						if let realm = try? Realm() {
+							do {
+								try realm.write {
+									UserManager.shared.currentExperiment!.contact_invite_remain_times.value = remainTimes
+								}
+							} catch(let error) {
+								print("Error: ", error)
+							}
+						}
 					}
 				}
 		}
@@ -549,11 +560,9 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 			
 			self.sendInviteContactFunc(idString: idString)
 			
-			let body = currentExperiment.contact_2p_ems_content! + currentExperiment.contact_2p_ems_link!
-			
 			let inviteFriendsViewController = MFMessageComposeViewController()
 			inviteFriendsViewController.recipients = [phoneString]
-			inviteFriendsViewController.body = body
+			inviteFriendsViewController.body = currentExperiment.contact_2p_sms_content1!
 //			inviteFriendsViewController.messageComposeDelegate = self
 			self.present(inviteFriendsViewController, animated: true)
 		}
@@ -656,7 +665,7 @@ extension TwoPersonPlanViewController {
 			
 //			print("*** sortedArray = \(sortedArray)")
 			
-			JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/contact", method: .put, parameters: ["data":sortedArray], options: [
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .put, parameters: ["data":sortedArray], options: [
 				.header("Authorization", AuthString),
 				]).addCompletionHandler { (response) in
 					switch response {
