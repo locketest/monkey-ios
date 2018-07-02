@@ -487,6 +487,14 @@ extension Array {
     }
 }
 
+extension Array where Element: Equatable {
+	mutating func remove(_ object: Element) {
+		if let index = index(of: object) {
+			remove(at: index)
+		}
+	}
+}
+
 extension String {
     var capitalizedFirstLetter: String {
         if (self.isEmpty) {

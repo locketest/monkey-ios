@@ -180,6 +180,8 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	@IBOutlet weak var chatButton: BigYellowButton!
 	@IBOutlet weak var filterButton: BigYellowButton!
 	
+	@IBOutlet weak var twoPersonButton: BigYellowButton! // 2p按钮
+	@IBOutlet weak var redDotLabel: UILabel! // 红点数量提示
 	
 	@IBOutlet weak var matchModeContainer: UIView!
 	@IBOutlet weak var matchModeTip: UILabel!
@@ -1015,6 +1017,28 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	
 	private func resetFact() {
 		self.setFactText(self.nextFact)
+	}
+	
+	@IBAction func twoPersonBtnClickFunc(_ sender: BigYellowButton) {
+		
+		self.twoPersonButton.backgroundColor = UIColor.white
+		
+		//		let user = APIController.shared.currentUser
+		
+		// user下添加un2plock字段，判断un2plock状态确定跳转不同界面
+		
+		//		let vc = UIStoryboard(name: "TwoPerson", bundle: nil).instantiateInitialViewController() as! TwoPersonPlanViewController
+		//		vc.modalPresentationStyle = .overFullScreen
+		//		self.present(vc, animated: true, completion: nil)
+		
+		let vc = UIStoryboard(name: "TwoPerson", bundle: nil).instantiateViewController(withIdentifier: "DashboardMainViewController") as! DashboardMainViewController
+		vc.modalPresentationStyle = .overFullScreen
+		vc.backClosure = {
+			self.twoPersonButton.backgroundColor = UIColor.yellow
+			self.twoPersonButton.isHidden = false
+			self.redDotLabel.isHidden = false
+		}
+		self.present(vc, animated: true, completion: nil)
 	}
 	
 	@IBAction func acceptButtonTapped(sender: Any) {

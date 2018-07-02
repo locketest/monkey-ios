@@ -11,6 +11,12 @@
 		1B76554720132B0600FAB045 /* MKMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76554620132B0600FAB045 /* MKMatchManager.swift */; };
 		1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B76B194206A46560044AC7F /* RealmVideoCall.swift */; };
 		1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD655482046B2A900CAA2D5 /* Configs.swift */; };
+		3413C24D20E119BD00D8BD04 /* FriendshipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3413C24C20E119BD00D8BD04 /* FriendshipModel.swift */; };
+		3413C24E20E119BD00D8BD04 /* FriendshipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3413C24C20E119BD00D8BD04 /* FriendshipModel.swift */; };
+		3413C27120E21C6D00D8BD04 /* UsersInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3413C27020E21C6D00D8BD04 /* UsersInfoModel.swift */; };
+		3413C27220E21C6D00D8BD04 /* UsersInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3413C27020E21C6D00D8BD04 /* UsersInfoModel.swift */; };
+		3413C27420E2235600D8BD04 /* PairListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3413C27320E2235600D8BD04 /* PairListModel.swift */; };
+		3413C27520E2235600D8BD04 /* PairListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3413C27320E2235600D8BD04 /* PairListModel.swift */; };
 		341E735F20BBEF34001B8D55 /* SettingEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E735E20BBEF33001B8D55 /* SettingEditViewController.swift */; };
 		341E736020BBEF34001B8D55 /* SettingEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E735E20BBEF33001B8D55 /* SettingEditViewController.swift */; };
 		341E736220BBF575001B8D55 /* SettingEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E736120BBF575001B8D55 /* SettingEditCell.swift */; };
@@ -23,6 +29,42 @@
 		341E737320BD5696001B8D55 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737120BD5696001B8D55 /* UIViewExtension.swift */; };
 		341E737820BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */; };
 		341E737920BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */; };
+		347675EA20DB7809007EF130 /* InvitingProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347675E920DB7809007EF130 /* InvitingProgressLayer.swift */; };
+		347675EB20DB7809007EF130 /* InvitingProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347675E920DB7809007EF130 /* InvitingProgressLayer.swift */; };
+		34A0D3AF20D10DD800D6EFED /* TwoPerson.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34A0D3AE20D10DD800D6EFED /* TwoPerson.storyboard */; };
+		34A0D3B020D10DD800D6EFED /* TwoPerson.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34A0D3AE20D10DD800D6EFED /* TwoPerson.storyboard */; };
+		34A0D3B520D1127D00D6EFED /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A0D3B420D1127D00D6EFED /* ContactModel.swift */; };
+		34A0D3B620D1127D00D6EFED /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A0D3B420D1127D00D6EFED /* ContactModel.swift */; };
+		34A0D3B820D1162F00D6EFED /* TwoPersonPlanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A0D3B720D1162F00D6EFED /* TwoPersonPlanViewController.swift */; };
+		34A0D3B920D1162F00D6EFED /* TwoPersonPlanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A0D3B720D1162F00D6EFED /* TwoPersonPlanViewController.swift */; };
+		34A0D3BD20D1367200D6EFED /* ImageTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A0D3BC20D1367200D6EFED /* ImageTools.swift */; };
+		34A0D3BE20D1367200D6EFED /* ImageTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A0D3BC20D1367200D6EFED /* ImageTools.swift */; };
+		34AEE41020D8AA3200DECF3A /* InviteFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE40F20D8AA3200DECF3A /* InviteFriendsViewController.swift */; };
+		34AEE41120D8AA3200DECF3A /* InviteFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE40F20D8AA3200DECF3A /* InviteFriendsViewController.swift */; };
+		34AEE44420D9F54E00DECF3A /* DashboardMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE44320D9F54E00DECF3A /* DashboardMainViewController.swift */; };
+		34AEE44520D9F54E00DECF3A /* DashboardMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE44320D9F54E00DECF3A /* DashboardMainViewController.swift */; };
+		34AEE4BC20DA275300DECF3A /* DashboardFriendsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4BB20DA275300DECF3A /* DashboardFriendsListModel.swift */; };
+		34AEE4BD20DA275300DECF3A /* DashboardFriendsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4BB20DA275300DECF3A /* DashboardFriendsListModel.swift */; };
+		34AEE4BF20DA29FB00DECF3A /* DashboardFriendsListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4BE20DA29FB00DECF3A /* DashboardFriendsListCell.swift */; };
+		34AEE4C020DA29FB00DECF3A /* DashboardFriendsListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4BE20DA29FB00DECF3A /* DashboardFriendsListCell.swift */; };
+		34AEE4E220DA445700DECF3A /* DashboardInviteListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E120DA445700DECF3A /* DashboardInviteListModel.swift */; };
+		34AEE4E320DA445700DECF3A /* DashboardInviteListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E120DA445700DECF3A /* DashboardInviteListModel.swift */; };
+		34AEE4E520DA453200DECF3A /* DashboardInviteListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */; };
+		34AEE4E620DA453200DECF3A /* DashboardInviteListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */; };
+		34FF0D2620D154AF00B1AC24 /* FriendsRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */; };
+		34FF0D2720D154AF00B1AC24 /* FriendsRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */; };
+		34FF0D2A20D1560000B1AC24 /* MyContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2920D1560000B1AC24 /* MyContactsModel.swift */; };
+		34FF0D2B20D1560000B1AC24 /* MyContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2920D1560000B1AC24 /* MyContactsModel.swift */; };
+		34FF0D2F20D2163900B1AC24 /* TwoPerson.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34FF0D2E20D2163900B1AC24 /* TwoPerson.xib */; };
+		34FF0D3020D2163900B1AC24 /* TwoPerson.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34FF0D2E20D2163900B1AC24 /* TwoPerson.xib */; };
+		34FF0D3220D2167600B1AC24 /* TwoPersonSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D3120D2167600B1AC24 /* TwoPersonSectionView.swift */; };
+		34FF0D3320D2167600B1AC24 /* TwoPersonSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D3120D2167600B1AC24 /* TwoPersonSectionView.swift */; };
+		34FF0D3620D2283B00B1AC24 /* FriendsRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D3520D2283B00B1AC24 /* FriendsRequestCell.swift */; };
+		34FF0D3720D2283B00B1AC24 /* FriendsRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D3520D2283B00B1AC24 /* FriendsRequestCell.swift */; };
+		34FF0D3920D2312E00B1AC24 /* MyContactsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D3820D2312E00B1AC24 /* MyContactsCell.swift */; };
+		34FF0D3A20D2312E00B1AC24 /* MyContactsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D3820D2312E00B1AC24 /* MyContactsCell.swift */; };
+		34FF0D6220D26FD300B1AC24 /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D6120D26FD300B1AC24 /* Tools.swift */; };
+		34FF0D6320D26FD300B1AC24 /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D6120D26FD300B1AC24 /* Tools.swift */; };
 		4C3DC914DC936FD2E476F078 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CF9C670055FE2BC0618C68 /* AVFoundation.framework */; };
 		5D419F63CE951F23C4C7D274 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFD94AD4FD0C097E556567A4 /* CoreTelephony.framework */; };
 		73E22875347F9C59CCA69773 /* Pods_Monkey_Sandbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D1AFCAC9E343F31F82E5CC /* Pods_Monkey_Sandbox.framework */; };
@@ -459,12 +501,33 @@
 		1C187BCB3CB68083954F9BC0 /* Pods_Monkey_Release.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Monkey_Release.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		274E4C9FAEF8A2DF0CA46E91 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE97C1F3FCD83F9563287C4 /* Pods-Monkey.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.production.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.production.xcconfig"; sourceTree = "<group>"; };
+		3413C24C20E119BD00D8BD04 /* FriendshipModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendshipModel.swift; sourceTree = "<group>"; };
+		3413C27020E21C6D00D8BD04 /* UsersInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersInfoModel.swift; sourceTree = "<group>"; };
+		3413C27320E2235600D8BD04 /* PairListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairListModel.swift; sourceTree = "<group>"; };
 		341E735E20BBEF33001B8D55 /* SettingEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingEditViewController.swift; sourceTree = "<group>"; };
 		341E736120BBF575001B8D55 /* SettingEditCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingEditCell.swift; sourceTree = "<group>"; };
 		341E736620BD4320001B8D55 /* DeleteAccountPopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountPopupViewController.swift; sourceTree = "<group>"; };
 		341E736C20BD496E001B8D55 /* ResumeMyAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumeMyAccountViewController.swift; sourceTree = "<group>"; };
 		341E737120BD5696001B8D55 /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringExtension.swift; sourceTree = "<group>"; };
+		347675E920DB7809007EF130 /* InvitingProgressLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InvitingProgressLayer.swift; sourceTree = "<group>"; };
+		34A0D3AE20D10DD800D6EFED /* TwoPerson.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TwoPerson.storyboard; sourceTree = "<group>"; };
+		34A0D3B420D1127D00D6EFED /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
+		34A0D3B720D1162F00D6EFED /* TwoPersonPlanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoPersonPlanViewController.swift; sourceTree = "<group>"; };
+		34A0D3BC20D1367200D6EFED /* ImageTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTools.swift; sourceTree = "<group>"; };
+		34AEE40F20D8AA3200DECF3A /* InviteFriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewController.swift; sourceTree = "<group>"; };
+		34AEE44320D9F54E00DECF3A /* DashboardMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardMainViewController.swift; sourceTree = "<group>"; };
+		34AEE4BB20DA275300DECF3A /* DashboardFriendsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardFriendsListModel.swift; sourceTree = "<group>"; };
+		34AEE4BE20DA29FB00DECF3A /* DashboardFriendsListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardFriendsListCell.swift; sourceTree = "<group>"; };
+		34AEE4E120DA445700DECF3A /* DashboardInviteListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardInviteListModel.swift; sourceTree = "<group>"; };
+		34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardInviteListCell.swift; sourceTree = "<group>"; };
+		34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsRequestModel.swift; sourceTree = "<group>"; };
+		34FF0D2920D1560000B1AC24 /* MyContactsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyContactsModel.swift; sourceTree = "<group>"; };
+		34FF0D2E20D2163900B1AC24 /* TwoPerson.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoPerson.xib; sourceTree = "<group>"; };
+		34FF0D3120D2167600B1AC24 /* TwoPersonSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoPersonSectionView.swift; sourceTree = "<group>"; };
+		34FF0D3520D2283B00B1AC24 /* FriendsRequestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsRequestCell.swift; sourceTree = "<group>"; };
+		34FF0D3820D2312E00B1AC24 /* MyContactsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyContactsCell.swift; sourceTree = "<group>"; };
+		34FF0D6120D26FD300B1AC24 /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
 		36BDAAEC1AB6615D506ADC62 /* Pods-Monkey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Monkey.release.xcconfig"; path = "Pods/Target Support Files/Pods-Monkey/Pods-Monkey.release.xcconfig"; sourceTree = "<group>"; };
 		52D1AFCAC9E343F31F82E5CC /* Pods_Monkey_Sandbox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Monkey_Sandbox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79CF9C670055FE2BC0618C68 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -779,6 +842,55 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		34A0D3AA20D1051F00D6EFED /* TwoPerson */ = {
+			isa = PBXGroup;
+			children = (
+				34A0D3AD20D1055B00D6EFED /* Views */,
+				34A0D3AC20D1055400D6EFED /* Models */,
+				34A0D3AB20D1054C00D6EFED /* Controllers */,
+			);
+			path = TwoPerson;
+			sourceTree = "<group>";
+		};
+		34A0D3AB20D1054C00D6EFED /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				34A0D3B720D1162F00D6EFED /* TwoPersonPlanViewController.swift */,
+				34AEE40F20D8AA3200DECF3A /* InviteFriendsViewController.swift */,
+				34AEE44320D9F54E00DECF3A /* DashboardMainViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		34A0D3AC20D1055400D6EFED /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				34A0D3B420D1127D00D6EFED /* ContactModel.swift */,
+				34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */,
+				34FF0D2920D1560000B1AC24 /* MyContactsModel.swift */,
+				34AEE4BB20DA275300DECF3A /* DashboardFriendsListModel.swift */,
+				34AEE4E120DA445700DECF3A /* DashboardInviteListModel.swift */,
+				3413C24C20E119BD00D8BD04 /* FriendshipModel.swift */,
+				3413C27020E21C6D00D8BD04 /* UsersInfoModel.swift */,
+				3413C27320E2235600D8BD04 /* PairListModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		34A0D3AD20D1055B00D6EFED /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				34A0D3AE20D10DD800D6EFED /* TwoPerson.storyboard */,
+				34FF0D2E20D2163900B1AC24 /* TwoPerson.xib */,
+				34FF0D3120D2167600B1AC24 /* TwoPersonSectionView.swift */,
+				34FF0D3520D2283B00B1AC24 /* FriendsRequestCell.swift */,
+				34FF0D3820D2312E00B1AC24 /* MyContactsCell.swift */,
+				34AEE4BE20DA29FB00DECF3A /* DashboardFriendsListCell.swift */,
+				34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		4CFD1997C021F7E7A16B61BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -983,6 +1095,8 @@
 				8B3A787C1DB32CB000FA68A7 /* SoundPlayer.swift */,
 				8499A58B1E86DED80088D0D2 /* TapticFeedback.swift */,
 				341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */,
+				34A0D3BC20D1367200D6EFED /* ImageTools.swift */,
+				34FF0D6120D26FD300B1AC24 /* Tools.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1057,6 +1171,7 @@
 		D105860420A0563900E63ADC /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				34A0D3AA20D1051F00D6EFED /* TwoPerson */,
 				D105861020A0575C00E63ADC /* Instagram */,
 				D105860D20A0570700E63ADC /* Landing */,
 				D105860820A056C400E63ADC /* Channel */,
@@ -1208,6 +1323,7 @@
 		D105861820A05D2D00E63ADC /* CustomUI */ = {
 			isa = PBXGroup;
 			children = (
+				347675E920DB7809007EF130 /* InvitingProgressLayer.swift */,
 				8B8B2D731EC52B910086547C /* CachedImageView.swift */,
 				D4F35BCB1F5AF564003D3902 /* AsyncCarouselImageView.swift */,
 				8BEB20031EFC6067001AAC3C /* BackgroundColorGradientLayer.swift */,
@@ -1576,6 +1692,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34A0D3AF20D10DD800D6EFED /* TwoPerson.storyboard in Resources */,
 				D40E59361F3A816B0091A7B2 /* CallNotificationView.xib in Resources */,
 				8B465FC71E3C196D0023CD74 /* tod_game.wav in Resources */,
 				84BD64011E74AFCB00C08983 /* whoosh.wav in Resources */,
@@ -1590,6 +1707,7 @@
 				8B465FC51E3C191F0023CD74 /* click.mp3 in Resources */,
 				8B3A78741DB2F87C00FA68A7 /* clock.mp3 in Resources */,
 				D17CE9852009C2E4002F4F9D /* GoogleService-Info.plist in Resources */,
+				34FF0D2F20D2163900B1AC24 /* TwoPerson.xib in Resources */,
 				D10585EF20A04F5B00E63ADC /* onboarding-2.gif in Resources */,
 				D1B79D332060DACB00F209B4 /* GPUImage.InstagramFilter.bundle in Resources */,
 				8B3A78751DB2F87C00FA68A7 /* win.mp3 in Resources */,
@@ -1620,6 +1738,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34A0D3B020D10DD800D6EFED /* TwoPerson.storyboard in Resources */,
 				D1A22AF320A03F8A004F0F05 /* CallNotificationView.xib in Resources */,
 				D1A22AF420A03F8A004F0F05 /* tod_game.wav in Resources */,
 				D1A22AF520A03F8A004F0F05 /* whoosh.wav in Resources */,
@@ -1634,6 +1753,7 @@
 				D1A22AFF20A03F8A004F0F05 /* click.mp3 in Resources */,
 				D1A22B0020A03F8A004F0F05 /* clock.mp3 in Resources */,
 				D10585F020A04F5B00E63ADC /* onboarding-2.gif in Resources */,
+				34FF0D3020D2163900B1AC24 /* TwoPerson.xib in Resources */,
 				D1A22B0320A03F8A004F0F05 /* GPUImage.InstagramFilter.bundle in Resources */,
 				D1A22B0420A03F8A004F0F05 /* win.mp3 in Resources */,
 				D1A22B0520A03F8A004F0F05 /* GoogleService-Info.plist in Resources */,
@@ -1758,6 +1878,7 @@
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -1780,6 +1901,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1889,6 +2011,7 @@
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -1911,6 +2034,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1938,6 +2062,7 @@
 				D1B79D5A20614F8200F209B4 /* GPUImageSixInputFilter.m in Sources */,
 				C0DAAB121F53816000739F42 /* RealmInstagramAccount.swift in Sources */,
 				8435C2E61F13D0FD00C80AC6 /* MessageTableViewCell.swift in Sources */,
+				34FF0D2620D154AF00B1AC24 /* FriendsRequestModel.swift in Sources */,
 				D1025CED20A2E79F00557B64 /* ApiObject.swift in Sources */,
 				D1B79D2F2060DACB00F209B4 /* IFWaldenFilter.m in Sources */,
 				8B1769461ED16B98005EF8D4 /* RealmMessage.swift in Sources */,
@@ -1948,12 +2073,15 @@
 				D1B79D5520611C5500F209B4 /* HWCameraManager.m in Sources */,
 				D1B79CFF2060B52500F209B4 /* RealmFilter.swift in Sources */,
 				D192A3E9202ADF1000791002 /* SmallYellowButton.swift in Sources */,
+				34FF0D6220D26FD300B1AC24 /* Tools.swift in Sources */,
 				8B19B6781EBD5F3D00493A3A /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */,
+				34AEE4BC20DA275300DECF3A /* DashboardFriendsListModel.swift in Sources */,
 				D1025CF020A2FD9900557B64 /* MonkeyModel.swift in Sources */,
 				D1B79D372060DACB00F209B4 /* IFToasterFilter.m in Sources */,
 				C06FBB521F3A559B00659489 /* RealmCall.swift in Sources */,
 				8BE35E251DB9BF97002049B5 /* Achievements.swift in Sources */,
 				1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */,
+				3413C27420E2235600D8BD04 /* PairListModel.swift in Sources */,
 				BF5258B01E95D1F4002EA03F /* RealmUser.swift in Sources */,
 				C0CF020B1F58CA45009D7B33 /* PresentPopupTransitionAnimator.swift in Sources */,
 				D10490ED20ADB02000381F9E /* AgoraService.swift in Sources */,
@@ -1968,18 +2096,24 @@
 				D43415521F33812C00A481CC /* RatingNotificationView.swift in Sources */,
 				D12E22942010747200703F9B /* RemoteConfig.swift in Sources */,
 				8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */,
+				3413C27120E21C6D00D8BD04 /* UsersInfoModel.swift in Sources */,
 				847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */,
 				D1B79CFD2060243700F209B4 /* FilterCollectionView.swift in Sources */,
 				8B2ED8BE1EF877360048CA23 /* SwipeableTransitionDismissAnimator.swift in Sources */,
 				D1B79D402060DACB00F209B4 /* IFNashvilleFilter.m in Sources */,
 				D10490F020ADB5F000381F9E /* OpenTokService.swift in Sources */,
 				D1025CE020A1406C00557B64 /* SettingHeadView.swift in Sources */,
+				34A0D3BD20D1367200D6EFED /* ImageTools.swift in Sources */,
 				D192A3DB20286E0600791002 /* TextChatViewController.swift in Sources */,
+				34FF0D3920D2312E00B1AC24 /* MyContactsCell.swift in Sources */,
 				C047D7C71F6C36160048286F /* CountingLabel.swift in Sources */,
 				D192A3E7202AD1CE00791002 /* MatchViewControllerProtocol.swift in Sources */,
 				8B3A787B1DB32ABF00FA68A7 /* EmojiLabel.swift in Sources */,
 				D1025CEA20A1406C00557B64 /* SettingCancelSaveCell.swift in Sources */,
+				34AEE44420D9F54E00DECF3A /* DashboardMainViewController.swift in Sources */,
+				34FF0D3220D2167600B1AC24 /* TwoPersonSectionView.swift in Sources */,
 				D1025CE620A1406C00557B64 /* SettingMainViewController.swift in Sources */,
+				34A0D3B820D1162F00D6EFED /* TwoPersonPlanViewController.swift in Sources */,
 				C0AD96BA1F6721A9007932AF /* RealmFriendship.swift in Sources */,
 				8B3A787D1DB32CB000FA68A7 /* SoundPlayer.swift in Sources */,
 				1B76B195206A46560044AC7F /* RealmVideoCall.swift in Sources */,
@@ -2001,6 +2135,7 @@
 				8B7DC74C1EF5CF9000A3F966 /* ChannelsTableViewCell.swift in Sources */,
 				D1F2712A20D8CE9B00F44C01 /* BlurEffectView.swift in Sources */,
 				D1B79D312060DACB00F209B4 /* IFEarlybirdFilter.m in Sources */,
+				34AEE41020D8AA3200DECF3A /* InviteFriendsViewController.swift in Sources */,
 				8B46EAEA1E8767C00069C7D7 /* UsernameTextField.swift in Sources */,
 				D1B79D392060DACB00F209B4 /* IFAmaroFilter.m in Sources */,
 				8464868D1F1D65240092E89E /* JigglyButton.swift in Sources */,
@@ -2020,7 +2155,9 @@
 				BF8C38B51E9A0B620089B313 /* MainViewController+Location.swift in Sources */,
 				D1B79D022060C94800F209B4 /* MonkeyFilterCell.swift in Sources */,
 				D1025CDC20A1406C00557B64 /* SettingImageCell.swift in Sources */,
+				3413C24D20E119BD00D8BD04 /* FriendshipModel.swift in Sources */,
 				8BE02A4A1EEA4187004CF000 /* SwipeableViewController.swift in Sources */,
+				34FF0D2A20D1560000B1AC24 /* MyContactsModel.swift in Sources */,
 				D1B79D3C2060DACB00F209B4 /* IFLomofiFilter.m in Sources */,
 				8B7DC74A1EF5CADB00A3F966 /* ChannelsViewController.swift in Sources */,
 				D192A3EC202B015B00791002 /* KeyboardManager.m in Sources */,
@@ -2036,6 +2173,7 @@
 				D43AD40B1F12B52600DE6BBD /* CallViewController+Clock.swift in Sources */,
 				1B3F79A2201831140069D473 /* APIController+UserCenter.swift in Sources */,
 				D1F7912620B3CE610097574B /* GPUImageFilterGroup+Handler.m in Sources */,
+				34AEE4E520DA453200DECF3A /* DashboardInviteListCell.swift in Sources */,
 				D1B79CF4205FA80800F209B4 /* UserOptions.swift in Sources */,
 				D1A7DC2B2049506800B061F9 /* MonkeySwitch.swift in Sources */,
 				D147127820AD65870055516A /* MatchModel.swift in Sources */,
@@ -2045,6 +2183,7 @@
 				8B7DC7481EF5C9E000A3F966 /* RealmChannel.swift in Sources */,
 				C0197E371F60A435005F121A /* RealmBlock.swift in Sources */,
 				D1B79D322060DACB00F209B4 /* IFRiseFilter.m in Sources */,
+				34AEE4E220DA445700DECF3A /* DashboardInviteListModel.swift in Sources */,
 				341E736720BD4320001B8D55 /* DeleteAccountPopupViewController.swift in Sources */,
 				8435C2E81F13DBBC00C80AC6 /* ChatViewModel.swift in Sources */,
 				8BC95FFA1DF626DD00710628 /* WelcomeViewController.swift in Sources */,
@@ -2063,6 +2202,8 @@
 				341E736D20BD496E001B8D55 /* ResumeMyAccountViewController.swift in Sources */,
 				D1B79D5B20614F8200F209B4 /* GPUImageFiveInputFilter.m in Sources */,
 				8BE02A4E1EEA4B62004CF000 /* SwipeableInteractiveTransition.swift in Sources */,
+				34AEE4BF20DA29FB00DECF3A /* DashboardFriendsListCell.swift in Sources */,
+				34A0D3B520D1127D00D6EFED /* ContactModel.swift in Sources */,
 				BF8C38B71E9A188E0089B313 /* RealmDataController.swift in Sources */,
 				8B7C193A1DB17967002FA6C9 /* MainViewController.swift in Sources */,
 				D147128E20AD98080055516A /* ChannelService.swift in Sources */,
@@ -2072,6 +2213,8 @@
 				8BE491321E875E3B002E9D78 /* AgePickerView.swift in Sources */,
 				8499A58C1E86DED80088D0D2 /* TapticFeedback.swift in Sources */,
 				C0DAAB141F538C5300739F42 /* RealmInstagramPhoto.swift in Sources */,
+				34FF0D3620D2283B00B1AC24 /* FriendsRequestCell.swift in Sources */,
+				347675EA20DB7809007EF130 /* InvitingProgressLayer.swift in Sources */,
 				D1B79D302060DACB00F209B4 /* IFSierraFilter.m in Sources */,
 				990EC94C20997BC600CA5E0B /* InstagramAuthViewController.swift in Sources */,
 				D1025CDE20A1406C00557B64 /* SettingButtonCell.swift in Sources */,
@@ -2108,6 +2251,7 @@
 				D1A22A5E20A03F8A004F0F05 /* GPUImageSixInputFilter.m in Sources */,
 				D1A22A5F20A03F8A004F0F05 /* RealmInstagramAccount.swift in Sources */,
 				D1A22A6020A03F8A004F0F05 /* MessageTableViewCell.swift in Sources */,
+				34FF0D2720D154AF00B1AC24 /* FriendsRequestModel.swift in Sources */,
 				D1025CEE20A2E79F00557B64 /* ApiObject.swift in Sources */,
 				D1A22A6120A03F8A004F0F05 /* IFWaldenFilter.m in Sources */,
 				D1A22A6220A03F8A004F0F05 /* RealmMessage.swift in Sources */,
@@ -2118,12 +2262,15 @@
 				D1A22A6720A03F8A004F0F05 /* HWCameraManager.m in Sources */,
 				D1A22A6920A03F8A004F0F05 /* RealmFilter.swift in Sources */,
 				D1A22A6A20A03F8A004F0F05 /* SmallYellowButton.swift in Sources */,
+				34FF0D6320D26FD300B1AC24 /* Tools.swift in Sources */,
 				D1A22A6B20A03F8A004F0F05 /* PopupTransitionPresentPopupOnPopupAnimator.swift in Sources */,
+				34AEE4BD20DA275300DECF3A /* DashboardFriendsListModel.swift in Sources */,
 				D1025CF120A2FD9900557B64 /* MonkeyModel.swift in Sources */,
 				D1A22A6C20A03F8A004F0F05 /* IFToasterFilter.m in Sources */,
 				D1A22A6E20A03F8A004F0F05 /* RealmCall.swift in Sources */,
 				D1A22A6F20A03F8A004F0F05 /* Achievements.swift in Sources */,
 				D1A22A7020A03F8A004F0F05 /* Configs.swift in Sources */,
+				3413C27520E2235600D8BD04 /* PairListModel.swift in Sources */,
 				D1A22A7120A03F8A004F0F05 /* RealmUser.swift in Sources */,
 				D1A22A7220A03F8A004F0F05 /* PresentPopupTransitionAnimator.swift in Sources */,
 				D10490EE20ADB02000381F9E /* AgoraService.swift in Sources */,
@@ -2138,18 +2285,24 @@
 				D1A22A7920A03F8A004F0F05 /* RatingNotificationView.swift in Sources */,
 				D1A22A7B20A03F8A004F0F05 /* RemoteConfig.swift in Sources */,
 				D1A22A7C20A03F8A004F0F05 /* Apns.swift in Sources */,
+				3413C27220E21C6D00D8BD04 /* UsersInfoModel.swift in Sources */,
 				D1A22A7D20A03F8A004F0F05 /* ProfilePhotoButtonView.swift in Sources */,
 				D1A22A7E20A03F8A004F0F05 /* FilterCollectionView.swift in Sources */,
 				D1A22A8020A03F8A004F0F05 /* SwipeableTransitionDismissAnimator.swift in Sources */,
 				D1A22A8120A03F8A004F0F05 /* IFNashvilleFilter.m in Sources */,
 				D10490F120ADB5F000381F9E /* OpenTokService.swift in Sources */,
 				D1025CE120A1406C00557B64 /* SettingHeadView.swift in Sources */,
+				34A0D3BE20D1367200D6EFED /* ImageTools.swift in Sources */,
 				D1A22A8220A03F8A004F0F05 /* TextChatViewController.swift in Sources */,
+				34FF0D3A20D2312E00B1AC24 /* MyContactsCell.swift in Sources */,
 				D1A22A8320A03F8A004F0F05 /* CountingLabel.swift in Sources */,
 				D1A22A8420A03F8A004F0F05 /* MatchViewControllerProtocol.swift in Sources */,
 				D1A22A8520A03F8A004F0F05 /* EmojiLabel.swift in Sources */,
 				D1025CEB20A1406C00557B64 /* SettingCancelSaveCell.swift in Sources */,
+				34AEE44520D9F54E00DECF3A /* DashboardMainViewController.swift in Sources */,
+				34FF0D3320D2167600B1AC24 /* TwoPersonSectionView.swift in Sources */,
 				D1025CE720A1406C00557B64 /* SettingMainViewController.swift in Sources */,
+				34A0D3B920D1162F00D6EFED /* TwoPersonPlanViewController.swift in Sources */,
 				D1A22A8620A03F8A004F0F05 /* RealmFriendship.swift in Sources */,
 				D1A22A8720A03F8A004F0F05 /* SoundPlayer.swift in Sources */,
 				D1A22A8920A03F8A004F0F05 /* RealmVideoCall.swift in Sources */,
@@ -2171,6 +2324,7 @@
 				D1A22A9920A03F8A004F0F05 /* ChannelsTableViewCell.swift in Sources */,
 				D1F2712B20D8CE9B00F44C01 /* BlurEffectView.swift in Sources */,
 				D1A22A9B20A03F8A004F0F05 /* IFEarlybirdFilter.m in Sources */,
+				34AEE41120D8AA3200DECF3A /* InviteFriendsViewController.swift in Sources */,
 				D1A22A9C20A03F8A004F0F05 /* UsernameTextField.swift in Sources */,
 				D1A22A9D20A03F8A004F0F05 /* IFAmaroFilter.m in Sources */,
 				D1A22A9E20A03F8A004F0F05 /* JigglyButton.swift in Sources */,
@@ -2190,7 +2344,9 @@
 				D1A22AA920A03F8A004F0F05 /* MainViewController+Location.swift in Sources */,
 				D1A22AAA20A03F8A004F0F05 /* MonkeyFilterCell.swift in Sources */,
 				D1025CDD20A1406C00557B64 /* SettingImageCell.swift in Sources */,
+				3413C24E20E119BD00D8BD04 /* FriendshipModel.swift in Sources */,
 				D1A22AAC20A03F8A004F0F05 /* SwipeableViewController.swift in Sources */,
+				34FF0D2B20D1560000B1AC24 /* MyContactsModel.swift in Sources */,
 				D1A22AAD20A03F8A004F0F05 /* IFLomofiFilter.m in Sources */,
 				D1A22AAE20A03F8A004F0F05 /* ChannelsViewController.swift in Sources */,
 				D1A22AAF20A03F8A004F0F05 /* KeyboardManager.m in Sources */,
@@ -2206,6 +2362,7 @@
 				D1A22AB920A03F8A004F0F05 /* CallViewController+Clock.swift in Sources */,
 				D1A22ABA20A03F8A004F0F05 /* APIController+UserCenter.swift in Sources */,
 				D1F7912720B3CE620097574B /* GPUImageFilterGroup+Handler.m in Sources */,
+				34AEE4E620DA453200DECF3A /* DashboardInviteListCell.swift in Sources */,
 				D1A22ABB20A03F8A004F0F05 /* UserOptions.swift in Sources */,
 				D1A22ABC20A03F8A004F0F05 /* MonkeySwitch.swift in Sources */,
 				D147127920AD65870055516A /* MatchModel.swift in Sources */,
@@ -2215,6 +2372,7 @@
 				D1A22AC020A03F8A004F0F05 /* RealmChannel.swift in Sources */,
 				D1A22AC120A03F8A004F0F05 /* RealmBlock.swift in Sources */,
 				D1A22AC220A03F8A004F0F05 /* IFRiseFilter.m in Sources */,
+				34AEE4E320DA445700DECF3A /* DashboardInviteListModel.swift in Sources */,
 				341E736820BD4320001B8D55 /* DeleteAccountPopupViewController.swift in Sources */,
 				D1A22AC420A03F8A004F0F05 /* ChatViewModel.swift in Sources */,
 				D1A22AC520A03F8A004F0F05 /* WelcomeViewController.swift in Sources */,
@@ -2233,6 +2391,8 @@
 				341E736E20BD496E001B8D55 /* ResumeMyAccountViewController.swift in Sources */,
 				D1A22AD320A03F8A004F0F05 /* GPUImageFiveInputFilter.m in Sources */,
 				D1A22AD420A03F8A004F0F05 /* SwipeableInteractiveTransition.swift in Sources */,
+				34AEE4C020DA29FB00DECF3A /* DashboardFriendsListCell.swift in Sources */,
+				34A0D3B620D1127D00D6EFED /* ContactModel.swift in Sources */,
 				D1A22AD520A03F8A004F0F05 /* RealmDataController.swift in Sources */,
 				D1A22AD620A03F8A004F0F05 /* MainViewController.swift in Sources */,
 				D147128F20AD98080055516A /* ChannelService.swift in Sources */,
@@ -2242,6 +2402,8 @@
 				D1A22AD920A03F8A004F0F05 /* AgePickerView.swift in Sources */,
 				D1A22ADA20A03F8A004F0F05 /* TapticFeedback.swift in Sources */,
 				D1A22ADB20A03F8A004F0F05 /* RealmInstagramPhoto.swift in Sources */,
+				34FF0D3720D2283B00B1AC24 /* FriendsRequestCell.swift in Sources */,
+				347675EB20DB7809007EF130 /* InvitingProgressLayer.swift in Sources */,
 				D1A22ADD20A03F8A004F0F05 /* IFSierraFilter.m in Sources */,
 				D1A22ADE20A03F8A004F0F05 /* InstagramAuthViewController.swift in Sources */,
 				D1025CDF20A1406C00557B64 /* SettingButtonCell.swift in Sources */,

@@ -26,6 +26,12 @@ class RealmUser: MonkeyModel {
     
     var delete_at = RealmOptional<Double>()
 	
+//	var online = RealmOptional<Bool>()
+//	var enabled_two_p = RealmOptional<Bool>()
+//	var unlocked_two_p = RealmOptional<Bool>()
+//	var two_p_user_group_type = RealmOptional<Int>() // 1 planA, 2planB
+//	var match_type = RealmOptional<Int>() // 1 1p, 2 2p
+	
 	var seconds_in_app = RealmOptional<Int>()
 	
 	var facebook_friends_invited = RealmOptional<Int>()

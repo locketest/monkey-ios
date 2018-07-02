@@ -709,6 +709,44 @@ by 5 teenagers in NYC?</string>
                                                     <action selector="arrowButtonTappedWithSender:" destination="TT7-O9-9zR" eventType="touchUpInside" id="ki8-WB-tWI"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="798-sa-W7T" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                                <rect key="frame" x="147" y="34" width="80" height="40"/>
+                                                <color key="backgroundColor" red="1" green="0.98823529409999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="bcE-4Q-VxJ"/>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="fSn-Pa-Guz"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                                <state key="normal" title="🙌 2P">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="20"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="twoPersonBtnClickFunc:" destination="TT7-O9-9zR" eventType="touchUpInside" id="3eX-sy-YYK"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="16m-YS-bNs">
+                                                <rect key="frame" x="217" y="34" width="20" height="20"/>
+                                                <color key="backgroundColor" red="0.93333333330000001" green="0.16862745100000001" blue="0.16078431369999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="20" id="R5Z-9H-mKm"/>
+                                                    <constraint firstAttribute="width" constant="20" id="YKu-UZ-KNs"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="10"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Skipped!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4OG-VV-HHr">
                                                 <rect key="frame" x="149" y="576" width="77" height="21"/>
                                                 <constraints>
@@ -777,7 +815,7 @@ by 5 teenagers in NYC?</string>
                                                         <fragment content="Skip">
                                                             <attributes>
                                                                 <color key="NSColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                <font key="NSFont" size="13" name="SFUIText-Medium"/>
+                                                                <font key="NSFont" metaFont="system"/>
                                                                 <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                                                 <integer key="NSUnderline" value="1"/>
                                                             </attributes>
@@ -955,16 +993,20 @@ by 5 teenagers in NYC?</string>
                                             <constraint firstItem="0hd-FL-4Jc" firstAttribute="leading" secondItem="ZLF-OB-nU9" secondAttribute="leading" constant="20" id="4tI-rq-KbN"/>
                                             <constraint firstItem="6tQ-sH-Kem" firstAttribute="top" secondItem="psw-iu-AsM" secondAttribute="top" id="4xU-Jw-MFd"/>
                                             <constraint firstAttribute="bottom" secondItem="QMF-mv-VbF" secondAttribute="bottom" constant="48" id="65M-wH-nuZ"/>
+                                            <constraint firstItem="798-sa-W7T" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="79T-yb-A77"/>
                                             <constraint firstItem="Era-aI-5mW" firstAttribute="centerY" secondItem="4OG-VV-HHr" secondAttribute="centerY" id="8Fv-Kx-pTV"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="QMF-mv-VbF" secondAttribute="trailing" constant="24" id="8Ux-Zy-pRM"/>
                                             <constraint firstAttribute="bottom" secondItem="BlI-CX-sfX" secondAttribute="bottom" constant="21" id="Aww-7f-uVi"/>
+                                            <constraint firstItem="16m-YS-bNs" firstAttribute="top" secondItem="798-sa-W7T" secondAttribute="top" id="C3R-M7-lbv"/>
                                             <constraint firstAttribute="bottom" secondItem="2CN-Mj-9Gg" secondAttribute="bottom" constant="30" id="DUk-aP-Ab3"/>
                                             <constraint firstAttribute="bottom" secondItem="psw-iu-AsM" secondAttribute="bottom" constant="20" id="FCf-TC-v4E"/>
                                             <constraint firstAttribute="trailing" secondItem="psw-iu-AsM" secondAttribute="trailing" constant="20" id="Hfz-gV-8Ij"/>
+                                            <constraint firstItem="798-sa-W7T" firstAttribute="top" secondItem="0hd-FL-4Jc" secondAttribute="top" id="IB5-2J-jCU"/>
                                             <constraint firstItem="BlI-CX-sfX" firstAttribute="leading" secondItem="SSL-hy-Vte" secondAttribute="trailing" constant="-15" id="KqJ-iZ-gAL"/>
                                             <constraint firstItem="6tQ-sH-Kem" firstAttribute="leading" secondItem="psw-iu-AsM" secondAttribute="trailing" constant="-10" id="Krb-Xj-j6p"/>
                                             <constraint firstAttribute="bottom" secondItem="SSL-hy-Vte" secondAttribute="bottom" constant="48" id="MOt-aX-TLX"/>
                                             <constraint firstAttribute="trailing" secondItem="W2d-kQ-BTg" secondAttribute="trailing" constant="20" id="N48-kN-mgm"/>
+                                            <constraint firstItem="16m-YS-bNs" firstAttribute="trailing" secondItem="798-sa-W7T" secondAttribute="trailing" constant="10" id="NPl-2Q-JIO"/>
                                             <constraint firstAttribute="trailing" secondItem="otb-Kx-f1J" secondAttribute="trailing" constant="20" id="OYe-46-inO"/>
                                             <constraint firstAttribute="trailing" secondItem="5GL-k1-GiO" secondAttribute="trailing" constant="20" id="PnS-M6-wpr"/>
                                             <constraint firstItem="4OG-VV-HHr" firstAttribute="centerX" secondItem="ZLF-OB-nU9" secondAttribute="centerX" id="SLG-59-Plb"/>
@@ -1047,12 +1089,14 @@ by 5 teenagers in NYC?</string>
                         <outlet property="matchModeTip" destination="C6c-AE-7sk" id="acn-Qu-8gZ"/>
                         <outlet property="matchUserPhoto" destination="3gz-ch-jr1" id="ep5-8u-6RG"/>
                         <outlet property="pageViewIndicator" destination="Uh6-Lu-Kac" id="3L2-Up-F8D"/>
+                        <outlet property="redDotLabel" destination="16m-YS-bNs" id="AXx-GH-RaW"/>
                         <outlet property="rejectButton" destination="SSL-hy-Vte" id="q90-BQ-zRB"/>
                         <outlet property="settingsButton" destination="psw-iu-AsM" id="BXU-cv-1A2"/>
                         <outlet property="skipButton" destination="BlI-CX-sfX" id="YbP-II-2Hg"/>
                         <outlet property="skippedText" destination="4OG-VV-HHr" id="oUr-NU-SUe"/>
                         <outlet property="skippedTextBottomConstraint" destination="ucC-27-WkF" id="88B-JP-U0N"/>
                         <outlet property="startView" destination="f4c-85-zZT" id="ZSa-R7-Uqr"/>
+                        <outlet property="twoPersonButton" destination="798-sa-W7T" id="INV-ST-Ay8"/>
                         <outlet property="waitingText" destination="DYS-hp-fSP" id="P1r-iM-bl4"/>
                     </connections>
                 </viewController>

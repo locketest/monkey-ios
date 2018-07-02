@@ -97,6 +97,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func applicationWillEnterForeground(_ application: UIApplication) {
 		application.applicationIconBadgeNumber = 0
+		
+		if UserDefaults.standard.bool(forKey: GoToSettingTag) {
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: GoToSettingTag), object:nil)
+		}
 	}
 
 	func applicationWillTerminate(_ application: UIApplication) {

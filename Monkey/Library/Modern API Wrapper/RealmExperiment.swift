@@ -154,6 +154,9 @@ class RealmExperiment: MonkeyModel {
     dynamic var mc_invite_desc:String?
     dynamic var mc_invite_btn_pos_text:String?
 	
+	dynamic var contact_2p_ems_content:String?
+	dynamic var contact_2p_ems_link:String?
+	
 	required convenience init?(map: Map) {
 		self.init()
 	}

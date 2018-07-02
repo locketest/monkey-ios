@@ -268,7 +268,7 @@
                                                                     <rect key="frame" x="0.0" y="94" width="365" height="64"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="📸 Link instagram" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LpO-nS-c0u">
-                                                                            <rect key="frame" x="16" y="18.666666666666629" width="139.33333333333334" height="27"/>
+                                                                            <rect key="frame" x="16" y="18.666666666666629" width="139.66666666666666" height="27"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="27" id="Kae-a3-A5X"/>
                                                                             </constraints>
@@ -299,7 +299,7 @@
                                                                     <rect key="frame" x="0.0" y="158" width="365" height="64"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🚑 Safety" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uOM-fU-h9Z">
-                                                                            <rect key="frame" x="16" y="18.666666666666629" width="76.333333333333329" height="27"/>
+                                                                            <rect key="frame" x="16" y="18.666666666666629" width="76.666666666666671" height="27"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="27" id="3iA-Ty-cH2"/>
                                                                             </constraints>
@@ -330,7 +330,7 @@
                                                                     <rect key="frame" x="0.0" y="222" width="365" height="64"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🙈 Sign out" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Pm-2S-G5x">
-                                                                            <rect key="frame" x="16" y="13.666666666666629" width="90.666666666666671" height="27"/>
+                                                                            <rect key="frame" x="16" y="13.666666666666629" width="91" height="27"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="27" id="Ti3-v4-9qq"/>
                                                                             </constraints>
@@ -557,7 +557,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1 min on Monkey" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aQU-Uk-fKM">
-                                                    <rect key="frame" x="74" y="45" width="101.66666666666669" height="15.666666666666664"/>
+                                                    <rect key="frame" x="74" y="45" width="101.66666666666669" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -604,7 +604,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌 Legal Information" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CMp-4T-0vg">
-                                                    <rect key="frame" x="16" y="22.333333333333336" width="160" height="20.333333333333336"/>
+                                                    <rect key="frame" x="16" y="22.666666666666671" width="160" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -642,13 +642,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌 Legal Information" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Img-Us-Ma9">
-                                                    <rect key="frame" x="16" y="22.333333333333336" width="160" height="20.333333333333336"/>
+                                                    <rect key="frame" x="16" y="22.666666666666671" width="160" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="J4T-cl-gV4">
-                                                    <rect key="frame" x="324" y="17.666666666666664" width="25" height="28.666666666666664"/>
+                                                    <rect key="frame" x="324" y="17.666666666666671" width="25" height="29"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="25" id="6kP-Il-DlE"/>
                                                         <constraint firstAttribute="width" secondItem="J4T-cl-gV4" secondAttribute="height" multiplier="23:26" id="pNx-ap-Ewe"/>
@@ -678,7 +678,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌 Legal Information" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wB4-3l-xao">
-                                                    <rect key="frame" x="16" y="22.333333333333336" width="160" height="20.333333333333336"/>
+                                                    <rect key="frame" x="16" y="22.666666666666671" width="160" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -801,7 +801,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1 min on Monkey" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cly-NG-m5R">
-                                                    <rect key="frame" x="74" y="45" width="101.66666666666669" height="15.666666666666664"/>
+                                                    <rect key="frame" x="74" y="45" width="101.66666666666669" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -847,13 +847,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌 Legal Information" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AIL-tT-0zx">
-                                                    <rect key="frame" x="16" y="22.333333333333336" width="160" height="20.333333333333336"/>
+                                                    <rect key="frame" x="16" y="22.666666666666671" width="160" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Zlg-eE-NPq" customClass="UsernameTextField" customModule="Monkey" customModuleProvider="target">
-                                                    <rect key="frame" x="206" y="7.3333333333333357" width="143" height="50"/>
+                                                    <rect key="frame" x="206" y="7.6666666666666643" width="143" height="50"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="50" id="J4Z-w2-sDP"/>
                                                     </constraints>
@@ -929,7 +929,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👻 Snapchat :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yy2-4q-35R">
-                                        <rect key="frame" x="15.999999999999993" y="173" width="109.33333333333331" height="34"/>
+                                        <rect key="frame" x="16.000000000000007" y="173" width="109.66666666666669" height="34"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="34" id="L21-RA-svG"/>
                                         </constraints>
@@ -963,7 +963,7 @@
                                         </connections>
                                     </textField>
                                     <textField opaque="NO" alpha="0.69999998807907104" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gSF-d5-8DL" customClass="UsernameTextField" customModule="Monkey" customModuleProvider="target">
-                                        <rect key="frame" x="145.33333333333337" y="165" width="203.66666666666663" height="50"/>
+                                        <rect key="frame" x="145.66666666666663" y="165" width="203.33333333333337" height="50"/>
                                         <color key="tintColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="O9d-dr-4SI"/>
@@ -994,7 +994,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aVu-xk-o25" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                        <rect key="frame" x="33" y="257" width="135" height="49"/>
+                                        <rect key="frame" x="33.333333333333329" y="257" width="134.66666666666669" height="49"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="49" id="QU3-aj-DwW"/>
                                         </constraints>
@@ -1019,7 +1019,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" alpha="0.25" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hdW-PM-APX" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                        <rect key="frame" x="197.33333333333337" y="257" width="135" height="49"/>
+                                        <rect key="frame" x="197.66666666666669" y="257" width="134.66666666666669" height="49"/>
                                         <color key="backgroundColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="49" id="n5p-3l-eoJ"/>
@@ -1189,7 +1189,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1 min on Monkey" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q5U-GN-7vv">
-                                                    <rect key="frame" x="74" y="45" width="101.66666666666669" height="15.666666666666664"/>
+                                                    <rect key="frame" x="74" y="45" width="101.66666666666669" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -1235,13 +1235,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍌 Legal Information" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FOk-xz-Sb6">
-                                                    <rect key="frame" x="16" y="22.333333333333336" width="160" height="20.333333333333336"/>
+                                                    <rect key="frame" x="16" y="22.666666666666671" width="160" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" alpha="0.69999998807907104" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ZN1-FX-uzE" customClass="UsernameTextField" customModule="Monkey" customModuleProvider="target">
-                                                    <rect key="frame" x="206" y="7.3333333333333357" width="143" height="50"/>
+                                                    <rect key="frame" x="206" y="7.6666666666666643" width="143" height="50"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="50" id="PHt-7U-rEG"/>
                                                     </constraints>
@@ -1980,7 +1980,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="For Your Account" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hGw-Zt-ghD">
-                                <rect key="frame" x="120.00000000000001" y="58.000000000000007" width="135.33333333333337" height="20.333333333333336"/>
+                                <rect key="frame" x="120.00000000000001" y="57.999999999999993" width="135.33333333333337" height="20.666666666666664"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                 <color key="textColor" red="1" green="0.9882352941176471" blue="0.0039215686274509803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -2000,26 +2000,23 @@
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="😰" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dNx-cB-4WH">
-                                        <rect key="frame" x="70.333333333333314" y="28" width="194" height="143"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ResumeMyAccount" translatesAutoresizingMaskIntoConstraints="NO" id="WZY-uU-slS">
+                                        <rect key="frame" x="92" y="32" width="150" height="150"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="194" id="5bY-Ud-hdm"/>
-                                            <constraint firstAttribute="width" secondItem="dNx-cB-4WH" secondAttribute="height" multiplier="194:143" id="IK4-kP-FqG"/>
+                                            <constraint firstAttribute="width" secondItem="WZY-uU-slS" secondAttribute="height" multiplier="1:1" id="2sx-X9-Igx"/>
+                                            <constraint firstAttribute="width" constant="150" id="BKO-1f-0Ku"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="144"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.3921568627" green="0.2901960784" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="dNx-cB-4WH" firstAttribute="top" secondItem="gKj-ZA-EmF" secondAttribute="top" constant="28" id="3vn-lC-73m"/>
                                     <constraint firstAttribute="bottom" secondItem="ijv-xD-pof" secondAttribute="bottom" constant="30" id="Cau-z9-ZYN"/>
                                     <constraint firstItem="ijv-xD-pof" firstAttribute="top" secondItem="tNZ-fk-oAN" secondAttribute="bottom" constant="20" id="HOT-GL-mHh"/>
-                                    <constraint firstItem="tNZ-fk-oAN" firstAttribute="top" secondItem="dNx-cB-4WH" secondAttribute="bottom" constant="40" id="Ihm-fF-f6V"/>
+                                    <constraint firstItem="WZY-uU-slS" firstAttribute="centerX" secondItem="gKj-ZA-EmF" secondAttribute="centerX" id="NCU-i1-yf3"/>
                                     <constraint firstAttribute="trailing" secondItem="tNZ-fk-oAN" secondAttribute="trailing" constant="20" id="OJt-5j-CFd"/>
                                     <constraint firstItem="ijv-xD-pof" firstAttribute="leading" secondItem="gKj-ZA-EmF" secondAttribute="leading" constant="40" id="UAj-tY-w3a"/>
-                                    <constraint firstItem="dNx-cB-4WH" firstAttribute="centerX" secondItem="gKj-ZA-EmF" secondAttribute="centerX" id="buC-rM-K4j"/>
+                                    <constraint firstItem="tNZ-fk-oAN" firstAttribute="top" secondItem="WZY-uU-slS" secondAttribute="bottom" constant="29" id="mee-H4-AJj"/>
+                                    <constraint firstItem="WZY-uU-slS" firstAttribute="top" secondItem="gKj-ZA-EmF" secondAttribute="top" constant="32" id="roL-9J-TeR"/>
                                     <constraint firstItem="tNZ-fk-oAN" firstAttribute="leading" secondItem="gKj-ZA-EmF" secondAttribute="leading" constant="20" id="sIw-v5-Cdr"/>
                                     <constraint firstAttribute="trailing" secondItem="ijv-xD-pof" secondAttribute="trailing" constant="40" id="tUX-EB-A3a"/>
                                 </constraints>
@@ -2094,6 +2091,7 @@
     </scenes>
     <resources>
         <image name="EditProfileButtton" width="48" height="48"/>
+        <image name="ResumeMyAccount" width="168" height="168"/>
         <image name="edit_profile_backbtn_icon" width="48" height="48"/>
         <image name="radioChecked" width="20" height="20"/>
         <image name="radioUnchecked" width="20" height="20"/>
