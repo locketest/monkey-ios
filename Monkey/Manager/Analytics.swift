@@ -150,6 +150,7 @@ class AnalyticsCenter {
 	}
 	
 	class func logoutAccount() {
+		// clear user id
 		clearLoggedEvents()
 	}
 	

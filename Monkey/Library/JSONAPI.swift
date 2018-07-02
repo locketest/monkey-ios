@@ -11,7 +11,6 @@ import Alamofire
 
 typealias JSONAPIRequestCompletionHandler = (_ result: JSONAPIResult<JSONAPIDocument>) -> Void
 typealias JSONAPIRequestErrorHandler = (_ error: APIError?) -> Void
-public typealias RequestHeader = [String: String?]
 
 class JSONAPIRequest {
 	/// Enumerations that can be passed to a request options object to modify default request behaviour.
@@ -41,6 +40,7 @@ class JSONAPIRequest {
 		var headers: HTTPHeaders = [
 			"Accept": "application/vnd.api+json, application/json",
 			"Content-Type": "application/vnd.api+json",
+			"Device": "iOS",
 			"Client": client,
 			"Version": version,
 		]
@@ -106,6 +106,11 @@ class JSONAPIDocument {
 	convenience init(data: JSONAPIResourceIdentifier?) {
 		self.init(json: [
 			"data": data?.json ?? NSNull(),
+			])
+	}
+	convenience init(data: [String: Any]) {
+		self.init(json: [
+			"data": data,
 			])
 	}
 	/// json.data

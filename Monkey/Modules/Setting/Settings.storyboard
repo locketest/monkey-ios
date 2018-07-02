@@ -1986,37 +1986,33 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gKj-ZA-EmF">
-                                <rect key="frame" x="20" y="187" width="335" height="338"/>
+                                <rect key="frame" x="20" y="166.66666666666663" width="335" height="379"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your account will be deleted on Friday,June 8,2018" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tNZ-fk-oAN">
-                                        <rect key="frame" x="20" y="211" width="295" height="45.666666666666686"/>
+                                        <rect key="frame" x="20" y="252.00000000000003" width="295" height="45.666666666666657"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
                                         <color key="textColor" red="1" green="0.98823529409999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You can cancel the delete process and resume your account before that days." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ijv-xD-pof">
-                                        <rect key="frame" x="40" y="276.66666666666669" width="255" height="31.333333333333314"/>
+                                        <rect key="frame" x="40" y="317.66666666666663" width="255" height="31.333333333333314"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ResumeMyAccount" translatesAutoresizingMaskIntoConstraints="NO" id="WZY-uU-slS">
-                                        <rect key="frame" x="92" y="32" width="150" height="150"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="WZY-uU-slS" secondAttribute="height" multiplier="1:1" id="2sx-X9-Igx"/>
-                                            <constraint firstAttribute="width" constant="150" id="BKO-1f-0Ku"/>
-                                        </constraints>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ResumeMyAccount" translatesAutoresizingMaskIntoConstraints="NO" id="uLl-Le-amr">
+                                        <rect key="frame" x="83" y="28" width="168" height="168"/>
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.3921568627" green="0.2901960784" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="ijv-xD-pof" secondAttribute="bottom" constant="30" id="Cau-z9-ZYN"/>
                                     <constraint firstItem="ijv-xD-pof" firstAttribute="top" secondItem="tNZ-fk-oAN" secondAttribute="bottom" constant="20" id="HOT-GL-mHh"/>
-                                    <constraint firstItem="WZY-uU-slS" firstAttribute="centerX" secondItem="gKj-ZA-EmF" secondAttribute="centerX" id="NCU-i1-yf3"/>
+                                    <constraint firstItem="tNZ-fk-oAN" firstAttribute="top" secondItem="uLl-Le-amr" secondAttribute="bottom" constant="56" id="NDv-2o-U12"/>
                                     <constraint firstAttribute="trailing" secondItem="tNZ-fk-oAN" secondAttribute="trailing" constant="20" id="OJt-5j-CFd"/>
                                     <constraint firstItem="ijv-xD-pof" firstAttribute="leading" secondItem="gKj-ZA-EmF" secondAttribute="leading" constant="40" id="UAj-tY-w3a"/>
-                                    <constraint firstItem="tNZ-fk-oAN" firstAttribute="top" secondItem="WZY-uU-slS" secondAttribute="bottom" constant="29" id="mee-H4-AJj"/>
-                                    <constraint firstItem="WZY-uU-slS" firstAttribute="top" secondItem="gKj-ZA-EmF" secondAttribute="top" constant="32" id="roL-9J-TeR"/>
+                                    <constraint firstItem="uLl-Le-amr" firstAttribute="top" secondItem="gKj-ZA-EmF" secondAttribute="top" constant="28" id="Wjf-Mm-aJc"/>
+                                    <constraint firstItem="uLl-Le-amr" firstAttribute="centerX" secondItem="gKj-ZA-EmF" secondAttribute="centerX" id="bya-to-bkN"/>
                                     <constraint firstItem="tNZ-fk-oAN" firstAttribute="leading" secondItem="gKj-ZA-EmF" secondAttribute="leading" constant="20" id="sIw-v5-Cdr"/>
                                     <constraint firstAttribute="trailing" secondItem="ijv-xD-pof" secondAttribute="trailing" constant="40" id="tUX-EB-A3a"/>
                                 </constraints>

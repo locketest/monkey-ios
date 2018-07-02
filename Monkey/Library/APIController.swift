@@ -14,21 +14,13 @@ import RealmSwift
 class APIController: NSObject {
     static let shared = APIController()
 	private override init() {}
-    
-    /// Currently signed in user
+	
     var currentUser: RealmUser? {
-        // All signed in users set user_id in UserDefaults
-        guard let userId = UserDefaults.standard.string(forKey: "user_id") else {
-            return nil
-        }
-        let threadSafeRealm = try? Realm()
-        return threadSafeRealm?.object(ofType: RealmUser.self, forPrimaryKey: userId)
+		return UserManager.shared.currentUser
     }
     
     var currentExperiment: RealmExperiment? {
-        let threadSafeRealm = try? Realm()
-        // Experiement IDs directly corolate to app versions
-        return threadSafeRealm?.object(ofType: RealmExperiment.self, forPrimaryKey: Environment.appVersion)
+		return UserManager.shared.currentExperiment
     }
     
     static var authorization: String? {
@@ -40,4 +32,14 @@ class APIController: NSObject {
 			UserDefaults.standard.synchronize()
         }
     }
+	
+	static var user_id: String? {
+		get {
+			return UserDefaults.standard.string(forKey: "user_id")
+		}
+		set(user_id) {
+			UserDefaults.standard.set(user_id, forKey: "user_id")
+			UserDefaults.standard.synchronize()
+		}
+	}
 }

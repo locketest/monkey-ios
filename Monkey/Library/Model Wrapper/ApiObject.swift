@@ -11,7 +11,6 @@ import Alamofire
 import RealmSwift
 
 enum ApiType: String {
-	case UnAvaliable = "unAvaliable"
 
 	case Auth = "accountkit"
 	case Experiment = "experiments"
@@ -37,8 +36,7 @@ enum ApiType: String {
 	case Match_event = "MatchEvent"
 	case Match_info = "MatchInfo"
 	case UserOptions = "UserOption"
-	case Match_users = "match_users"
-	case Match_model = "match_model"
+	
 }
 
 enum ApiVersion: String {
@@ -222,7 +220,7 @@ extension APIRequestProtocol {
 		}
 
 		var options: [JSONAPIRequest.RequestOption]?
-		if let authorization = APIController.authorization {
+		if let authorization = UserManager.authorization {
 			options = [
 				.header("Authorization", authorization),
 			]

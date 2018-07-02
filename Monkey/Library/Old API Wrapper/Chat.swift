@@ -154,7 +154,7 @@ class Chat {
 		
 		JSONAPIRequest.init(url: "\(Environment.baseURL)/api/v1.0/chats/\(self.chatId)", method: .patch, parameters: paramaters, options: [
 			.header("Authorization", authorization)
-			]).addCompletionHandler {[weak self] (result) in
+			]).addCompletionHandler { (result) in
 			switch result {
 			case .error(let error):
 				callback?(error.localizedDescription)

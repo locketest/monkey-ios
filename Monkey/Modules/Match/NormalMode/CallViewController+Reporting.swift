@@ -22,7 +22,6 @@ extension CallViewController {
             return
         }
 
-        self.callDelegate?.stopFindingChats(andDisconnect: false, forReason: "reporting")
         let alert = UIAlertController(title: "Are you sure you'd like to report this user?", message: APIController.shared.currentExperiment?.report_warning_text ?? "Your account will be disabled if you falsely report a user.", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "🔞  Person is nude", style: .default, handler: {
             (UIAlertAction) in
@@ -44,15 +43,11 @@ extension CallViewController {
 			self.sendReport(reason: .ageOrGender, chat_id: chatId)
         }))
 
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {
-            (UIAlertAction) in
-           self.callDelegate?.startFindingChats(forReason: "reporting")
-        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
 
 	func sendReport(reason: ReportType, chat_id: String) {
-        self.callDelegate?.startFindingChats(forReason: "reporting")
 		chatSession?.chat?.reportReason = reason
         
 		guard let authorization = APIController.authorization else {

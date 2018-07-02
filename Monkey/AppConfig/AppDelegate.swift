@@ -37,16 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		RemoteConfigManager.shared.fetchLatestConfig()
 		AnalyticsCenter.logLaunchApp()
 
-		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as? [AnyHashable : Any] {
-			handleNotification(application: application, userInfo: userInfo)
-		}
-
-		if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? [AnyHashable : Any] {
-			handleNotification(application: application, userInfo: userInfo)
-		}
-
-        if  let options = launchOptions,
-            let url = options[UIApplicationLaunchOptionsKey.url] as? URL{
+        if let options = launchOptions, let url = options[UIApplicationLaunchOptionsKey.url] as? URL{
             self.openWithDeeplinkURL(url: url.absoluteString)
         }
 
@@ -113,9 +104,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		UserDefaults.standard.set(notificationSettings.types.contains(.sound), forKey: "apns_sound")
 		Apns.update(callback: nil)
 	}
-	func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-		print(error.localizedDescription)
-	}
+
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 		
 		let currentDeviceTokenString = deviceToken.base64EncodedString()
@@ -178,13 +167,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 
 		guard application.applicationState != .active else {
-			NotificationManager.shared.handleNotification(userInfo)
 			return
 		}
 
 		// 如果是 emoji
 		if let text = userInfo["t"] as? String ?? notificationUserInfo.aps?["alert"] as? String, let emoji = notificationUserInfo.emoji {
-			var emojiNotificationUserInfo: [String:Any] = [
+			var emojiNotificationUserInfo: [String: Any] = [
 				"text": text,
 				"emoji": emoji,
 				"type": NotificationType(rawValue: notificationUserInfo.notificationType ?? 0) ?? NotificationType.default,
@@ -259,7 +247,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			if let callId = parameters["chat_id"] as? String  {
 				IncomingCallManager.shared.skipCallIds.append(callId)
 			}
-
 
 			while let presentedViewController = topController.presentedViewController {
 				topController = presentedViewController
@@ -336,11 +323,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func checkIfAppUpdated() {
 		let lasVer = UserDefaults.standard.string(forKey: "kLastAppVersion")
-		let newVer = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
+		let newVer = Environment.appVersion
 		if lasVer != newVer {
 			UserDefaults.standard.set(false, forKey: showRateAlertReason.addFriendJust.rawValue)
-			UserDefaults.standard.set(false,forKey: showRateAlertReason.contiLoginThreeDay.rawValue)
-			UserDefaults.standard.set(false,forKey: "kHadRateBefore")
+			UserDefaults.standard.set(false, forKey: showRateAlertReason.contiLoginThreeDay.rawValue)
+			UserDefaults.standard.set(false, forKey: "kHadRateBefore")
 		}
 	}
 

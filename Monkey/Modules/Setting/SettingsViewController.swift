@@ -72,7 +72,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.tableView.dataSource = self
         self.tableView.delegate = self
         self.tableView.bounces = false
-		self.tableView.rowHeight = 64
+		self.tableView.rowHeight = 64.0
         self.tableView.register(SettingTalkToCell.self, forCellReuseIdentifier: "SettingTalkToCell")
         self.tableView.register(SettingAcceptButtonCell.self, forCellReuseIdentifier: "AcceptBtnCell")
         self.profilePhoto.delegate = self
@@ -99,15 +99,23 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
             timeOnMonkey.text = localizedTime + " on Monkey"
         }
 
-        self.editProfileView = UIView.init(frame: CGRect(x: UIScreen.main.bounds.size.width, y: self.containerView.frame.origin.y, width: self.containerView.frame.size.width, height: self.containerView.frame.size.height+self.stuffView.frame.size.height))
+		let screenWidth: CGFloat = UIScreen.main.bounds.size.width
+		let screenHeight: CGFloat = UIScreen.main.bounds.size.height
+		
+		let containerY: CGFloat = self.containerView.frame.origin.y
+		let containerWidth: CGFloat = self.containerView.frame.size.width
+		let containerHeight: CGFloat = self.containerView.frame.size.height
+		
+		let stuffHeight: CGFloat = self.stuffView.frame.size.height
+        self.editProfileView = UIView.init(frame: CGRect(x: screenWidth, y: containerY, width: containerWidth, height: containerHeight+stuffHeight))
         self.editProfileView.backgroundColor = UIColor.clear
         self.view.addSubview(self.editProfileView)
         self.editProfileView.layer.cornerRadius = self.containerView.layer.cornerRadius
         self.editProfileView.layer.masksToBounds = true
 
-        let editProfileTitleLab:UILabel = UILabel.init(frame: CGRect(x:0,y:0,width:UIScreen.main.bounds.size.width,height:30))
+        let editProfileTitleLab:UILabel = UILabel.init(frame: CGRect(x:0.0,y:0,width:screenWidth,height:30.0))
         //foregroundColor
-        editProfileTitleLab.backgroundColor = UIColor.init(white: 0, alpha: 0.56)
+        editProfileTitleLab.backgroundColor = UIColor.init(white: 0.0, alpha: 0.56)
         let attributedString = NSMutableAttributedString(string: " ✏️ Edit Profile", attributes: [
             NSFontAttributeName: UIFont.systemFont(ofSize: 15.0, weight: UIFontWeightMedium),
             NSForegroundColorAttributeName: UIColor(white: 154.0 / 255.0, alpha: 1.0)
@@ -116,15 +124,19 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         editProfileTitleLab.attributedText = attributedString
         self.editProfileView.addSubview(editProfileTitleLab)
 
+		
+		let editHeight: CGFloat = self.editProfileView.frame.size.height
+		let editWidth: CGFloat = self.editProfileView.frame.size.width
+		
         let blurEffect = UIBlurEffect(style: .dark)
         //创建一个承载模糊效果的视图
         let blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.frame = CGRect(x: 0, y: 30, width: UIScreen.main.bounds.size.width, height: self.editProfileView.frame.size.height)
+        blurView.frame = CGRect(x: 0.0, y: 30.0, width: screenWidth, height: editHeight)
         blurView.autoresizingMask = UIViewAutoresizing.flexibleHeight
         self.editProfileView.addSubview(blurView)
 
-        editProfileContentView =  UIView.init(frame: CGRect(x: 0, y: 30, width: self.editProfileView.frame.size.width, height: self.editProfileView.frame.size.height - 30))
-        editProfileContentView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        editProfileContentView =  UIView.init(frame: CGRect(x: 0.0, y: 30.0, width: editWidth, height: editHeight - 30.0))
+        editProfileContentView.backgroundColor = UIColor.init(white: 0.0, alpha: 0.5)
 		editProfileContentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.editProfileView.addSubview(editProfileContentView)
         self.editBirthdayStatus = false
@@ -132,8 +144,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
 		self.crateEditProfileUI()
         self.contentScrollview.bounces = false
-		let containerViewHeight: CGFloat = RemoteConfigManager.shared.app_in_review ? 233 : 0
-		self.scrollViewHeightConstraint.constant = min(ScreenHeight - 44, 642 - containerViewHeight)
+		let containerViewHeight: CGFloat = RemoteConfigManager.shared.app_in_review ? 233.0 : 0.0
+		self.scrollViewHeightConstraint.constant = min(screenHeight - 44.0, 642.0 - containerViewHeight)
 		if RemoteConfigManager.shared.app_in_review {
 			self.containerView.removeFromSuperview()
 		}
@@ -163,14 +175,20 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
     }
 
     func resetEditProfileFrame(){
-        self.pickerContainerView.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height, width: UIScreen.main.bounds.size.width, height: 220);
-        self.editProfileView.frame = CGRect(x:UIScreen.main.bounds.size.width,y:self.contentScrollview.frame.origin.y+self.profileView.frame.size.height+5,width:ScreenWidth-10,height:self.contentScrollview.frame.size.height-self.profileView.frame.size.height-5)
+		let screenWidth: CGFloat = UIScreen.main.bounds.size.width
+		let screenHeight: CGFloat = UIScreen.main.bounds.size.height
+        self.pickerContainerView.frame = CGRect(x: 0.0, y: screenHeight, width: screenWidth, height: 220.0);
+		
+		let contentY: CGFloat = self.contentScrollview.frame.origin.y
+		let contentHeight: CGFloat = self.contentScrollview.frame.size.height
+		let profileHeight: CGFloat = self.profileView.frame.size.height
+        self.editProfileView.frame = CGRect(x:screenWidth, y:contentY+profileHeight+5.0,width:screenWidth-10.0,height:contentHeight-profileHeight-5.0)
         self.editButtons.setImage(UIImage(named:"EditProfileButtton"), for: .normal)
         self.editButtons.isSelected = false
         self.containerView.isHidden = false
 
-        self.containerView.frame.origin.x = 0
-        self.stuffView.frame.origin.x = 0
+        self.containerView.frame.origin.x = 0.0
+        self.stuffView.frame.origin.x = 0.0
         self.contentScrollview.isScrollEnabled = true
         self.profileView.isHidden = false
         self.stuffView.isHidden = false
@@ -248,25 +266,25 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
                         self?.birthdayField.textColor = UIColor.white.withAlphaComponent(0.5);
                     }
                     //服务器返回的时间是 未来能修改的那一天的日期,不是返回的修改日期
-					let time = self?.userOption?.update_username.timeIntervalSince1970 ?? 0
-					let now = Date().timeIntervalSince1970*1000
+					let time: TimeInterval = self?.userOption?.update_username.timeIntervalSince1970 ?? 0.0
+					let now: TimeInterval = Date().timeIntervalSince1970 * 1000.0
 
 
-					let canEdit = time - now  < 0
-                    let sec:Double = abs(now - time)/1000
-					let min:Double = floor(sec/60)
-					let hr:Double = floor(min/60)
-					var d:Int = Int(floor(hr/24))
+					let canEdit = time - now < 0.0
+                    let sec:Double = fabs(now - time) / 1000.0
+					let min:Double = floor(sec/60.0)
+					let hr:Double = floor(min/60.0)
+					var d:Int = Int(floor(hr/24.0))
 
 					if canEdit == true {
                         self?.firstNameField.isUserInteractionEnabled = true
                         self?.firstNameTipLab.text = ""
-                        self?.firstNameField.textColor = UIColor.init(white: 1, alpha: 0.7)
+                        self?.firstNameField.textColor = UIColor.init(white: 1.0, alpha: 0.7)
                     }else{
                         if d<1{
                             d = 1
                         }
-                        self?.firstNameField.textColor = UIColor.init(white: 1, alpha: 0.5)
+                        self?.firstNameField.textColor = UIColor.init(white: 1.0, alpha: 0.5)
                         self?.firstNameField.isUserInteractionEnabled = false
                         self?.firstNameTipLab.text = "You can change your name after \(d) days"
                     }
@@ -400,7 +418,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		if attributes.count > 0 {
 			saveBtn.isLoading = true
 			
-			let isAccountNew = APIController.userDef.bool(forKey: APIController.kNewAccountCodeVerify)
+			let isAccountNew = UserManager.shared.loginMethod == .register
 			AnalyticsCenter.log(withEvent: .settingEditProfileClick, andParameter: [
 				"type": isAccountNew ? "new" : "old",
 				"info": event_info,
@@ -462,14 +480,25 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			"type": "edit",
 			])
 		
-		let  settingRect:CGRect = CGRect(x:-self.view.frame.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height);
+		let screenWidth = UIScreen.main.bounds.size.width
+		let screenHeight = UIScreen.main.bounds.size.height
+		
+		let contentY = self.contentScrollview.frame.origin.y
+		let containerY = self.containerView.frame.origin.y
+		let containerWidth = self.containerView.frame.size.width
+		let containerHeight = self.containerView.frame.size.height
+		let profileHeight: CGFloat = self.profileView.frame.size.height
+		let currentWidth = self.view.frame.size.width
+		let editProfileX: CGFloat = self.editProfileView.frame.origin.x
+		let editProfileWidth: CGFloat = self.editProfileView.frame.size.width
+		
+		let  settingRect:CGRect = CGRect(x:-currentWidth,y:containerY,width:containerWidth,height:containerHeight);
 		sender.isUserInteractionEnabled = false
 		self.view.layoutIfNeeded()
 		self.view.bringSubview(toFront: self.editProfileView)
-		let profileHeigh:CGFloat = self.profileView.frame.size.height
-		let  editprofileRect:CGRect = CGRect(x:5,y:self.contentScrollview.frame.origin.y+profileHeigh+5,width:ScreenWidth-10,height:ScreenHeight-(self.contentScrollview.frame.origin.y+profileHeigh+5)-26)
+		let  editprofileRect:CGRect = CGRect(x:5.0,y:contentY+profileHeight+5.0,width:screenWidth-10.0,height:screenHeight-(contentY+profileHeight+5.0)-26.0)
 		self.keyBoardWasShow = false
-		self.editProfileView.frame = CGRect(x:self.editProfileView.frame.origin.x,y:self.contentScrollview.frame.origin.y+profileHeigh+5,width:self.editProfileView.frame.size.width,height:ScreenHeight-(self.contentScrollview.frame.origin.y+profileHeigh+5)-26)
+		self.editProfileView.frame = CGRect(x:editProfileX,y:contentY+profileHeight+5.0,width:editProfileWidth,height:screenHeight-(contentY+profileHeight+5.0)-26.0)
 		self.editProfileView.setNeedsLayout()
 		//
 		self.contentScrollview.setContentOffset(CGPoint(x:0,y: 0), animated: false)
@@ -684,7 +713,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 					return
 				}
 				APIController.authorization = nil
-				Socket.shared.fetchCollection = false
+//				Socket.shared.fetchCollection = false
 				UserDefaults.standard.removeObject(forKey: "user_id")
 				UserDefaults.standard.removeObject(forKey: "apns_token")
 				
@@ -774,24 +803,26 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
     }
 
     func crateEditProfileUI() {
-        let firstNameLab:UILabel = UILabel.init(frame:CGRect(x: 16, y: 0, width: 119, height: 64))
+        let firstNameLab:UILabel = UILabel.init(frame:CGRect(x: 16.0, y: 0.0, width: 119.0, height: 64.0))
         firstNameLab.text = "😊 Name :"
         firstNameLab.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         firstNameLab.textColor = UIColor.white
         self.editProfileContentView.addSubview(firstNameLab)
 
-
-        self.firstNameTipLab = UILabel.init(frame: CGRect(x:45,y:16+28,width:UIScreen.main.bounds.size.width-60,height:14))
+		let screenWidth: CGFloat = UIScreen.main.bounds.size.width
+		let screenHeight: CGFloat = UIScreen.main.bounds.size.height
+		
+        self.firstNameTipLab = UILabel.init(frame: CGRect(x:45.0,y:16.0+28.0,width:screenWidth-60.0,height:14.0))
         self.firstNameTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.firstNameTipLab)
 
         //self.firstNameTipLab.text = "You can change your name once every 2 months"
-        self.firstNameTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
+        self.firstNameTipLab.textColor = UIColor.init(red: 1.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
 
-        let textFieldWidth:CGFloat = UIScreen.main.bounds.size.width-205-20
+        let textFieldWidth:CGFloat = screenWidth-205.0-20.0
 
-        self.firstNameField = UsernameTextField.init(frame: CGRect(x:205,y:0,width:textFieldWidth,height:64))
-        self.firstNameField.textColor = UIColor.init(white: 1, alpha: 0.7)
+        self.firstNameField = UsernameTextField.init(frame: CGRect(x:205.0,y:0.0,width:textFieldWidth,height:64.0))
+        self.firstNameField.textColor = UIColor.init(white: 1.0, alpha: 0.7)
         self.firstNameField.text = ""
         self.firstNameField.delegate = self
         self.firstNameField.textAlignment = .right
@@ -799,18 +830,18 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.firstNameField.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.firstNameField)
 
-        let birthdayLab:UILabel = UILabel.init(frame:CGRect(x:16,y:64,width:119,height:64))
+        let birthdayLab:UILabel = UILabel.init(frame:CGRect(x:16.0,y:64.0,width:119.0,height:64.0))
         birthdayLab.text = "🎂 Birthday :"
         birthdayLab.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         birthdayLab.textColor = UIColor.white
         self.editProfileContentView.addSubview(birthdayLab)
 
-        self.birthdayTipLab = UILabel.init(frame: CGRect(x:45,y:64+28+16,width:UIScreen.main.bounds.size.width-60,height:14))
+        self.birthdayTipLab = UILabel.init(frame: CGRect(x:45.0,y:64.0+28.0+16.0,width:screenWidth-60.0,height:14.0))
         self.birthdayTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.birthdayTipLab)
 
-        self.birthdayField = UITextField.init(frame: CGRect(x:45,y:64,width:UIScreen.main.bounds.size.width-45-20,height:64))
-        self.birthdayField.textColor = UIColor.init(white: 1, alpha: 0.7)
+        self.birthdayField = UITextField.init(frame: CGRect(x:45.0,y:64.0,width:screenWidth-45.0-20.0,height:64.0))
+        self.birthdayField.textColor = UIColor.init(white: 1.0, alpha: 0.7)
         self.birthdayField.text = ""
         self.birthdayField.isUserInteractionEnabled = false
         self.birthdayField.delegate = self
@@ -818,45 +849,47 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.birthdayField.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.birthdayField)
 
-        let snapchatLab:UILabel = UILabel.init(frame:CGRect(x:16,y:64*2,width:200,height:64))
+        let snapchatLab:UILabel = UILabel.init(frame:CGRect(x:16.0,y:64.0*2.0,width:200.0,height:64.0))
         snapchatLab.text = "👻 Snapchat :"
         snapchatLab.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         snapchatLab.textColor = UIColor.white
         self.editProfileContentView.addSubview(snapchatLab)
 
-        self.snchatTipLab = UILabel.init(frame: CGRect(x:45,y:64*2+28+16,width:UIScreen.main.bounds.size.width-60,height:14))
+        self.snchatTipLab = UILabel.init(frame: CGRect(x:45.0,y:64.0*2.0+28.0+16.0,width:screenWidth-60.0,height:14.0))
         self.snchatTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.snchatTipLab)
 
-        self.snapChatUserName = UsernameTextField.init(frame: CGRect(x:205,y:64*2,width:textFieldWidth,height:64))
-        self.snapChatUserName.textColor = UIColor.init(white: 1, alpha: 0.7)
+        self.snapChatUserName = UsernameTextField.init(frame: CGRect(x:205.0,y:64.0*2.0,width:textFieldWidth,height:64.0))
+        self.snapChatUserName.textColor = UIColor.init(white: 1.0, alpha: 0.7)
         self.snapChatUserName.text = ""
         self.snapChatUserName.delegate = self
         self.snapChatUserName.textAlignment = .right
         self.snapChatUserName.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.snapChatUserName)
 
-        let width = UIScreen.main.bounds.size.width*0.37
-        let space = (UIScreen.main.bounds.size.width-width*2)/3
+		let width: CGFloat = screenWidth*0.37
+		let space: CGFloat = (screenWidth-width*2.0)/3.0
+		let top: CGFloat = 59.0*2.0+88.0
+		let cornerRadius: CGFloat = 49.0/2.0
         self.cancelBtn = BigYellowButton.init(type: .custom)
-        self.cancelBtn.frame = CGRect(x:space,y:59*2+88,width:width,height:49)
-        self.cancelBtn.layer.cornerRadius = 49/2.0
+        self.cancelBtn.frame = CGRect(x:space,y:top,width:width,height:49.0)
+        self.cancelBtn.layer.cornerRadius = cornerRadius
         self.cancelBtn.layer.masksToBounds = true
         self.cancelBtn.setTitle("Cancel", for: .normal)
         self.cancelBtn.setTitleColor(UIColor.white, for: .normal)
         self.cancelBtn.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightMedium)
-        self.cancelBtn.layer.borderWidth = 2
-        self.cancelBtn.layer.borderColor = UIColor.init(white: 1, alpha: 0.25).cgColor
+        self.cancelBtn.layer.borderWidth = 2.0
+        self.cancelBtn.layer.borderColor = UIColor.init(white: 1.0, alpha: 0.25).cgColor
         self.editProfileContentView.addSubview(self.cancelBtn)
         self.cancelBtn.addTarget(self, action:#selector(editCancelButtonClick), for: .touchUpInside)
 
         self.saveBtn = BigYellowButton.init(frame: CGRect.zero)
-        self.saveBtn.frame = CGRect(x: space*2+width,y: 59 * 2 + 88, width: width, height: 49)
+        self.saveBtn.frame = CGRect(x: space*2.0+width,y: top, width: width, height: 49.0)
         self.saveBtn.setTitle("Save", for: .normal)
         self.saveBtn.setTitleColor(UIColor.black, for: .normal)
         self.saveBtn.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight:UIFontWeightMedium)
-        self.saveBtn.layer.cornerRadius = 49/2.0;
-        self.saveBtn.backgroundColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
+        self.saveBtn.layer.cornerRadius = cornerRadius
+        self.saveBtn.backgroundColor = UIColor.init(red: 1.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
         self.saveBtn.layer.masksToBounds = true
         self.editProfileContentView.addSubview(self.saveBtn)
 		self.editStatus = false
@@ -864,11 +897,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 //        self.saveBtn.isUserInteractionEnabled = false
 		self.saveBtn.addTarget(self, action: #selector(savePreferenceClick), for: UIControlEvents.touchUpInside)
 
-        self.pickerContainerView = UIView.init(frame: CGRect(x:0,y:UIScreen.main.bounds.size.height,width:UIScreen.main.bounds.size.width,height:220))
+        self.pickerContainerView = UIView.init(frame: CGRect(x:0.0,y:screenHeight,width:screenWidth,height:220.0))
         self.pickerContainerView.backgroundColor = UIColor.white
         self.view.addSubview(self.pickerContainerView)
 
-        self.datePicker = BirthdatePicker(frame: CGRect(x:0, y:0, width:self.pickerContainerView.frame.size.width, height:216))
+		let pickerWidth: CGFloat = self.pickerContainerView.frame.size.width
+        self.datePicker = BirthdatePicker(frame: CGRect(x:0.0, y:0.0, width:pickerWidth, height:216.0))
         self.datePicker.addTarget(self, action: #selector(dateChanged),
                              for:UIControlEvents.valueChanged)
         self.datePicker.datePickerMode = UIDatePickerMode.date
@@ -897,20 +931,29 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         }
         self.saveBtn.alpha = 0.25
 
-
-        let  settingRect:CGRect = CGRect(x:-self.view.frame.size.width,y:self.containerView.frame.origin.y,width:self.containerView.frame.size.width,height:self.containerView.frame.size.height);
+		let screenWidth = UIScreen.main.bounds.size.width
+		let screenHeight = UIScreen.main.bounds.size.height
+		
+		let contentY = self.contentScrollview.frame.origin.y
+		let containerY = self.containerView.frame.origin.y
+		let containerWidth = self.containerView.frame.size.width
+		let containerHeight = self.containerView.frame.size.height
+		let profileHeight: CGFloat = self.profileView.frame.size.height
+		let currentWidth = self.view.frame.size.width
+		
+        let  settingRect:CGRect = CGRect(x:-currentWidth,y:containerY,width:containerWidth,height:containerHeight);
         self.containerView.frame = settingRect
-        self.stuffView.frame = CGRect(x: -self.view.frame.size.width, y: self.stuffView.frame.origin.y, width: self.stuffView.frame.size.width, height: self.stuffView.frame.size.height)
+        self.stuffView.frame.origin.x = -currentWidth
 
         self.view.layoutIfNeeded()
             UIView.animate(
                 withDuration: 0.25,
-                delay: 0,
+                delay: 0.0,
                 options: .curveEaseInOut,
                 animations: {
 
-                    self.pickerContainerView.frame = CGRect(x:0,y:UIScreen.main.bounds.size.height,width:UIScreen.main.bounds.size.width,height:220);
-                    self.editProfileView.frame = CGRect(x:5,y:self.contentScrollview.frame.origin.y+self.profileView.frame.size.height+5,width:self.editProfileView.frame.size.width,height:ScreenHeight-self.contentScrollview.frame.origin.y-self.profileView.frame.size.height-5-26)
+                    self.pickerContainerView.frame = CGRect(x:0.0,y:screenHeight,width:screenWidth,height:220.0);
+                    self.editProfileView.frame = CGRect(x:5.0,y:contentY+profileHeight+5.0,width:self.editProfileView.frame.size.width,height:screenWidth-contentY-profileHeight-31.0)
 
             },
                 completion: { Void in()
@@ -961,13 +1004,19 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
             self.birthdayTipLab.sizeToFit()
             self.birthdayTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
             self.view.endEditing(true)
+			
+			let screenHeight = UIScreen.main.bounds.size.height
+			let pickerHeight = self.pickerContainerView.frame.size.height
+			let pickerWidth = self.pickerContainerView.frame.size.width
+			let editWidth = self.editProfileView.frame.size.width
+			
             UIView.animate(
                 withDuration: 0.25,
-                delay: 0,
+                delay: 0.0,
                 options: .curveEaseInOut,
                 animations: {
-                    self.pickerContainerView.frame = CGRect(x:0,y:UIScreen.main.bounds.size.height-5-self.pickerContainerView.frame.size.height,width:self.pickerContainerView.frame.size.width,height:self.pickerContainerView.frame.size.height)
-                    self.editProfileView.frame = CGRect(x:5,y:UIScreen.main.bounds.size.height - self.pickerContainerView.frame.size.height - 300-12,width:self.editProfileView.frame.size.width,height:300)
+                    self.pickerContainerView.frame = CGRect(x:0.0,y:screenHeight-5.0-pickerHeight,width:pickerWidth,height:pickerHeight)
+                    self.editProfileView.frame = CGRect(x:5.0,y:screenHeight - pickerHeight - 300.0-12.0,width:editWidth,height:300.0)
             },
                 completion: { Void in()  }
             )
@@ -1048,23 +1097,24 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
         let deltaY = keyBoardBounds.size.height
 
-        let editProfileHeight :CGFloat = 300
-		let editProfileStartPointY = UIScreen.main.bounds.size.height - deltaY - editProfileHeight-12
+        let editProfileHeight :CGFloat = 300.0
+		let editProfileStartPointY = UIScreen.main.bounds.size.height - deltaY - editProfileHeight-12.0
 		
         self.profileView.isHidden = true
         self.containerView.isHidden = true
         self.stuffView.isHidden = true
 
+		let editWidth = self.editProfileView.frame.size.width
         self.keyBoardWasShow = true
-        if duration > 0 {
+        if duration > 0.0 {
             let options = UIViewAnimationOptions(rawValue:UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
             UIView.animate(
                 withDuration: duration,
-                delay: 0,
+                delay: 0.0,
                 options: options,
                 animations: {
                     // 键盘高度
-                    self.editProfileView.frame = CGRect(x:5,y:editProfileStartPointY,width:self.editProfileView.frame.size.width,height:editProfileHeight)
+                    self.editProfileView.frame = CGRect(x:5,y:editProfileStartPointY,width:editWidth,height:editProfileHeight)
             },
                 completion: { Void in()
                     print("keyBoardWillShow self.editprofileframe\(self.editProfileView.frame)")
@@ -1073,7 +1123,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
             }
             )
         }else{
-           self.editProfileView.frame = CGRect(x:5,y:editProfileStartPointY,width:self.editProfileView.frame.size.width,height:editProfileHeight)
+           self.editProfileView.frame = CGRect(x:5,y:editProfileStartPointY,width:editWidth,height:editProfileHeight)
         }
         self.pickerContainerView.frame.origin.y = ScreenHeight
     }
@@ -1088,9 +1138,16 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.profileView.isHidden = false
         self.containerView.isHidden = false
         self.stuffView.isHidden = false
-        self.pickerContainerView.frame = CGRect(x:0,y:UIScreen.main.bounds.size.height,width:UIScreen.main.bounds.size.width,height:220);
+		
+		let screenHeight = UIScreen.main.bounds.size.height
+		let screenWidth = UIScreen.main.bounds.size.width
+		let contentY = self.contentScrollview.frame.origin.y
+		let profileHeight = self.profileView.frame.size.height
+		let editWidth = self.editProfileView.frame.size.width
+		
+        self.pickerContainerView.frame = CGRect(x:0.0,y:screenHeight,width:screenWidth,height:220.0);
 
-        self.editProfileView.frame = CGRect(x:5,y:self.contentScrollview.frame.origin.y+self.profileView.frame.size.height+5,width:self.editProfileView.frame.size.width,height:ScreenHeight-self.contentScrollview.frame.origin.y-self.profileView.frame.size.height-5-26)
+        self.editProfileView.frame = CGRect(x:5.0,y:contentY+profileHeight+5.0,width:editWidth,height:screenHeight-contentY-profileHeight-31.0)
 
         self.cancelBtn.isHidden = true
         self.saveBtn.isHidden = true
@@ -1137,10 +1194,11 @@ class SettingAcceptButtonCell: UITableViewCell {
     }
 
     func setUpUI() {
+		let contentWidth: CGFloat = self.contentView.frame.size.width
         self.backgroundColor = UIColor.clear
         self.titleLabel = UILabel.init()
         self.titleLabel.backgroundColor = UIColor.clear;
-        self.titleLabel.frame = CGRect(x: 16, y: 0, width: self.contentView.frame.size.width - 18 - 40 - 18, height: 64)
+        self.titleLabel.frame = CGRect(x: 16.0, y: 0.0, width: contentWidth - 18.0 - 40.0 - 18.0, height: 64.0)
 		self.titleLabel.autoresizingMask = [.flexibleWidth]
         self.titleLabel.text = ""
         self.titleLabel.textColor = UIColor.white
@@ -1148,8 +1206,8 @@ class SettingAcceptButtonCell: UITableViewCell {
         self.titleLabel.textAlignment = NSTextAlignment.left
         self.contentView.addSubview(self.titleLabel)
 
-		self.acceptSwitch = MonkeySwitch.init(frame: CGRect(x: self.contentView.frame.size.width - 40 - 18, y: 17, width: 40, height: 30))
-		self.acceptSwitch.closeIndicatorColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.3)
+		self.acceptSwitch = MonkeySwitch.init(frame: CGRect(x: contentWidth - 40.0 - 18.0, y: 17.0, width: 40.0, height: 30.0))
+		self.acceptSwitch.closeIndicatorColor = UIColor.init(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.3)
 		self.acceptSwitch.openEmoji = "🐵"
 		self.acceptSwitch.autoresizingMask = [.flexibleLeftMargin]
         self.contentView.addSubview(self.acceptSwitch)

@@ -32,13 +32,13 @@ class IncomingCallManager {
         }
     }
     var incomingCallNotificationToken:NotificationToken?
-    weak var showingNotification:CallNotificationView? {
-        didSet {
-            if showingNotification == nil {
-                self.stopCallSound()
-            }
-        }
-    }
+//    weak var showingNotification:CallNotificationView? {
+//        didSet {
+//            if showingNotification == nil {
+//                self.stopCallSound()
+//            }
+//        }
+//    }
     var callTimer:Timer?
     var chatSession:ChatSession?
     var skipCallIds:[String] = []
@@ -64,30 +64,30 @@ class IncomingCallManager {
     
 	func reactToIncomingCall(_ realmCall: RealmVideoCall) {
 		
-		guard self.delegate != nil, showingNotification == nil, self.skipCallIds.contains(realmCall.chat_id!) != true else {
-			return
-		}
-		
-		self.chatSession = self.createChatSession(fromVideoCall: realmCall)
-		let chatSession = self.chatSession!
-		
-		if self.delegate?.incomingCallManager(self, shouldShowNotificationFor: chatSession) == true {
-			self.initiateCallTimer()
-			self.showingNotification = NotificationManager.shared.showCallNotification(chatSession: chatSession, completion: { [unowned self] (response) in
-				if response == .accepted {
-					self.stopCallSound()
-					self.showingNotification?.notificationDescriptionLabel.text = "connecting..."
-					self.showingNotification?.callButton.isJiggling = false
-					self.showingNotification?.callButton.isSpinning = true
-					self.delegate?.incomingCallManager(self, transitionToChatSession: chatSession)
-					self.chatSession = nil
-				} else {
-					chatSession.disconnect(.consumed)
-					self.dismissShowingNotificationForChatSession(chatSession)
-				}
-				self.stopCallSound()
-			})
-		}
+//		guard self.delegate != nil, showingNotification == nil, self.skipCallIds.contains(realmCall.chat_id!) != true else {
+//			return
+//		}
+//		
+//		self.chatSession = self.createChatSession(fromVideoCall: realmCall)
+//		let chatSession = self.chatSession!
+//		
+//		if self.delegate?.incomingCallManager(self, shouldShowNotificationFor: chatSession) == true {
+//			self.initiateCallTimer()
+//			self.showingNotification = NotificationManager.shared.showCallNotification(chatSession: chatSession, completion: { [unowned self] (response) in
+//				if response == .accepted {
+//					self.stopCallSound()
+//					self.showingNotification?.notificationDescriptionLabel.text = "connecting..."
+//					self.showingNotification?.callButton.isJiggling = false
+//					self.showingNotification?.callButton.isSpinning = true
+//					self.delegate?.incomingCallManager(self, transitionToChatSession: chatSession)
+//					self.chatSession = nil
+//				} else {
+//					chatSession.disconnect(.consumed)
+//					self.dismissShowingNotificationForChatSession(chatSession)
+//				}
+//				self.stopCallSound()
+//			})
+//		}
 	}
     
     ///  if user ignore video call , call this func
@@ -146,15 +146,15 @@ class IncomingCallManager {
         self.callTimer = nil
     }
 	func dismissShowingNotificationForChatSession(_ chatSession: ChatSession) {
-		guard self.showingNotification?.chatSession == chatSession else {
-			// Call not started from notification or a different notification is being displayed
-			// This should usually be fine but is an easy place for bugs to pop up.
-			return
-		}
-		self.delegate?.incomingCallManager(self, didDismissNotificatationFor: chatSession)
-		self.showingNotification?.dismiss()
-		self.showingNotification = nil
-		self.chatSession = nil
+//		guard self.showingNotification?.chatSession == chatSession else {
+//			// Call not started from notification or a different notification is being displayed
+//			// This should usually be fine but is an easy place for bugs to pop up.
+//			return
+//		}
+//		self.delegate?.incomingCallManager(self, didDismissNotificatationFor: chatSession)
+//		self.showingNotification?.dismiss()
+//		self.showingNotification = nil
+//		self.chatSession = nil
 	}
 }
 

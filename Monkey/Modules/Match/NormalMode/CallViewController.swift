@@ -11,11 +11,6 @@ import AudioToolbox
 import RealmSwift
 import DeviceKit
 
-protocol CallViewControllerDelegate: class {
-    func stopFindingChats(andDisconnect:Bool, forReason:String)
-    func startFindingChats(forReason:String)
-}
-
 class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchViewControllerProtocol {
     var commonTree: RealmChannel?
 
@@ -60,7 +55,6 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
     
     var clocks = "🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧"
     var soundPlayer = SoundPlayer.shared
-    weak var callDelegate:CallViewControllerDelegate?
     let throttleFunction = throttle(delay: 0.25, queue: DispatchQueue.main) {
 		TapticFeedback.impact(style: .heavy)
     }
@@ -108,19 +102,21 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
 
     func updatePublisherViewConstraints() {
         if isPublisherViewEnlarged {
-            statusCornerView.layer.cornerRadius = 0
-            publisherContainerViewLeftConstraint.constant = 0
-            publisherContainerViewTopConstraint.constant = -22
+            statusCornerView.layer.cornerRadius = 0.0
+            publisherContainerViewLeftConstraint.constant = 0.0
+            publisherContainerViewTopConstraint.constant = -22.0
 
-            publisherContainerViewHeightConstraint.constant = self.topLayoutGuide.length + self.containerView.frame.size.height + 43 + 22
+			let topLength: CGFloat = self.topLayoutGuide.length
+			let containerHeight: CGFloat = self.containerView.frame.size.height
+            publisherContainerViewHeightConstraint.constant = topLength + containerHeight + 43.0 + 22.0
             publisherContainerViewWidthConstraint.constant = self.containerView.frame.size.width
         } else {
-            statusCornerView.layer.cornerRadius = 6
-            publisherContainerViewLeftConstraint.constant = 20
-            publisherContainerViewTopConstraint.constant = 34
+            statusCornerView.layer.cornerRadius = 6.0
+            publisherContainerViewLeftConstraint.constant = 20.0
+            publisherContainerViewTopConstraint.constant = 34.0
 
-            publisherContainerViewHeightConstraint.constant = 179
-            publisherContainerViewWidthConstraint.constant = 103
+            publisherContainerViewHeightConstraint.constant = 179.0
+            publisherContainerViewWidthConstraint.constant = 103.0
         }
         self.view.setNeedsLayout()
     }
@@ -159,7 +155,7 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
         // [.mixWithOthers, .allowBluetooth, .defaultToSpeaker]
 
         // Step 1: As the view is loaded initialize a new instance of OTSession
-        statusCornerView.layer.cornerRadius = 6
+        statusCornerView.layer.cornerRadius = 6.0
         Socket.shared.isEnabled = true
         self.clockLabel.font = UIFont.monospacedDigitSystemFont(ofSize: self.clockLabel.font.pointSize, weight: UIFontWeightMedium)
         animator = UIDynamicAnimator(referenceView: self.containerView)
@@ -172,7 +168,7 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
         self.handleInstagramPopupBtnHiddenFunc(isHidden: self.endCallButton.isHidden)
 		
         self.clockLabel.delegate = self
-		self.clockLabelBackgroundView.layer.cornerRadius = 20
+		self.clockLabelBackgroundView.layer.cornerRadius = 20.0
 		self.clockLabelBackgroundView.layer.masksToBounds = true
 
         if self.chatSession?.isDialedCall == true {
@@ -196,7 +192,7 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
 			self.skipButton.isHidden = false
 			self.skipButton.isEnabled = true
 			self.skipButtonContainerView.isUserInteractionEnabled = false
-			self.skipButtonContainerView.alpha = 0
+			self.skipButtonContainerView.alpha = 0.0
 			self.skipButtonContainerView.isHidden = false
 		}
 		
@@ -207,11 +203,13 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
             subView.frame = UIScreen.main.bounds
         }
 
-        statusCornerView.layer.cornerRadius = 0
-        publisherContainerViewLeftConstraint.constant = 0
-        publisherContainerViewTopConstraint.constant = -22
+        statusCornerView.layer.cornerRadius = 0.0
+        publisherContainerViewLeftConstraint.constant = 0.0
+        publisherContainerViewTopConstraint.constant = -22.0
 
-        publisherContainerViewHeightConstraint.constant = self.topLayoutGuide.length + self.containerView.frame.size.height + 43 + 22
+		let topLength: CGFloat = self.topLayoutGuide.length
+		let containerHeight: CGFloat = self.containerView.frame.size.height
+        publisherContainerViewHeightConstraint.constant = topLength + containerHeight + 43.0 + 22.0
         publisherContainerViewWidthConstraint.constant = self.containerView.frame.size.width
 		
 		self.cameraPositionButton.isHidden = true
@@ -243,7 +241,7 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
 		
 		if self.chatSession?.matchMode == .EventMode {
 			UIView.animate(withDuration: TimeInterval(RemoteConfigManager.shared.event_mode_next_show), animations: {
-				self.skipButtonContainerView.alpha = 1
+				self.skipButtonContainerView.alpha = 1.0
 			}) {[weak self] (finished) in
 				guard let `self` = self else { return }
 				if finished == true {

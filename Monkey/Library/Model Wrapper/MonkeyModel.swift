@@ -35,6 +35,22 @@ class MonkeyModel: Object, Mappable, MonkeyObject {
 		super.setValue(RealmDataController.shared.parseDate(stringValue), forKey: key)
 	}
 	
+	func update(operation: @escaping () -> Swift.Void) -> Bool {
+		do {
+			guard let realm = try? Realm() else {
+				return false
+			}
+			try realm.write {
+				operation()
+			}
+			
+			return true
+		} catch (let error) {
+			print(error)
+			return false
+		}
+	}
+	
 	class var type: String {
 		return String(describing: self)
 	}

@@ -52,7 +52,7 @@ class RealmChannel: MonkeyModel {
 	@discardableResult class func fetchAll<T: Object>(parameters: [String: Any] = [:], completion operationCompletionHandler: @escaping JSONAPIOperationCompletionHandlerWithFlag<T>) -> JSONAPIRequest? {
 		
 		return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/\(RealmChannel.requst_subfix)", parameters: parameters as Parameters, options: [
-			.header("Authorization", APIController.authorization),
+			.header("Authorization", UserManager.authorization),
 			]).addCompletionHandler({ result in
 				switch result {
 				case .error(let error):

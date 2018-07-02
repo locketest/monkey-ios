@@ -6,12 +6,10 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:monkey.cool</string>
 		<string>applinks:monkey.cool</string>
-		<string>applinks:monkey.app.link</string>
+		<string>webcredentials:monkey.cool</string>
 		<string>applinks:www.monkey.cool</string>
 		<string>webcredentials:www.monkey.cool</string>
-		<string>applinks:join.monkey.cool</string>
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>

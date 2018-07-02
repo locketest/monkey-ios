@@ -9,6 +9,7 @@
 import UIKit
 import Alamofire
 import RealmSwift
+import ObjectMapper
 
 class AuthViewController: MonkeyViewController {
 	
@@ -16,8 +17,7 @@ class AuthViewController: MonkeyViewController {
 	@IBOutlet var onboardingContainerView: UIView!
 	
 	/// When true, don't present a new VC on viewDidAppear
-	var presentingErrorCallback: (() -> Void)?
-	
+	private var presentingErrorCallback: (() -> Void)?
 	private var currentAppVersionIsSupported: Bool {
 		guard let minimumAppVersion = APIController.shared.currentExperiment?.minimum_version.value else {
 			print("Error: could not check if version was supported.")
@@ -26,12 +26,8 @@ class AuthViewController: MonkeyViewController {
 		return minimumAppVersion <= Environment.version
 	}
 	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-//		guard self.onboardingContainerView.superview == nil else {
-//			return
-//		}
-//		self.view.addSubview(self.onboardingContainerView)
+	override func viewDidLoad() {
+		super.viewDidLoad()
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -44,95 +40,74 @@ class AuthViewController: MonkeyViewController {
 		self.onboardingContainerView.removeFromSuperview()
 	}
 	
-	func startAuth() {
+	private func startAuth() {
 		guard self.presentingErrorCallback == nil else {
 			return // Will be called when error dismissed.
 		}
 		
-		RealmDataController.shared.setupRealm { (setupError: APIError?) in
-			if let apiError = setupError {
-				self.show(error: apiError, onRetry: {
-					self.startAuth()
-				})
+		UserManager.shared.login { (error) in
+			guard let loginError = error else {
+				self.sync()
 				return
 			}
-		
-			if APIController.authorization == nil {
-				// 未登录，跳转到登录
-				DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.1), execute: {
-					let vc = self.storyboard!.instantiateViewController(withIdentifier: "welcomeVC")
-					vc.modalTransitionStyle = .crossDissolve
-					self.present(vc, animated: true, completion: nil)
-				})
-			} else {
-				// 如果是已经登录的账号
-				self.sync()
-			}
+			self.show(error: loginError, onRetry: {
+				self.startAuth()
+			})
 		}
 	}
+	
 	/// Forces update of Experiments from cache or network if required then performs checks based off of Experiments
-	func sync() {
-		guard UIApplication.shared.applicationState == .active else {
-			NotificationCenter.default.addObserver(self, selector: #selector(self.sync), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
+	fileprivate func sync() {
+		// 如果未登录成功
+		guard UserManager.shared.isUserLogin() == true, let currentUser = UserManager.shared.currentUser else {
+			self.resetToWelcome()
 			return
 		}
 		
+		// signup finish
+		UserManager.shared.trackSignUpFinish()
+		
 		// If we have a cache, show the VC now and let the update continue in the background
-		if APIController.shared.currentExperiment != nil {
+		if UserManager.shared.currentExperiment != nil {
 			self.nextVC()
-		} else {
+		}else {
 			self.activityIndicator.startAnimating()
 		}
 		
 		let dispatchGroup = DispatchGroup()
-		dispatchGroup.enter()
-		self.reloadCurrentUser {
+		let leaveGroup = {
 			dispatchGroup.leave()
 		}
+		
 		dispatchGroup.enter()
-		self.updateExperiments {
-			dispatchGroup.leave()
-		}
+		self.reloadUser(user: currentUser, completion: leaveGroup)
+		dispatchGroup.enter()
+		self.updateExperiments(completion: leaveGroup)
+		
 		dispatchGroup.notify(queue: .main) {
+			self.activityIndicator.stopAnimating()
+			
+			// 如果登录失败
+			guard UserManager.shared.isUserLogin() == true else {
+				return
+			}
+			
+			// code verify 打点
+			UserManager.shared.trackCodeVerify()
+			
+			// 如果是已经进入到 main vc
 			guard self.presentedViewController != nil else {
 				self.nextVC()
 				return
 			}
-			
-			guard let currentUser = APIController.shared.currentUser else {
-				print("Error: Current user should be defined by now.")
-				return
-			}
-			
-			// 如果资料完整
-			if currentUser.isCompleteProfile() {
-				APIController.trackCodeVerifyIfNeed(isProfileComplete: true)
-				
-			}else {
-				APIController.trackCodeVerifyIfNeed(isProfileComplete: false)
-				
-				// 资料不全，编辑信息
-				let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
-				(self.presentedViewController as? MainViewController)?.present(accountVC, animated: true, completion: nil)
-			}
 		}
 	}
 	
-	func reloadCurrentUser(completion: @escaping () -> Void) {
-		guard let currentUser = APIController.shared.currentUser else {
-			print("Error: Current user should be defined by now.")
-			completion()
-			return
-		}
-		currentUser.reload { (error: APIError?) in
-			if let error = error {
-				if error.status == "401" {
-					self.resetToWelcome()
-					completion()
-				}else {
-					self.show(error: error) {
-						self.reloadCurrentUser(completion: completion)
-					}
+	private func reloadUser(user: RealmUser, completion: @escaping () -> Void) {
+		user.reload { (error: APIError?) in
+			if let error = error, error.status != "401" {
+				self.show(error: error) {
+					self.reloadUser(user: user, completion: completion)
 				}
 			}else {
 				completion()
@@ -140,38 +115,72 @@ class AuthViewController: MonkeyViewController {
 		}
 	}
 	
-	func resetToWelcome() {
-		RealmDataController.shared.deleteAllData { (error) in
-			guard error == nil else {
-				error?.log()
-				return
-			}
-			APIController.authorization = nil
-			Socket.shared.fetchCollection = false
-			UserDefaults.standard.removeObject(forKey: "user_id")
-			UserDefaults.standard.removeObject(forKey: "apns_token")
-			// This is okay because it should currently only happen when switching between servers. however, in the future it could happen if we invalidate old logins so eventually recovery should be possible.
-			self.presentedViewController?.dismiss(animated: true, completion: {
-				print("INVALID SESSION: Reset to welcome screen")
-			})
-			if let presentedViewController = self.presentedViewController {
-				presentedViewController.dismiss(animated: true, completion: nil)
-			}else {
-				self.startAuth()
-			}
+	private func updateExperiments(completion: @escaping () -> Void) {
+		RealmExperiment.create { (_: JSONAPIResult<RealmExperiment>) in
+			completion()
 		}
 	}
 	
-	func updateExperiments(completion: @escaping () -> Void) {
-		RealmExperiment.create { (result: JSONAPIResult<RealmExperiment>) in
-			switch result {
-			case .error(let error):
-				print(error)
-			case .success(let newObject):
-				print(newObject)
-			}
-			completion()
+	/**
+	Presents the next view controller after authentication completes.
+	
+	Called after values for Experiments first become available (cached or from server).
+	*/
+	private func nextVC() {
+		// Ensure version is supported. Other experiments values have been stored for use later as necessary.
+		guard self.currentAppVersionIsSupported else {
+			print("Running unsupported version of Monkey discovered through experiments refresh.")
+			self.showUnsupportedVersionErrorAlert()
+			return
 		}
+		
+		// 登录之后添加监听
+		UserManager.shared.addMessageObserver(observer: self)
+		var presentingVC: UIViewController!
+        if let delete_at = APIController.shared.currentUser?.delete_at.value, delete_at > 0.0 {
+			// 如果用户被删除
+            presentingVC = UIStoryboard(name: "Settings", bundle: nil).instantiateViewController(withIdentifier: "ResumeMyAccountViewController") as! ResumeMyAccountViewController
+        } else if APIController.shared.currentUser?.isCompleteProfile() == false {
+			// 资料不全，编辑信息
+			let accountVC = self.storyboard!.instantiateViewController(withIdentifier: Environment.ScreenHeight < 667.0 ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
+			accountVC.shouldDismissAfterEntry = true
+			presentingVC = accountVC
+		} else if Achievements.shared.grantedPermissionsV2 == false {
+			// 没有给权限，跳转权限页
+			presentingVC = self.storyboard!.instantiateViewController(withIdentifier: "permVC")
+		} else {
+			// 跳转到 discover
+			presentingVC = self.storyboard!.instantiateViewController(withIdentifier: "mainVC")
+		}
+		
+		/// Should be called when ready to open the mainVC after launch setup is complete. Also manages opening to chat if necessary and beginning the background experiments update.
+		DispatchQueue.main.async {
+			self.present(presentingVC, animated: false)
+		}
+	}
+	
+	func resetToWelcome() {
+		let showWelcome = {
+			DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.1), execute: {
+				let vc = self.storyboard!.instantiateViewController(withIdentifier: "welcomeVC")
+				vc.modalTransitionStyle = .crossDissolve
+				self.present(vc, animated: true, completion: nil)
+			})
+		}
+		
+		// 如果没有 presentedViewController
+		guard let presentedViewController = self.presentedViewController else {
+			showWelcome()
+			return
+		}
+		
+		// 如果已经是 welcome vc
+		if presentedViewController is WelcomeViewController {
+			return
+		}
+		
+		// 如果不是，先 dismiss, 然后 present
+		presentedViewController.dismiss(animated: true, completion: showWelcome)
 	}
 	
 	/**
@@ -179,7 +188,7 @@ class AuthViewController: MonkeyViewController {
 	
 	- parameter error: The error to show.
 	*/
-	func show(error: APIError, onRetry: @escaping () -> Void) {
+	private func show(error: APIError, onRetry: @escaping () -> Void) {
 		guard self.presentingErrorCallback == nil else {
 			return
 		}
@@ -195,43 +204,6 @@ class AuthViewController: MonkeyViewController {
 		presentedViewController.present(errorAlert, animated: true, completion: nil)
 	}
 	
-	/**
-	Presents the next view controller after authentication completes.
-	
-	Called after values for Experiments first become available (cached or from server).
-	*/
-	func nextVC() {
-		self.activityIndicator.stopAnimating()
-		
-		// Ensure version is supported. Other experiments values have been stored for use later as necessary.
-		guard self.currentAppVersionIsSupported else {
-			print("Running unsupported version of Monkey discovered through experiments refresh.")
-			self.showUnsupportedVersionErrorAlert()
-			return
-		}
-		
-		AnalyticsCenter.loginAccount()
-        
-        if let _ = APIController.shared.currentUser?.delete_at.value {
-            let vc = UIStoryboard(name: "Settings", bundle: nil).instantiateViewController(withIdentifier: "ResumeMyAccountViewController") as! ResumeMyAccountViewController
-            self.present(vc, animated: false)
-        } else if APIController.shared.currentUser?.isCompleteProfile() == false {
-			// 资料不全，编辑信息
-			let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
-			accountVC.shouldDismissAfterEntry = true
-			self.present(accountVC, animated: false)
-		} else if Achievements.shared.grantedPermissionsV2 == false {
-			let permissionsVC = self.storyboard!.instantiateViewController(withIdentifier: "permVC")
-			self.present(permissionsVC, animated: false)
-		} else {
-			// Finish setting up and launching app and initial view controller
-			guard  UIApplication.shared.applicationState == .active else {
-				NotificationCenter.default.addObserver(self, selector: #selector(self.finishLaunchSetup), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
-				return
-			}
-			self.finishLaunchSetup()
-		}
-	}
 	/**
 	Dismisses any presented view controller(s) and shows the unsupported version error.
 	*/
@@ -251,16 +223,11 @@ class AuthViewController: MonkeyViewController {
 			self.present(unsuportedVersionAlert, animated: true, completion: nil)
 		})
 	}
-	
-	/// Should be called when ready to open the mainVC after launch setup is complete. Also manages opening to chat if necessary and beginning the background experiments update.
-	func finishLaunchSetup() {
-		NotificationCenter.default.removeObserver(self)
-		DispatchQueue.main.async {
-			guard let mainVC = self.storyboard?.instantiateViewController(withIdentifier: "mainVC") as? MainViewController else {
-				print("Error: No main VC to present")
-				return
-			}
-			self.present(mainVC, animated: false, completion:nil)
-		}
+}
+
+extension AuthViewController: UserObserver {
+	func currentUserDidLogout() {
+		// 同步数据或者跳转到登录页
+		self.sync()
 	}
 }

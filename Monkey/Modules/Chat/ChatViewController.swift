@@ -124,12 +124,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                         "is_typing": isTyping,
                     ]
                 ]
-                ], to: "patch_friendships", completion: { (error, _) in
-                    guard error == nil else {
-                        print("Error: Unable to patch friendships")
-                        return
-                    }
-            })
+			], to: "patch_friendships")
         }
     }
 
@@ -458,7 +453,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         if let friendship = self.viewModel.friendship {
             let user = friendship.user
 			
-            self.profileNameLabel.text = user?.first_name ?? user?.snapchat_username ?? user?.username ?? ""
+            self.profileNameLabel.text = user?.first_name
         }
         NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }

@@ -98,6 +98,15 @@ import UIKit
         textField.resignFirstResponder()
         textField.layoutIfNeeded()
     }
+	
+	override func delete(_ sender: Any?) {
+		if let superclass = self.superclass {
+			if superclass.instancesRespond(to: #selector(delete(_:))) {
+				super.delete(sender)
+			}
+		}
+	}
+	
     deinit {
         NotificationCenter.default.removeObserver(self)
     }

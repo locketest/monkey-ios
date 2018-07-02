@@ -16,78 +16,11 @@
 //|__/     |__/ \______/ |__/  \__/|__/  \__/|________/    |__/
 
 import UIKit
-import Alamofire
-import Social
-import MediaPlayer
 import RealmSwift
-import MessageUI
 import ObjectMapper
-import CoreLocation
-import SafariServices
 import UserNotifications
-import CropViewController
 import Kingfisher
-
-enum ReportType: Int {
-	case mean = 9
-	case nudity = 10
-	case violence = 11
-	case meanOrBully = 12
-	case drugsOrWeapon = 13
-	case ageOrGender = 14
-	case other = 15
-	
-	func eventTrackValue() -> String {
-		switch self {
-		case .mean:
-			return "Channel"
-		case .nudity:
-			return "Nude"
-		case .violence:
-			return "Violent"
-		case .meanOrBully:
-			return "Bully/racist"
-		case .drugsOrWeapon:
-			return "Drugs/Weapon"
-		case .ageOrGender:
-			return "Age/Sex"
-		case .other:
-			return "Other"
-		}
-	}
-}
-
-enum AutoScreenShotType: String {
-	case match_5s = "match_5s"
-	case match_disconnec = "match_disconnec"
-	case opponent_background = "opponent_background"
-}
-
-enum showRateAlertReason: String {
-	case addFriendJust = "addFriendJust"
-	case finishFriendCall = "finishFriendCall"
-	case contiLoginThreeDay = "contiLogin"
-	
-	func eventValue() -> String {
-		switch self {
-		case .addFriendJust:
-			return "Add friend success"
-		case .finishFriendCall:
-			return "Finish friend call"
-		case .contiLoginThreeDay:
-			return "Using 3 days"
-		}
-	}
-}
-
-enum discoveryState: Int {
-	case avoidRequest = 1
-	case findingMatch = 2
-	case watingMyAccept = 3
-	case watingOtherAccept = 4
-	case connectingMatch = 5
-	case chatting = 6
-}
+import Alamofire
 
 /**
 *	is_tap_setting: bool
@@ -108,7 +41,7 @@ public let BananaAlertDataTag = "BananaAlertData" // Adjust promotion link下载
 
 typealias MatchViewController = UIViewController & MatchViewControllerProtocol
 
-class MainViewController: SwipeableViewController, CallViewControllerDelegate, ChatSessionLoadingDelegate, IncomingCallManagerDelegate, MonkeySocketDelegate {
+class MainViewController: SwipeableViewController, ChatSessionLoadingDelegate {
 	
 	func webSocketDidRecieveVideoCall(videoCall: Any, data: [String : Any]) {
 		guard IncomingCallManager.shared.chatSession == nil, let videoc = videoCall as? RealmVideoCall else {
@@ -117,24 +50,24 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		
 		// present call view controller
 		if let chatsession = IncomingCallManager.shared.createChatSession(fromVideoCall: videoc) {
-			let callnoti = NotificationManager.shared.showCallNotification(chatSession: chatsession, completion: { (callResponse) in
-				switch callResponse {
-				case .accepted:
-					if self.chatSession != nil {
-						self.chatSession?.disconnect(.consumed)
-					}
-					self.chatSession = chatsession
-					chatsession.loadingDelegate = self
-					chatsession.accept()
-				case .declined:
-					//					IncomingCallManager.shared.cancelVideoCall(chatsession: chatsession)
-					chatsession.disconnect(.consumed)
-				}
-			})
-			
-			chatsession.didReceiveAccept()
-			IncomingCallManager.shared.showingNotification = callnoti
-			self.callNotification = callnoti
+//			let callnoti = NotificationManager.shared.showCallNotification(chatSession: chatsession, completion: { (callResponse) in
+//				switch callResponse {
+//				case .accepted:
+//					if self.chatSession != nil {
+//						self.chatSession?.disconnect(.consumed)
+//					}
+//					self.chatSession = chatsession
+//					chatsession.loadingDelegate = self
+//					chatsession.accept()
+//				case .declined:
+//					//					IncomingCallManager.shared.cancelVideoCall(chatsession: chatsession)
+//					chatsession.disconnect(.consumed)
+//				}
+//			})
+//			
+//			chatsession.didReceiveAccept()
+//			IncomingCallManager.shared.showingNotification = callnoti
+//			self.callNotification = callnoti
 		}
 	}
 	
@@ -216,7 +149,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	
 	weak var matchViewController: MatchViewController?
 	
-	weak var callNotification: CallNotificationView?
+//	weak var callNotification: CallNotificationView?
 	var incomingCallId: String?
 	var incomingCallBio: String?
 	var nextSessionToPresent: ChatSession?
@@ -226,6 +159,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		return channels
 	}
 	
+	var responseTimeoutCount = 0
 	var matchRequestTimer: Timer?
 	var curCommonTree: RealmChannel?
 	
@@ -444,9 +378,9 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			self.matchModeSwitch.isHidden = false
 		}
 		
-		NotificationManager.shared.viewManager = self
-		NotificationManager.shared.chatSessionLoadingDelegate = self
-		IncomingCallManager.shared.delegate = self
+//		NotificationManager.shared.viewManager = self
+//		NotificationManager.shared.chatSessionLoadingDelegate = self
+//		IncomingCallManager.shared.delegate = self
 		self.swipableViewControllerToPresentOnRight = UIStoryboard(name: "Channels", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
 		self.swipableViewControllerToPresentOnLeft = UIStoryboard(name: "Chat", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
 		self.swipableViewControllerToPresentOnBottom = UIStoryboard(name: "Settings", bundle: .main).instantiateInitialViewController() as? SwipeableViewController
@@ -497,7 +431,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		
 		self.skippedText.layer.opacity = 0.0
 		Socket.shared.isEnabled = true
-		Socket.shared.delegate = self
+//		Socket.shared.delegate = self
 		
 		//		Step 1: tap to start
 		self.stopFindingChats(andDisconnect: true, forReason: "tap-to-start")
@@ -676,7 +610,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	
 	func loadBananaData(isNotificationBool: Bool) {
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/bananas", options: [
-			.header("Authorization", APIController.authorization),
+			.header("Authorization", UserManager.authorization),
 			]).addCompletionHandler { (result) in
 				switch result {
 				case .error(let error):
@@ -886,14 +820,13 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			match_type = "text"
 		}
 		
-		let commonParameters = [
-			"user_gender": currentUser?.gender ?? "",
-			"user_age": "\(currentUser?.age.value ?? 0)",
-			"user_country": currentUser?.location ?? "",
-			"user_ban": "\(is_banned)",
-			"match_type": match_type,
-			"trees": currentUser?.channels.first?.title ?? "",
-			]
+		var commonParameters = [String: Any]()
+		commonParameters["user_gender"] = currentUser?.gender
+		commonParameters["user_age"] = currentUser?.age.value
+		commonParameters["user_country"] = currentUser?.location
+		commonParameters["user_ban"] = is_banned ? "true" : "false"
+		commonParameters["match_type"] = match_type
+		commonParameters["trees"] = currentUser?.channels.first?.title
 		return commonParameters
 	}
 	
@@ -1042,17 +975,19 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 	
 	@IBAction func acceptButtonTapped(sender: Any) {
+		let user_id: String = chatSession?.realmCall?.user?.user_id ?? ""
+		let duration: TimeInterval = chatSession?.matchedTime ?? Date.init().timeIntervalSince1970 - request_time.timeIntervalSince1970
 		AnalyticsCenter.log(withEvent: .clickMatchSelect, andParameter: [
 			"type": "Accept",
-			"info": chatSession?.realmCall?.user?.user_id ?? "",
-			"match duration": chatSession?.matchedTime ?? Date.init().timeIntervalSince1970 - request_time.timeIntervalSince1970,
+			"info": user_id,
+			"match duration": duration,
 			])
 		
 		AnalyticsCenter.log(withEvent: .matchSendAccept, andParameter: [
 			"type": (sender is BigYellowButton) ? "btn accept" : "auto accept",
 			])
 		
-		MKMatchManager.shareManager.afmCount = 0
+		self.responseTimeoutCount = 0
 		self.chatSession?.accept()
 		self.skipButton.isHidden = true
 		self.rejectButton.isHidden = true
@@ -1069,15 +1004,17 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 	
 	@IBAction func rejectButtonTapped(_ sender: Any) {
+		let user_id: String = chatSession?.realmCall?.user?.user_id ?? ""
+		let duration: TimeInterval = chatSession?.matchedTime ?? Date.init().timeIntervalSince1970 - request_time.timeIntervalSince1970
 		AnalyticsCenter.log(withEvent: .clickMatchSelect, andParameter: [
 			"type": "Reject",
-			"info": chatSession?.realmCall?.user?.user_id ?? "",
-			"match duration": chatSession?.matchedTime ?? Date.init().timeIntervalSince1970 - request_time.timeIntervalSince1970,
+			"info": user_id,
+			"match duration": duration,
 			])
 		
 		AnalyticsCenter.log(event: .matchSendSkip)
 		
-		MKMatchManager.shareManager.afmCount = 0
+		self.responseTimeoutCount = 0
 		self.resetFact()
 		self.chatSession?.response = .skipped
 		self.chatSession?.chat?.skipped = true
@@ -1086,15 +1023,17 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 	
 	@IBAction func skipButtonTapped(_ sender: Any) {
+		let user_id: String = chatSession?.realmCall?.user?.user_id ?? ""
+		let duration: TimeInterval = chatSession?.matchedTime ?? Date.init().timeIntervalSince1970 - request_time.timeIntervalSince1970
 		AnalyticsCenter.log(withEvent: .clickMatchSelect, andParameter: [
 			"type": "Skip",
-			"info": chatSession?.realmCall?.user?.user_id ?? "",
-			"match duration": chatSession?.matchedTime ?? Date.init().timeIntervalSince1970 - request_time.timeIntervalSince1970,
+			"info": user_id,
+			"match duration": duration,
 			])
 		
 		AnalyticsCenter.log(event: .matchSendSkip)
 		
-		MKMatchManager.shareManager.afmCount = 0
+		self.responseTimeoutCount = 0
 		self.resetFact()
 		self.chatSession?.response = .skipped
 		self.chatSession?.chat?.skipped = true
@@ -1173,21 +1112,6 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 					bio = convertBio.replacingCharacters(in: age_range, with: "\(new_age)")
 				}
 			}
-		} else if let first_name = call.user?.first_name, let gender = call.user?.gender {
-			var age = call.user?.age.value ?? 18
-			if RemoteConfigManager.shared.app_in_review == true {
-				if age < 19, age > 0 {
-					age = abs(Int.arc4random() % 5) + 19
-				}
-			}
-			
-			let gender = gender == Gender.female.rawValue ? "👱‍♀️" : "👱"
-			var location = call.user?.location ?? "world"
-			if call.user?.isAmerican() == true, let state = call.user?.state {
-				location = state
-			}
-			
-			bio = "\(first_name),  \(age)  \(gender)\n\(location)"
 		}
 		
 		if let match_distance = call.match_distance.value, match_distance > 0, Achievements.shared.nearbyMatch == true {
@@ -1219,7 +1143,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 				return
 			}
 			APIController.authorization = nil
-			Socket.shared.fetchCollection = false
+//			Socket.shared.fetchCollection = false
 			UserDefaults.standard.removeObject(forKey: "user_id")
 			UserDefaults.standard.removeObject(forKey: "apns_token")
 			
@@ -1255,10 +1179,10 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		}
 		// We set the chat session again since incomingCallManager(_:transitionToChatSession:) wouldn't have set it yet.
 		self.chatSession = chatSession
-		if self.callNotification != nil {
-			self.callNotification?.dismiss()
-			self.callNotification = nil
-		}
+//		if self.callNotification != nil {
+//			self.callNotification?.dismiss()
+//			self.callNotification = nil
+//		}
 		
 		UIView.animate(withDuration: 0.3, animations: {
 			if !(viewController is MainViewController) {
@@ -1356,10 +1280,10 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}else if chatSession.matchMode == .TextMode && chatSession.isUnMuteSound == false,
 			let connectTime = chatSession.connectTime,
-			(Date.init().timeIntervalSince1970 - connectTime) <= 30 {
+			(Date.init().timeIntervalSince1970 - connectTime) <= 30.0 {
 			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}else if let connectTime = chatSession.connectTime,
-			(Date.init().timeIntervalSince1970 - connectTime) <= 30 {
+			(Date.init().timeIntervalSince1970 - connectTime) <= 30.0 {
 			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}
 		
@@ -1510,14 +1434,19 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 	
 	func warnConnectionTimeout(in chatSession: ChatSession) {
-		self.stopFindingChats(andDisconnect: false, forReason: "ignoring")
-		let alert = UIAlertController(title: "👮‍♀️ Don't ignore people", message: "Make sure to skip or accept chats.", preferredStyle: UIAlertControllerStyle.alert)
-		alert.addAction(UIAlertAction(title: "Soz officer", style: .cancel, handler: {
-			(UIAlertAction) in
-			alert.dismiss(animated: true, completion: nil)
-			self.startFindingChats(forReason: "ignoring")
-		}))
-		self.present(alert, animated: true, completion: nil)
+		self.responseTimeoutCount = self.responseTimeoutCount + 1
+		if self.responseTimeoutCount >= RemoteConfigManager.shared.match_autoskip_warncount {
+			self.responseTimeoutCount = 0
+			
+			self.stopFindingChats(andDisconnect: false, forReason: "ignoring")
+			let alert = UIAlertController(title: "👮‍♀️ Don't ignore people", message: "Make sure to skip or accept chats.", preferredStyle: UIAlertControllerStyle.alert)
+			alert.addAction(UIAlertAction(title: "Soz officer", style: .cancel, handler: {
+				(UIAlertAction) in
+				alert.dismiss(animated: true, completion: nil)
+				self.startFindingChats(forReason: "ignoring")
+			}))
+			self.present(alert, animated: true, completion: nil)
+		}
 	}
 	
 	func showRateAlert(reason: showRateAlertReason) {
@@ -1663,7 +1592,7 @@ extension MainViewController {
 	
 	func listTree(tree: String) {
 		if let curTree = APIController.shared.currentUser?.channels.first, tree == curTree.channel_id {
-			self.chatSession?.common_tree = curTree.title
+			self.chatSession?.common_tree = curTree.title!
 			self.curCommonTree = curTree
 			self.commonTreeTip.text = curTree.emoji
 			self.commonTreeTip.isHidden = false
@@ -1742,12 +1671,12 @@ extension MainViewController {
 	}
 }
 
-extension MainViewController: SlideViewManager {
-	func shouldShowNotification() -> Bool {
-		return (self.presentedViewController?.presentedViewController as? ChatViewController) == nil
-	}
-	
-	func shouldExecuteNotification() -> Bool {
-		return self.chatSession?.status != .connected
-	}
-}
+//extension MainViewController: SlideViewManager {
+//	func shouldShowNotification() -> Bool {
+//		return (self.presentedViewController?.presentedViewController as? ChatViewController) == nil
+//	}
+//
+//	func shouldExecuteNotification() -> Bool {
+//		return self.chatSession?.status != .connected
+//	}
+//}

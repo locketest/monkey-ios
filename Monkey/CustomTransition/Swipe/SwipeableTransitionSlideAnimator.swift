@@ -25,7 +25,7 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 		self.transitionContext = transitionContext
 		// Get all variables
 		let containerView = transitionContext.containerView
-		containerView.frame.origin.y = 0
+		containerView.frame.origin.y = 0.0
 		containerView.frame.size.height = UIApplication.shared.keyWindow!.frame.height
 		let fromViewController = transitionContext.viewController(forKey: .from) as! SwipeableViewController
 		let toViewController = transitionContext.viewController(forKey: .to) as! SwipeableViewController
@@ -53,7 +53,7 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 		}
 		let fromView = fromContainerView ?? fromViewController.view!
 		let toView = toContainerView ?? toViewController.view!
-		var directionalViewOffset: CGFloat = 0
+		var directionalViewOffset: CGFloat = 0.0
 		
 		if fromViewController.swipableViewControllerToPresentOnLeft == toViewController {
 			directionalViewOffset = -containerView.frame.size.width
@@ -81,9 +81,9 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 		if !isToMainViewController && isPresenting {
 			if fromViewController.isPanningHorizontally && (toViewController is SettingsViewController) == false && (toViewController is FilterViewController) == false { // left/right (second conditional for tap to bring up settings)
 				toView.frame.origin.x = directionalViewOffset
-				toViewController.view.frame.origin.y = 0
+				toViewController.view.frame.origin.y = 0.0
 			} else {
-				toView.frame.origin.x = 0 // ensure we don't animate from bottom right
+				toView.frame.origin.x = 0.0 // ensure we don't animate from bottom right
 				toView.frame.origin.y = directionalViewOffset // settings
 			}
 			toViewController.view.frame.size.height = containerView.frame.height
@@ -91,9 +91,9 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 		
 		// set the final offset for the arrow within this transition
 		if let controller = fromViewController as? MainViewController, let toController = toViewController as? SettingsViewController {
-			controller.bottomArrowPadding.constant = toController.contentHeight + 20
+			controller.bottomArrowPadding.constant = toController.contentHeight + 20.0
 		} else if let controller = toViewController as? MainViewController {
-			controller.bottomArrowPadding.constant = 30
+			controller.bottomArrowPadding.constant = 30.0
 		}
 		
 		UIView.animate(withDuration: self.transitionDuration(using: transitionContext), animations: {
@@ -107,8 +107,8 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 			}
 			
 			if !isToMainViewController {
-				toView.frame.origin.x = 0
-				toView.frame.origin.y = 0
+				toView.frame.origin.x = 0.0
+				toView.frame.origin.y = 0.0
 			}
 			// animate alpha of loading view (including the swipe up arrow)
 			(fromViewController as? MainViewController)?.elementsShouldHide = true
@@ -125,11 +125,11 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 			transitionContext.completeTransition(!self.transitionContext!.transitionWasCancelled)
 			if transitionContext.transitionWasCancelled {
 				if let controller = toViewController as? MainViewController, fromViewController is SettingsViewController {
-					controller.bottomArrowPadding.constant = fromViewController.contentHeight + 20
+					controller.bottomArrowPadding.constant = fromViewController.contentHeight + 20.0
 					controller.view.setNeedsLayout()
 				}
 				else if let controller = fromViewController as? MainViewController {
-					controller.bottomArrowPadding.constant = 30
+					controller.bottomArrowPadding.constant = 30.0
 					controller.view.setNeedsLayout()
 				}
 				
@@ -172,15 +172,6 @@ class SwipeableTransitionSlideAnimator: NSObject, UIViewControllerAnimatedTransi
 			}
 			
 			(fromViewController as? MainViewController)?.startFindingChats(forReason: "is-swiping")
-			
-			// the animator sends views to front, which hides any notifications, so we have to keep bringing showingNotification to front so its always displayed
-			if let messageNotificationView = NotificationManager.shared.showingNotification {
-				if messageNotificationView is RatingNotificationView {
-					messageNotificationView.dismiss()
-				} else {
-					UIApplication.shared.keyWindow?.bringSubview(toFront: messageNotificationView)
-				}
-			}
 		}
 	}
 }

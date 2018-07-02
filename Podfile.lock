@@ -5,9 +5,9 @@ PODS:
   - Adjust/Core (4.14.1)
   - AgoraRtcEngine_iOS (2.2.1)
   - Alamofire (4.7.2)
-  - AlamofireObjectMapper (5.0.0):
+  - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
-    - ObjectMapper (~> 3.0)
+    - ObjectMapper (~> 3.3)
   - Amplitude-iOS (4.2.1)
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
@@ -15,23 +15,23 @@ PODS:
   - Bolts/AppLinks (1.9.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
-  - Crashlytics (3.10.2):
-    - Fabric (~> 1.7.7)
+  - Crashlytics (3.10.3):
+    - Fabric (~> 1.7.8)
   - CropViewController (2.3.6)
   - DeviceKit (1.7.0)
-  - Fabric (1.7.7)
+  - Fabric (1.7.8)
   - FBNotifications (1.0.1)
   - FBSDKCoreKit (4.34.0):
     - Bolts (~> 1.7)
-  - Firebase/Core (5.2.0):
+  - Firebase/Core (5.4.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 5.0.1)
-  - Firebase/CoreOnly (5.2.0):
-    - FirebaseCore (= 5.0.3)
-  - Firebase/Messaging (5.2.0):
+  - Firebase/CoreOnly (5.4.0):
+    - FirebaseCore (= 5.0.5)
+  - Firebase/Messaging (5.4.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (= 3.0.2)
-  - Firebase/RemoteConfig (5.2.0):
+    - FirebaseMessaging (= 3.0.3)
+  - Firebase/RemoteConfig (5.4.0):
     - Firebase/Core
     - FirebaseRemoteConfig (= 3.0.0)
   - FirebaseABTesting (2.0.0):
@@ -42,11 +42,11 @@ PODS:
     - FirebaseInstanceID (~> 3.0)
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - nanopb (~> 0.3)
-  - FirebaseCore (5.0.3):
+  - FirebaseCore (5.0.5):
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-  - FirebaseInstanceID (3.1.0):
+  - FirebaseInstanceID (3.1.1):
     - FirebaseCore (~> 5.0)
-  - FirebaseMessaging (3.0.2):
+  - FirebaseMessaging (3.0.3):
     - FirebaseCore (~> 5.0)
     - FirebaseInstanceID (~> 3.0)
     - GoogleToolboxForMac/Logger (~> 2.1)
@@ -77,15 +77,15 @@ PODS:
     - ObjectMapper
     - ObjectMapperAdditions/Core
     - RealmSwift
-  - OpenTok (2.14.0)
+  - OpenTok (2.14.1)
   - Protobuf (3.6.0)
   - Realm (3.7.4):
     - Realm/Headers (= 3.7.4)
   - Realm/Headers (3.7.4)
   - RealmSwift (3.7.4):
     - Realm (= 3.7.4)
+  - SnapKit (4.0.0)
   - Starscream (3.0.5)
-  - SwiftyJSON (4.1.0)
 
 DEPENDENCIES:
   - AccountKit
@@ -108,8 +108,8 @@ DEPENDENCIES:
   - ObjectMapperAdditions/Realm (~> 4.1)
   - OpenTok
   - RealmSwift
+  - SnapKit (~> 4.0.0)
   - Starscream
-  - SwiftyJSON
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -142,8 +142,8 @@ SPEC REPOS:
     - Protobuf
     - Realm
     - RealmSwift
+    - SnapKit
     - Starscream
-    - SwiftyJSON
 
 EXTERNAL SOURCES:
   GPUImage:
@@ -160,21 +160,21 @@ SPEC CHECKSUMS:
   Adjust: 2bef0f835fc7dcbfe871bf14e6960fabbcbd2c23
   AgoraRtcEngine_iOS: 11c250ee1f02602712eae4713523946edfcce723
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
-  AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
+  AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   Amplitude-iOS: 84da24ca8557fa3741888502c30c0b8b365acd7d
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
+  Crashlytics: 2aea305161a2122492698c75af27f2b98aa49a25
   CropViewController: e6d4bd512d15a1709e9ddf71fe7d98ffd05dda0f
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
-  Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
+  Fabric: fba4684a95df789565b0b27fc5b6e68f1755af32
   FBNotifications: 3f1a9e43ffa2979a685eec29c960ca6a15c70be9
   FBSDKCoreKit: 0ff57f093b85c8c9d5aba697d3edf68a8960ce78
-  Firebase: 25ed0412036d7d008568d1fb4d2e9d81ea8a0a2c
+  Firebase: d66f4f29c23f22d96808d9abc174d81d8eee968f
   FirebaseABTesting: 1f50b8d50f5e3469eea54e7463a7b7fe221d1f5e
   FirebaseAnalytics: b3628aea54c50464c32c393fb2ea032566e7ecc2
-  FirebaseCore: a3c87242451633fff8490183898075ce77d168d2
-  FirebaseInstanceID: 05d779cbb97bd5bd5c51a38a903fc9cfe1b2454a
-  FirebaseMessaging: 6894b8fe0a0cf26c3b13dad729f1131654ae0bdb
+  FirebaseCore: 42b3267233bd21a5abd54117ccc38ca3dd0f8e83
+  FirebaseInstanceID: f3f0657372592ecdfdfe2cac604a5a75758376a6
+  FirebaseMessaging: f43eb0c0e1da096e659de6f713038e74862a62cd
   FirebaseRemoteConfig: 3c57e4644bd6976b671ae0b725cd709f198bd1f5
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   GPUImage: f6034f21f92df6171520f604226ae64b90b35911
@@ -182,13 +182,13 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
   ObjectMapperAdditions: db4243e10ebd9abf7e5e7938e4b0a4bbfd840980
-  OpenTok: f4c0f42fd2e4e4d2682b12dcb94313aa88558e14
+  OpenTok: 3d935e5bd9e779398e31e17ab2238da41d68d89c
   Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
   Realm: a469bb59e33f9926102ccaea4349822c53b9117e
   RealmSwift: a45861b21c180f5cf0f122144b9759fa8dde3e9e
+  SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
-  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
 
-PODFILE CHECKSUM: 58a03377622550785e4c8e2a3a3a5ed1b7f0f629
+PODFILE CHECKSUM: cf3c5b05ac761ccc1a934c63c175102b69fc5741
 
 COCOAPODS: 1.5.3

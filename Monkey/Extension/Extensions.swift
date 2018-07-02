@@ -198,7 +198,7 @@ extension BigYellowButton {
 }
 
 extension Amplitude {
-    class var shared:Amplitude {
+    class var shared: Amplitude {
         return Amplitude.instance()
     }
 }
@@ -491,6 +491,65 @@ extension Array where Element: Equatable {
 	mutating func remove(_ object: Element) {
 		if let index = index(of: object) {
 			remove(at: index)
+		}
+	}
+}
+
+extension Bool {
+	var toString: String {
+		return self ? "true" : "false"
+	}
+}
+
+extension Array {
+	var toJSON: String {
+		get {
+			let defaultJSON = "[]"
+			guard let data = try? JSONSerialization.data(withJSONObject: self, options: []) else {
+				return defaultJSON
+			}
+			
+			return String(data: data, encoding: .utf8) ?? defaultJSON
+		}
+	}
+}
+
+extension Dictionary {
+	var toJSON: String {
+		get {
+			let defaultJSON = "{}"
+			guard let data = try? JSONSerialization.data(withJSONObject: self, options: []) else {
+				return defaultJSON
+			}
+			
+			return String(data: data, encoding: .utf8) ?? defaultJSON
+		}
+	}
+}
+
+extension String {
+	var asJSON: AnyObject? {
+		let data = self.data(using: .utf8, allowLossyConversion: false)
+		
+		if let jsonData = data {
+			//			Will return an object or nil if JSON decoding fails
+			do {
+				let message = try JSONSerialization.jsonObject(with: jsonData, options:.mutableContainers)
+				if let jsonResult = message as? NSMutableArray {
+					return jsonResult //Will return the json array output
+				} else if let jsonResult = message as? NSMutableDictionary {
+					return jsonResult //Will return the json dictionary output
+				} else {
+					return nil
+				}
+			}
+			catch let error as NSError {
+				print("An error occurred: \(error)")
+				return nil
+			}
+		} else {
+			//			Lossless conversion of the string was not possible
+			return nil
 		}
 	}
 }

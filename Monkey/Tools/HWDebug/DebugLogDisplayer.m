@@ -26,11 +26,11 @@
 
 @implementation UIWindow (DebugMode)
 
-//+ (void)load {
-//	[self swizzleInstanceMethod:@selector(setRootViewController:) with:@selector(debugMode_setRootViewController:)];
-//	[self swizzleInstanceMethod:@selector(makeKeyAndVisible) with:@selector(debugMode_makeKeyAndVisible)];
-//	[self swizzleInstanceMethod:@selector(layoutSubviews) with:@selector(debugMode_layoutSubviews)];
-//}
++ (void)load {
+	[self swizzleInstanceMethod:@selector(setRootViewController:) with:@selector(debugMode_setRootViewController:)];
+	[self swizzleInstanceMethod:@selector(makeKeyAndVisible) with:@selector(debugMode_makeKeyAndVisible)];
+	[self swizzleInstanceMethod:@selector(layoutSubviews) with:@selector(debugMode_layoutSubviews)];
+}
 
 - (void)debugMode_setRootViewController:(UIViewController *)rootViewController {
 	[self debugMode_setRootViewController:rootViewController];

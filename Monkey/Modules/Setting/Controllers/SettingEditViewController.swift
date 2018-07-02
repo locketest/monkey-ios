@@ -373,22 +373,22 @@ class SettingEditViewController: SwipeableViewController, UITextFieldDelegate {
                         
                         // 服务器返回的时间是 未来能修改的那一天的日期,不是返回的修改日期
                         let time = userOption.update_username.timeIntervalSince1970
-                        let now = Date().timeIntervalSince1970 * 1000
+                        let now = Date().timeIntervalSince1970 * 1000.0
                         
-                        let canEditBool = time - now  < 0
-                        let sec : Double = abs(now - time) / 1000
-                        let min : Double = floor(sec / 60)
-                        let hour : Double = floor(min / 60)
-                        var day : Int = Int(floor(hour / 24))
+                        let canEditBool = time - now  < 0.0
+                        let sec : Double = fabs(now - time) / 1000.0
+                        let min : Double = floor(sec / 60.0)
+                        let hour : Double = floor(min / 60.0)
+                        var day : Int = Int(floor(hour / 24.0))
                         
                         if canEditBool {
                             self?.nameTextField.text = ""
                             self?.nameTextField.isUserInteractionEnabled = true
-                            self?.nameTextField.textColor = UIColor.init(white: 1, alpha: 0.7)
+                            self?.nameTextField.textColor = UIColor.init(white: 1.0, alpha: 0.7)
                         } else {
                             day = day < 1 ? 1 : day
                             self?.nameTextField.isUserInteractionEnabled = false
-                            self?.nameTextField.textColor = UIColor.init(white: 1, alpha: 0.5)
+                            self?.nameTextField.textColor = UIColor.init(white: 1.0, alpha: 0.5)
                             self?.nameTipsLabel.text = "You can change your name after \(day) days"
                         }
                     }

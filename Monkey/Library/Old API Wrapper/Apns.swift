@@ -18,7 +18,7 @@ class Apns {
         let badge = UserDefaults.standard.bool(forKey: "apns_badge") == true
         let sound = UserDefaults.standard.bool(forKey: "apns_sound") == true
         let alert = UserDefaults.standard.bool(forKey: "apns_alert") == true
-        let paramaters:Parameters = [
+        let paramaters: Parameters = [
             "data": [
                 "type": "apns",
                 "id": token!,

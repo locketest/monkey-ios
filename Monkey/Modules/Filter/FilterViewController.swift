@@ -32,8 +32,8 @@ class FilterViewController: SwipeableViewController {
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
-		var currentFilter = Achievements.shared.selectMonkeyFilter
-		var keep = initialFilter == currentFilter
+		let currentFilter = Achievements.shared.selectMonkeyFilter
+		let keep = initialFilter == currentFilter
 		AnalyticsCenter.log(withEvent: .videoFilterSelect, andParameter: [
 			"type": keep ? "keep" : "change",
 			"name": currentFilter,

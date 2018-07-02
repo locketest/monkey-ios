@@ -135,6 +135,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
     func initData() {
         
         self.dataTupleArray.removeAll()
+		self.overlayView.isHidden = true
         
         if let accountId = user?.instagram_account?.instagram_account_id {
             JSONAPIRequest(url: "\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/instagram_accounts/\(accountId)", options: [
@@ -178,7 +179,8 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
             
             let totleColumns : CGFloat = 3 // 每行要显示的列数
 
-            let imageButtonW : CGFloat = (self.instagramPhotosBgView.frame.size.width - Margin * 2 - Padding * (totleColumns - 1)) / totleColumns
+			let bgWidth: CGFloat = self.instagramPhotosBgView.frame.size.width
+            let imageButtonW : CGFloat = (bgWidth - Margin * 2.0 - Padding * (totleColumns - 1.0)) / totleColumns
             let imageButtonH : CGFloat = imageButtonW
 
             for (index, value) in self.dataTupleArray.enumerated() {
@@ -490,15 +492,6 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         guard self.user?.instagram_account != nil else {
             return
         }
-        
-        if !Achievements.shared.shownInstagramTutorial {
-            self.overlayView.isHidden = true
-//            self.instagramImageView.next()
-            Achievements.shared.shownInstagramTutorial = true
-            return
-        }
-        
-//        self.instagramImageView.next()
         
         guard let displayingPhoto = self.displayingInstagramPhoto else {
             print("Error: Attempting to switch instagram photo before we are ready")

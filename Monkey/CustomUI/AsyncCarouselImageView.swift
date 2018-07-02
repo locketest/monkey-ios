@@ -56,11 +56,7 @@ class AsyncCarouselImageView: UIImageView, AsyncImageDelegate {
         guard (self.asyncImages[currentIndex].url == asyncImage.url) || (self.waitingForNextImage && self.asyncImages[currentIndex + 1].url == asyncImage.url) else {
             return
         }
-        
-        guard Achievements.shared.shownInstagramTutorial else {
-            return
-        }
-        
+		
         self.image = asyncImage.image
     }
     
@@ -68,7 +64,7 @@ class AsyncCarouselImageView: UIImageView, AsyncImageDelegate {
     /// Note: also handles corner cases, like dismissing the tutorial adn wrapping around once user hs reached end
     func next() {
         
-        if self.asyncImages.count <= currentIndex + 1 || !Achievements.shared.shownInstagramTutorial {
+        if self.asyncImages.count <= currentIndex + 1 {
             currentIndex = -1
         }
         

@@ -241,7 +241,6 @@ class Achievements {
 			return defaults.bool(forKey: "authorized_facebook_for_bonus_bananas") == true
 		}
 	}
-	*/
 	/// User has tapped on tutorial for instagramPopupVC
 	var shownInstagramTutorial: Bool {
 		set {
@@ -252,6 +251,67 @@ class Achievements {
 		}
 	}
 
+	/// app group
+	private let groupDefaults: UserDefaults = UserDefaults.init(suiteName: "group.monkey.ios") ?? shared.defaults
+	
+	var group_authorization: String? {
+		set {
+			groupDefaults.set(newValue, forKey: "Monkey_authorization")
+		}
+		get {
+			return groupDefaults.string(forKey: "Monkey_authorization")
+		}
+	}
+	var group_first_name: String? {
+		set {
+			groupDefaults.set(newValue, forKey: "Monkey_first_name")
+		}
+		get {
+			return groupDefaults.string(forKey: "Monkey_first_name")
+		}
+	}
+	var group_username: String? {
+		set {
+			groupDefaults.set(newValue, forKey: "Monkey_username")
+		}
+		get {
+			return groupDefaults.string(forKey: "Monkey_username")
+		}
+	}
+	var group_user_id: String? {
+		set {
+			groupDefaults.set(newValue, forKey: "Monkey_user_id")
+		}
+		get {
+			return groupDefaults.string(forKey: "Monkey_user_id")
+		}
+	}
+	var group_birth_date: Double? {
+		set {
+			groupDefaults.set(newValue, forKey: "Monkey_birth_date")
+		}
+		get {
+			return groupDefaults.double(forKey: "Monkey_birth_date")
+		}
+	}
+	var group_gender: String? {
+		set {
+			groupDefaults.set(newValue, forKey: "Monkey_gender")
+		}
+		get {
+			return groupDefaults.string(forKey: "Monkey_gender")
+		}
+	}
+	var group_profile_photo: String? {
+		set {
+			groupDefaults.set(newValue, forKey: "Monkey_profile_photo_url")
+		}
+		get {
+			return groupDefaults.string(forKey: "Monkey_profile_photo_url")
+		}
+	}
+	*/
+	
 	/// User has grantedPermission before
 	var grantedPermissionsV1: Bool {
 		set {
@@ -434,67 +494,6 @@ class Achievements {
 		}
 		get {
 			return defaults.string(forKey: "MonkeySelectFilter") ?? "Normal"
-		}
-	}
-
-	/// app group
-	static let identifier: String = "group.monkey.ios"
-	private let groupDefaults: UserDefaults = UserDefaults.init(suiteName: "group.monkey.ios") ?? shared.defaults
-
-	var group_authorization: String? {
-		set {
-			groupDefaults.set(newValue, forKey: "Monkey_authorization")
-		}
-		get {
-			return groupDefaults.string(forKey: "Monkey_authorization")
-		}
-	}
-	var group_first_name: String? {
-		set {
-			groupDefaults.set(newValue, forKey: "Monkey_first_name")
-		}
-		get {
-			return groupDefaults.string(forKey: "Monkey_first_name")
-		}
-	}
-	var group_username: String? {
-		set {
-			groupDefaults.set(newValue, forKey: "Monkey_username")
-		}
-		get {
-			return groupDefaults.string(forKey: "Monkey_username")
-		}
-	}
-	var group_user_id: String? {
-		set {
-			groupDefaults.set(newValue, forKey: "Monkey_user_id")
-		}
-		get {
-			return groupDefaults.string(forKey: "Monkey_user_id")
-		}
-	}
-	var group_birth_date: Double? {
-		set {
-			groupDefaults.set(newValue, forKey: "Monkey_birth_date")
-		}
-		get {
-			return groupDefaults.double(forKey: "Monkey_birth_date")
-		}
-	}
-	var group_gender: String? {
-		set {
-			groupDefaults.set(newValue, forKey: "Monkey_gender")
-		}
-		get {
-			return groupDefaults.string(forKey: "Monkey_gender")
-		}
-	}
-	var group_profile_photo: String? {
-		set {
-			groupDefaults.set(newValue, forKey: "Monkey_profile_photo_url")
-		}
-		get {
-			return groupDefaults.string(forKey: "Monkey_profile_photo_url")
 		}
 	}
 }

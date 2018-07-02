@@ -183,8 +183,8 @@ import CropViewController
 		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
 			"type": "avatar",
 			])
-		let isAccountNew = APIController.userDef.bool(forKey: APIController.kNewAccountCodeVerify)
 		
+		let isAccountNew = UserManager.shared.loginMethod == .register
         let controller = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let camera = UIAlertAction(title: "Camera", style: .default) { (action) in
 			self.showPickerOption()

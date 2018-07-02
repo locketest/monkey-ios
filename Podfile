@@ -23,6 +23,7 @@ abstract_target 'Monkey' do
 	pod 'DeviceKit'
 	pod 'Starscream'
 	pod 'CropViewController'
+	pod 'SnapKit', '~> 4.0.0'
 	
 	pod 'RealmSwift'
 	pod 'Alamofire'

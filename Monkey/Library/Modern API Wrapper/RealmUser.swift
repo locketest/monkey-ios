@@ -69,6 +69,7 @@ class RealmUser: MonkeyModel {
 	
 	func isCompleteProfile() -> Bool {
 		var isCompleteProfile = true
+		// birth_date 和 gender 没有视为资料不完善
 		if self.birth_date == nil || self.gender == nil {
 			isCompleteProfile = false
 		}
@@ -199,7 +200,7 @@ class RealmUser: MonkeyModel {
 				"relationships": relationshipsJSON,
 			],
 			], options: [
-				.header("Authorization", APIController.authorization),
+				.header("Authorization", UserManager.authorization),
 				]).addCompletionHandler { (response) in
 					switch response {
 					case .error(let error):
@@ -223,84 +224,5 @@ class RealmUser: MonkeyModel {
 	
 	override func mapping(map: Map) {
 		super.mapping(map: map)
-
-		age <- (map["age"], RealmOptionalTypeCastTransform())
-		if age.value == nil || age.value == 0 {
-			age <- (map["attributes.age"], RealmOptionalTypeCastTransform())
-		}
-		bananas <- (map["bananas"], RealmOptionalTypeCastTransform())
-		if bananas.value == nil || bananas.value == 0 {
-			bananas <- (map["attributes.bananas"], RealmOptionalTypeCastTransform())
-		}
-
-		seconds_in_app <- (map["seconds_in_app"], RealmOptionalTypeCastTransform())
-		if seconds_in_app.value == nil || seconds_in_app.value == 0 {
-			seconds_in_app <- (map["attributes.seconds_in_app"], RealmOptionalTypeCastTransform())
-		}
-
-		facebook_friends_invited <- (map["facebook_friends_invited"], RealmOptionalTypeCastTransform())
-		is_snapcode_uploaded <- (map["is_snapcode_uploaded"], RealmOptionalTypeCastTransform())
-		is_admin <- (map["is_admin"], RealmOptionalTypeCastTransform())
-		is_banned <- (map["is_banned"], RealmOptionalTypeCastTransform())
-
-		latitude <- (map["latitude"], RealmOptionalTypeCastTransform())
-		longitude <- (map["longitude"], RealmOptionalTypeCastTransform())
-		address <- map["address"]
-		if seconds_in_app.value == nil || seconds_in_app.value == 0 {
-			seconds_in_app <- (map["attributes.seconds_in_app"], RealmOptionalTypeCastTransform())
-		}
-		location <- map["location"]
-		if location == nil {
-			location <- map["attributes.location"]
-		}
-
-		gender <- map["gender"]
-		if gender == nil {
-			gender <- map["attributes.gender"]
-		}
-		show_gender <- map["show_gender"]
-		if show_gender == nil {
-			show_gender <- map["attributes.show_gender"]
-		}
-
-		first_name <- map["first_name"]
-		if first_name == nil {
-			first_name <- map["attributes.first_name"]
-		}
-		username <- map["username"]
-		if username == nil {
-			username <- map["attributes.username"]
-		}
-		snapchat_username <- map["snapchat_username"]
-		if snapchat_username == nil {
-			snapchat_username <- map["attributes.snapchat_username"]
-		}
-
-		profile_photo_url <- map["profile_photo_url"]
-		if profile_photo_url == nil {
-			profile_photo_url <- map["attributes.profile_photo_url"]
-		}
-		profile_photo_upload_url <- map["profile_photo_upload_url"]
-
-		user_id <- map["id"]
-		if user_id == nil {
-			user_id <- map["user_id"]
-		}
-		birth_date <- (map["birth_date"], DateTransform())
-		if birth_date == nil {
-			birth_date <- (map["attributes.birth_date"], DateTransform())
-		}
-		updated_at <- (map["updated_at"], DateTransform())
-		created_at <- (map["created_at"], DateTransform())
-		last_online_at <- (map["last_online_at"], DateTransform())
-
-		channels <- (map["channels"], RealmTypeCastTransform())
-		if channels.count == 0 {
-			channels <- (map["attributes.channels"], RealmTypeCastTransform())
-		}
-		instagram_account <- map["instagram_account"]
-		if instagram_account == nil {
-			instagram_account <- map["attributes.instagram_account"]
-		}
 	}
 }

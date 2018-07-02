@@ -41,7 +41,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         
         self.friendsTableView.delegate = self
         self.friendsTableView.dataSource = self
-		self.friendsTableView.rowHeight = 64
+		self.friendsTableView.rowHeight = 64.0
         
         self.viewModel.delegate = self
         
@@ -49,7 +49,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         
         // Pad bottom of friends tableview so it doesnt line up with edge
         var contentInset = self.friendsTableView.contentInset
-        contentInset.bottom = 10
+        contentInset.bottom = 10.0
         self.friendsTableView.contentInset = contentInset
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
@@ -73,9 +73,9 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let mainVC = self.presentingViewController as? MainViewController {
-            IncomingCallManager.shared.delegate = mainVC
-        }
+//		if let mainVC = self.presentingViewController as? MainViewController {
+//            IncomingCallManager.shared.delegate = mainVC
+//		}
         
         // Do not allow user to return to chat they just swiped away from
         self.swipableViewControllerToPresentOnLeft = nil
@@ -228,10 +228,10 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         let chatViewController = storyboard.instantiateViewController(withIdentifier: "chat") as! ChatViewController
         chatViewController.viewModel.friendshipId = friendship.friendship_id
 		
-		var isMonkeyKing = friendship.user?.user_id == "2"
+		let isMonkeyKing = friendship.user?.isMonkeyKing() ?? false
 		chatViewController.isMonkeyKingBool = isMonkeyKing
 		if isMonkeyKing {
-			let isAccountNew = APIController.userDef.bool(forKey: APIController.kNewAccountCodeVerify)
+			let isAccountNew = UserManager.shared.loginMethod == .register
 			AnalyticsCenter.log(withEvent: .monkeyKingEnter, andParameter: [
 				"type": isAccountNew ? "new" : "old",
 				])

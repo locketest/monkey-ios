@@ -20,7 +20,9 @@ extension CallViewController: CountingLabelDelegate {
         
         clockLabel.formatBlock = {
             (value) in
-            return "\(String(format: "%02d", (Int(value / 1000) / 60))):\(String(format: "%02d", Int(value / 1000) % 60))"
+			let minute: Int = Int(value / 1000.0) / 60
+			let second: Int = Int(value / 1000.0) % 60
+            return String(format: "%02d", minute) + ":" + String(format: "%02d", second)
         }
         
         clockLabel.completionBlock = {

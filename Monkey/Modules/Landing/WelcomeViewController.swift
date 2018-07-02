@@ -10,7 +10,7 @@ import UIKit
 import Alamofire
 import SafariServices
 import AccountKit
-import Realm
+import ObjectMapper
 import RealmSwift
 
 typealias AKFVCType = UIViewController & AKFViewController
@@ -23,11 +23,11 @@ class WelcomeViewController: MonkeyViewController {
 	@IBOutlet weak var termsTextView: UITextView!
 	@IBOutlet weak var indicator: UIActivityIndicatorView!
 	
-	var enterTime: Date!
-
-	var accountKitAuthSuccess = false
-	var accountKit = AKFAccountKit(responseType: .accessToken)
-	var loginViewController: AKFVCType?
+	fileprivate var accountKitAuthSuccess = false
+	
+	private var enterTime: Date!
+	private var accountKit = AKFAccountKit(responseType: .accessToken)
+	private var loginViewController: AKFVCType?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,19 +61,6 @@ class WelcomeViewController: MonkeyViewController {
 		enterTime = Date.init()
 		AnalyticsCenter.log(event: .landingPageShow)
     }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        // Stop animating when view is not visible
-        confettiView.isAnimating = false
-
-    }
-
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-
-		indicator.stopAnimating()
-	}
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
@@ -85,9 +72,7 @@ class WelcomeViewController: MonkeyViewController {
         super.viewWillAppear(animated)
         // Begin animating when view is about to appear
 		
-        if APIController.authorization != nil {
-			self.dismiss(animated: false, completion: nil)
-		}else if (accountKitAuthSuccess) {
+        if (accountKitAuthSuccess) {
 			indicator.isHidden = false
 			indicator.startAnimating()
 		}else {
@@ -95,6 +80,20 @@ class WelcomeViewController: MonkeyViewController {
 			self.containerView.layer.opacity = 1
 		}
     }
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		// Stop animating when view is not visible
+		confettiView.isAnimating = false
+		indicator.stopAnimating()
+	}
+	
+	deinit {
+		confettiView.isAnimating = false
+		indicator.stopAnimating()
+		loginViewController = nil
+	}
 
     @IBAction func nextVC(_ sender: BigYellowButton) {
 		AnalyticsCenter.log(withEvent: .landingPageClick, andParameter: [
@@ -108,14 +107,22 @@ class WelcomeViewController: MonkeyViewController {
 			}
         }
     }
+	
+	private func goBack() {
+		UIView.animate(withDuration: 0.4, delay: 0.1, options: .curveEaseInOut, animations: {
+			self.containerView.alpha = 0
+		}) { (_) in
+			self.dismiss(animated: false, completion: nil)
+		}
+	}
 
-	func validateAccountkitAuth(_ accountkit_token: String) {
+	fileprivate func validateAccountkitAuth(_ accountkit_token: String) {
 		var parameters = ["accountkit_token": accountkit_token]
-        if Achievements.shared.deeplink_source.count > 0 {
+        if Achievements.shared.deeplink_source.isEmpty == false {
             parameters["source"] = Achievements.shared.deeplink_source
         }
-
-        JSONAPIRequest(url:"\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/auth/accountkit", method: .post, parameters: parameters, options: [
+		
+        JSONAPIRequest(url:"\(Environment.baseURL)/api/\(Authorization.api_version.rawValue)/\(Authorization.requst_subfix)", method: .post, parameters: parameters, options: [
             .header("version", Environment.appVersion),
             .header("lang", Environment.languageString),
             .header("device", "ios"),
@@ -123,56 +130,22 @@ class WelcomeViewController: MonkeyViewController {
 			guard let `self` = self else { return }
 
 			switch response {
-			case .error( _):
-				UIView.animate(
-					withDuration: 0.4,
-					delay: 0.1,
-					options:.curveEaseInOut,
-					animations: {
-						self.containerView.alpha = 0
-						self.view.layoutIfNeeded()
-				}){ (Bool) in
-					self.dismiss(animated: false, completion: nil)
-				}
-				
+			case .error(_):
+				self.goBack()
 			case .success(let jsonAPIDocument):
                 // clean deep link source
                 Achievements.shared.deeplink_source = ""
-
-				if let attributes = jsonAPIDocument.dataResource?.json["attributes"] as? [String: String], let relationships = jsonAPIDocument.dataResource?.json["relationships"] as? [String: [String: [String: String]]] {
-					guard let token = attributes["token"], let user = relationships["user"], let user_data = user["data"], let user_id = user_data["id"] else {
-						NSLog("error login second")
-						return
-					}
-
-					RealmDataController.shared.apply(JSONAPIDocument.init(json: user)) { (result) in
-						switch result {
-						case .error( _):
-							NSLog("error login")
-						case .success( _):
-							let authorization = "Bearer \(token)"
-							let isNewUser = (jsonAPIDocument.dataResource?.json["action"] as? String) == "register"
-							APIController.signCodeSended(isNewUser: isNewUser)
-							APIController.authorization = authorization
-							
-							UserDefaults.standard.set(user_id, forKey: "user_id")
-							UserDefaults.standard.setValue(jsonAPIDocument.dataResource?.json["deep_link"] ?? "", forKey: BananaAlertDataTag)
-
-							Apns.update(callback: nil)
-
-							UIView.animate(
-								withDuration: 0.4,
-								delay: 0.1,
-								options:.curveEaseInOut,
-								animations: {
-									self.containerView.alpha = 0
-									self.view.layoutIfNeeded()
-							}){ (Bool) in
-								self.dismiss(animated: false, completion: nil)
-							}
-						}
+				// create authorization
+				if let authorization = Mapper<Authorization>().map(JSON: jsonAPIDocument.json), let threadSafeRealm = RealmDataController.shared.mainRealm {
+					// set flag to log event
+					UserManager.shared.loginMethod = LoginMethod(rawValue: authorization.action)
+					
+					try! threadSafeRealm.write {
+						threadSafeRealm.create(RealmUser.self, value: [RealmUser.primaryKey(): authorization.user_id], update: true)
+						threadSafeRealm.add(authorization, update: true)
 					}
 				}
+				self.goBack()
 			}
 		}
 	}
@@ -181,7 +154,7 @@ class WelcomeViewController: MonkeyViewController {
 extension WelcomeViewController: AKFViewControllerDelegate {
 	func viewController(_ viewController: UIViewController!, didCompleteLoginWith accessToken: AKFAccessToken!, state: String!) {
 		print("Login succcess with AccessToken")
-		accountKitAuthSuccess = true
+		self.accountKitAuthSuccess = true
 		self.validateAccountkitAuth(accessToken.tokenString)
 		
 		AnalyticsCenter.log(withEvent: .loginCompletion, andParameter: [
@@ -229,6 +202,7 @@ extension WelcomeViewController: UITextViewDelegate {
 			NSParagraphStyleAttributeName: paragraphStyle,
 			], range: NSMakeRange(0, termsNSString.length))
 		termsTextView.attributedText = termsAttributeString;
+		termsTextView.isSelectable = false
 
 		let linkAttributes = [
 			NSForegroundColorAttributeName: UIColor.init(red: 1, green: 1, blue: 0, alpha: 0.7),
@@ -253,20 +227,17 @@ extension WelcomeViewController: UITextViewDelegate {
 	func openTextViewURL(_ URL: URL) {
 		let host = URL.host
 		if host?.compare("terms") == ComparisonResult.orderedSame {
-			openURL("http://monkey.cool/terms", inVC: true)
+			openURL(Environment.MonkeyAppTermsURL)
 		}else if host?.compare("privacy") == ComparisonResult.orderedSame {
-			openURL("http://monkey.cool/privacy", inVC: true)
+			openURL(Environment.MonkeyAppPrivacyURL)
 		}
 	}
 
-	func openURL(_ urlString: String, inVC: Bool) {
+	func openURL(_ urlString: String) {
 		guard let url = URL(string: urlString) else {
 			return
 		}
-		if !inVC {
-			UIApplication.shared.openURL(url)
-			return
-		}
+		
 		let vc = SFSafariViewController(url: url, entersReaderIfAvailable: false)
 		vc.modalPresentationCapturesStatusBarAppearance = true
 		vc.modalPresentationStyle = .overFullScreen

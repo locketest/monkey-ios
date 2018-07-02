@@ -133,14 +133,14 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
         let translation = panGestureRecognizer.translation(in: self.view)
         let panningTowardsSide: RelativeDirection? = {
             if abs(translation.x) < abs(translation.y) {
-                if translation.y > 0 {
+                if translation.y > 0.0 {
                     return .top
                 } else {
                     return .bottom
                 }
-            } else if translation.x < 0 {
+            } else if translation.x < 0.0 {
                 return .left
-            } else if translation.x > 0 {
+            } else if translation.x > 0.0 {
                 return .right
             }
             return nil
@@ -163,7 +163,7 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
                 return
             }
             
-            var progress:CGFloat = 0
+            var progress:CGFloat = 0.0
             var isOverHalfwayThere = false
             var isSwipeableVelocity:Bool = false
             var isVelocityInFinishingDirection = false
@@ -171,8 +171,8 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
             if self.isPanningHorizontally {
                 progress = fabs(translation.x) / self.view.frame.width
                 isOverHalfwayThere = progress > 0.5
-                isSwipeableVelocity = fabs(velocity.x) > 1000
-                isVelocityInFinishingDirection = (panningTowardsSide == .left ? velocity.x <= 0 : velocity.x >= 0)
+                isSwipeableVelocity = fabs(velocity.x) > 1000.0
+                isVelocityInFinishingDirection = (panningTowardsSide == .left ? velocity.x <= 0.0 : velocity.x >= 0.0)
                 
             } else {
                 if panningTowardsSide == .bottom {
@@ -194,11 +194,11 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
                 progress = min(progress, 1.0)
                 
                 isOverHalfwayThere = progress > 0.5
-                isSwipeableVelocity = fabs(velocity.y) > 1000
-                isVelocityInFinishingDirection = (self.isPanningHorizontally) ? (panningTowardsSide == .left ? velocity.x <= 0 : velocity.x >= 0) : (panningTowardsSide == .bottom) ? velocity.y <= 0 : velocity.y >= 0
+                isSwipeableVelocity = fabs(velocity.y) > 1000.0
+                isVelocityInFinishingDirection = (self.isPanningHorizontally) ? (panningTowardsSide == .left ? velocity.x <= 0.0 : velocity.x >= 0.0) : (panningTowardsSide == .bottom) ? velocity.y <= 0.0 : velocity.y >= 0.0
             }
             
-            self.isSwiping = progress > 0
+            self.isSwiping = progress > 0.0
             self.interactor.shouldFinish = (isOverHalfwayThere || isSwipeableVelocity) && isVelocityInFinishingDirection
             self.panningTowardsSide = panningTowardsSide
             self.interactor.update(progress)
@@ -219,15 +219,6 @@ class SwipeableViewController: MonkeyViewController, UIViewControllerTransitioni
             print("Error: Swipeable panning gesture is possible.")
         case .failed:
             print("Error: Swipeable panning gesture failed.")
-        }
-        
-        // dismiss if showing rating
-        if let messageNotificationView = NotificationManager.shared.showingNotification {
-            if messageNotificationView is RatingNotificationView {
-                messageNotificationView.dismiss()
-            } else {
-                UIApplication.shared.keyWindow?.bringSubview(toFront: messageNotificationView)
-            }
         }
     }
     

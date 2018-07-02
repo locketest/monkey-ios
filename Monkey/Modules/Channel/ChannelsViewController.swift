@@ -19,6 +19,8 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .clear
+		self.tableView.rowHeight = 64.0
+		
         let realm = try? Realm()
 		self.channelsNotificationToken = realm?.objects(RealmChannel.self).observe { (change) in
             self.tableView.reloadData()
@@ -62,8 +64,9 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		
+		let title: String = APIController.shared.currentUser?.channels.first?.title ?? "General"
 		AnalyticsCenter.log(withEvent: .treeClick, andParameter: [
-			"title": self.selectedChannels.first?.title ?? APIController.shared.currentUser?.channels.first?.title ?? "General",
+			"title": title,
 			])
 		
 		if self.selectedChannels.first?.channel_id != APIController.shared.currentUser?.channels.first?.channel_id {
@@ -165,12 +168,5 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         }else {
             tableView.deselectRow(at: indexPath, animated: false)
         }
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 64
     }
 }

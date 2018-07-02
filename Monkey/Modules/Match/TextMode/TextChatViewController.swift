@@ -45,7 +45,6 @@ class TextChatViewController: MonkeyViewController {
     	
 	var chatSession: ChatSession?
 	var messages = [TextMessage].init()
-	weak var callDelegate: CallViewControllerDelegate?
 	var soundPlayer = SoundPlayer.shared
 	var eras = "👂"
 	
@@ -238,14 +237,14 @@ class TextChatViewController: MonkeyViewController {
         
         self.handleInstagramPopupBtnHiddenFunc(isHidden: !self.friendButton.isHidden)
 		
-		let streamViewWidth = (self.containerView.frame.size.width - 60 - 4 * 4) / 2
+		let streamViewWidth: CGFloat = (self.containerView.frame.size.width - 76.0) / 2.0
 		UIView.animate(withDuration: 0.3) {
-			self.soundButton.alpha = 1
-			self.friendButton.alpha = 1
+			self.soundButton.alpha = 1.0
+			self.friendButton.alpha = 1.0
 //			self.endCallButton.alpha = 1
 			self.remoteStreamView?.layer.cornerRadius = 4.0
 			self.remoteStreamView?.layer.masksToBounds = true
-			self.remoteStreamView?.frame = CGRect.init(x: self.containerView.frame.size.width - streamViewWidth - 4, y: self.isIphoneX() ? 44 : 20, width: streamViewWidth, height: 192)
+			self.remoteStreamView?.frame = CGRect.init(x: self.containerView.frame.size.width - streamViewWidth - 4.0, y: self.isIphoneX() ? 44.0 : 20.0, width: streamViewWidth, height: 192.0)
 			self.view.layoutIfNeeded()
             
             self.setupCommonTree()
@@ -375,7 +374,7 @@ class TextChatViewController: MonkeyViewController {
 			publisherContainerViewLeftConstraint.constant = 4
 			publisherContainerViewTopConstraint.constant = isIphoneX() ? 44 : 20
 			
-			publisherContainerViewWidthConstraint.constant = (self.containerView.frame.size.width - 60 - 4 * 4) / 2.0
+			publisherContainerViewWidthConstraint.constant = (self.containerView.frame.size.width - 76.0) / 2.0
 			publisherContainerViewHeightConstraint.constant = 192
 		}
 		self.view.setNeedsLayout()

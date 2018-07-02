@@ -78,7 +78,7 @@ class ChatSession: NSObject {
 	// 收到文本消息的个数
     var message_receive = 0
 	// 相同的 channel
-    var common_tree: String?
+    var common_tree: String = ""
 
 	var agoraService = AgoraService.shared
     var session: OTSession?
@@ -231,18 +231,17 @@ class ChatSession: NSObject {
 			match_type = "event"
 		}
 
-		var commonParameters = [
-			"user_gender": currentUser?.gender ?? "",
-			"user_age": "\(currentUser?.age.value ?? 0)",
-			"user_country": currentUser?.location ?? "",
-			"user_ban": "\(is_banned)",
-            "match_type": match_type,
-			"auto_accept": Achievements.shared.autoAcceptMatch ? "true" : "false",
-			"user_gender_option": APIController.shared.currentUser?.show_gender ?? "both",
-			"user_tree": APIController.shared.currentUser?.channels.first?.title ?? "",
-            "match_same_tree": common_tree ?? "",
-			"nearby_status": Achievements.shared.nearbyMatch ? "true" : "false",
-		]
+		var commonParameters = [String: String]()
+		commonParameters["user_gender"] = currentUser?.gender ?? ""
+		commonParameters["user_age"] = "\(currentUser?.age.value ?? 0)"
+		commonParameters["user_country"] = currentUser?.location ?? ""
+		commonParameters["user_ban"] = is_banned ? "true" : "false"
+		commonParameters["match_type"] = match_type
+		commonParameters["auto_accept"] = Achievements.shared.autoAcceptMatch ? "true" : "false"
+		commonParameters["user_gender_option"] = APIController.shared.currentUser?.show_gender ?? "both"
+		commonParameters["user_tree"] = APIController.shared.currentUser?.channels.first?.title ?? ""
+		commonParameters["match_same_tree"] = common_tree
+		commonParameters["nearby_status"] = Achievements.shared.nearbyMatch ? "true" : "false"
 
 		if let _ = self.realmCall, let chat = chat {
 			commonParameters["match_with_gender"] = chat.gender ?? ""
@@ -384,7 +383,7 @@ class ChatSession: NSObject {
 		if videoCall?.supportSocket() == false {
 			self.joinChannel()
 		}else {
-			Socket.shared.addChatMessageDelegate(chatMessageDelegate: self)
+//			MessageCenter.shared.addChatMessageDelegate(chatMessageDelegate: self)
 		}
 
 		// 等待响应超时
@@ -422,11 +421,7 @@ class ChatSession: NSObject {
 				"show_skip": false,
 				])
 			
-			MKMatchManager.shareManager.afmCount += 1
-			if MKMatchManager.shareManager.needShowAFMAlert {
-				self.loadingDelegate?.warnConnectionTimeout?(in: self)
-				MKMatchManager.shareManager.afmCount = 0
-			}
+			self.loadingDelegate?.warnConnectionTimeout?(in: self)
 			
 			self.sendSkip()
 		}
@@ -661,7 +656,7 @@ class ChatSession: NSObject {
 
 	fileprivate func finishDisconnecting() {
 		log(.info, "Disconnecting")
-		Socket.shared.delChatMessageDelegate(chatMessageDelegate: self)
+//		MessageCenter.shared.delChatMessageDelegate(chatMessageDelegate: self)
 		guard let realmCall = videoCall else {
 			// Disconnect in progress.
 			self.log(.error, "Disconnects must have consumed status")
@@ -816,12 +811,7 @@ extension ChatSession {
 							"matched_user": [currentChat.user_id ?? ""], // array of user ids
 						]
 					]
-					], to: socket_channel, completion: { (error, _) in
-						guard error == nil else {
-							print("Error: Unable to send message")
-							return
-						}
-				})
+					], to: socket_channel)
 				return true
 			}
 
