@@ -10,8 +10,7 @@ import Foundation
 import Alamofire
 
 class Apns {
-    class func update(callback: ((_ error: String?) -> Void)?) {
-        let token = UserDefaults.standard.string(forKey: "apns_token")
+	class func update(token: String? = UserDefaults.standard.string(forKey: "apns_token"), callback: ((_ error: String?) -> Void)?) {
 //       print("<<<>>>\(String(describing: token))")
         if token == nil || APIController.authorization == nil {
             return
