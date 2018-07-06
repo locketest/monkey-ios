@@ -49,13 +49,15 @@ class LogManager: NSObject {
 	func addLog(type: MonkeyLogType = .CustomLog, subTitle: String? = nil, info: [String: Any]? = nil) {
 //		let thisLog = MonkeyLog.init(type: type, subTitle: subTitle, info: info)
 //		logCollection.append(thisLog)
-//		logObserver?.LogCollectionChanged()
-//		HWTipView.showTip("\(thisLog.type)\n\(thisLog.subTitle ?? "")", at: HWTipPositionTop, complete: nil)
+//		DispatchQueue.main.async {
+//			self.logObserver?.LogCollectionChanged()
+//			HWTipView.showTip("\(thisLog.type)\n\(thisLog.subTitle ?? "")", at: HWTipPositionTop, complete: nil)
+//		}
 	}
 	
 	func clearLog() {
-//		logCollection.removeAll()
-//		logObserver?.LogCollectionChanged()
+		logCollection.removeAll()
+		logObserver?.LogCollectionChanged()
 	}
 }
 

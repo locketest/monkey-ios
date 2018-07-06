@@ -813,6 +813,7 @@ extension ChatSession {
 						"attributes": [
 							"match_action": messageType.rawValue, // skip or ready
 							"chat_id": currentChat.chatId, // chat_id
+							"send_time": Date().timeIntervalSince1970,
 							"matched_user": [currentChat.user_id ?? ""], // array of user ids
 						]
 					]

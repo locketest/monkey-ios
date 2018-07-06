@@ -67,6 +67,7 @@ public enum AnalyticEvent: String {
 	case matchSendSkip = "skip_request_sent"
 	case matchWaitTimeout = "auto_skip_timeout"
 	case matchSendAccept = "accept_request_sent"
+	case matchReceiveSocket = "match_accept_msg_session"
     case matchConnect = "MATCH_CONNECT"
 	case matchConnectingFailed = "connecting_timeout"
     case matchConnectTimeOut = "MATCH_CONNECT_TIME_OUT"
@@ -167,6 +168,8 @@ class AnalyticsCenter {
 			if (self.firstDayEvents.contains(event) && Date.init(timeIntervalSince1970: Achievements.shared.registerTime).compare(.isToday) == false) {
 				return
 			}
+			// log
+			LogManager.shared.addLog(type: .EventTrack, subTitle: event.rawValue, info: parameter)
 			
 			// 标记为打过的点
 			self.markLogged(event: event);
@@ -211,6 +214,7 @@ extension AnalyticsCenter {
 		AnalyticEvent.settingLinkInsClick,
 		AnalyticEvent.settingLinkInsComplete,
 		AnalyticEvent.settingInviteClick,
+		AnalyticEvent.matchReceiveSocket,
 		
 		AnalyticEvent.ratePopClick,
 		AnalyticEvent.clickMatchSelect,
@@ -450,6 +454,7 @@ extension AnalyticsCenter {
 		AnalyticEvent.matchSendSkip,
 		AnalyticEvent.matchSendAccept,
 		AnalyticEvent.matchWaitTimeout,
+		AnalyticEvent.matchReceiveSocket,
 		AnalyticEvent.matchConnect,
 		AnalyticEvent.matchConnectingFailed,
 		AnalyticEvent.matchConnectTimeOut,

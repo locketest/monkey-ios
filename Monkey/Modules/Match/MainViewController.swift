@@ -394,6 +394,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	// MARK: UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		APIController.trackSignUpFinish()
 		Configs.signAsLogin()
 		
 		self.view.backgroundColor = Colors.purple
@@ -498,15 +499,16 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 		Socket.shared.delegate = self
 		
 		//		Step 1: tap to start
-		self.stopFindingChats(andDisconnect: true, forReason: "tap-to-start")
-		let startGesture = UITapGestureRecognizer.init(target: self, action: #selector(startFindingMatch))
-		startView.addGestureRecognizer(startGesture)
+//		self.stopFindingChats(andDisconnect: true, forReason: "tap-to-start")
+//		let startGesture = UITapGestureRecognizer.init(target: self, action: #selector(startFindingMatch))
+//		startView.addGestureRecognizer(startGesture)
+		self.startFindingMatch()
 		
 		//	    Step 2: check camera and micphone permission
 		self.checkCamAccess()
 		
 		//		Step 3: update user location
-		self.stopFindingChats(andDisconnect: true, forReason: "location-services")
+		self.stopFindingChats(andDisconnect: false, forReason: "location-services")
 		MainViewController.requestLocationPermissionIfUnavailable() // This will cause the thred to hang so we still need to toggle chat finding to cancel any existing requests.
 		
 		//		Step 4: Start finding chats
@@ -743,7 +745,7 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	var request_time: Date!
 	
 	func startFindingMatch() {
-		self.startFindingChats(forReason: "tap-to-start")
+//		self.startFindingChats(forReason: "tap-to-start")
 		self.factTextView.isHidden = false
 		self.loadingTextLabel.isHidden = false
 		self.startView.isHidden = true
@@ -1018,14 +1020,18 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 	
 	@IBAction func acceptButtonTapped(sender: Any) {
+		let currentTime: TimeInterval = Date.init().timeIntervalSince1970
 		AnalyticsCenter.log(withEvent: .clickMatchSelect, andParameter: [
 			"type": "Accept",
 			"info": chatSession?.realmCall?.user?.user_id ?? "",
-			"match duration": chatSession?.matchedTime ?? Date.init().timeIntervalSince1970 - request_time.timeIntervalSince1970,
+			"match duration": (chatSession?.matchedTime ?? currentTime) - request_time.timeIntervalSince1970,
 			])
 		
+		let matchedTime = chatSession?.matchedTime ?? 0
+		let response_duration = Int(ceil(currentTime - matchedTime))
 		AnalyticsCenter.log(withEvent: .matchSendAccept, andParameter: [
 			"type": (sender is BigYellowButton) ? "btn accept" : "auto accept",
+			"response duration": response_duration,
 			])
 		
 		MKMatchManager.shareManager.afmCount = 0
@@ -1045,13 +1051,18 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 	
 	@IBAction func rejectButtonTapped(_ sender: Any) {
+		let currentTime: TimeInterval = Date.init().timeIntervalSince1970
 		AnalyticsCenter.log(withEvent: .clickMatchSelect, andParameter: [
 			"type": "Reject",
 			"info": chatSession?.realmCall?.user?.user_id ?? "",
-			"match duration": chatSession?.matchedTime ?? Date.init().timeIntervalSince1970 - request_time.timeIntervalSince1970,
+			"match duration": (chatSession?.matchedTime ?? currentTime) - request_time.timeIntervalSince1970,
 			])
 		
-		AnalyticsCenter.log(event: .matchSendSkip)
+		let matchedTime = chatSession?.matchedTime ?? 0
+		let response_duration = Int(ceil(currentTime - matchedTime))
+		AnalyticsCenter.log(withEvent: .matchSendSkip, andParameter: [
+			"response duration": response_duration,
+			])
 		
 		MKMatchManager.shareManager.afmCount = 0
 		self.resetFact()
@@ -1062,13 +1073,18 @@ class MainViewController: SwipeableViewController, CallViewControllerDelegate, C
 	}
 	
 	@IBAction func skipButtonTapped(_ sender: Any) {
+		let currentTime: TimeInterval = Date.init().timeIntervalSince1970
 		AnalyticsCenter.log(withEvent: .clickMatchSelect, andParameter: [
 			"type": "Skip",
 			"info": chatSession?.realmCall?.user?.user_id ?? "",
-			"match duration": chatSession?.matchedTime ?? Date.init().timeIntervalSince1970 - request_time.timeIntervalSince1970,
+			"match duration": (chatSession?.matchedTime ?? currentTime) - request_time.timeIntervalSince1970,
 			])
 		
-		AnalyticsCenter.log(event: .matchSendSkip)
+		let matchedTime = chatSession?.matchedTime ?? 0
+		let response_duration = Int(ceil(currentTime - matchedTime))
+		AnalyticsCenter.log(withEvent: .matchSendSkip, andParameter: [
+			"response duration": response_duration,
+			])
 		
 		MKMatchManager.shareManager.afmCount = 0
 		self.resetFact()

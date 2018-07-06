@@ -103,16 +103,12 @@ class AuthViewController: MonkeyViewController {
 				print("Error: Current user should be defined by now.")
 				return
 			}
-			
+			let isProfileComplete = currentUser.isCompleteProfile()
 			// 如果资料完整
-			if currentUser.isCompleteProfile() {
-				APIController.trackCodeVerifyIfNeed(isProfileComplete: true)
-				
-			}else {
-				APIController.trackCodeVerifyIfNeed(isProfileComplete: false)
-				
+			if isProfileComplete == false {
 				// 资料不全，编辑信息
 				let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
+				accountVC.shouldDismissAfterEntry = true
 				(self.presentedViewController as? MainViewController)?.present(accountVC, animated: true, completion: nil)
 			}
 		}
@@ -151,9 +147,6 @@ class AuthViewController: MonkeyViewController {
 			UserDefaults.standard.removeObject(forKey: "user_id")
 			UserDefaults.standard.removeObject(forKey: "apns_token")
 			// This is okay because it should currently only happen when switching between servers. however, in the future it could happen if we invalidate old logins so eventually recovery should be possible.
-			self.presentedViewController?.dismiss(animated: true, completion: {
-				print("INVALID SESSION: Reset to welcome screen")
-			})
 			if let presentedViewController = self.presentedViewController {
 				presentedViewController.dismiss(animated: true, completion: nil)
 			}else {
@@ -211,14 +204,15 @@ class AuthViewController: MonkeyViewController {
 		}
 		
 		AnalyticsCenter.loginAccount()
-        
+		
+		let isProfileComplete = APIController.shared.currentUser?.isCompleteProfile() ?? true
+		APIController.trackCodeVerifyIfNeed(isProfileComplete: isProfileComplete)
         if let _ = APIController.shared.currentUser?.delete_at.value {
             let vc = UIStoryboard(name: "Settings", bundle: nil).instantiateViewController(withIdentifier: "ResumeMyAccountViewController") as! ResumeMyAccountViewController
             self.present(vc, animated: false)
         } else if APIController.shared.currentUser?.isCompleteProfile() == false {
 			// 资料不全，编辑信息
 			let accountVC = self.storyboard!.instantiateViewController(withIdentifier: (self.view.window?.frame.height ?? 0.0) < 667.0  ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
-			accountVC.shouldDismissAfterEntry = true
 			self.present(accountVC, animated: false)
 		} else if Achievements.shared.grantedPermissionsV2 == false {
 			let permissionsVC = self.storyboard!.instantiateViewController(withIdentifier: "permVC")

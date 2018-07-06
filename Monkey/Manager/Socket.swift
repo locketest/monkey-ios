@@ -146,8 +146,24 @@ class Socket: WebSocketDelegate, WebSocketPongDelegate {
 	}
 	
 	private func dispatchMatchMessage(data: [String: Any], channel: String) {
+		
 		let matchMessageInfo = JSONAPIDocument.init(json: data)
 		if let matchMessageData = matchMessageInfo.dataResource, let attribute = matchMessageData.attributes, let chat_id = attribute["chat_id"] as? String, let match_action = attribute["match_action"] as? String {
+			
+			if let send_time = attribute["send_time"] as? TimeInterval, send_time != 0 {
+				let currentTime = Date.init().timeIntervalSince1970
+				let duration = Int(ceil(currentTime - send_time))
+				var session = "7+"
+				if duration < 8 {
+					session = "\(duration)"
+				}
+				
+				AnalyticsCenter.log(withEvent: .matchReceiveSocket, andParameter: [
+					"session": session,
+					"receive_action": match_action,
+					])
+			}
+			
 			for chatMessageObserver in chatMessageDelegates {
 				if chatMessageObserver.chat?.chatId == chat_id {
 					chatMessageObserver.didReceiveChannelMessage(message: ["type": match_action])
