@@ -13,25 +13,25 @@ import UIKit
 */
 class MyContactsModel: Codable {
 	
-	var idString : String?
-	
 	var nameString : String?
 	
 	var phoneString : String?
 	
-	var pathString : String?
+	var inviteTimesInt : Int?
 	
-	var timestampDouble : Double?
+	var inviteAtDouble : Double?
+	
+	var nextInviteAtDouble : Double?
 	
 	class func myContactsModel(dict:[String:AnyObject]) -> MyContactsModel {
 		
 		let myContactsModel = MyContactsModel()
 		
-		myContactsModel.idString = dict["id"] as? String
 		myContactsModel.nameString = dict["name"] as? String
-		myContactsModel.phoneString = dict["phoneNumber"] as? String
-//		myContactsModel.pathString = dict["avatarUrl"] as? String
-		myContactsModel.timestampDouble = dict["timestamp"] as? Double
+		myContactsModel.phoneString = dict["phone_number"] as? String
+		myContactsModel.inviteTimesInt = dict["invite_times"] as? Int
+		myContactsModel.inviteAtDouble = dict["invite_at"] as? Double
+		myContactsModel.nextInviteAtDouble = dict["next_invite_at"] as? Double
 		
 		return myContactsModel
 	}

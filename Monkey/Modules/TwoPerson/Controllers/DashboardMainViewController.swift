@@ -9,13 +9,25 @@
 import UIKit
 import DeviceKit
 
+enum SocketDefaultMsgTypeEnum : Int {
+	case unlock2p = 0
+	case newFriend
+	case friendInvite
+	case friendPair
+	case acceptFriendPair
+}
+
 class DashboardMainViewController: MonkeyViewController {
 	
 	var timer : Timer?
 	
 	var currentInt = 1
+	
+	var layoutTagInt = 0
 
 	let FootView = UIView()
+	
+	var requestFinishCountInt = 0
 	
 	// 是否是通过手势关闭的键盘标识
 	var isTapEndEditingBool = false
@@ -30,13 +42,15 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	var searchArray : [AnyObject] = [] // search集合
 	
+	var pairRequestAcceptModel : PairRequestAcceptModel?
+	
 	var twopChatFriendArray : [DashboardFriendsListModel] = []
 	
 	var inviteFriendArray : [DashboardInviteListModel] = []
 	
 	let InitialTopConstraintTuple = (myTeam: 64, friends: 209)
 	
-	let SectionTitleArray = ["2P CHAT FRIEND LIST", "INVITE FRIENDS ON MONKEY"]
+	let SectionTitleArray = ["2P CHAT FRIEND LIST", "INVITE FRIENDS TO UNLOCK 2P CHAT"]
 	
 	@IBOutlet weak var friendsBottomConstraint: NSLayoutConstraint!
 	
@@ -97,6 +111,7 @@ class DashboardMainViewController: MonkeyViewController {
 			self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
 		}
 		
+		self.userNotFoundLabel.isHidden = true
 		self.isTapEndEditingBool = false
 		self.searchTextField.text = ""
 		self.view.endEditing(true)
@@ -113,8 +128,16 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	@IBAction func searchTextFieldEditingChanged(_ sender: UITextField) {
 		
+		if !sender.text!.isEmpty && Tools.trimSpace(string: sender.text!).count == 0 {
+			sender.text = ""
+			return
+		}
+		
 		if sender.text!.isEmpty || Tools.trimSpace(string: sender.text!).count == 0 {
 			self.endEditButton.isHidden = false
+			self.userNotFoundLabel.isHidden = true
+			self.searchArray = self.dataArray
+			self.tableView.reloadData()
 		} else {
 			if !self.endEditButton.isHidden {
 				self.endEditButton.isHidden = true
@@ -155,6 +178,8 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		if self.searchArray.count == 0 {
 			self.userNotFoundLabel.isHidden = false
+		} else {
+			self.userNotFoundLabel.isHidden = true
 		}
 		
 		self.tableView.reloadData()
@@ -208,7 +233,7 @@ class DashboardMainViewController: MonkeyViewController {
 		self.addSomeoneCircleFunc()
 		self.invitingAnimLayer.stopAnimation()
 		
-		self.someoneLabel.text = "Someone"
+		self.someoneLabel.text = "2P Chat Buddy"
 		self.someoneLabel.textColor = UIColor.lightGray
 	}
 	
@@ -222,15 +247,86 @@ class DashboardMainViewController: MonkeyViewController {
 	}
 	
 	func initCircleFunc() {
-		
 		if let photo = APIController.shared.currentUser?.profile_photo_url { self.meImageView.kf.setImage(with: URL(string: photo), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!) }
+	}
+	
+	func handleRequestFinishedFunc(models:[FriendshipModel], friendRequestArray:[FriendsRequestModel], userInfoArray:[UsersInfoModel], pairListArray:[PairListModel]) {
 		
-		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
-		self.meAndSomeoneBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.meImageView, lineWidth: 1.3, strokeColor: MeCircleColor, padding: 5))
+		if self.requestFinishCountInt != 3 { return }
 		
-		self.someoneCircle = Tools.drawCircleFunc(imageView: self.someoneImageView, lineWidth: 1.3, strokeColor: MeCircleColor, padding: 5)
+		print("*** friendRequestArray = \(friendRequestArray.count)")
+		print("*** userInfoArray = \(userInfoArray.count)")
+		print("*** pairListArray = \(pairListArray.count)")
 		
-		self.addSomeoneCircleFunc()
+//		self.dataArray.removeAll()
+//		self.searchArray.removeAll()
+//		self.inviteFriendArray.removeAll()
+//		self.twopChatFriendArray.removeAll()
+		
+		var onlineArray : [DashboardFriendsListModel] = []
+		var lastPairArray : [DashboardFriendsListModel] = []
+		var missedArray : [DashboardFriendsListModel] = []
+		var otherArray : [DashboardFriendsListModel] = []
+		
+		let userIdString = APIController.shared.currentUser!.user_id!
+		
+		// 遍历models，在里面装配两个显示集合
+		models.forEach({ (model) in
+			
+			userInfoArray.forEach({ (userInfo) in
+				
+				if model.friendIdString == userInfo.idString {
+					
+					friendRequestArray.forEach({ (friendModel) in
+						
+						if model.friendIdString == friendModel.userIdInt?.description {
+							
+							if userInfo.unlock2pBool! { // 通过unlock2pBool区分是1p还是2p
+								
+								let date = Date(timeIntervalSince1970: friendModel.nextInviteAtDouble! / 1000)
+								
+								if userInfo.onlineStatusBool! { // 1 online
+									onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel))
+								} else if friendModel.statusInt == 1 { // 1 pair接受过
+									lastPairArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel))
+								} else if date.timeIntervalSince(Date()) <= 0 { // timestamp过期了就是missed
+									missedArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel, isMissedBool: true))
+								} else {
+									otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel))
+								}
+							} else { // 1p，且被邀请id不是自己，就表示自己是主动发起邀请的内容
+								if userIdString != friendModel.inviteeIdInt?.description {
+									self.inviteFriendArray.append(DashboardInviteListModel.dashboardInviteListModel(userInfo: userInfo, friendsRequestModel: friendModel))
+								}
+							}
+						}
+					})
+				}
+			})
+		})
+		
+		// 至此，数据装配完毕，接下来按timestamp排序四个临时集合然后放到twopChatFriendArray里,再将两个集合放到dataArray里
+		onlineArray = onlineArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
+		lastPairArray = lastPairArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
+		missedArray = missedArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
+		otherArray = otherArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
+		
+		self.twopChatFriendArray += onlineArray
+		self.twopChatFriendArray += lastPairArray
+		self.twopChatFriendArray += missedArray
+		self.twopChatFriendArray += otherArray
+		
+		self.twopChatFriendArray.forEach { (model) in
+			print("*** model = \(model.idString!)")
+		}
+		
+		// 如果没有2p好友，加一个空的模型在数据源里，用以显示第一组的无数据cell
+		if self.twopChatFriendArray.isEmpty { self.twopChatFriendArray.append(DashboardFriendsListModel()) }
+		
+		self.dataArray.append(self.twopChatFriendArray as AnyObject)
+		self.dataArray.append(self.inviteFriendArray as AnyObject)
+		self.searchArray = self.dataArray
+		self.tableView.reloadData()
 	}
 	
 	func loadPairAndUserInfoFunc(models:[FriendshipModel]) {
@@ -241,155 +337,82 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		var pairListArray : [PairListModel] = []
 		
-		let friendIdArray = models.map { $0.friendIdString }
+		let friendIdString = models.map { $0.friendIdString! }.joined(separator: ",")
 		
-		let queue = DispatchQueue(label: "dashboard.pair.userInfo", qos: .default, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)
-		
-		queue.async {
-			
-			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/users?ids=\(friendIdArray)", method: .get, options: [
-				.header("Authorization", AuthString),
-				]).addCompletionHandler { (response) in
-					switch response {
-					case .error(_): break
-					case .success(let jsonAPIDocument):
-						
-						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
-						
-						if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
-							array.forEach({ (userInfo) in
-								userInfoArray.append(UsersInfoModel.usersInfoModel(dict: userInfo))
-							})
-						}
-					}
-			}
-		}
-		
-		queue.async {
-			
-			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_pair", method: .get, options: [
-				.header("Authorization", AuthString),
-				]).addCompletionHandler { (response) in
-					switch response {
-					case .error(_): break
-					case .success(let jsonAPIDocument):
-						
-						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
-						
-						if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
-							array.forEach({ (pairInfo) in
-								pairListArray.append(PairListModel.pairListModel(dict: pairInfo))
-							})
-						}
-					}
-			}
-		}
-		
-		queue.async {
-			
-			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_request", method: .get, options: [
-				.header("Authorization", AuthString),
-				]).addCompletionHandler { (response) in
-					switch response {
-					case .error(let error):
-						print("*** error : = \(error.message)")
-					case .success(let jsonAPIDocument):
-						
-						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
-						
-						if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
-							array.forEach({ (friendModel) in
-								friendRequestArray.append(FriendsRequestModel.friendsRequestModel(dict: friendModel, nameString: nil, pathString: nil))
-							})
-						}
-					}
-			}
-		}
-		
-		queue.async(group: nil, qos: .default, flags: .barrier) {
-			
-			print("*** friendRequestArray = \(friendRequestArray.count)")
-			print("*** userInfoArray = \(userInfoArray.count)")
-			print("*** pairListArray = \(pairListArray.count)")
-			
-//			self.dataArray.removeAll()
-//			self.searchArray.removeAll()
-//			self.inviteFriendArray.removeAll()
-//			self.twopChatFriendArray.removeAll()
-			
-			var onlineArray : [DashboardFriendsListModel] = []
-			var lastPairArray : [DashboardFriendsListModel] = []
-			var missedArray : [DashboardFriendsListModel] = []
-			var otherArray : [DashboardFriendsListModel] = []
-			
-			let userIdString = APIController.shared.currentUser!.user_id!
-			
-			// 遍历models，在里面装配两个显示集合
-			models.forEach({ (model) in
-				
-				userInfoArray.forEach({ (userInfo) in
-					
-					if model.friendIdString == userInfo.idString {
-						
-						friendRequestArray.forEach({ (friendModel) in
-							
-							if model.friendIdString == friendModel.friendshipIdString {
-								
-								if userInfo.unlock2pBool! { // 通过unlock2pBool区分是1p还是2p
-									
-									let date = Date(timeIntervalSince1970: friendModel.timestampDouble! / 1000)
-									
-									if userInfo.onlineStatusString == "1" { // 1 online
-										onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel))
-									} else if friendModel.statusInt == 1 { // 1 pair接受过
-										lastPairArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel))
-									} else if date.timeIntervalSince(Date()) <= 0 { // timestamp过期了就是missed
-										missedArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel, isMissedBool: true))
-									} else {
-										otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel))
-									}
-								} else { // 1p，且被邀请id不是自己，就表示自己是主动发起邀请的内容
-									if userIdString != friendModel.inviteeIdString {
-										self.inviteFriendArray.append(DashboardInviteListModel.dashboardInviteListModel(userInfo: userInfo, friendsRequestModel: friendModel))
-									}
-								}
-							}
-						})
-					}
-				})
-			})
-			
-			// 至此，数据装配完毕，接下来按timestamp排序四个临时集合然后放到twopChatFriendArray里,再将两个集合放到dataArray里
-			onlineArray = onlineArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
-			lastPairArray = lastPairArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
-			missedArray = missedArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
-			otherArray = otherArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
-			
-			self.twopChatFriendArray += onlineArray
-			self.twopChatFriendArray += lastPairArray
-			self.twopChatFriendArray += missedArray
-			self.twopChatFriendArray += otherArray
-			
-			// 如果没有2p好友，加一个空的模型在数据源里，用以显示第一组的无数据cell
-			if self.twopChatFriendArray.isEmpty { self.twopChatFriendArray.append(DashboardFriendsListModel()) }
-			
-			self.dataArray.append(self.twopChatFriendArray as AnyObject)
-			self.dataArray.append(self.inviteFriendArray as AnyObject)
-			self.searchArray = self.dataArray
-			self.tableView.reloadData()
-		}
-	}
-	
-	func loadFriendsListFunc() {
-		
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/friendship", method: .get, options: [
-			.header("Authorization", AuthString),
+		// 拿到所有好友的userInfo
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/users?ids=\(friendIdString)", method: .get, options: [
+			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(_): break
 				case .success(let jsonAPIDocument):
 					
-					print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					print("*** jsonAPIDocument userInfo = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					
+					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
+						array.forEach({ (userInfo) in
+							userInfoArray.append(UsersInfoModel.usersInfoModel(dict: userInfo))
+						})
+						
+						self.requestFinishCountInt += 1
+						self.handleRequestFinishedFunc(models: models, friendRequestArray: friendRequestArray, userInfoArray: userInfoArray, pairListArray: pairListArray)
+					}
+				}
+		}
+		
+		// 配对列表
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2ppairs/", method: .get, options: [
+			.header("Authorization", APIController.authorization),
+			]).addCompletionHandler { (response) in
+				switch response {
+				case .error(_): break
+				case .success(let jsonAPIDocument):
+					
+					print("*** jsonAPIDocument 2ppairs = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					
+					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
+						array.forEach({ (pairInfo) in
+							pairListArray.append(PairListModel.pairListModel(dict: pairInfo))
+						})
+						
+						self.requestFinishCountInt += 1
+						self.handleRequestFinishedFunc(models: models, friendRequestArray: friendRequestArray, userInfoArray: userInfoArray, pairListArray: pairListArray)
+					}
+				}
+		}
+		
+		// plan AB 里2p好友列表
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
+			.header("Authorization", APIController.authorization),
+			]).addCompletionHandler { (response) in
+				switch response {
+				case .error(_): break
+				case .success(let jsonAPIDocument):
+					
+					print("*** jsonAPIDocument 2pinvitations = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					
+					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
+						array.forEach({ (friendModel) in
+							friendRequestArray.append(FriendsRequestModel.friendsRequestModel(dict: friendModel, nameString: nil, pathString: nil))
+						})
+						
+						self.requestFinishCountInt += 1
+						self.handleRequestFinishedFunc(models: models, friendRequestArray: friendRequestArray, userInfoArray: userInfoArray, pairListArray: pairListArray)
+					}
+				}
+		}
+	}
+	
+	func loadFriendsListFunc() {
+		
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/friendships/", method: .get, options: [
+			.header("Authorization", APIController.authorization),
+			]).addCompletionHandler { (response) in
+				switch response {
+				case .error(_): break
+				case .success(let jsonAPIDocument):
+					
+//					print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
 					
 					let array = jsonAPIDocument.json["data"] as! [[String: AnyObject]]
 					
@@ -413,9 +436,22 @@ class DashboardMainViewController: MonkeyViewController {
 		}
 	}
 	
+	override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+		if self.layoutTagInt == 1 {
+			let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
+			self.meAndSomeoneBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.meImageView, lineWidth: 1.3, strokeColor: MeCircleColor, padding: 5))
+			
+			self.someoneCircle = Tools.drawCircleFunc(imageView: self.someoneImageView, lineWidth: 1.3, strokeColor: MeCircleColor, padding: 5)
+			
+			self.addSomeoneCircleFunc()
+		}
+		self.layoutTagInt += 1
+	}
+	
 	func initData() {
 		
-//		self.loadFriendsListFunc()
+		self.loadFriendsListFunc()
 	}
 	
 	func initView() {
@@ -423,6 +459,8 @@ class DashboardMainViewController: MonkeyViewController {
 		self.initCircleFunc()
 		
 		self.initInvitingLayerFunc()
+		
+		MessageCenter.shared.addMessageObserver(observer: self)
 		
 		self.myTeamTopConstraint.constant = Device() == .iPhoneX ? 40 : 64
 		
@@ -445,6 +483,33 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
 		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+	}
+	
+	deinit {
+		MessageCenter.shared.delMessageObserver(observer: self)
+	}
+}
+
+/**
+ socket消息相关
+*/
+extension DashboardMainViewController : MessageObserver {
+	
+	func didReceiveTwopDefault(message: [String : Any]) {
+		print("*** message = \(message)")
+		
+		let twopSocketModel = TwopSocketModel.twopSocketModel(dict: message as [String : AnyObject])
+		
+		print("*** twopSocketModel = \(twopSocketModel.msgIdString?.description), model = \(twopSocketModel.extDictModel?.friendIdInt)")
+		
+		switch twopSocketModel.msgTypeInt {
+		case SocketDefaultMsgTypeEnum.friendPair.rawValue: // friendPair
+			break
+		case  SocketDefaultMsgTypeEnum.acceptFriendPair.rawValue: // acceptFriendPair
+			break
+		default:
+			break
+		}
 	}
 }
 
@@ -523,8 +588,10 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			}
 		}
 		
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_pair/\(isInviteeBool ? model.idString! : model.friendshipIdString!)", method: isInviteeBool ? .patch : .post, options: [
-			.header("Authorization", AuthString),
+		let pathString = isInviteeBool ? "accept/\(model.idString!)" : "request/\(model.idString!)"
+		
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2ppairs/\(pathString)", method: .post, options: [
+			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(_): break
@@ -533,6 +600,8 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 					print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
 					
 					// todo，睿，根据isInviteeBool和返回结果处理之后的逻辑
+					self.pairRequestAcceptModel = PairRequestAcceptModel.pairRequestAcceptModel(dict: jsonAPIDocument.json["data"] as! [String: AnyObject])
+					
 				}
 		}
 	}
@@ -542,7 +611,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 		print("*** friendshipIdString = \(friendshipIdString)")
 		
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_request/\(friendshipIdString)", method: .post, options: [
-			.header("Authorization", AuthString),
+			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(_): break
@@ -557,38 +626,32 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 extension DashboardMainViewController : UITableViewDataSource, UITableViewDelegate {
 	
 	func numberOfSections(in tableView: UITableView) -> Int {
-//		return self.searchArray.count
-		return 2
+		return self.searchArray.count
 	}
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//		return self.searchArray[section].count
-		return 3
+		return self.searchArray[section].count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		if indexPath.section == 0 {
-			
-			let cell = tableView.dequeueReusableCell(withIdentifier: "friendsCell") as! DashboardFriendsListCell
-			
-			cell.delegate = self
-			
-			return cell
-			
-			// 睿，正式时打开
-//			if (self.searchArray[0] as! DashboardFriendsListModel).idString != nil {
-//				let cell = tableView.dequeueReusableCell(withIdentifier: "friendsCell") as! DashboardFriendsListCell
-//
-//				cell.delegate = self
-//
-//				return cell
-//			} else {
-//				return tableView.dequeueReusableCell(withIdentifier: "noFriendsCell")!
-//			}
+			if (self.searchArray[indexPath.section] as! [DashboardFriendsListModel])[0].idString != nil {
+				let cell = tableView.dequeueReusableCell(withIdentifier: "friendsCell") as! DashboardFriendsListCell
+				
+				cell.dashboardFriendsListModel = (self.searchArray[indexPath.section] as! [DashboardFriendsListModel])[indexPath.row]
+				
+				cell.delegate = self
+
+				return cell
+			} else {
+				return tableView.dequeueReusableCell(withIdentifier: "noFriendsCell")!
+			}
 		} else {
 			
 			let cell = tableView.dequeueReusableCell(withIdentifier: "inviteCell") as! DashboardInviteListCell
+			
+			cell.dashboardInviteListModel = (self.searchArray[indexPath.section] as! [DashboardInviteListModel])[indexPath.row]
 			
 			cell.delegate = self
 			
@@ -608,13 +671,11 @@ extension DashboardMainViewController : UITableViewDataSource, UITableViewDelega
 	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		// 睿，正式时打开
-//		if indexPath.section == 0 && self.searchArray[0].count == 0 {
-//			return 110
-//		} else {
-//			return 62
-//		}
-		return 62
+		if indexPath.section == 0 && (self.searchArray[indexPath.section] as! [DashboardFriendsListModel])[0].idString == nil {
+			return 125
+		} else {
+			return 62
+		}
 	}
 	
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

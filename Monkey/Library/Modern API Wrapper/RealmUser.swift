@@ -30,6 +30,7 @@ class RealmUser: MonkeyModel {
 	var enabled_two_p = RealmOptional<Bool>(false)
 	var unlocked_two_p = RealmOptional<Bool>(false)
 	var two_p_user_group_type = RealmOptional<Int>(1) // 1 planA, 2planB
+	var contact_invite_remain_times = RealmOptional<Int>(0)
 	var match_type = RealmOptional<Int>(1) // 1 1p, 2 2p
 	
 	var seconds_in_app = RealmOptional<Int>()

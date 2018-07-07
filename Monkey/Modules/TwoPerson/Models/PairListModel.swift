@@ -10,25 +10,25 @@ import UIKit
 
 class PairListModel: NSObject {
 	
-	var idString : String?
+	var userIdString : String?
 	
-	var friendshipId : String?
+	var pairIdString : String?
 	
 	var inviteeIdString : String?
 	
-	var timestampString : String?
+	var nextInviteAtDouble : Double?
 	
-	var statusString : String?
+	var statusInt : Int?
 	
 	class func pairListModel(dict:[String:AnyObject]) -> PairListModel {
 		
 		let pairListModel = PairListModel()
 		
-		pairListModel.idString = dict["id"] as? String
-		pairListModel.friendshipId = dict["friendshipId"] as? String
-		pairListModel.inviteeIdString = dict["inviteeId"] as? String
-		pairListModel.timestampString = dict["timestamp"] as? String
-		pairListModel.statusString = dict["status"] as? String
+		pairListModel.userIdString = dict["user_id"] as? String
+		pairListModel.pairIdString = dict["pair_id"] as? String
+		pairListModel.inviteeIdString = dict["invitee_id"] as? String
+		pairListModel.nextInviteAtDouble = dict["next_invite_at"] as? Double
+		pairListModel.statusInt = dict["status"] as? Int
 		
 		return pairListModel
 	}

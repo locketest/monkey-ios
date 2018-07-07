@@ -15,13 +15,11 @@ class FriendsRequestModel: NSObject {
 	var pathString : String?
 	
 	// 非手动拼接字段
-	var idString : String?
+	var userIdInt : Int?
 	
-	var friendshipIdString : String?
+	var inviteeIdInt : Int?
 	
-	var inviteeIdString : String?
-	
-	var timestampDouble : Double?
+	var nextInviteAtDouble : Double?
 	
 	var statusInt : Int?
 	
@@ -32,10 +30,9 @@ class FriendsRequestModel: NSObject {
 		friendsRequestModel.nameString = nameString
 		friendsRequestModel.pathString = pathString
 		
-		friendsRequestModel.idString = dict["user_id"] as? String
-		friendsRequestModel.friendshipIdString = dict["friendshipId"] as? String
-		friendsRequestModel.inviteeIdString = dict["invitee_id"] as? String
-		friendsRequestModel.timestampDouble = dict["next_invite_at"] as? Double
+		friendsRequestModel.userIdInt = dict["user_id"] as? Int
+		friendsRequestModel.inviteeIdInt = dict["invitee_id"] as? Int
+		friendsRequestModel.nextInviteAtDouble = dict["next_invite_at"] as? Double
 		friendsRequestModel.statusInt = dict["status"] as? Int
 		
 		return friendsRequestModel

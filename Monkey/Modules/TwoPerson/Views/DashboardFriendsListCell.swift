@@ -67,7 +67,7 @@ class DashboardFriendsListCell: UITableViewCell {
 				self.actionButton.backgroundColor = UIColor.yellow
 			}
 			
-			if newDashboardFriendsListModel.onlineString == "1" {
+			if newDashboardFriendsListModel.onlineStatusBool! {
 				self.greenView.isHidden = false
 			} else {
 				self.greenView.isHidden = true

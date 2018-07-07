@@ -48,8 +48,16 @@ class InviteFriendsViewController: MonkeyViewController {
 	
 	@IBAction func searchTextFieldEditingChanged(_ sender: UITextField) {
 		
+		if !sender.text!.isEmpty && Tools.trimSpace(string: sender.text!).count == 0 {
+			sender.text = ""
+			return
+		}
+		
 		if sender.text!.isEmpty || Tools.trimSpace(string: sender.text!).count == 0 {
 			self.searchCancelButton.isHidden = false
+			self.userNotFoundLabel.isHidden = true
+			self.searchArray = self.dataArray
+			self.tableView.reloadData()
 		} else {
 			if !self.searchCancelButton.isHidden {
 				self.searchCancelButton.isHidden = true
@@ -74,6 +82,8 @@ class InviteFriendsViewController: MonkeyViewController {
 		
 		if self.searchArray.count == 0 {
 			self.userNotFoundLabel.isHidden = false
+		} else {
+			self.userNotFoundLabel.isHidden = true
 		}
 		
 		self.tableView.reloadData()
@@ -114,7 +124,7 @@ class InviteFriendsViewController: MonkeyViewController {
 		if contacts == nil { // 说明没有请求过联系人，去请求联系人
 			
 			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .get, options: [
-				.header("Authorization", AuthString),
+				.header("Authorization", APIController.authorization),
 				]).addCompletionHandler { (response) in
 					switch response {
 					case .error(_): break
@@ -173,9 +183,9 @@ class InviteFriendsViewController: MonkeyViewController {
 */
 extension InviteFriendsViewController : MyContactsCellDelegate {
 	
-	func sendInviteContactFunc(idString: String) {
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact/\(idString)", method: .post, options: [
-			.header("Authorization", AuthString),
+	func sendInviteContactFunc(phoneString: String) {
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact/\(phoneString)", method: .post, options: [
+			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(_): break
@@ -185,7 +195,7 @@ extension InviteFriendsViewController : MyContactsCellDelegate {
 	}
 	
 	// myContacts邀请
-	func myContactsCellBtnClickFunc(idString: String, phoneString: String) {
+	func myContactsCellBtnClickFunc(phoneString: String) {
 		print("*** id = \(phoneString)")
 		
 		guard MFMessageComposeViewController.canSendText() else {
@@ -194,11 +204,11 @@ extension InviteFriendsViewController : MyContactsCellDelegate {
 		
 		if let currentExperiment = APIController.shared.currentExperiment {
 			
-			self.sendInviteContactFunc(idString: idString)
+			self.sendInviteContactFunc(phoneString: phoneString)
 			
 			let inviteFriendsViewController = MFMessageComposeViewController()
 			inviteFriendsViewController.recipients = [phoneString]
-			inviteFriendsViewController.body = currentExperiment.contact_2p_sms_content2!
+			inviteFriendsViewController.body = currentExperiment.two_p_dashboard_link!
 			self.present(inviteFriendsViewController, animated: true)
 		}
 	}
@@ -251,13 +261,13 @@ extension InviteFriendsViewController {
 			})
 			
 			// 将addressBookDict字典中的所有Key值进行排序: A~Z
-			let nameKeys = Array(contactsDict.keys).sorted()
+			var nameKeys = Array(contactsDict.keys).sorted()
 			
 			// 将 "#" 排列在 A~Z 的后面
-//			if nameKeys.first == "#" {
-//				nameKeys.insert(nameKeys.first!, at: nameKeys.count)
-//				nameKeys.remove(at: 0);
-//			}
+			if nameKeys.first == "#" {
+				nameKeys.insert(nameKeys.first!, at: nameKeys.count)
+				nameKeys.remove(at: 0);
+			}
 			
 			var sortedArray : [Any] = []
 			
@@ -288,7 +298,7 @@ extension InviteFriendsViewController {
 //			print("*** sortedArray = \(sortedArray)")
 			
 			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .put, parameters: ["data":sortedArray], options: [
-				.header("Authorization", AuthString),
+				.header("Authorization", APIController.authorization),
 				]).addCompletionHandler { (response) in
 					switch response {
 					case .error(let error):
@@ -360,6 +370,8 @@ extension InviteFriendsViewController {
 		
 		// 截取大写首字母
 		let familyNameString = Tools.subStringFunc(string: stringPinYin, start: 1, end: 1)
+		
+		if familyNameString.containsEmojiFunc() { return "*" }
 		
 		// 判断姓名首位是否为大写字母
 		let regexA = "^[A-Z]$"
@@ -446,7 +458,16 @@ extension InviteFriendsViewController {
 		
 		try? store.enumerateContacts(with: request) { (contact, stop) in
 			ContactModel.contactModelToArray(contact: contact).forEach({ (model) in
-				contactsArray.append(model)
+				
+				var tagInt = 0
+				
+				contactsArray.forEach({ (contactModel) in
+					if contactModel.phoneNumber == model.phoneNumber {
+						tagInt = 1
+					}
+				})
+				
+				if tagInt == 0 { contactsArray.append(model) }
 			})
 		}
 		

@@ -27,8 +27,14 @@
 		341E737320BD5696001B8D55 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737120BD5696001B8D55 /* UIViewExtension.swift */; };
 		341E737820BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */; };
 		341E737920BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */; };
+		3470156F20ECD61C00D3C101 /* TwopSocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3470156E20ECD61C00D3C101 /* TwopSocketModel.swift */; };
+		3470157020ECD61C00D3C101 /* TwopSocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3470156E20ECD61C00D3C101 /* TwopSocketModel.swift */; };
+		3470157220ECFD3000D3C101 /* PairRequestAcceptModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3470157120ECFD3000D3C101 /* PairRequestAcceptModel.swift */; };
+		3470157320ECFD3000D3C101 /* PairRequestAcceptModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3470157120ECFD3000D3C101 /* PairRequestAcceptModel.swift */; };
 		347675EA20DB7809007EF130 /* InvitingProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347675E920DB7809007EF130 /* InvitingProgressLayer.swift */; };
 		347675EB20DB7809007EF130 /* InvitingProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347675E920DB7809007EF130 /* InvitingProgressLayer.swift */; };
+		3499119220EB601000F03B19 /* CodePointSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3499119120EB601000F03B19 /* CodePointSet.swift */; };
+		3499119320EB601000F03B19 /* CodePointSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3499119120EB601000F03B19 /* CodePointSet.swift */; };
 		34A0D3AF20D10DD800D6EFED /* TwoPerson.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34A0D3AE20D10DD800D6EFED /* TwoPerson.storyboard */; };
 		34A0D3B020D10DD800D6EFED /* TwoPerson.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34A0D3AE20D10DD800D6EFED /* TwoPerson.storyboard */; };
 		34A0D3B520D1127D00D6EFED /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A0D3B420D1127D00D6EFED /* ContactModel.swift */; };
@@ -506,7 +512,10 @@
 		341E736C20BD496E001B8D55 /* ResumeMyAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumeMyAccountViewController.swift; sourceTree = "<group>"; };
 		341E737120BD5696001B8D55 /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringExtension.swift; sourceTree = "<group>"; };
+		3470156E20ECD61C00D3C101 /* TwopSocketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwopSocketModel.swift; sourceTree = "<group>"; };
+		3470157120ECFD3000D3C101 /* PairRequestAcceptModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairRequestAcceptModel.swift; sourceTree = "<group>"; };
 		347675E920DB7809007EF130 /* InvitingProgressLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InvitingProgressLayer.swift; sourceTree = "<group>"; };
+		3499119120EB601000F03B19 /* CodePointSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodePointSet.swift; sourceTree = "<group>"; };
 		34A0D3AE20D10DD800D6EFED /* TwoPerson.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TwoPerson.storyboard; sourceTree = "<group>"; };
 		34A0D3B420D1127D00D6EFED /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
 		34A0D3B720D1162F00D6EFED /* TwoPersonPlanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoPersonPlanViewController.swift; sourceTree = "<group>"; };
@@ -870,6 +879,8 @@
 				3413C24C20E119BD00D8BD04 /* FriendshipModel.swift */,
 				3413C27020E21C6D00D8BD04 /* UsersInfoModel.swift */,
 				3413C27320E2235600D8BD04 /* PairListModel.swift */,
+				3470156E20ECD61C00D3C101 /* TwopSocketModel.swift */,
+				3470157120ECFD3000D3C101 /* PairRequestAcceptModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1092,6 +1103,7 @@
 				8B3A787C1DB32CB000FA68A7 /* SoundPlayer.swift */,
 				8499A58B1E86DED80088D0D2 /* TapticFeedback.swift */,
 				341E737720BD66DF001B8D55 /* NSMutableAttributedStringExtension.swift */,
+				3499119120EB601000F03B19 /* CodePointSet.swift */,
 				34A0D3BC20D1367200D6EFED /* ImageTools.swift */,
 				34FF0D6120D26FD300B1AC24 /* Tools.swift */,
 			);
@@ -1855,6 +1867,7 @@
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -1878,6 +1891,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1988,6 +2002,7 @@
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -2011,6 +2026,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2032,6 +2048,7 @@
 				D1B79D382060DACB00F209B4 /* IFInkwellFilter.m in Sources */,
 				8BE02A4C1EEA42A2004CF000 /* SwipeableTransitionSlideAnimator.swift in Sources */,
 				8435C2EA1F14018100C80AC6 /* FriendsViewModel.swift in Sources */,
+				3470157220ECFD3000D3C101 /* PairRequestAcceptModel.swift in Sources */,
 				8B8B2D741EC52B910086547C /* CachedImageView.swift in Sources */,
 				341E736220BBF575001B8D55 /* SettingEditCell.swift in Sources */,
 				D1E7CCFC20D25ADB00AF619A /* HWTipView.m in Sources */,
@@ -2071,6 +2088,7 @@
 				C0CF020D1F58CA66009D7B33 /* DismissPopupTransitionAnimator.swift in Sources */,
 				D12E22942010747200703F9B /* RemoteConfig.swift in Sources */,
 				8BB895881DBD2E1800FC5E53 /* Apns.swift in Sources */,
+				3499119220EB601000F03B19 /* CodePointSet.swift in Sources */,
 				3413C27120E21C6D00D8BD04 /* UsersInfoModel.swift in Sources */,
 				847EABFA1EBE813F000F9575 /* ProfilePhotoButtonView.swift in Sources */,
 				D1B79CFD2060243700F209B4 /* FilterCollectionView.swift in Sources */,
@@ -2196,6 +2214,7 @@
 				D1B79D302060DACB00F209B4 /* IFSierraFilter.m in Sources */,
 				990EC94C20997BC600CA5E0B /* InstagramAuthViewController.swift in Sources */,
 				D1025CDE20A1406C00557B64 /* SettingButtonCell.swift in Sources */,
+				3470156F20ECD61C00D3C101 /* TwopSocketModel.swift in Sources */,
 				8B6EB50E1DB0817F0051C8D2 /* AppDelegate.swift in Sources */,
 				8BFD6D561EF98B9F002C9F9C /* MonkeyVideoRender.m in Sources */,
 				8BC4E2D61DB08CC30018F2C3 /* BigYellowButton.swift in Sources */,
@@ -2222,6 +2241,7 @@
 				D1A22A5920A03F8A004F0F05 /* IFInkwellFilter.m in Sources */,
 				D1A22A5B20A03F8A004F0F05 /* SwipeableTransitionSlideAnimator.swift in Sources */,
 				D1A22A5C20A03F8A004F0F05 /* FriendsViewModel.swift in Sources */,
+				3470157320ECFD3000D3C101 /* PairRequestAcceptModel.swift in Sources */,
 				D1A22A5D20A03F8A004F0F05 /* CachedImageView.swift in Sources */,
 				341E736320BBF575001B8D55 /* SettingEditCell.swift in Sources */,
 				D1E7CCFD20D25ADB00AF619A /* HWTipView.m in Sources */,
@@ -2261,6 +2281,7 @@
 				D1A22A7820A03F8A004F0F05 /* DismissPopupTransitionAnimator.swift in Sources */,
 				D1A22A7B20A03F8A004F0F05 /* RemoteConfig.swift in Sources */,
 				D1A22A7C20A03F8A004F0F05 /* Apns.swift in Sources */,
+				3499119320EB601000F03B19 /* CodePointSet.swift in Sources */,
 				3413C27220E21C6D00D8BD04 /* UsersInfoModel.swift in Sources */,
 				D1A22A7D20A03F8A004F0F05 /* ProfilePhotoButtonView.swift in Sources */,
 				D1A22A7E20A03F8A004F0F05 /* FilterCollectionView.swift in Sources */,
@@ -2386,6 +2407,7 @@
 				D1A22ADD20A03F8A004F0F05 /* IFSierraFilter.m in Sources */,
 				D1A22ADE20A03F8A004F0F05 /* InstagramAuthViewController.swift in Sources */,
 				D1025CDF20A1406C00557B64 /* SettingButtonCell.swift in Sources */,
+				3470157020ECD61C00D3C101 /* TwopSocketModel.swift in Sources */,
 				D1A22ADF20A03F8A004F0F05 /* AppDelegate.swift in Sources */,
 				D1A22AE220A03F8A004F0F05 /* MonkeyVideoRender.m in Sources */,
 				D1A22AE320A03F8A004F0F05 /* BigYellowButton.swift in Sources */,

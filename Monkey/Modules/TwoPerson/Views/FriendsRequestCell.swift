@@ -14,13 +14,13 @@ protocol FriendsRequestCellDelegate : NSObjectProtocol {
 
 class FriendsRequestCell: UITableViewCell {
 	
-	var idString : String?
-	
 	var delegate : FriendsRequestCellDelegate?
 
 	@IBOutlet weak var nameLabel: UILabel!
 	
 	@IBOutlet weak var headImageView: CachedImageView!
+	
+	var tempFriendsRequestModel : FriendsRequestModel!
 	
 	var friendsRequestModel : FriendsRequestModel {
 		get {
@@ -28,7 +28,7 @@ class FriendsRequestCell: UITableViewCell {
 		}
 		set(newFriendsRequestModel){
 			
-			self.idString = newFriendsRequestModel.idString
+			self.tempFriendsRequestModel = newFriendsRequestModel
 			
 			self.nameLabel.text = newFriendsRequestModel.nameString
 			
@@ -39,7 +39,7 @@ class FriendsRequestCell: UITableViewCell {
 
 	@IBAction func btnClickFunc(_ sender: UIButton) {
 		if self.delegate != nil {
-			self.delegate!.friendsRequestCellBtnClickFunc(model: self.friendsRequestModel, isCancel: (sender.tag == 1 ? true : false))
+			self.delegate!.friendsRequestCellBtnClickFunc(model: self.tempFriendsRequestModel, isCancel: (sender.tag == 1 ? true : false))
 		} else {
 			print("代理为空")
 		}

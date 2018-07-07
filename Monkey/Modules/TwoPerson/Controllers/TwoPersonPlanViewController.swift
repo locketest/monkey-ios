@@ -10,20 +10,36 @@ import UIKit
 import Contacts
 import MessageUI
 import RealmSwift
+import SwiftyJSON
 
 import UIKit
 
-public let AuthString = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTcifQ.Hnd1VbbpWvthT9eas8KUWKSTq1qz64IvgXYH9XO8f-s"
+enum TwopChatRequestsStatusEnum : Int {
+	case unhandle = 0
+	case accept
+	case ignore
+}
 
 typealias TwopClosureType = () -> Void
 
+typealias UpdateRedDotClosureType = (_ count:Int) -> Void
+
 class TwoPersonPlanViewController: MonkeyViewController {
+	
+	var layoutTagInt = 0
 	
 	let FootView = UIView()
 	
+	var redDotCountInt = 0
+	
 	let DurationTime = 0.25
 	
+	// 是否是x关闭的键盘标识，包括键盘上向下箭头关闭
+	var isBtnEndEditingBool = false
+	
 	var backClosure: TwopClosureType?
+	
+	var updateRedDotClosure: UpdateRedDotClosureType?
 	
 	var dataArray : [AnyObject] = [] // 总数据集合
 	
@@ -33,7 +49,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	
 	var friendsRequestArray : [FriendsRequestModel] = []
 	
-	let SectionTitleArray = ["FRIENDS REQUEST", "MY CONTACTS"]
+	let SectionTitleArray = ["2P CHAT REQUESTS", "MY CONTACTS"]
 	
 	var isPlanBIsUnLockedTuple = (isPlanB: false, isUnLocked: false)
 	
@@ -74,9 +90,23 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		// 睿，临时，记得删除
+//		UserDefaults.standard.setValue(false, forKey: IsUploadContactsTag)
+		
 		self.initView()
 		
 		self.initData()
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		self.removeKeyboardObserverFunc()
+	}
+	
+	@IBAction func tapGestureClickFunc(_ sender: UITapGestureRecognizer) {
+		self.isBtnEndEditingBool = false
+		self.view.endEditing(true)
 	}
 	
 	@IBAction func twoPersonBtnClickFunc(_ sender: BigYellowButton) {
@@ -88,6 +118,18 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	}
 	
 	@IBAction func endEditingBtnClickFunc(_ sender: UIButton) {
+		
+		if !self.isBtnEndEditingBool {
+			if !self.isPlanBIsUnLockedTuple.isPlanB {
+				self.handleHeadViewFunc(isShow: true)
+			} else {
+				self.endEditOutTableButton.isHidden = true
+				self.view.endEditing(true)
+			}
+		}
+		
+		self.userNotFoundLabel.isHidden = true
+		self.isBtnEndEditingBool = true
 		self.searchOutTableTextField.text = ""
 		self.view.endEditing(true)
 		
@@ -104,15 +146,21 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	}
 	
 	@IBAction func unlockNextBtnClickFunc(_ sender: BigYellowButton) {
-		let vc = self.storyboard?.instantiateViewController(withIdentifier: "DashboardMainViewController") as! DashboardMainViewController
-		vc.modalPresentationStyle = .overFullScreen
-		self.present(vc, animated: true, completion: nil)
+		self.pushToDashboardMainVcFunc()
 	}
 	
 	@IBAction func searchTextFieldEditingChanged(_ sender: UITextField) {
 		
+		if !sender.text!.isEmpty && Tools.trimSpace(string: sender.text!).count == 0 {
+			sender.text = ""
+			return
+		}
+		
 		if sender.text!.isEmpty || Tools.trimSpace(string: sender.text!).count == 0 {
 			self.endEditOutTableButton.isHidden = false
+			self.userNotFoundLabel.isHidden = true
+			self.searchArray = self.dataArray
+			self.tableView.reloadData()
 		} else {
 			if !self.endEditOutTableButton.isHidden {
 				self.endEditOutTableButton.isHidden = true
@@ -122,6 +170,15 @@ class TwoPersonPlanViewController: MonkeyViewController {
 				self.handleSearchContactsFunc(sender: sender)
 			}
 		}
+	}
+	
+	func pushToDashboardMainVcFunc() {
+		
+		self.dismiss(animated: true, completion: nil)
+		
+		let vc = self.storyboard?.instantiateViewController(withIdentifier: "DashboardMainViewController") as! DashboardMainViewController
+		vc.modalPresentationStyle = .overFullScreen
+		self.present(vc, animated: true, completion: nil)
 	}
 	
 	func handleSearchContactsFunc(sender:UITextField) {
@@ -149,6 +206,8 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		if self.searchArray.count == 0 {
 			self.userNotFoundLabel.isHidden = false
+		} else {
+			self.userNotFoundLabel.isHidden = true
 		}
 		
 		self.tableView.reloadData()
@@ -166,18 +225,37 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		}
 	}
 	
+	override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+		if self.layoutTagInt == 1 {
+			let SomeOneCircleColor = UIColor(red: 1, green: 252 / 255, blue: 1 / 255, alpha: 1)
+			self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planASomeImageView, lineWidth: 2, strokeColor: SomeOneCircleColor, padding: 5))
+		}
+		self.layoutTagInt += 1
+	}
+	
 	func initCircleFunc() {
 		
 		if let photo = APIController.shared.currentUser?.profile_photo_url { self.planAMeImageView.kf.setImage(with: URL(string: photo), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!) }
 		
 		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
-		self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planAMeImageView, lineWidth: 1.3, strokeColor: MeCircleColor, padding: 4))
+		self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planAMeImageView, lineWidth: 2, strokeColor: MeCircleColor, padding: 5))
+	}
+	
+	func addKeyboardObserverFunc() {
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
 		
-		let SomeOneCircleColor = UIColor(red: 1, green: 252 / 255, blue: 1 / 255, alpha: 1)
-		self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planASomeImageView, lineWidth: 1.3, strokeColor: SomeOneCircleColor, padding: 4))
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideFunc), name: .UIKeyboardWillHide, object: nil)
+	}
+	
+	func removeKeyboardObserverFunc() {
+		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
 	}
 	
 	func initTextFieldFunc() {
+		
+		self.addKeyboardObserverFunc()
 		
 		let cleanButton = self.searchOutTableTextField.value(forKey: "_clearButton") as! UIButton
 		cleanButton.setImage(UIImage(named: "clearButton")!, for: .normal)
@@ -186,57 +264,67 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		self.searchOutTableTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSForegroundColorAttributeName : UIColor.darkGray])
 		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideFunc), name: .UIKeyboardWillHide, object: nil)
-		
 		NotificationCenter.default.addObserver(self, selector: #selector(handleRemoteMsgFunc), name: NSNotification.Name(rawValue: GoToSettingTag), object: nil)
 	}
 	
 	func loadFriendsRequestFunc() {
 		
+		print("*** = \(APIController.authorization!)")
+		
 		// 拿到friends list里的friendship_id跟后端返回的friendship_id对比，相等就拿头像和名字，跟模型一起传到model里填充完整模型
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_request", method: .get, options: [
-			.header("Authorization", AuthString),
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
+			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(let error):
 					print("*** error : = \(error.message)")
 				case .success(let jsonAPIDocument):
 					
-					print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					print("*** jsonAPIDocument = \(jsonAPIDocument.json)")
 					
-					let array = jsonAPIDocument.json["data"] as! [[String: AnyObject]]
-					
-					if array.count > 0 {
+					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 						
-						var models : [FriendsRequestModel] = []
-						
-						let friendsViewModel = FriendsViewModel.sharedFreindsViewModel
-						
-						array.forEach({ (contact) in
-							friendsViewModel.friendships?.forEach({ (friendModel) in
-								// inviteeId为自己才表示是被邀请的数据
-								if friendModel.friendship_id == contact["friendId"]?.stringValue && APIController.shared.currentUser!.user_id == contact["inviteeId"]?.stringValue {
-									if let friendUser = friendModel.user {
-										models.append(FriendsRequestModel.friendsRequestModel(dict: contact, nameString: friendUser.first_name, pathString: friendUser.profile_photo_url))
+						if array.count > 0 {
+							
+							var models : [FriendsRequestModel] = []
+							
+							let friendsViewModel = FriendsViewModel.sharedFreindsViewModel
+							
+							array.forEach({ (contact) in
+								friendsViewModel.friendships?.forEach({ (friendModel) in
+									
+									let friendModelUserId = friendModel.user?.user_id
+									let contactUserId = contact["user_id"]?.stringValue
+									let currentUserId = APIController.shared.currentUser!.user_id
+									let contactInviteeId = contact["invitee_id"]?.stringValue
+									let contactStatus = contact["status"] as? Int
+									
+									// inviteeId为自己才表示是被邀请的数据，status为0未操作才显示
+									if friendModelUserId == contactUserId && currentUserId == contactInviteeId && TwopChatRequestsStatusEnum.unhandle.rawValue == contactStatus {
+										models.append(FriendsRequestModel.friendsRequestModel(dict: contact, nameString: friendModel.user!.first_name, pathString: friendModel.user!.profile_photo_url))
 									}
-								}
+								})
 							})
-						})
-						
-						if models.count > 0 {
 							
-							self.dataArray.removeAll()
-							self.searchArray.removeAll()
-							self.friendsRequestArray.removeAll()
-							
-							self.friendsRequestArray = models
-							
-							self.dataArray.append(self.friendsRequestArray as AnyObject)
-							self.dataArray.append(self.myContactsArray as AnyObject)
-							self.searchArray = self.dataArray
-							self.tableView.reloadData()
+							if models.count > 0 {
+								
+								self.redDotCountInt = models.count
+								
+								self.dataArray.removeAll()
+								self.searchArray.removeAll()
+								self.friendsRequestArray.removeAll()
+								
+								self.friendsRequestArray = models
+								
+								self.dataArray.append(self.friendsRequestArray as AnyObject)
+								
+								if self.myContactsArray.count > 0 {
+									self.dataArray.append(self.myContactsArray as AnyObject)
+								}
+								
+								self.searchArray = self.dataArray
+								self.tableView.reloadData()
+							}
 						}
 					}
 				}
@@ -262,11 +350,14 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		// 睿，测试用，正式删除
 		self.myContactsArray.forEach { (model) in
-			print("*** model = \(model.idString!), name = \(model.nameString!), phoneString = \(model.phoneString!)")
+//			print("*** name = \(model.nameString!), phoneString = \(model.phoneString!), next at = \(model.nextInviteAtDouble!)")
 		}
 		//
 		
-		self.dataArray.append(self.friendsRequestArray as AnyObject)
+		if self.friendsRequestArray.count > 0 {
+			self.dataArray.append(self.friendsRequestArray as AnyObject)
+		}
+		
 		self.dataArray.append(self.myContactsArray as AnyObject)
 		self.searchArray = self.dataArray
 		self.tableView.reloadData()
@@ -275,11 +366,11 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	func loadMyContactsFunc() {
 		
 		let contacts = CodableTools.decodeFunc(type: MyContactsModel.self, decodeKey: MyContactsModelTag)
-		
+
 		if contacts == nil { // 说明没有请求过联系人，去请求联系人
 			
-			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .get, options: [
-				.header("Authorization", AuthString),
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/contacts/", method: .get, options: [
+				.header("Authorization", APIController.authorization),
 				]).addCompletionHandler { (response) in
 					switch response {
 					case .error(_): break
@@ -323,7 +414,8 @@ class TwoPersonPlanViewController: MonkeyViewController {
 				self.topTitleLabel.font = UIFont.boldSystemFont(ofSize: 28)
 			} else {
 				// todo，睿，此处次数从用户配置信息中拿出
-				self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " 10 ", textThree:"Friends to try your first 2P mode!", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
+				let contact_invite_remain_times = APIController.shared.currentUser!.contact_invite_remain_times
+				self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " \(contact_invite_remain_times) ", textThree:"friends to unlock 2P Chat", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
 			}
 		}
 	}
@@ -356,6 +448,8 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		self.handlePlanABViewFunc()
 		
 		self.initUnlockNextBtnFunc()
+		
+		MessageCenter.shared.addMessageObserver(observer: self)
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
@@ -363,6 +457,45 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
 		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+	}
+	
+	deinit {
+		MessageCenter.shared.delMessageObserver(observer: self)
+	}
+}
+
+/**
+ socket消息相关
+*/
+extension TwoPersonPlanViewController : MessageObserver {
+	
+	// 收到planA主动发起的联系人邀请后，联系人下载安装后unlock2p消息，关闭plan页，进入dashboard页，刷新me接口信息
+	func didReceiveTwopDefault(message: [String : Any]) {
+		print("*** message = \(message)")
+		
+		let twopSocketModel = TwopSocketModel.twopSocketModel(dict: message as [String : AnyObject])
+		
+		print("*** twopSocketModel = \(twopSocketModel.msgIdString?.description), model = \(twopSocketModel.extDictModel?.friendIdInt)")
+		
+		switch twopSocketModel.msgTypeInt {
+		case SocketDefaultMsgTypeEnum.unlock2p.rawValue: // unlock2p
+			self.dismiss(animated: true, completion: nil)
+			
+			self.pushToDashboardMainVcFunc()
+			
+			let currentUser = UserManager.shared.currentUser
+			currentUser?.reload(completion: { (error) in
+			})
+		case SocketDefaultMsgTypeEnum.friendInvite.rawValue: // friendInvite
+			self.initData() // 收到friends request刷新列表并更新main的红点值
+			
+			if self.updateRedDotClosure != nil {
+				self.redDotCountInt += 1
+				self.updateRedDotClosure!(self.redDotCountInt)
+			}
+		default:
+			break
+		}
 	}
 }
 
@@ -408,6 +541,9 @@ extension TwoPersonPlanViewController {
 	}
 	
 	func keyboardWillShowFunc(notification:NSNotification) {
+		
+		self.isBtnEndEditingBool = false
+		
 		if !self.isPlanBIsUnLockedTuple.isPlanB {
 			self.handleHeadViewFunc(isShow: false)
 		} else {
@@ -416,6 +552,11 @@ extension TwoPersonPlanViewController {
 	}
 	
 	func keyboardWillHideFunc(notification:NSNotification) {
+		
+		if !self.isBtnEndEditingBool {
+			return
+		}
+		
 		if !self.isPlanBIsUnLockedTuple.isPlanB {
 			self.handleHeadViewFunc(isShow: true)
 		} else {
@@ -443,12 +584,12 @@ extension TwoPersonPlanViewController : UITableViewDataSource, UITableViewDelega
 		// 不考虑不存在联系人情况，如果联系人不存在，friends request列表数据更不可能存在
 		if self.searchArray.count > 1 {
 			if indexPath.section == 0 {
-				return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isContactCell: true)
-			} else {
 				return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isContactCell: false)
+			} else {
+				return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isContactCell: true)
 			}
 		} else {
-			return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isContactCell: false)
+			return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isContactCell: true)
 		}
 	}
 	
@@ -457,7 +598,7 @@ extension TwoPersonPlanViewController : UITableViewDataSource, UITableViewDelega
 		if isContactCell {
 			let cell = tableView.dequeueReusableCell(withIdentifier: "contactsCell") as! MyContactsCell
 			
-			cell.myContactsModel = self.searchArray[indexPath.section] as! MyContactsModel
+			cell.myContactsModel = (self.searchArray[indexPath.section] as! [MyContactsModel])[indexPath.row]
 			
 			cell.delegate = self
 			
@@ -465,7 +606,7 @@ extension TwoPersonPlanViewController : UITableViewDataSource, UITableViewDelega
 		} else {
 			let cell = tableView.dequeueReusableCell(withIdentifier: "friendsCell") as! FriendsRequestCell
 			
-			cell.friendsRequestModel = self.searchArray[indexPath.section] as! FriendsRequestModel
+			cell.friendsRequestModel = (self.searchArray[indexPath.section] as! [FriendsRequestModel])[indexPath.row]
 			
 			cell.delegate = self
 			
@@ -502,36 +643,43 @@ extension TwoPersonPlanViewController : UITableViewDataSource, UITableViewDelega
 */
 extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCellDelegate, MFMessageComposeViewControllerDelegate {
 	
-	func sendInviteContactFunc(idString: String) {
-		JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/contact/\(idString)", method: .post, options: [
-			.header("Authorization", AuthString),
+	func sendInviteContactFunc(phoneString: String) {
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/contactinvitations/\(phoneString)", method: .post, options: [
+			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(_): break
 				case .success(let jsonAPIDocument):
+					
 					print("*** jsonAPIDocument = \(jsonAPIDocument.json)")
 					
-					let remainTimes = jsonAPIDocument.json["remainTimes"] as! Int
-					
-					let unlock2p = jsonAPIDocument.json["unlock2p"] as! Bool
-					
-					// 根据unlock2p状态控制next按钮显示隐藏、改变剩余多少次的数字
-					if unlock2p {
-						self.unlockNextButton.isHidden = false
-						self.topTitleLabel.text = "🎉 UNLOCKED 🎉"
-						self.topTitleLabel.font = UIFont.boldSystemFont(ofSize: 28)
-					} else {
-						self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " \(remainTimes) ", textThree:"Friends to try your first 2P mode!", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
+					if let remainTimes = jsonAPIDocument.json["remain_times"] as? Int, let unlock2p = jsonAPIDocument.json["unlock2p"] as? Bool, let nextInviteAt = jsonAPIDocument.json["next_invite_at"] as? Double {
 						
-						if let realm = try? Realm() {
-							do {
-								try realm.write {
-									UserManager.shared.currentExperiment!.contact_invite_remain_times.value = remainTimes
+						self.updateContactModelNextInvitedAtFunc(phoneString: phoneString, nextInviteAtDouble: nextInviteAt)
+						
+						// 根据unlock2p状态控制next按钮显示隐藏、改变剩余多少次的数字
+						if unlock2p {
+							self.unlockNextButton.isHidden = false
+							self.topTitleLabel.text = "🎉 UNLOCKED 🎉"
+							self.topTitleLabel.font = UIFont.boldSystemFont(ofSize: 28)
+						} else {
+							
+							if self.isPlanBIsUnLockedTuple.isPlanB {
+								self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " \(remainTimes) ", textThree:"Friends to try your first 2P mode!", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
+							}
+							
+							if let realm = try? Realm() {
+								do {
+									try realm.write {
+										UserManager.shared.currentExperiment!.contact_invite_remain_times.value = remainTimes
+									}
+								} catch(let error) {
+									print("Error: ", error)
 								}
-							} catch(let error) {
-								print("Error: ", error)
 							}
 						}
+					} else {
+						print("error: value is nil")
 					}
 				}
 		}
@@ -545,12 +693,50 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 		} else {
 			print("*** unsend")
 		}
+		
+		self.addKeyboardObserverFunc()
+		
 		controller.dismiss(animated: true, completion: nil)
 	}
 	
+	// 睿，测试用，上线删除
+	func getDateFunc(double:Double) -> Date {
+		return Date(timeIntervalSince1970: double / 1000)
+	}
+	
+	func updateContactModelNextInvitedAtFunc(phoneString: String, nextInviteAtDouble:Double) {
+		
+		if let array = CodableTools.decodeFunc(type: MyContactsModel.self, decodeKey: MyContactsModelTag) {
+			
+			array.forEach { (model) in
+				if model.phoneString == phoneString {
+					print("before = \(self.getDateFunc(double: model.nextInviteAtDouble!))")
+					model.nextInviteAtDouble = nextInviteAtDouble
+					print("after = \(self.getDateFunc(double: model.nextInviteAtDouble!))")
+				}
+			}
+			
+			// 存array，变更数据源
+			if CodableTools.encodeFunc(models: array, forKey: MyContactsModelTag) {
+				print("encode success")
+			} else {
+				print("encode error")
+			}
+			
+			self.myContactsArray = array
+			
+			self.searchArray.removeLast()
+			
+			self.searchArray.append(self.myContactsArray as AnyObject)
+		} else {
+			print("error: decode error")
+			return
+		}
+	}
+	
 	// myContacts邀请
-	func myContactsCellBtnClickFunc(idString: String, phoneString: String) {
-		print("*** id = \(phoneString)")
+	func myContactsCellBtnClickFunc(phoneString: String) {
+		print("*** phoneString = \(phoneString)")
 		
 		guard MFMessageComposeViewController.canSendText() else {
 			return
@@ -558,28 +744,38 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 		
 		if let currentExperiment = APIController.shared.currentExperiment {
 			
-			self.sendInviteContactFunc(idString: idString)
+			self.sendInviteContactFunc(phoneString: phoneString)
 			
 			let inviteFriendsViewController = MFMessageComposeViewController()
 			inviteFriendsViewController.recipients = [phoneString]
-			inviteFriendsViewController.body = currentExperiment.contact_2p_sms_content1!
-//			inviteFriendsViewController.messageComposeDelegate = self
+			inviteFriendsViewController.body = currentExperiment.two_p_unlock_link ?? "error: msg is nil"
+			inviteFriendsViewController.messageComposeDelegate = self
 			self.present(inviteFriendsViewController, animated: true)
 		}
 	}
 	
 	// friendRequest拒绝、同意
 	func friendsRequestCellBtnClickFunc(model: FriendsRequestModel, isCancel: Bool) {
-		print("*** id = \(model.idString!), isCancel = \(isCancel)")
 		
-		JSONAPIRequest(url: "http://192.168.200.88:8080/api/v2/2p/friend2p_request", method: .patch, parameters: ["invitationId":model.idString!, "accept":!isCancel], options: [
-			.header("Authorization", AuthString),
+		print("*** isCancel = \(isCancel), userId = \(model.userIdInt!)")
+		
+		let pathString = isCancel ? "ignore/\(model.userIdInt!)" : "accept/\(model.userIdInt!)"
+		
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/\(pathString)", method: .post, options: [
+			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(let error):
 					print("*** error = \(error.description)") // 睿，上线时删除
 				case .success(let jsonAPIDocument):
-					print("*** upload contacts jsonAPIDocument = \(jsonAPIDocument.json)") // 睿，上线时删除
+					
+					print("*** friendRequest拒绝、同意 jsonAPIDocument = \(jsonAPIDocument.json)") // 睿，上线时删除
+					print("*** friendRequest拒绝、同意 pathString = \(pathString)")
+					
+					if self.updateRedDotClosure != nil {
+						self.redDotCountInt -= 1
+						self.updateRedDotClosure!(self.redDotCountInt)
+					}
 					
 					self.friendsRequestArray.remove(model)
 					
@@ -629,13 +825,13 @@ extension TwoPersonPlanViewController {
 			})
 			
 			// 将addressBookDict字典中的所有Key值进行排序: A~Z
-			let nameKeys = Array(contactsDict.keys).sorted()
+			var nameKeys = Array(contactsDict.keys).sorted()
 			
 			// 将 "#" 排列在 A~Z 的后面
-//			if nameKeys.first == "#" {
-//				nameKeys.insert(nameKeys.first!, at: nameKeys.count)
-//				nameKeys.remove(at: 0);
-//			}
+			if nameKeys.first == "#" {
+				nameKeys.insert(nameKeys.first!, at: nameKeys.count)
+				nameKeys.remove(at: 0);
+			}
 			
 			var sortedArray : [Any] = []
 			
@@ -644,7 +840,7 @@ extension TwoPersonPlanViewController {
 					
 					// 拿出有头像的手机号，把头像存到沙盒，用手机号当key，直接拿手机号取
 					if model.thumbnailImage != nil {
-						self.saveContactImageToSandboxFunc(data: model.thumbnailImage!, phoneNumber: model.phoneNumber)
+						self.saveContactImageToSandboxFunc(data: model.thumbnailImage!, phoneNumber: self.handlePhoneNumberFormatFunc(phoneString: model.phoneNumber!))
 					}
 					
 					if let jsonAny = self.toJSONStringFunc(model: model) {
@@ -665,14 +861,14 @@ extension TwoPersonPlanViewController {
 			
 //			print("*** sortedArray = \(sortedArray)")
 			
-			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .put, parameters: ["data":sortedArray], options: [
-				.header("Authorization", AuthString),
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/contacts/", method: .post, parameters: ["data":sortedArray], options: [
+				.header("Authorization", APIController.authorization),
 				]).addCompletionHandler { (response) in
 					switch response {
 					case .error(let error):
 						print("*** error = \(error.description)") // 睿，上线时删除
 					case .success(let jsonAPIDocument):
-						print("*** upload contacts jsonAPIDocument = \(jsonAPIDocument.json)") // 睿，上线时删除
+//						print("*** upload contacts jsonAPIDocument = \(jsonAPIDocument.json)") // 睿，上线时删除
 						
 						UserDefaults.standard.setValue(true, forKey: IsUploadContactsTag)
 						
@@ -682,9 +878,15 @@ extension TwoPersonPlanViewController {
 		}
 	}
 	
+	func handlePhoneNumberFormatFunc(phoneString:String) -> String {
+		return phoneString.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "")
+	}
+	
 	func toJSONStringFunc(model:ContactModel) -> Any? {
 		
-		let string = "{\"name\":\"\(model.firstName!) \(model.familyName!)\", \"phoneNumber\":\"\(model.phoneNumber!)\"}"
+		let phoneString = self.handlePhoneNumberFormatFunc(phoneString: model.phoneNumber!)
+		
+		let string = "{\"name\":\"\(model.firstName!) \(model.familyName!)\", \"phone_number\":\"\(phoneString)\"}"
 		
 		if let data = string.data(using: String.Encoding.utf8, allowLossyConversion: false) {
 			if let jsonAny = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) {
@@ -738,6 +940,8 @@ extension TwoPersonPlanViewController {
 		
 		// 截取大写首字母
 		let familyNameString = Tools.subStringFunc(string: uppercasedPinyinString, start: 1, end: 1)
+		
+		if familyNameString.containsEmojiFunc() { return "*" }
 		
 		// 判断姓名首位是否为大写字母
 		let regexA = "^[A-Z]$"
@@ -841,7 +1045,16 @@ extension TwoPersonPlanViewController {
 		
 		try? store.enumerateContacts(with: request) { (contact, stop) in
 			ContactModel.contactModelToArray(contact: contact).forEach({ (model) in
-				contactsArray.append(model)
+				
+				var tagInt = 0
+				
+				contactsArray.forEach({ (contactModel) in
+					if contactModel.phoneNumber == model.phoneNumber {
+						tagInt = 1
+					}
+				})
+				
+				if tagInt == 0 { contactsArray.append(model) }
 			})
 		}
 		

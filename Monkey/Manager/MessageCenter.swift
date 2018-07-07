@@ -30,8 +30,7 @@ import ObjectMapper
 	@objc optional func didReceiveCallCancel(call: String)
 	
 	// 收到 pair 消息
-	@objc optional func didReceivePairRequest(message: [String: Any])
-	@objc optional func didReceivePairAccept(message: [String: Any])
+	@objc optional func didReceiveTwopDefault(message: [String: Any])
 	
 	// 收到好友聊天消息
 	@objc optional func didReceiveConversationMessage()
@@ -212,6 +211,8 @@ class MessageCenter {
 			fallthrough
 		case .json_api:
 			fallthrough
+		case .twop_default:
+			fallthrough
 		default:
 			break
 		}
@@ -283,6 +284,9 @@ class MessageCenter {
 			selector = #selector(MessageObserver.didReceiveConversationMessage)
 			break
 		case .json_api:
+			break
+		case .twop_default:
+			selector = #selector(MessageObserver.didReceiveTwopDefault(message:))
 			break
 		default:
 			break

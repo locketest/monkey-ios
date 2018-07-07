@@ -9,14 +9,14 @@
 import UIKit
 
 protocol MyContactsCellDelegate : NSObjectProtocol {
-	func myContactsCellBtnClickFunc(idString: String, phoneString: String)
+	func myContactsCellBtnClickFunc(phoneString: String)
 }
 
 class MyContactsCell: UITableViewCell {
 	
-	var idString : String?
-	
 	var phoneString : String?
+	
+	let shapeLayer = CAShapeLayer()
 	
 	var delegate : MyContactsCellDelegate?
 	
@@ -26,7 +26,7 @@ class MyContactsCell: UITableViewCell {
 	
 	@IBOutlet weak var funnelLabel: UILabel!
 	
-	@IBOutlet weak var headImageView: CachedImageView!
+	@IBOutlet weak var headImageView: UIImageView!
 	
 	@IBOutlet weak var inviteButton: BigYellowButton!
 	
@@ -36,7 +36,7 @@ class MyContactsCell: UITableViewCell {
 		}
 		set(newMyContactsModel){
 			
-			self.idString = newMyContactsModel.idString
+			self.initShapelayerFunc()
 			
 			self.phoneString = newMyContactsModel.phoneString
 			
@@ -44,50 +44,54 @@ class MyContactsCell: UITableViewCell {
 			
 			self.phoneLabel.text = newMyContactsModel.phoneString
 			
-			if let timeStamp = newMyContactsModel.timestampDouble {
+			if let timeStamp = newMyContactsModel.nextInviteAtDouble {
 				
 				let date = Date(timeIntervalSince1970: timeStamp / 1000)
 				
 				let second = date.timeIntervalSince(Date())
-				
+//				print("*** second = \(second)")
 				if second > 0 { // 截止时间是当前时间以后就加图层
 					self.inviteButton.isUserInteractionEnabled = false
 					self.inviteButton.isEnabled = false
+					self.funnelLabel.isHidden = false
 					
 					self.inviteButton.setTitle("", for: .normal)
-					self.addProgressViewFunc(progress: CGFloat(second) / (60 * 60 * 24 * 3), isBringToFont: true)
+//					self.addShapeLayerFunc(progress: CGFloat(second) / (60 * 60 * 24 * 3), isBringToFont: true)
 				} else {
 					self.inviteButton.isUserInteractionEnabled = true
 					self.inviteButton.isEnabled = true
+					self.funnelLabel.isHidden = true
 					
 					self.inviteButton.setTitle("👋", for: .normal)
+					self.removeShapeLayerFunc()
 				}
 			}
 			
 			guard newMyContactsModel.phoneString != nil else { return }
 			
 			if FileManager.default.fileExists(atPath: ContactsImageRootPath + "/" + newMyContactsModel.phoneString!) {
-				self.headImageView.url = ContactsImageRootPath + "/" + newMyContactsModel.phoneString!
+				self.headImageView.image = UIImage(contentsOfFile: ContactsImageRootPath + "/" + newMyContactsModel.phoneString!)
 			} else {
-				self.headImageView.placeholder = Tools.getGenderDefaultImageFunc()
+				self.headImageView.image = UIImage(named: Tools.getGenderDefaultImageFunc())
 			}
 		}
 	}
 	
 	@IBAction func btnClickFunc(_ sender: UIButton) {
 		
-		self.inviteButton.setTitle("", for: .normal)
-		
-		self.inviteButton.isUserInteractionEnabled = false
-		self.inviteButton.isEnabled = false
-		
-		self.addProgressViewFunc(progress: 1, isBringToFont: false)
+//		self.addProgressViewFunc(progress: 1, isBringToFont: false)
 		
 		if self.delegate != nil {
-			self.delegate!.myContactsCellBtnClickFunc(idString: self.idString!, phoneString: self.phoneString!)
+			self.delegate!.myContactsCellBtnClickFunc(phoneString: self.phoneString!)
 		} else {
 			print("代理为空")
 		}
+		
+		self.inviteButton.isUserInteractionEnabled = false
+		self.inviteButton.isEnabled = false
+		self.funnelLabel.isHidden = false
+		
+		self.inviteButton.setTitle("", for: .normal)
 	}
 	
 	// #####@##### 睿，查看已经存入的图片和删除图片，测试后删除
@@ -103,9 +107,22 @@ class MyContactsCell: UITableViewCell {
 		print("*** files = \(String(describing: files))")
 	}
 	
-	func addProgressViewFunc(progress:CGFloat, isBringToFont:Bool) {
+	func removeShapeLayerFunc() {
+		self.shapeLayer.removeFromSuperlayer()
+	}
+	
+	func addShapeLayerFunc(progress:CGFloat, isBringToFont:Bool) {
+
+		shapeLayer.strokeEnd = progress
 		
-		let shapeLayer = CAShapeLayer()
+		self.layer.addSublayer(shapeLayer)
+
+		if isBringToFont {
+			self.bringSubview(toFront: self.funnelLabel)
+		}
+	}
+	
+	func initShapelayerFunc() {
 		
 		shapeLayer.frame = CGRect(x: 0, y: 0, width: self.inviteButton.width / 2, height: self.inviteButton.height / 2)
 		shapeLayer.position = self.inviteButton.center
@@ -115,16 +132,9 @@ class MyContactsCell: UITableViewCell {
 		shapeLayer.strokeColor = UIColor.black.withAlphaComponent(0.45).cgColor
 		
 		shapeLayer.strokeStart = 0
-		shapeLayer.strokeEnd = progress
 		
 		let circlePath = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: self.inviteButton.width / 2, height: self.inviteButton.height / 2))
 		
 		shapeLayer.path = circlePath.cgPath
-		
-		self.layer.addSublayer(shapeLayer)
-		
-		if isBringToFont {
-			self.bringSubview(toFront: self.funnelLabel)
-		}
 	}
 }

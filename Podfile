@@ -27,7 +27,7 @@ abstract_target 'Monkey' do
 	
 	pod 'RealmSwift'
 	pod 'Alamofire'
-#	pod 'SwiftyJSON'
+	pod 'SwiftyJSON'
 #	pod 'Alamofire-SwiftyJSON'
 	pod 'ObjectMapper', '~> 3.1'
 	pod 'AlamofireObjectMapper', '~> 5.0'

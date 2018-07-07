@@ -20,7 +20,7 @@ class UsersInfoModel: NSObject {
 	
 	var unlock2pBool : Bool?
 	
-	var onlineStatusString : String? // 在线状态
+	var onlineStatusBool : Bool? // 在线状态
 	
 	var lastLoginTimeDouble : Double? // 上次登录的时间，排序用
 	
@@ -31,11 +31,11 @@ class UsersInfoModel: NSObject {
 		let usersInfoModel = UsersInfoModel()
 		
 		usersInfoModel.idString = dict["id"] as? String
-		usersInfoModel.usernameString = dict["username"] as? String
+		usersInfoModel.usernameString = dict["first_name"] as? String
 		usersInfoModel.genderString = dict["gender"] as? String
 		usersInfoModel.pathString = dict["photoUrl"] as? String
-		usersInfoModel.unlock2pBool = dict["unlock2p"] as? Bool
-		usersInfoModel.onlineStatusString = dict["online"] as? String
+		usersInfoModel.unlock2pBool = dict["unlocked_two_p"] as? Bool
+		usersInfoModel.onlineStatusBool = dict["online"] as? Bool
 		usersInfoModel.lastLoginTimeDouble = dict["lastLoginTime"] as? Double
 		usersInfoModel.contactInviteRemainTimeDouble = dict["contactInviteRemainTimes"] as? Double
 		

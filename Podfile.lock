@@ -86,6 +86,7 @@ PODS:
     - Realm (= 3.7.4)
   - SnapKit (4.0.0)
   - Starscream (3.0.5)
+  - SwiftyJSON (4.1.0)
 
 DEPENDENCIES:
   - AccountKit
@@ -110,6 +111,7 @@ DEPENDENCIES:
   - RealmSwift
   - SnapKit (~> 4.0.0)
   - Starscream
+  - SwiftyJSON
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -144,6 +146,7 @@ SPEC REPOS:
     - RealmSwift
     - SnapKit
     - Starscream
+    - SwiftyJSON
 
 EXTERNAL SOURCES:
   GPUImage:
@@ -188,7 +191,8 @@ SPEC CHECKSUMS:
   RealmSwift: a45861b21c180f5cf0f122144b9759fa8dde3e9e
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
+  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
 
-PODFILE CHECKSUM: cf3c5b05ac761ccc1a934c63c175102b69fc5741
+PODFILE CHECKSUM: 5b805cfee4d852020a96dcbf0dfbf94234900a1e
 
 COCOAPODS: 1.5.3

@@ -18,7 +18,7 @@ class FriendshipModel: NSObject {
 		
 		let friendshipModel = FriendshipModel()
 		
-		friendshipModel.friendIdString = dict["friend_id"] as? String
+		friendshipModel.friendIdString = (dict["friend_id"] as? Int)?.description
 		friendshipModel.friendshipIdString = dict["friendship_id"] as? String
 		
 		return friendshipModel

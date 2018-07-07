@@ -30,8 +30,8 @@ class DashboardInviteListModel: NSObject {
 		dashboardInviteListModel.nameString = userInfo.usernameString
 		dashboardInviteListModel.pathString = userInfo.pathString
 		
-		dashboardInviteListModel.friendshipIdString = friendsRequestModel.friendshipIdString
-		dashboardInviteListModel.timestampDouble = friendsRequestModel.timestampDouble
+		dashboardInviteListModel.friendshipIdString = friendsRequestModel.userIdInt?.description
+		dashboardInviteListModel.timestampDouble = friendsRequestModel.nextInviteAtDouble
 		dashboardInviteListModel.statusInt = friendsRequestModel.statusInt
 		
 		return dashboardInviteListModel

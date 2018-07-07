@@ -38,6 +38,8 @@ enum SocketChannel: String {
 	// just receive json
 	case json_api = "json_api_data"
 	
+	case twop_default = "default"
+	
 	init(channel: String) {
 		self = SocketChannel.init(rawValue: channel) ?? .json_api
 	}

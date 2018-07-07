@@ -428,7 +428,9 @@ class MainViewController: SwipeableViewController, ChatSessionLoadingDelegate {
 		self.updateBananas()
 		self.setupFriendships()
 		self.loadCurrentEventMode()
-//		self.handleTwopStatusFunc()
+		self.handleTwopStatusFunc()
+		
+		MessageCenter.shared.addMessageObserver(observer: self)
 		
 		self.skippedText.layer.opacity = 0.0
 		Socket.shared.isEnabled = true
@@ -957,11 +959,21 @@ class MainViewController: SwipeableViewController, ChatSessionLoadingDelegate {
 		let vc = UIStoryboard(name: "TwoPerson", bundle: nil).instantiateInitialViewController() as! TwoPersonPlanViewController
 		vc.modalPresentationStyle = .overFullScreen
 		vc.isPlanBIsUnLockedTuple = (isPlanB, false)
+		
 		vc.backClosure = {
 			self.twoPersonButton.backgroundColor = UIColor.yellow
 			self.twoPersonButton.isHidden = false
-			self.redDotLabel.isHidden = false
 		}
+		
+		vc.updateRedDotClosure = { (count) -> Void in
+			if count > 0 {
+				self.redDotLabel.isHidden = false
+				self.redDotLabel.text = count.description
+			} else {
+				self.redDotLabel.isHidden = true
+			}
+		}
+		
 		self.present(vc, animated: true, completion: nil)
 	}
 	
@@ -971,41 +983,40 @@ class MainViewController: SwipeableViewController, ChatSessionLoadingDelegate {
 		vc.backClosure = {
 			self.twoPersonButton.backgroundColor = UIColor.yellow
 			self.twoPersonButton.isHidden = false
-			self.redDotLabel.isHidden = false
 		}
 		self.present(vc, animated: true, completion: nil)
 	}
 	
 	func getUnhandledFriendsRequestCountFunc() {
 		
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations", method: .get, options: [
-			.header("Authorization", AuthString),
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
+			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(let error):
 					print("*** error : = \(error.message)")
 				case .success(let jsonAPIDocument):
 					
-					print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					print("*** jsonAPIDocument = \(jsonAPIDocument.json)")
 					
-					let array = jsonAPIDocument.json["data"] as! [[String: AnyObject]]
-					
-					if array.count > 0 {
-						
-						var models : [FriendsRequestModel] = []
-						
-						array.forEach({ (contact) in
-							let userId = APIController.shared.currentUser!.user_id
-							let friendsRequestModel = FriendsRequestModel.friendsRequestModel(dict: contact)
+					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
+						if array.count > 0 {
 							
-							if userId == friendsRequestModel.inviteeIdString && 0 == friendsRequestModel.statusInt {
-								models.append(friendsRequestModel)
+							var models : [FriendsRequestModel] = []
+							
+							array.forEach({ (contact) in
+								let userId = APIController.shared.currentUser!.user_id
+								let friendsRequestModel = FriendsRequestModel.friendsRequestModel(dict: contact)
+								
+								if userId == friendsRequestModel.inviteeIdInt?.description && TwopChatRequestsStatusEnum.unhandle.rawValue == friendsRequestModel.statusInt {
+									models.append(friendsRequestModel)
+								}
+							})
+							
+							if models.count > 0 {
+								self.redDotLabel.isHidden = false
+								self.redDotLabel.text = models.count.description
 							}
-						})
-						
-						if models.count > 0 {
-							self.redDotLabel.isHidden = false
-							self.redDotLabel.text = models.count.description
 						} else {
 							self.redDotLabel.isHidden = true
 						}
@@ -1059,15 +1070,14 @@ class MainViewController: SwipeableViewController, ChatSessionLoadingDelegate {
 		attributes.append(.match_type(2))
 		
 		user.update(attributes: attributes) { (error) in
-			print("*** error = \(error?.status ?? "no error status")")
+			print("\(error?.status ?? "user update success")")
 		}
 		
-		// 睿，sandbox测试打开
-//		self.handleTargetVcFunc()
+		self.handleTargetVcFunc()
 		
 //		self.presentToTwoPersonPlanVcFunc()
 		
-		self.presentToDashboardMainVcFunc()
+//		self.presentToDashboardMainVcFunc()
 	}
 	
 	@IBAction func acceptButtonTapped(sender: Any) {
@@ -1586,6 +1596,30 @@ class MainViewController: SwipeableViewController, ChatSessionLoadingDelegate {
 		self.bananaNotificationToken?.invalidate()
 		self.unreadMessageNotificationToken?.invalidate()
 		Socket.shared.isEnabled = false
+	}
+}
+
+extension MainViewController : MessageObserver {
+	
+	func didReceiveTwopDefault(message: [String : Any]) {
+		print("*** message = \(message)")
+		
+		let twopSocketModel = TwopSocketModel.twopSocketModel(dict: message as [String : AnyObject])
+		
+		switch twopSocketModel.msgTypeInt {
+		case SocketDefaultMsgTypeEnum.unlock2p.rawValue: // unlock2p
+			let currentUser = UserManager.shared.currentUser
+			currentUser?.reload(completion: { (error) in
+			})
+		case SocketDefaultMsgTypeEnum.friendInvite.rawValue: // friendInvite
+			let currentUser = UserManager.shared.currentUser
+			currentUser?.reload(completion: { (error) in
+			})
+			
+			self.getUnhandledFriendsRequestCountFunc() // 更新红点的值
+		default:
+			break
+		}
 	}
 }
 

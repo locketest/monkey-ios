@@ -36,6 +36,22 @@ class Tools: NSObject {
 	}
 	
 	/**
+	 判断时间戳是否过期
+	*/
+	class func timestampIsExpiredFunc(timestamp:Double) -> (isExpired:Bool, second:Double) {
+		
+		let date = Date(timeIntervalSince1970: timestamp / 1000)
+		
+		let second = date.timeIntervalSince(Date())
+		
+		if second > 0 { // 时间未过期
+			return (false, second)
+		} else {
+			return (true, second)
+		}
+	}
+	
+	/**
 	 字符串截取，传入需要截取的字符串开始位置(不按索引算)、结束位置(包含)
 	*/
 	class func subStringFunc(string:String, start:Int, end:Int) -> String {
@@ -100,6 +116,27 @@ class Tools: NSObject {
 		return UIColor(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: CGFloat(1))
 	}
 
+}
+
+extension UInt32 {
+	static let combiningEnclosingKeycap: UInt32 = 0x20E3
+	static let variationSelector15: UInt32 = 0xFE0E
+	static let variationSelector16: UInt32 = 0xFE0F
+}
+
+extension String {
+	public func containsEmojiFunc() -> Bool {
+		let codepoints = self.unicodeScalars.map { $0.value }
+		
+		if let first = codepoints.first, let last = codepoints.last {
+			let isKeycapEmoji = last == .combiningEnclosingKeycap && codepoints.contains(.variationSelector16)
+			let isEmoji = CodePointSet.contains(first) && last != .variationSelector15
+			
+			return isKeycapEmoji || isEmoji
+		} else {
+			return false
+		}
+	}
 }
 
 /**

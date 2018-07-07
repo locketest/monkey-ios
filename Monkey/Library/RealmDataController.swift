@@ -40,7 +40,7 @@ class RealmDataController {
 			defaultConfig.objectTypes = self.realmObjectClasses
 		}else {
 			defaultConfig = Realm.Configuration(
-				schemaVersion: 22,
+				schemaVersion: 25,
 				migrationBlock: { migration, oldSchemaVersion in
 					if oldSchemaVersion < 1 {
 						// Nothing to do!

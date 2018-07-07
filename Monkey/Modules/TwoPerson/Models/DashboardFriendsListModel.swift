@@ -16,7 +16,7 @@ class DashboardFriendsListModel: NSObject {
 	
 	var pathString : String?
 	
-	var onlineString : String?
+	var onlineStatusBool : Bool? // 在线状态
 	
 	var inviteeIdString : String?
 	
@@ -35,13 +35,13 @@ class DashboardFriendsListModel: NSObject {
 		dashboardFriendsListModel.idString = userInfo.idString
 		dashboardFriendsListModel.nameString = userInfo.usernameString
 		dashboardFriendsListModel.pathString = userInfo.pathString
-		dashboardFriendsListModel.onlineString = userInfo.onlineStatusString
+		dashboardFriendsListModel.onlineStatusBool = userInfo.onlineStatusBool
 		
 		dashboardFriendsListModel.isMissedBool = isMissedBool
 		
-		dashboardFriendsListModel.friendshipIdString = friendsRequestModel.friendshipIdString
-		dashboardFriendsListModel.inviteeIdString = friendsRequestModel.inviteeIdString
-		dashboardFriendsListModel.timestampDouble = friendsRequestModel.timestampDouble
+		dashboardFriendsListModel.friendshipIdString = friendsRequestModel.userIdInt?.description
+		dashboardFriendsListModel.inviteeIdString = friendsRequestModel.inviteeIdInt?.description
+		dashboardFriendsListModel.timestampDouble = friendsRequestModel.nextInviteAtDouble
 		dashboardFriendsListModel.statusInt = friendsRequestModel.statusInt
 		
 		return dashboardFriendsListModel
