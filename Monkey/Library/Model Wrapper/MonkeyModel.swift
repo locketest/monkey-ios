@@ -17,6 +17,7 @@ typealias MonkeyObject = MonkeyApiObject
 // common model
 // to make model great again
 class MonkeyModel: Object, Mappable, MonkeyObject {
+	
 	required convenience init?(map: Map) {
 		self.init()
 	}

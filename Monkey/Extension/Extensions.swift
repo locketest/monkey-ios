@@ -7,11 +7,11 @@
 //
 
 import UIKit
+import Realm
+import RealmSwift
 import Contacts
 import CoreLocation
-import RealmSwift
 import Amplitude_iOS
-import Starscream
 
 @IBDesignable class MakeTextFieldGreatAgain: UITextField {
     @IBInspectable var lineColor = Colors.yellow {
@@ -92,7 +92,6 @@ import Starscream
 			}
 		}
     }
-
 }
 
 extension UITextField {
@@ -203,30 +202,6 @@ extension Amplitude {
     }
 }
 
-extension UIView {
-    func updateShadow(r red: CGFloat, g green: CGFloat, b blue: CGFloat, a alpha: Int, x: CGFloat, y: CGFloat, blur: CGFloat, spread: CGFloat) {
-        guard red <= 255.0, green <= 255.0, blue <= 255.0 else {
-            print("Color values should be between 0 and 255")
-            return
-        }
-        guard alpha <= 100 else {
-            print("Alpha should be be between 0 and 100")
-            return
-        }
-        guard blur >= 0, spread >= 0 else {
-            print("Blur and spread can not be negative")
-            return
-        }
-        let shadowPath = UIBezierPath(rect: CGRect(x: 0, y: 0, width: self.frame.width + spread, height: self.frame.height + spread))
-        self.layer.shadowColor = UIColor(red: red / 255.0, green: green  / 255.0, blue: blue  / 255.0, alpha: 1.0).cgColor
-        self.layer.shadowOffset = CGSize(width: x, height: y)
-        self.layer.shadowOpacity = Float(alpha) / 100.0
-        self.layer.shadowRadius = blur
-        self.layer.masksToBounds =  false
-        self.layer.shadowPath = shadowPath.cgPath
-    }
-}
-
 extension Bundle {
     func loadView<T>(fromNib name: String, withType type: T.Type) -> T {
         if let objects = self.loadNibNamed(name, owner: nil, options: nil) {
@@ -272,11 +247,6 @@ public extension String {
     
 }
 
-extension NSNotification.Name {
-    @nonobjc static let emojiNotification = Notification.Name(rawValue: "MonkeyEmojiNotification")
-    @nonobjc static let loginNotification = Notification.Name(rawValue: "MonkeyLoginNotification")
-    @nonobjc static let instagramLoginNotification = Notification.Name(rawValue: "MonkeyInstagramLoginNotification")
-}
 extension CharacterSet {
     ///Characters allowed in Snapchat usernames
     static let snapchat = CharacterSet(charactersIn: ".-_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -299,6 +269,7 @@ extension TimeInterval {
         return Date().timeIntervalSinceReferenceDate - self > since
     }
 }
+
 public extension ExpressibleByIntegerLiteral {
 	public static func arc4random() -> Self {
 		var r: Self = 0
@@ -392,12 +363,9 @@ extension Dictionary {
             self[k] = v
         }
     }
+	
     func mapPairs<OutKey: Hashable, OutValue>( transform: (Element) throws -> (OutKey, OutValue)) rethrows -> [OutKey: OutValue] {
         return Dictionary<OutKey, OutValue>(try map(transform))
-    }
-    
-    func filterPairs( includeElement: (Element) throws -> Bool) rethrows -> [Key: Value] {
-        return Dictionary(try filter(includeElement))
     }
 }
 extension Formatter {
@@ -427,7 +395,6 @@ extension String {
 }
 
 extension String {
-    
     var sha256: String {
         if let stringData = self.data(using: String.Encoding.utf8) {
             return hexStringFromData(input: digest(input: stringData as NSData))
@@ -442,7 +409,7 @@ extension String {
         return NSData(bytes: hash, length: digestLength)
     }
     
-    private  func hexStringFromData(input: NSData) -> String {
+    private func hexStringFromData(input: NSData) -> String {
         var bytes = [UInt8](repeating: 0, count: input.length)
         input.getBytes(&bytes, length: input.length)
         
@@ -554,20 +521,8 @@ extension String {
 	}
 }
 
-extension String {
-    var capitalizedFirstLetter: String {
-        if (self.isEmpty) {
-            return self
-        }
-        
-        let first = String(prefix(1)).capitalized
-        let other = String(dropFirst())
-        return first + other
-    }
-}
-
 extension NSURLComponents {
-    func queryDict() -> [String:String] {
+    func queryDict() -> [String: String] {
         var dict = Dictionary<String, String>.init()
         self.queryItems?.forEach({ (obj) in
             if obj.name.count != 0,
@@ -644,3 +599,4 @@ extension String {
         return false
     }
 }
+

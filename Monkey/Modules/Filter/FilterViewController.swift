@@ -9,11 +9,7 @@
 import UIKit
 
 class FilterViewController: SwipeableViewController {
-	
-	override var contentHeight: CGFloat {
-		return UIScreen.main.bounds.size.height - 50
-	}
-	
+
 //	var arrowButton: BigYellowButton = BigYellowButton.init(frame: CGRect.zero)
 	var filterCollection: FilterCollectionView = FilterCollectionView.init(frame: CGRect.zero)
 	var initialFilter = Achievements.shared.selectMonkeyFilter
@@ -24,12 +20,12 @@ class FilterViewController: SwipeableViewController {
         // Do any additional setup after loading the view.
 		self.configureApperance()
     }
-	
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		self.filterCollection.resetSpotedFilter()
 	}
-	
+
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		let currentFilter = Achievements.shared.selectMonkeyFilter
@@ -39,24 +35,18 @@ class FilterViewController: SwipeableViewController {
 			"name": currentFilter,
 			])
 	}
-	
+
 	func configureApperance() {
-//		self.arrowButton.setImage(#imageLiteral(resourceName: "ArrowButtonDown"), for: .normal)
-//		self.arrowButton.frame = CGRect.init(x: (self.view.frame.size.width - 47) / 2, y: self.view.frame.size.height - 50 - 30, width: 47, height: 30)
-//		self.arrowButton.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin]
-//		self.view.addSubview(self.arrowButton)
-//		self.arrowButton.isUserInteractionEnabled = false
-		
 		self.filterCollection.frame = CGRect.init(x: 6, y: self.view.frame.size.height - 100 - 107, width: self.view.frame.size.width - 12, height: 107)
 		self.filterCollection.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
 		self.view.addSubview(self.filterCollection)
-		
+
 		let tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(closeFilterCollection))
 		self.view.addGestureRecognizer(tapGesture)
 		tapGesture.delegate = self
 	}
-	
-	override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
 		var touchView: UIView? = touch.view
 		while touchView != nil {
 			if (touchView is FilterCollectionView) {
@@ -66,9 +56,8 @@ class FilterViewController: SwipeableViewController {
 		}
 		return true
 	}
-	
+
 	func closeFilterCollection() {
-		self.panningTowardsSide = .top
 		self.dismiss(animated: true, completion: nil)
 	}
 
@@ -76,7 +65,7 @@ class FilterViewController: SwipeableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
 
     /*
     // MARK: - Navigation
@@ -89,4 +78,3 @@ class FilterViewController: SwipeableViewController {
     */
 
 }
-

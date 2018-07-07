@@ -14,6 +14,12 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 		case VideoCall
 		case PairRequest
 		case TwopInvite
+		
+		static func random() -> Style {
+			let index = abs(Int.arc4random() % 3)
+			return allValues[index]
+		}
+		
 		static let allValues = [TwopInvite, PairRequest, VideoCall]
 	}
 	
@@ -28,9 +34,10 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 	@IBOutlet weak var rejectButton: BigYellowButton!
 	@IBOutlet weak var acceptButton: JigglyButton!
 	
-	/// Closure that will be executed if the notification banner is closed
-	var onDismiss: ((_ auto: Bool) -> Void)?
-	var onAccept: (() -> Void)?
+	/// Closure that will be executed if the notification banner accept is tapped
+	var onAccept: (() -> Void)!
+	var willDismiss: (() -> Void)!
+	var onDismiss: (() -> Void)!
 	
 	// audo dismiss delay
 	private var dismissTimer: Timer?
@@ -38,8 +45,8 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 	
 	private var lifeTime: TimeInterval = 5.0
 	private var barStyle: Style! {
-		didSet(newStyle) {
-			switch newStyle {
+		didSet(oldStyle) {
+			switch barStyle {
 			case .PairRequest:
 				self.notificationDescriptionLabel.text = "wants to pair with you now"
 			case .TwopInvite:
@@ -70,6 +77,8 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 	
 	class func instanceFromNib(user: RealmUser, style: Style) -> InAppNotificationBar {
 		let view = UINib(nibName: "InAppNotificationBar", bundle: nil).instantiate(withOwner: nil, options: nil).first as! InAppNotificationBar
+		view.isHidden = true
+		view.frame = CGRect.init(x: 0, y: 0, width: Environment.ScreenWidth - 10, height: 76)
 		view.user = user
 		view.barStyle = style
 		return view
@@ -94,6 +103,7 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 		self.layer.cornerRadius = 13
 		self.layer.masksToBounds = true
 		self.backgroundColor = UIColor.white
+		self.acceptActivity.isHidden = true
 	}
 	
 	override func willMove(toWindow newWindow: UIWindow?) {
@@ -113,7 +123,7 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 		
 		dismissTimer = Timer.scheduledTimer(timeInterval: self.lifeTime,
 											target: self,
-											selector: #selector(dismiss(diy:)),
+											selector: #selector(notifyDismiss),
 											userInfo: nil,
 											repeats: false)
 	}
@@ -129,24 +139,57 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 	
 	
 	@IBAction func ignore(_ sender: UIButton) {
-		self.stopTimer()
+		self.acceptButton.isEnabled = false
+		self.notifyDismiss()
 	}
 	
 	@IBAction func accept(_ sender: UIButton) {
+		self.rejectButton.isEnabled = false
+		self.acceptActivity.isHidden = false
+		self.acceptActivity.startAnimating()
+		self.acceptLabel.removeFromSuperview()
 		self.stopTimer()
+		self.onAccept()
 	}
 	
-	func dismiss(diy: Bool = false) {
+	@objc private func notifyDismiss() {
+		self.willDismiss()
+	}
+	
+	func present(animated: Bool) {
+		if animated == false {
+			self.isHidden = false
+			self.alpha = 0
+			UIView.animate(withDuration: 0.5, animations: {
+				self.alpha = 1
+			})
+		}else {
+			UIView.animate(withDuration: 0.5, animations: {
+				self.isHidden = false
+			})
+		}
+	}
+	
+	func dismiss(animated: Bool) {
 		guard isDismissed == false else { return }
 		isDismissed = true
+		self.acceptButton.isEnabled = false
+		self.rejectButton.isEnabled = false
 		
-		self.onDismiss?(diy)
-		UIView.animate(withDuration: 0.3, animations: {
-			var frame = self.frame
-			frame.origin.y = -1 * self.frame.size.height
-			self.frame = frame
-		}, completion: { [weak self] (success) in
-			self?.removeFromSuperview()
-		})
+		if animated == false {
+			UIView.animate(withDuration: 0.5, animations: {
+				self.alpha = 0
+			}) { [weak self] (success) in
+				self?.removeFromSuperview()
+				self?.onDismiss()
+			}
+		}else {
+			UIView.animate(withDuration: 0.5, animations: {
+				self.isHidden = true
+			}, completion: { [weak self] (success) in
+				self?.removeFromSuperview()
+				self?.onDismiss()
+			})
+		}
 	}
 }

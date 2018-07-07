@@ -28,10 +28,11 @@ extension MainViewController: CLLocationManagerDelegate {
      */
     func startUpdatingLocation() {
         if CLLocationManager.locationServicesEnabled() {
+			MainViewController.requestLocationPermissionIfUnavailable() // This will cause the thred to hang so we still need to toggle chat finding to cancel any existing requests.
             MainViewController.locationManager.delegate = self
             MainViewController.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
             MainViewController.locationManager.startUpdatingLocation()
-        }
+		}
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

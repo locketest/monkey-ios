@@ -436,13 +436,6 @@ class RealmDataController {
 		
 		var value: [String: Any] = jsonAPIResource.attributes ?? [:]
 		
-		// 如果是新的好友，设置 last_message_at 为 created_at
-		if resourceRealmObjectClass.type == ApiType.Friendships.rawValue {
-			if value["last_message_at"] == nil, let created_at = value["created_at"] {
-				value["last_message_at"] = created_at
-			}
-		}
-		
 		try jsonAPIResource.relationships?.forEach { (relationshipKey, relationshipValue) in
 			let properties = resourceRealmObjectClass.sharedSchema()?.properties
 			

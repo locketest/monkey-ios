@@ -366,7 +366,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
 			return
 		}
 		
-		if let age = self.user?.age.value {
+		if let age = self.user?.age {
 			self.nameLabel.text?.append(", \(age)")
 		}
 		

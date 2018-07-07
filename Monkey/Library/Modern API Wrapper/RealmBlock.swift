@@ -17,10 +17,13 @@ class RealmBlock: MonkeyModel {
 		return "block_id"
 	}
 	
-    dynamic var block_id: String?
-    dynamic var created_at: NSDate?
+    dynamic var block_id: String!
+    dynamic var created_at: Date?
 	
 	required convenience init?(map: Map) {
+		if map["id"].currentValue == nil {
+			return nil
+		}
 		self.init()
 	}
 }

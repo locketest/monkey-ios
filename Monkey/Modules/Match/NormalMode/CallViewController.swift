@@ -363,7 +363,7 @@ class CallViewController: MonkeyViewController, ChatSessionCallDelegate, MatchVi
 					self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
 				}
 			}))
-			let mainVC = self.presentingViewController as? MainViewController
+			let mainVC = self.presentingViewController as? OnepMatchController
 			mainVC?.showAlert(alert: addFirstSnapchatAlert)
 		}else {
 			self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)

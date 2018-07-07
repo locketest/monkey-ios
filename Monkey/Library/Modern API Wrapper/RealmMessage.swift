@@ -32,9 +32,9 @@ class RealmMessage: MonkeyModel {
     /// client generated UUID. Used to match messages returned from the server with PendingMessages on the client
     dynamic var uuid: String?
     
-    dynamic var updated_at: NSDate?
+    dynamic var updated_at: Date?
     
-    dynamic var created_at: NSDate?
+    dynamic var created_at: Date?
     
     var parsedData: Data? {
         guard let base64EncodedString = self.data else {
@@ -43,7 +43,14 @@ class RealmMessage: MonkeyModel {
         return Data(base64Encoded: base64EncodedString)
     }
 	
+	override static func ignoredProperties() -> [String] {
+		return ["parsedData"]
+	}
+	
 	required convenience init?(map: Map) {
+		if map["id"].currentValue == nil {
+			return nil
+		}
 		self.init()
 	}
 }

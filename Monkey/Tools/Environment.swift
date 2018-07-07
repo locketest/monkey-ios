@@ -6,6 +6,10 @@
 //  Copyright © 2016 Isaiah Turner. All rights reserved.
 //
 
+import Foundation
+import UIKit
+import DeviceKit
+
 // 各种环境变量和静态常量
 struct Environment {
 	// static let version = 17 - last v1
@@ -81,11 +85,11 @@ struct Environment {
 	static let MonkeySyncRealmUrl = "realm://" + RealmSyncHost + "/~/monkey-realm"
 	#endif
 	
-	static let ScreenWidth = UIScreen.main.bounds.width
-	static let ScreenHeight = UIScreen.main.bounds.height
-	static let ScreenSize = UIScreen.main.bounds.size
-	static let ScreenBounds = UIScreen.main.bounds
-	static let ScreenAspectRadio = ScreenWidth / ScreenHeight
+	static let ScreenSize: CGSize = UIScreen.main.bounds.size
+	static let ScreenBounds: CGRect = UIScreen.main.bounds
+	static let ScreenWidth: CGFloat = UIScreen.main.bounds.width
+	static let ScreenHeight: CGFloat = UIScreen.main.bounds.height
+	static let ScreenAspectRadio: CGFloat = ScreenWidth / ScreenHeight
 	
 	static let adjustToken = "w8wlqq6li0w0"
 	static let MonkeyAppStoreUrl = "itms-apps://itunes.apple.com/app/id1165924249"
@@ -93,7 +97,15 @@ struct Environment {
 	static let MonkeyAppTermsURL = "http://monkey.cool/terms"
 	static let MonkeyAppPrivacyURL = "http://monkey.cool/privacy"
 
+	
+	static var isIphoneX: Bool {
+		let isIphoneX: Bool = Device().isOneOf([Device.iPhoneX])
+		return isIphoneX
+	}
 }
+
+let ScreenHeight: CGFloat = Environment.ScreenHeight
+let ScreenWidth: CGFloat = Environment.ScreenWidth
 
 enum ENV: String {
 	/*
@@ -112,6 +124,7 @@ enum LoginMethod: String {
 	case autoLogin = "autoLogin"
 }
 
+// report reason
 enum ReportType: Int {
 	case mean = 9
 	case nudity = 10
@@ -141,12 +154,14 @@ enum ReportType: Int {
 	}
 }
 
+// screen shot screen
 enum AutoScreenShotType: String {
 	case match_5s = "match_5s"
 	case match_disconnec = "match_disconnec"
 	case opponent_background = "opponent_background"
 }
 
+// rate reason
 enum showRateAlertReason: String {
 	case addFriendJust = "addFriendJust"
 	case finishFriendCall = "finishFriendCall"
@@ -164,3 +179,47 @@ enum showRateAlertReason: String {
 	}
 }
 
+// onep match status
+enum OnepStatus {
+	case WaitingStart
+	case RequestMatch
+	case WaitingResponse
+	case Connecting
+	case Chating
+	
+	func canSwipe() -> Bool {
+		return self == .WaitingStart || self == .RequestMatch
+	}
+}
+
+// twop match status
+enum TwopStatus {
+	case DashboardReady
+	case PairConnecting
+	case RequestMatch
+	case WaitingResponse
+	case Connecting
+	case Chating
+	case Reconnecting
+}
+
+// match type
+@objc enum MatchType: Int {
+	case Onep = 1
+	case Twop = 2
+	
+	func reverse() -> MatchType {
+		switch self {
+		case .Onep:
+			return .Twop
+		case .Twop:
+			return .Onep
+		}
+	}
+}
+
+// unlock plan
+@objc enum UnlockPlan: Int {
+	case A = 1
+	case B = 2
+}

@@ -39,8 +39,6 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
     let transitionTime = 0.4
     /// The delay before the UI animates into view after displaying Colors.blue.
     let transitionDelay = 0.1
-    /// Whether or not the view controller should dismiss itself directly after updating values, instead of tranistioning to permissions
-    var shouldDismissAfterEntry = false
     
     /// The currently selected gender. When set, the gender buttons displayed will update.
     var selectedGender: Gender? {
@@ -297,10 +295,11 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
         var attributes: [RealmUser.Attribute] = [
             .first_name(self.nameTextField.text),
             .snapchat_username(self.snapchatTextField.username),
+			.birth_date(self.datePicker.date),
             ]
-        
-        self.selectedGender.then { attributes.append(.gender($0.rawValue)) }
-        attributes.append(.birth_date(self.datePicker.date as NSDate))
+        self.selectedGender.then {
+			attributes.append(.gender($0.rawValue))
+		}
         
         currentUser.update(attributes: attributes) { (error) in
             guard error == nil else {
@@ -315,27 +314,6 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
                 }), animated: true, completion: nil)
                 return
             }
-			var userProperty = [String: Any]()
-			
-            currentUser.first_name.then {
-				userProperty["first_name"] = $0
-			}
-
-            currentUser.snapchat_username.then {
-				self.snapchatTextField.username = $0
-			}
-
-            currentUser.user_id.then {
-				userProperty["user_id"] = $0
-			}
-
-            currentUser.birth_date.then {
-				userProperty["birth_date"] = $0
-			}
-
-            currentUser.gender.then {
-				userProperty["gender"] = $0
-			}
 			
             self.nextVC()
         }
@@ -369,12 +347,6 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
      Transitions to the next VC or dismisses depending on context.
      */
     private func nextVC() {
-        
-        guard self.shouldDismissAfterEntry == false else {
-            self.dismiss(animated: false, completion: nil)
-            return
-        }
-        
         self.nextButton.layer.opacity = 0
         
         // Dismiss picker
@@ -393,7 +365,7 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
         // 0.7 seconds refers to the delay for content to move to the side before allowing the next view controller to appear without animation (but appear smooth)
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + (Double(0.7))) {
             if Achievements.shared.grantedPermissionsV2 {
-                self.present(self.storyboard!.instantiateViewController(withIdentifier: "mainVC"), animated: false)
+                self.present(UIStoryboard.init(name: "Match", bundle: nil).instantiateInitialViewController()!, animated: false)
             } else {
                 let permissionVC = self.storyboard!.instantiateViewController(withIdentifier: "permVC")
                 self.present(permissionVC, animated: false)

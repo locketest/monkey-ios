@@ -19,7 +19,7 @@ class InstagramAuthViewController: MonkeyViewController, UIWebViewDelegate {
     var indicator: UIActivityIndicatorView!
     var webURL: URL?
     var authDelegate: InstagramAuthDelegate?
-    
+
     func isIphoneX() -> Bool {
         return Device() == Device.iPhoneX
     }
@@ -36,7 +36,7 @@ class InstagramAuthViewController: MonkeyViewController, UIWebViewDelegate {
             self.webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(64,0,0,0)
             self.webView.scrollView.contentInset = UIEdgeInsetsMake(64,0,0,0)
         }
-        
+
         self.view.addSubview(self.webView)
         if #available(iOS 11.0, *) {
             self.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.never
@@ -52,28 +52,28 @@ class InstagramAuthViewController: MonkeyViewController, UIWebViewDelegate {
         }
         self.title = "Instagram"
         let doneBtn = UIBarButtonItem.init(title: "🐒Complete", style: UIBarButtonItemStyle.done, target: self, action: #selector(authenticationFailure))
-        
+
         doneBtn.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.init(red: 100.0/255.0, green: 74.0/255.0, blue: 241.0/255.0, alpha: 1.0)], for: UIControlState.normal)
         self.navigationItem.rightBarButtonItem = doneBtn
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         self.indicator.stopAnimating()
         self.webView.stopLoading()
     }
      func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-      
+
         if let url = request.url{
             if (url.absoluteString.hasPrefix("monkey://instagram-login?code=")){
                 self.authenticationSuccess(code: url.absoluteString.replacingFirstOccurrence(of: "monkey://instagram-login?code=", withString: ""))
             }else if url.absoluteString == "https://www.instagram.com/"{
-                if self.webURL != nil{
+                if self.webURL != nil {
                     self.webView.loadRequest(URLRequest.init(url:self.webURL!))
                 }
             }
         }
-        
+
         return true
     }
     func authenticationSuccess(code:String){
@@ -91,5 +91,5 @@ class InstagramAuthViewController: MonkeyViewController, UIWebViewDelegate {
      func webViewDidFinishLoad(_ webView: UIWebView) {
         self.indicator.stopAnimating()
     }
-    
+
 }

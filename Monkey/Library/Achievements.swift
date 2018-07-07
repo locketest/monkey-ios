@@ -450,17 +450,6 @@ class Achievements {
 			return matchMode
 		}
 	}
-	var textModeTestPlan: RemoteConfigManager.TextChatTestPlan {
-		set {
-			defaults.set(newValue.rawValue, forKey: "MonkeyTextModeTestPlan")
-			defaults.synchronize()
-		}
-		get {
-			let testPlanRawValue = defaults.string(forKey: "MonkeyTextModeTestPlan")
-			let testPlan = RemoteConfigManager.TextChatTestPlan.init(rawPlan: testPlanRawValue)
-			return testPlan
-		}
-	}
     var closeAcceptButton: Bool {
         set {
             defaults.set(newValue, forKey: "MonkeyCloseAcceptButton")

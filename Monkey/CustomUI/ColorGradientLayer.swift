@@ -1,5 +1,5 @@
 //
-//  BackgroundColorGradientLayer.swift
+//  ColorGradientLayer.swift
 //  Monkey
 //
 //  Created by Isaiah Turner on 6/22/17.
@@ -15,8 +15,23 @@ import Foundation
     override class var layerClass: AnyClass {
         return CAGradientLayer.self
     }
-    
-    override func layoutSubviews() {
-        (layer as! CAGradientLayer).colors = [topColor.cgColor, bottomColor.cgColor]
-    }
+	
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+		self.configureApperance()
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
+		self.configureApperance()
+	}
+	
+//	override func awakeFromNib() {
+//		super.awakeFromNib()
+//		self.configureApperance()
+//	}
+	
+	private func configureApperance() {
+		(layer as! CAGradientLayer).colors = [topColor.cgColor, bottomColor.cgColor]
+	}
 }

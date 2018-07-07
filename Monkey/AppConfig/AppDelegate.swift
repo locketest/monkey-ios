@@ -8,10 +8,10 @@
 //
 
 import UIKit
+
 import Fabric
-import RealmSwift
-import Realm
 import Crashlytics
+
 import Firebase
 import FBSDKCoreKit
 import FBNotifications
@@ -30,27 +30,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			Achievements.shared.grantedPermissionsV2 = true
 			Achievements.shared.promptedNotifications = true
 		}
+		
+		if let options = launchOptions, let url = options[UIApplicationLaunchOptionsKey.url] as? URL{
+			self.openWithDeeplinkURL(url: url.absoluteString)
+		}
+		application.applicationIconBadgeNumber = 0
 
 		FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 		FirebaseApp.configure()
 		Fabric.with([Crashlytics.self])
 		RemoteConfigManager.shared.fetchLatestConfig()
 		AnalyticsCenter.logLaunchApp()
-
-        if let options = launchOptions, let url = options[UIApplicationLaunchOptionsKey.url] as? URL{
-            self.openWithDeeplinkURL(url: url.absoluteString)
-        }
-
-		application.applicationIconBadgeNumber = 0
 		self.checkIfAppUpdated()
 
 		return true
 	}
 
 	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
-            self.openWithDeeplinkURL(url: userActivity.webpageURL?.absoluteString)
-        }
+		self.openWithDeeplinkURL(url: userActivity.webpageURL?.absoluteString)
 		return true
 	}
 
@@ -59,50 +56,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-	func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-		return handleOpen(url: url, options:options)
-	}
-
 	var userEnteredAt : Date?
-
 	func applicationWillResignActive(_ application: UIApplication) {
 		if let secondsInSession = userEnteredAt?.timeIntervalSinceNow {
-			let lifetimeSeconds = APIController.shared.currentUser?.seconds_in_app.value ?? 0
+			let lifetimeSeconds = APIController.shared.currentUser?.seconds_in_app ?? 0
 			let newSecondsInApp = Int(-secondsInSession) + lifetimeSeconds
-			APIController.shared.currentUser?.update(attributes: [.seconds_in_app(newSecondsInApp)], completion: { (error: APIError?) in
-				print("Updated seconds in app: \(-secondsInSession) + \(lifetimeSeconds) = \(newSecondsInApp)")
+			
+			APIController.shared.currentUser?.update(attributes: [.seconds_in_app(newSecondsInApp)], completion: { (_) in
+				
 			})
 		}
-		userEnteredAt = nil
+		self.userEnteredAt = nil
 	}
 
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		FBSDKAppEvents.activateApp()
 
-		userEnteredAt = Date()
-	}
-
-	func applicationDidEnterBackground(_ application: UIApplication) {
-
+		self.userEnteredAt = Date()
 	}
 
 	func applicationWillEnterForeground(_ application: UIApplication) {
 		application.applicationIconBadgeNumber = 0
-		
-		if UserDefaults.standard.bool(forKey: GoToSettingTag) {
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: GoToSettingTag), object:nil)
-		}
-	}
-
-	func applicationWillTerminate(_ application: UIApplication) {
-
-	}
-
-	func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
-		UserDefaults.standard.set(notificationSettings.types.contains(.alert), forKey: "apns_alert")
-		UserDefaults.standard.set(notificationSettings.types.contains(.badge), forKey: "apns_badge")
-		UserDefaults.standard.set(notificationSettings.types.contains(.sound), forKey: "apns_sound")
-		Apns.update(callback: nil)
 	}
 
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -115,20 +89,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 
 	// receive remote notification
-	// e: emoji for in app notification
-	// t: text for in app emoji notifcation (optional - alert used by default)
-	// a: weather the url provided should be opened even if the app is already open
-	// u: the url to open
-	// i: how many seconds the notification should be shown for
-	// n: notification type
-	// s: Sound (raw value)
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
 		self.logNotificationClick(userInfo: userInfo)
 		FBSDKAppEvents.logPushNotificationOpen(userInfo)
-        self.handleNotification(application: application, userInfo: userInfo)
 	}
+	
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-
 		self.logNotificationClick(userInfo: userInfo)
 		FBSDKAppEvents.logPushNotificationOpen(userInfo)
 		FBNotificationsManager.shared().presentPushCard(forRemoteNotificationPayload: userInfo, from: nil) { (viewController, error) in
@@ -138,15 +104,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				completionHandler(.newData)
 			}
         }
-
-        self.handleRemoteNotificationFunc(userInfo: userInfo, application: application)
-    }
-
-    func handleRemoteNotificationFunc(userInfo: [AnyHashable : Any], application: UIApplication) {
-		if let notiInfoData = userInfo["data"] as? [String: Any], let link = notiInfoData["link"] as? String, link.contains("banana_recap_popup") {
-			UserDefaults.standard.setValue(link, forKey: KillAppBananaNotificationTag)
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object:link)
-		}
     }
 
 	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
@@ -155,173 +112,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		completionHandler()
 	}
 
-	// local notification
-	func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-		handleNotification(application: application, userInfo: notification.userInfo ?? [:])
-	}
-	func handleNotification(application: UIApplication, userInfo:[AnyHashable : Any]) {
-		let notificationUserInfo = NotificationUserInfo(userInfo: userInfo)
-
-		if let badgeNumber = notificationUserInfo.aps?["badge"] as? Int {
-			application.applicationIconBadgeNumber = badgeNumber
-		}
-
-		guard application.applicationState != .active else {
-			return
-		}
-
-		// 如果是 emoji
-		if let text = userInfo["t"] as? String ?? notificationUserInfo.aps?["alert"] as? String, let emoji = notificationUserInfo.emoji {
-			var emojiNotificationUserInfo: [String: Any] = [
-				"text": text,
-				"emoji": emoji,
-				"type": NotificationType(rawValue: notificationUserInfo.notificationType ?? 0) ?? NotificationType.default,
-				"urls": notificationUserInfo.urls ?? [String]()
-			]
-			if let soundRawValue = notificationUserInfo.sound {
-				if let sound = Sound(rawValue: soundRawValue) {
-					emojiNotificationUserInfo["sound"] = sound
-				}
-			}
-			if let timeout = notificationUserInfo.displayTimeout?.doubleValue {
-				emojiNotificationUserInfo["timeout"] = timeout
-			}
-
-			NotificationCenter.default.post(name: .emojiNotification, object: nil, userInfo: emojiNotificationUserInfo)
-		}
-
-		if (notificationUserInfo.alwaysOpenURL == 1 || application.applicationState != UIApplicationState.active), let urls = notificationUserInfo.urls {
-			self.openNotificationURLs(urls: urls)
-		}
-	}
-
-	//
-	func logNotificationClick(userInfo: [AnyHashable: Any]) {
+	// log notification click
+	private func logNotificationClick(userInfo: [AnyHashable: Any]) {
 		let notificationUserInfo = NotificationUserInfo(userInfo: userInfo)
 		AnalyticsCenter.log(withEvent: .notifyClick, andParameter: ["source": notificationUserInfo.source])
-	}
-
-	// will open first URL possible
-	func openNotificationURLs(urls: [String]) {
-		for urlString in urls {
-			if let url = URL(string: urlString) {
-				if UIApplication.shared.canOpenURL(url) {
-					DispatchQueue.main.async() {
-						if url.scheme == "monkey" {
-							let _ = self.handleOpen(url: url)
-							return
-						}
-						UIApplication.shared.openURL(url)
-					}
-					return
-				}
-			}
+		
+		// banana
+		if notificationUserInfo.link?.contains("banana_recap_popup") == true {
+			UserDefaults.standard.setValue(link, forKey: KillAppBananaNotificationTag)
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object:link)
 		}
 	}
 
-	@discardableResult func handleOpen(url: URL, options:[UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-		if var topController = UIApplication.shared.keyWindow?.rootViewController {
-			let components = url.pathComponents
-			let destination = LinkDestination(rawValue: url.host ?? "") ?? .home
-			let specifier:String? = components.count > 1 ? components[1] : nil
-			var parameters:[AnyHashable:Any] = [:]
-			let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL:false)
-
-			if let items = urlComponents?.queryItems {
-				for item in items {
-					guard let value:String = item.value else {
-						continue
-					}
-
-					parameters[item.name] = value
-				}
-			}
-
-			let deepLink = DeepLink(destination: destination, specifier: specifier, parameters: parameters)
-
-			if deepLink.destination == .authorize {
-				FBSDKApplicationDelegate.sharedInstance().application(UIApplication.shared, open: url, sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String, annotation: options[UIApplicationOpenURLOptionsKey.annotation])
-				return true
-			}
-
-			if let callId = parameters["chat_id"] as? String  {
-				IncomingCallManager.shared.skipCallIds.append(callId)
-			}
-
-			while let presentedViewController = topController.presentedViewController {
-				topController = presentedViewController
-			}
-
-			// for consistent navigations we're going to dismiss VC's above mainVC (for handling backgrounded); cold launch will already be handled above
-			while let presentingViewController = topController.presentingViewController { // finds the mainVC on the stack and dismisses all VC's above it
-				if presentingViewController is AuthViewController { // corner case, backgrounded on mainVC so nothing to dismiss
-					self.handleNavigationFrom(topController: topController, withDeepLink: deepLink)
-					return true
-				}
-
-				if presentingViewController is MainViewController {
-
-					// according to (https://stackoverflow.com/questions/2944191/iphone-dismiss-multiple-viewcontrollers) dismissing a VC also dismisses all of its children so this should always work no matter how deep we get in future
-					topController.dismiss(animated: true, completion: {
-						DispatchQueue.main.async {
-							self.handleNavigationFrom(topController: presentingViewController, withDeepLink: deepLink)
-						}
-					})
-					return true
-				}
-				topController = presentingViewController
-			}
-			return false
-		}
-		return false
-	}
-
-	func handleNavigationFrom(topController:UIViewController, withDeepLink:DeepLink) {
-		let destination = withDeepLink.destination
-		let specifier = withDeepLink.specifier
-		let options = withDeepLink.parameters
-
-		// no navigation, post instagram login
-		guard destination != .instagram else {
-			NotificationCenter.default.post(name: .instagramLoginNotification, object: options)
-			return
-		}
-
-		guard let mainVC = topController as? MainViewController else {
-			print("handleOpen method in AppDelegate does not work as expected. Plz debug")
-			return
-		}
-
-		var viewControllerToPresent = mainVC.swipableViewControllerToPresentOnLeft
-
-		switch destination {
-		case .messages, .chat:
-			viewControllerToPresent = mainVC.swipableViewControllerToPresentOnLeft
-
-			if let friendsViewController = viewControllerToPresent as? FriendsViewController {
-				friendsViewController.initialConversation = specifier
-				friendsViewController.initialConversationOptions = options
-			}
-		case .trees:
-			viewControllerToPresent = mainVC.swipableViewControllerToPresentOnRight
-		case .settings:
-			viewControllerToPresent = mainVC.swipableViewControllerToPresentOnBottom
-		case .login:
-			// pass login to authvc so that we can use code on view controller
-			NotificationCenter.default.post(name: .loginNotification, object: withDeepLink.parameters)
-			return
-		default:
-			break
-		}
-
-		guard let toPresent = viewControllerToPresent else {
-			return
-		}
-
-        mainVC.present(toPresent, animated: true, completion: nil)
-	}
-
-	func checkIfAppUpdated() {
+	private func checkIfAppUpdated() {
 		let lasVer = UserDefaults.standard.string(forKey: "kLastAppVersion")
 		let newVer = Environment.appVersion
 		if lasVer != newVer {
@@ -331,113 +134,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 
-	func openWithDeeplinkURL(url:String?) {
-		if let urlStr = url,
-			let urlCom = NSURLComponents.init(string: urlStr){
+	private func openWithDeeplinkURL(url: String?) {
+		if let urlStr = url, let urlCom = NSURLComponents.init(string: urlStr) {
 			let queryDict = urlCom.queryDict()
 
 			if let urlobj = URL.init(string: urlStr) {
 				Adjust.appWillOpen(urlobj)
 			}
 
-			if (urlCom.scheme == "monkey" || urlCom.host == "join.monkey.cool"),
-				let sourceStr = queryDict["source"] ,
-				sourceStr.count != 0 {
+			if (urlCom.scheme == "monkey" || urlCom.host?.contains("monkey.cool") == true), let sourceStr = queryDict["source"], sourceStr.isEmpty == false {
 				Achievements.shared.deeplink_source = sourceStr
 			}
 		}
 	}
 }
 
-extension AppDelegate: MessagingDelegate {
-	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-
-	}
-
-	func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
-
-	}
-}
-
-class NotificationUserInfo {
-	private let userInfo: [AnyHashable: Any]
-	init(userInfo: [AnyHashable: Any]) {
-		self.userInfo = userInfo
-	}
-	var aps: [AnyHashable: Any]? {
-		return userInfo["aps"] as? [AnyHashable: Any]
-	}
-	var attachData: [AnyHashable: Any]? {
-		var attachInfo = userInfo["data"] ?? aps?["data"]
-
-		if attachInfo != nil, let attachString: String = attachInfo as? String, let attachData = attachString.data(using: .utf8) {
-
-			let convertInfo = try? JSONSerialization.jsonObject(with: attachData, options: JSONSerialization.ReadingOptions.mutableContainers)
-			if let convertDic = convertInfo, convertDic is [String: String] {
-				attachInfo = convertDic
-			}
-		}
-		return attachInfo as? [AnyHashable: Any]
-	}
-	var emoji: String? {
-		return userInfo["e"] as? String
-	}
-	var inAppText: String? {
-		return userInfo["t"] as? String
-	}
-	var alwaysOpenURL: Int? {
-		return userInfo["a"] as? Int
-	}
-	var urls: [String]? {
-		return userInfo["u"] as? [String]
-	}
-	var displayTimeout: NSNumber? {
-		return userInfo["i"] as? NSNumber
-	}
-	var notificationType: Int? {
-		return userInfo["n"] as? Int
-	}
-	var sound: Int? {
-		return userInfo["s"] as? Int
-	}
-	var source: String {
-		return userInfo["src"] as? String ?? attachData?["source"] as? String ?? "other"
-	}
-}
-
-/// Enumeration for string representation of possible view controllers to present from an APNS notification
-enum LinkDestination: String {
-	case messages = "messages"
-	case home = "home"
-	case chat = "chat"
-	case settings = "settings"
-	case trees = "trees"
-	case instagram = "instagram-login"
-	case login = "login"
-	case authorize = "authorize"
-}
-
-/// Structure for deep link. Destination = navigation, specifier = secondary (relationship etc), parameters = additional components that are not necessarily navigation (incoming call, etc)
-struct DeepLink {
-	var destination:LinkDestination
-	var specifier:String?
-	var parameters:[AnyHashable:Any]?
-
-	init(destination:LinkDestination, specifier:String?, parameters:[AnyHashable:Any]?) {
-		self.destination = destination
-		self.specifier = specifier
-		self.parameters = parameters
-	}
-}
-
-enum NotificationType: Int {
-	case `default` = 0
-	case onboardingAcceptReminder = 1
-	case onboardingSkippedReminder = 2
-	case onboardingAddMinuteReminder = 3
-	case onboardingMinuteMatchReminder = 4
-	// case onboardingAddSnapchatReminder = 5
-	case onboardingSnapchatMatchReminder = 6
-	case inCall = 7 // this type is only show in calls and dismissed at the end of a call
-	case newMessage = 8 // this type is only show in calls and dismissed at the end of a call
-}

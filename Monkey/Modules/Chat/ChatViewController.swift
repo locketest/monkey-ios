@@ -135,7 +135,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.chatTableView.scrollToBottom(animated: true)
 
         if !self.isMonkeyKingBool! {
-            if (self.viewModel.friendship?.user_is_typing.value ?? false) == true {
+            if (self.viewModel.friendship?.user_is_typing ?? false) == true {
                 self.profileActiveLabel.text = "typing..."
             } else if self.callButton.isSpinning {
                 self.profileActiveLabel.text = "connecting..."

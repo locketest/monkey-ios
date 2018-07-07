@@ -24,7 +24,7 @@ class ChannelsTableViewCell: UITableViewCell {
             self.titleLabel.text = channelName
             let subtitleText = { () -> String in
                 let subtitleTemplate = channel?.subtitle ?? ""
-                let usersOnline = channel?.users_online.value ?? 0
+                let usersOnline = channel?.users_online ?? 0
                 let usersOnlineNumberFormatter = NumberFormatter()
                 usersOnlineNumberFormatter.numberStyle = .decimal
                 return subtitleTemplate.replacingOccurrences(of: "{{users_online}}", with: usersOnlineNumberFormatter.string(from: usersOnline as NSNumber) ?? "")

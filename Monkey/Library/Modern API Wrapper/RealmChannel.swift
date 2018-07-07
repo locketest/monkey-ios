@@ -19,27 +19,35 @@ class RealmChannel: MonkeyModel {
 		return "channel_id"
 	}
     
-    dynamic var channel_id: String?
+    dynamic var channel_id: String!
     /// The channel title.
     dynamic var title: String?
     /// The channel subtitle such as "302 online now"
     dynamic var subtitle: String?
+	/// icon for this channel
+	dynamic var icon: String?
     /// text, gif, or drawing
     dynamic var emoji: String?
     /// How many people are online in the channel.
-    let users_online = RealmOptional<Int>()
+	dynamic var users_online: Int = 0
     /// How many people are online in the channel.
-    let is_active = RealmOptional<Bool>()
+	dynamic var is_active: Bool = false
 	/// did select this channel
-	let is_selected = RealmOptional<Bool>()
+	dynamic var is_selected: Bool = false
     /// Used to sort the channels.
-    dynamic var updated_at: NSDate?
+    dynamic var updated_at: Date?
     /// The date the channel was created.
-    dynamic var created_at: NSDate?
+    dynamic var created_at: Date?
 	
 	required convenience init?(map: Map) {
+		if map["id"].currentValue == nil {
+			return nil
+		}
 		self.init()
 	}
+}
+
+extension RealmChannel {
 	/**
 	Retrieve a set of items from the API and update/add that data to Realm.
 	
@@ -51,7 +59,7 @@ class RealmChannel: MonkeyModel {
 	*/
 	@discardableResult class func fetchAll<T: Object>(parameters: [String: Any] = [:], completion operationCompletionHandler: @escaping JSONAPIOperationCompletionHandlerWithFlag<T>) -> JSONAPIRequest? {
 		
-		return JSONAPIRequest(url: "\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/\(RealmChannel.requst_subfix)", parameters: parameters as Parameters, options: [
+		return JSONAPIRequest(url: RealmChannel.common_request_path, parameters: parameters as Parameters, options: [
 			.header("Authorization", UserManager.authorization),
 			]).addCompletionHandler({ result in
 				switch result {
@@ -73,10 +81,11 @@ class RealmChannel: MonkeyModel {
 						case .error(let error):
 							return operationCompletionHandler(.error(error),false)
 						case .success(let documentObjects):
-							operationCompletionHandler(.success(documentObjects as? [T] ?? [T]()),newChannelVersion)
+							operationCompletionHandler(.success(documentObjects as? [T] ?? [T]()), newChannelVersion)
 						}
 					}
 				}
 			})
 	}
 }
+

@@ -81,10 +81,6 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
         super.viewWillDisappear(animated)
 		
     }
-    
-    override func isSwipingDidChange() {
-        self.tableView.isScrollEnabled = !self.isSwiping
-    }
 	
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "channelCell", for: indexPath) as! ChannelsTableViewCell

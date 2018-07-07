@@ -103,36 +103,4 @@ class RemoteConfigManager {
 		let text_chat_mode = remoteConfig.configValue(forKey: "text_chat_mode").boolValue
 		return text_chat_mode;
 	}
-	var event_chat_mode: Bool {
-		let event_chat_mode = remoteConfig.configValue(forKey: "event_chat_mode").boolValue
-		return event_chat_mode;
-	}
-	
-	var text_chat_test: TextChatTestPlan {
-		let text_chat_test = remoteConfig.configValue(forKey: "text_chat_test").stringValue
-		return TextChatTestPlan.init(rawPlan: text_chat_test)
-	}
-	
-	enum TextChatTestPlan: String {
-		init(rawPlan: String?) {
-			switch rawPlan {
-			case "text_chat_test_A":
-				self = .text_chat_test_A
-			case "text_chat_test_B":
-				self = .text_chat_test_B
-			case "text_chat_test_C":
-				self = .text_chat_test_C
-			default:
-				self = .default
-			}
-		}
-		
-		// display and default off
-		case text_chat_test_A = "text_chat_test_A"
-		// display and default on
-		case text_chat_test_B = "text_chat_test_B"
-		// not display
-		case text_chat_test_C = "text_chat_test_C"
-		case `default` = "default"
-	}
 }

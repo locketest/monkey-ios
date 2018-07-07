@@ -35,10 +35,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     
     override func viewDidLoad() {        
         super.viewDidLoad()
-        
-        self.panGestureRecognizer.delegate = self
-        self.panGestureRecognizer.cancelsTouchesInView = false
-        
+		
         self.friendsTableView.delegate = self
         self.friendsTableView.dataSource = self
 		self.friendsTableView.rowHeight = 64.0
@@ -61,15 +58,6 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         self.callingFromViewDidLoad = false
     }
 
-    override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        // false so that swiping to side during longPress does not try to dismiss friendsVC (to go to mainVC) while instagramVC is presented
-        if gestureRecognizer == self.panGestureRecognizer && gestureRecognizer != self.longPressGestureRecognizer  {
-            return false
-        }
-        
-        return super.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -78,7 +66,6 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
 //		}
         
         // Do not allow user to return to chat they just swiped away from
-        self.swipableViewControllerToPresentOnLeft = nil
         self.checkDeepLink()
     }
     
@@ -109,7 +96,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         
         if let user = friendship.user {
             if user.isMonkeyKing() == false {
-                if friendship.user_is_typing.value == true {
+                if friendship.user_is_typing == true {
                     cell.descriptionLabel.text = "typing..."
                 } else {
                     cell.descriptionLabel?.text = self.viewModel.latestMessageForFriendship(friendship: friendship)
@@ -240,7 +227,6 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         if let chatId = self.initialConversationOptions?["chat_id"] as? String {
             chatViewController.acceptChat(chatId: chatId)
         }
-        self.swipableViewControllerToPresentOnLeft = chatViewController
         self.present(chatViewController, animated: true)
     }
     

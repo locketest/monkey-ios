@@ -165,7 +165,7 @@ extension CallViewController: CountingLabelDelegate {
                     self.addMinute()
                 }
             }))
-			let mainVC = self.presentingViewController as? MainViewController
+			let mainVC = self.presentingViewController as? OnepMatchController
 			mainVC?.showAlert(alert: explainAddTimeAlert)
             return
         }

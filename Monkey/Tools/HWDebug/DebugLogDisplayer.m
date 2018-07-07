@@ -16,37 +16,28 @@
 
 @property (nonatomic, strong, readonly) UIButton *debugSwitch;
 
-- (void)debugMode_setRootViewController:(UIViewController *)rootViewController;
-
 - (void)debugMode_makeKeyAndVisible;
-
-- (void)debugMode_layoutSubviews;
+- (void)debugMode_layoutSubViews;
 
 @end
 
 @implementation UIWindow (DebugMode)
 
 + (void)load {
-	[self swizzleInstanceMethod:@selector(setRootViewController:) with:@selector(debugMode_setRootViewController:)];
 	[self swizzleInstanceMethod:@selector(makeKeyAndVisible) with:@selector(debugMode_makeKeyAndVisible)];
-	[self swizzleInstanceMethod:@selector(layoutSubviews) with:@selector(debugMode_layoutSubviews)];
-}
-
-- (void)debugMode_setRootViewController:(UIViewController *)rootViewController {
-	[self debugMode_setRootViewController:rootViewController];
-	if (self.isKeyWindow) {
-		[self bringSubviewToFront:[self debugSwitch]];
-	}
+	[self swizzleInstanceMethod:@selector(layoutSubviews) with:@selector(debugMode_layoutSubViews)];
 }
 
 - (void)debugMode_makeKeyAndVisible {
 	[self debugMode_makeKeyAndVisible];
-	[self addSubview:[self debugSwitch]];
+	if (self.keyWindow) {
+		[self addSubview:[self debugSwitch]];
+	}
 }
 
-- (void)debugMode_layoutSubviews {
-	[self debugMode_layoutSubviews];
-	if (self.isKeyWindow) {
+- (void)debugMode_layoutSubViews {
+	[self debugMode_layoutSubViews];
+	if (self.keyWindow) {
 		[self bringSubviewToFront:[self debugSwitch]];
 	}
 }
@@ -67,6 +58,8 @@
 - (void)showDebugCollection {
 	DebugLogDisplayer *debugDisplayer = [[DebugLogDisplayer alloc] initWithFrame:self.bounds];
 	debugDisplayer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	debugDisplayer.layer.zPosition = UIWindowLevelAlert;
+	self.debugSwitch.hidden = YES;
 	[self addSubview:debugDisplayer];
 }
 
@@ -158,6 +151,7 @@ static NSString *kHWDebugLogDisplayerTableViewCellID = @"kHWDebugLogDisplayerTab
 }
 
 - (void)hideself {
+	self.window.debugSwitch.hidden = false;
 	LogManager.shared.logObserver = nil;
 	[self removeFromSuperview];
 }
@@ -210,7 +204,11 @@ static NSString *kHWDebugLogDisplayerTableViewCellID = @"kHWDebugLogDisplayerTab
 	
 	MonkeyLog *thisLog = LogManager.shared.logCollection[indexPath.row];
 	NSString *tmpStr = [[[[thisLog.info description] stringByReplacingOccurrencesOfString:@"\\n" withString:@"\n"] stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""] stringByReplacingOccurrencesOfString:@"\\\\U" withString:@"\\U"];
-	self.detailView.text = [DebugLogDisplayer replaceUnicode:tmpStr];
+	if ([tmpStr length]) {
+		self.detailView.text = [DebugLogDisplayer replaceUnicode:tmpStr];
+	}else {
+		self.detailView.text = nil;
+	}
 }
 
 #pragma mark - private func

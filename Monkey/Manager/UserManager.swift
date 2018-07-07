@@ -50,6 +50,12 @@ class UserManager {
 		return threadSafeRealm?.object(ofType: RealmExperiment.self, forPrimaryKey: Environment.appVersion)
 	}
 	
+	var currentMatchInfo: RealmMatchInfo? {
+		let threadSafeRealm = try? Realm()
+		// Experiement IDs directly corolate to app versions
+		return threadSafeRealm?.object(ofType: RealmMatchInfo.self, forPrimaryKey: RealmMatchInfo.type)
+	}
+	
 	// current login action
 	var loginMethod: LoginMethod? = nil
 	
@@ -140,6 +146,9 @@ class UserManager {
 	}
 	
 	private func notifyUserLogin() {
+		// some config
+		Configs.signAsLogin()
+		
 		// set user_id for some analytics
 		AnalyticsCenter.loginAccount()
 		

@@ -24,6 +24,7 @@ import ObjectMapper
 	// friend 发生改变
 	@objc optional func didReceiveFriendAdded()
 	@objc optional func didReceiveFriendRemoved()
+	@objc optional func didReceiveFriendInvite()
 	
 	// 收到对方的 video call
 	@objc optional func didReceiveVideoCall(call: VideoCallModel)
@@ -45,6 +46,7 @@ class MessageCenter {
 	
 	static let shared = MessageCenter()
 	private init() {}
+	
 	// 消息回调处理
 	private let safe_queue = DispatchQueue(label: "com.monkey.cool.SafeMessageObserverQueue", attributes: .concurrent)
 	private var observers: WeakSet<MessageObserver> = WeakSet<MessageObserver>()
@@ -233,6 +235,19 @@ class MessageCenter {
 		
 		switch channel {
 		case .match_outroom:
+			if let attribute = message["attributes"] as? [String: Any], let action = attribute["match_action"] as? String, let send_time = attribute["send_time"] as? TimeInterval, send_time != 0 {
+				let currentTime = Date.init().timeIntervalSince1970
+				let duration = Int(ceil(currentTime - send_time))
+				var session = "7+"
+				if duration < 8 {
+					session = "\(duration)"
+				}
+				
+				AnalyticsCenter.log(withEvent: .matchReceiveSocket, andParameter: [
+					"session": session,
+					"receive_action": action,
+					])
+			}
 //			selector = #selector(MessageObserver.didReceiveRoomMessage(action:in:))
 			fallthrough
 		case .call_outroom:

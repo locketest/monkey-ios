@@ -16,11 +16,12 @@ import RealmSwift
 
 class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITableViewDataSource, MFMessageComposeViewControllerDelegate, ProfilePhotoButtonViewDelegate, UITextFieldDelegate, InstagramAuthDelegate {
 
+	@IBOutlet weak var settingArrow: UIView!
 	@IBOutlet var containerView: MakeUIViewGreatAgain!
 	@IBOutlet weak var stuffView: MakeUIViewGreatAgain!
 
     @IBOutlet weak var remindPointView: UIView!
-    
+
     @IBOutlet weak var scrollViewHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var contentScrollview: UIScrollView!
 	@IBOutlet weak var editButtons: UIButton!
@@ -55,19 +56,23 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
     ///end edit Profile UI
 
     /// Returns the content size of the view
-    override var contentHeight: CGFloat {
+	var contentHeight: CGFloat {
         if self.keyBoardWasShow {
             return UIScreen.main.bounds.size.height
         }else {
             return ScreenHeight - self.contentScrollview.frame.minY
         }
     }
+	override var transitionContent: UIView {
+		return self.contentScrollview
+	}
 
     var headImageInited = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+		self.settingArrow.hero.modifiers = [.timingFunction(.linear)]
         self.keyBoardWasShow = false
         self.tableView.dataSource = self
         self.tableView.delegate = self
@@ -79,13 +84,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         profilePhoto.presentingViewController = self
         profilePhoto.lightPlaceholderTheme = true
 
-        NotificationCenter.default.addObserver(self, selector: #selector(instagramNotificationReceived(_:)), name: .instagramLoginNotification, object: nil)
-
         if let firstName = APIController.shared.currentUser?.first_name {
             self.firstName.text = firstName
         }
 
-        if let secondsInApp = APIController.shared.currentUser?.seconds_in_app.value {
+        if let secondsInApp = UserManager.shared.currentUser?.seconds_in_app {
             var localizedTime = ""
             if secondsInApp < 60 {
                 localizedTime = "1 min"
@@ -101,11 +104,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
 		let screenWidth: CGFloat = UIScreen.main.bounds.size.width
 		let screenHeight: CGFloat = UIScreen.main.bounds.size.height
-		
+
 		let containerY: CGFloat = self.containerView.frame.origin.y
 		let containerWidth: CGFloat = self.containerView.frame.size.width
 		let containerHeight: CGFloat = self.containerView.frame.size.height
-		
+
 		let stuffHeight: CGFloat = self.stuffView.frame.size.height
         self.editProfileView = UIView.init(frame: CGRect(x: screenWidth, y: containerY, width: containerWidth, height: containerHeight+stuffHeight))
         self.editProfileView.backgroundColor = UIColor.clear
@@ -124,10 +127,10 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         editProfileTitleLab.attributedText = attributedString
         self.editProfileView.addSubview(editProfileTitleLab)
 
-		
+
 		let editHeight: CGFloat = self.editProfileView.frame.size.height
 		let editWidth: CGFloat = self.editProfileView.frame.size.width
-		
+
         let blurEffect = UIBlurEffect(style: .dark)
         //创建一个承载模糊效果的视图
         let blurView = UIVisualEffectView(effect: blurEffect)
@@ -152,18 +155,17 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
         let tapGesture = UITapGestureRecognizer(target: self,action:#selector(handleTapGesture))
         self.profileView.addGestureRecognizer(tapGesture)
-        
+
         self.handleYelloPointStateFunc()
     }
-    
+
     func handleYelloPointStateFunc() {
         if APIController.shared.currentUser?.profile_photo_url == nil {
             self.remindPointView.isHidden = false
         }
     }
-    
-    func handleTapGesture(){
-		self.panningTowardsSide = .top
+
+    func handleTapGesture() {
 		self.dismiss(animated: true, completion: nil)
     }
 
@@ -178,7 +180,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		let screenWidth: CGFloat = UIScreen.main.bounds.size.width
 		let screenHeight: CGFloat = UIScreen.main.bounds.size.height
         self.pickerContainerView.frame = CGRect(x: 0.0, y: screenHeight, width: screenWidth, height: 220.0);
-		
+
 		let contentY: CGFloat = self.contentScrollview.frame.origin.y
 		let contentHeight: CGFloat = self.contentScrollview.frame.size.height
 		let profileHeight: CGFloat = self.profileView.frame.size.height
@@ -204,7 +206,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.resetEditProfileFrame()
         if !headImageInited {
             headImageInited = true
-			
+
 			var imageName = "ProfileImageDefaultMale"
 			if APIController.shared.currentUser?.gender == Gender.female.rawValue {
 				imageName = "ProfileImageDefaultFemale"
@@ -212,7 +214,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			if let placeholder = UIImage.init(named: imageName) {
 				self.profilePhoto.setProfile(image: placeholder)
 			}
-			
+
             if let photoURL = APIController.shared.currentUser?.profile_photo_upload_url {
                 _ = ImageCache.shared.load(url: photoURL, callback: {[weak self] (result) in
                     switch result {
@@ -236,12 +238,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
 		self.removeKeyboardListenFunc()
 	}
-    
+
     func addKeyboardListenFunc() {
         NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(self.keyBoardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
     }
-    
+
     func removeKeyboardListenFunc() {
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
@@ -296,15 +298,15 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
     internal func showAlert(alert: UIAlertController) {
         self.present(alert, animated: true, completion: nil)
     }
-	
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if self.editStatus {
-            self.editCancelButtonClick()
-            self.editStatus = false
-        }
 
-        self.view.endEditing(true)
-    }
+//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        if self.editStatus {
+//            self.editCancelButtonClick()
+//            self.editStatus = false
+//        }
+//
+//        self.view.endEditing(true)
+//    }
 
     func profilePhotoButtonView(_ profilePhotoButtonView: ProfilePhotoButtonView, selectedImage: UIImage) {
         self.profilePhoto.profileImage = selectedImage
@@ -314,16 +316,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         }
     }
 
-    override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        // false so that swiping to side during longPress does not try to dismiss friendsVC (to go to mainVC) while instagramVC is presented
-        if gestureRecognizer == self.panGestureRecognizer {
-            return false
-        }
-
-        return super.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
-    }
-	
-    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return !self.editStatus
     }
 
@@ -378,24 +371,24 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		guard let currentUser = APIController.shared.currentUser else {
 			return
 		}
-		
+
 		let alpha:Bool = self.saveBtn.alpha == 1.0
 		if !alpha{
 			self.editCancelButtonClick()
 			return
 		}
-		
+
 		var attributes: [RealmUser.Attribute] = []
 		var editFirstName: Bool = false
 		var editBirthDay: Bool = false
-		
+
 		var event_info = ""
 		if let newFirstName = self.firstNameField.text, newFirstName != currentUser.first_name {
 			attributes.append(.first_name(newFirstName))
 			editFirstName = true
 			event_info.append("name=\(newFirstName)")
 		}
-		
+
 		if let newBirthdayStr = self.birthdayField.text {
 			if let oldBirthday = currentUser.birth_date {
 				let dateFormatter = DateFormatter()
@@ -403,31 +396,31 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 				let oldBirthdayDate = Date.init(timeIntervalSince1970: oldBirthday.timeIntervalSince1970)
 				let oldBirthdayStr = dateFormatter.string(from: oldBirthdayDate)
 				if (newBirthdayStr != oldBirthdayStr) {
-					attributes.append(.birth_date(self.datePicker.date as NSDate))
+					attributes.append(.birth_date(self.datePicker.date))
 					editBirthDay = true
 					event_info.append("birth=\(newBirthdayStr)")
 				}
 			}
 		}
-		
+
 		if let newSnapchatName = self.snapChatUserName.text, newSnapchatName != currentUser.snapchat_username {
 			attributes.append(.snapchat_username(newSnapchatName))
 			event_info.append("snapchat=\(newSnapchatName)")
 		}
-		
+
 		if attributes.count > 0 {
 			saveBtn.isLoading = true
-			
+
 			let isAccountNew = UserManager.shared.loginMethod == .register
 			AnalyticsCenter.log(withEvent: .settingEditProfileClick, andParameter: [
 				"type": isAccountNew ? "new" : "old",
 				"info": event_info,
 				])
-			
+
 			currentUser.update(attributes: attributes) { (error) in
 				// 保存请求返回结果
 				self.saveBtn.isLoading = false
-				
+
 				guard error == nil else {
 					if error?.status == "400" {
 						return self.present(error!.toAlert(onOK: { (UIAlertAction) in
@@ -439,17 +432,17 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 					}), animated: true, completion: nil)
 					return
 				}
-				
+
 				// 保存成功
 				var userProperty = [String: Any]()
 				currentUser.first_name.then {
 					userProperty["first_name"] = $0
 				}
-				
+
 				currentUser.snapchat_username.then {
 					userProperty["snapchat_username"] = $0
 				}
-				
+
 				currentUser.birth_date.then {
 					userProperty["birth_date"] = $0
 				}
@@ -459,7 +452,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 						self.birthdayField.isUserInteractionEnabled = false
 						self.birthdayTipLab.text = ""
 					}
-					
+
 					if editFirstName {
 						self.firstNameField.isUserInteractionEnabled = false
 						self.firstName.text = currentUser.first_name
@@ -476,13 +469,14 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 	}
 
     @IBAction func editProfileTapped(_ sender: UIButton) {
+		self.mainViewController?.isSwipingEnabled = false
 		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
 			"type": "edit",
 			])
-		
+
 		let screenWidth = UIScreen.main.bounds.size.width
 		let screenHeight = UIScreen.main.bounds.size.height
-		
+
 		let contentY = self.contentScrollview.frame.origin.y
 		let containerY = self.containerView.frame.origin.y
 		let containerWidth = self.containerView.frame.size.width
@@ -491,7 +485,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		let currentWidth = self.view.frame.size.width
 		let editProfileX: CGFloat = self.editProfileView.frame.origin.x
 		let editProfileWidth: CGFloat = self.editProfileView.frame.size.width
-		
+
 		let  settingRect:CGRect = CGRect(x:-currentWidth,y:containerY,width:containerWidth,height:containerHeight);
 		sender.isUserInteractionEnabled = false
 		self.view.layoutIfNeeded()
@@ -509,7 +503,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			self.editStatus = false
 			self.contentScrollview.isScrollEnabled = true
 			UIView.animate(withDuration:0.35, animations: {
-				self.editProfileView.frame.origin.x = ScreenWidth
+				self.editProfileView.frame.origin.x = Environment.ScreenWidth
 				self.view.layoutIfNeeded()
 				self.containerView.frame.origin.x = 0
 				self.stuffView.frame.origin.x = 0
@@ -524,13 +518,13 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			if let currentUser:RealmUser = APIController.shared.currentUser{
 				self.firstNameField.text = currentUser.first_name
 				self.snapChatUserName.text = currentUser.snapchat_username;
-				
+
 				if let birthday = currentUser.birth_date {
 					self.datePicker.date = Date.init(timeIntervalSince1970: birthday.timeIntervalSince1970)
 					self.birthdayField.text = self.datePicker.formattedDate
 				}
 			}
-			
+
 			print("tap \(editprofileRect)")
 			UIView.animate(withDuration:0.35, animations: {
 				self.view.layoutIfNeeded()
@@ -623,7 +617,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
 			"type": "invite_friends",
 			])
-		
+
 		self.showInviteFriendsViewController()
     }
 
@@ -632,30 +626,30 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			"type": "link_Ins",
 			])
 		AnalyticsCenter.log(event: .settingLinkInsClick)
-		
+
         if self.linkInstgramLabel.text == "📸 Link instagram" {
             self.linkInstagram()
         } else {
             self.unlinkInstagram()
         }
     }
-	
+
     func authInstagramSuccess(code: String) {
         self.refreshEditStatus()
         self.resetEditProfileFrame()
     }
-	
+
     func authInstagramFailure() {
 		AnalyticsCenter.log(withEvent: .settingLinkInsComplete, andParameter: [
 			"type": "false",
 			])
-		
+
 		self.refreshEditStatus()
 		self.resetEditProfileFrame()
     }
-	
+
     @IBAction func safetyClickFunc(_ sender: UIButton) {
-        
+
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIKit.UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
         }))
@@ -686,23 +680,23 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         }
         self.present(alertController, animated: true, completion: nil)
     }
-    
+
     @IBAction func signOutClickFunc(_ sender: UIButton) {
 		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
 			"type": "sign_out",
 			])
-		
+
 		let alertController = UIAlertController(title: "You sure you want to log out?", message: nil, preferredStyle: .actionSheet)
-		
+
 		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (cancelAlert) in
 			AnalyticsCenter.log(withEvent: .settingSignOutClick, andParameter: [
 				"type": "cancel",
 				])
 		}))
-		
+
 		alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: {
 			(UIAlertAction) in
-			
+
 			AnalyticsCenter.log(event: .signOut)
 			AnalyticsCenter.log(withEvent: .settingSignOutClick, andParameter: [
 				"type": "yes",
@@ -716,7 +710,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 //				Socket.shared.fetchCollection = false
 				UserDefaults.standard.removeObject(forKey: "user_id")
 				UserDefaults.standard.removeObject(forKey: "apns_token")
-				
+
 				let rootVC = self.view.window?.rootViewController
 				rootVC?.presentedViewController?.dismiss(animated: false, completion: {
 					DispatchQueue.main.async {
@@ -725,7 +719,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 				})
 			}
 		}))
-		
+
 		self.present(alertController, animated: true, completion: nil)
 	}
 
@@ -767,17 +761,17 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			}
 
 			cell.acceptSwitch.switchValueChanged = {
-				
+
 				if indexPath.row == 1 {
 					// auto accept
 					Achievements.shared.autoAcceptMatch = $0
-					
+
 					AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
 						"type": "auto_match",
 						])
 				}else {
 					Achievements.shared.nearbyMatch = $0
-					
+
 					AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
 						"type": "nearby",
 						])
@@ -797,7 +791,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         let remainingSpace = self.view.bounds.height - self.contentHeight
 
         if location.y < remainingSpace {
-            self.panningTowardsSide = .top
             self.dismiss(animated: true, completion: nil)
         }
     }
@@ -811,15 +804,15 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
 		let screenWidth: CGFloat = UIScreen.main.bounds.size.width
 		let screenHeight: CGFloat = UIScreen.main.bounds.size.height
-		
-        self.firstNameTipLab = UILabel.init(frame: CGRect(x:45.0,y:16.0+28.0,width:screenWidth-60.0,height:14.0))
+
+        self.firstNameTipLab = UILabel.init(frame: CGRect(x:45.0,y:44.0,width:screenWidth-60.0,height:14.0))
         self.firstNameTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.firstNameTipLab)
 
         //self.firstNameTipLab.text = "You can change your name once every 2 months"
         self.firstNameTipLab.textColor = UIColor.init(red: 1.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
 
-        let textFieldWidth:CGFloat = screenWidth-205.0-20.0
+        let textFieldWidth: CGFloat = screenWidth - 225.0
 
         self.firstNameField = UsernameTextField.init(frame: CGRect(x:205.0,y:0.0,width:textFieldWidth,height:64.0))
         self.firstNameField.textColor = UIColor.init(white: 1.0, alpha: 0.7)
@@ -836,11 +829,11 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         birthdayLab.textColor = UIColor.white
         self.editProfileContentView.addSubview(birthdayLab)
 
-        self.birthdayTipLab = UILabel.init(frame: CGRect(x:45.0,y:64.0+28.0+16.0,width:screenWidth-60.0,height:14.0))
+        self.birthdayTipLab = UILabel.init(frame: CGRect(x:45.0,y:108.0,width:screenWidth-60.0,height:14.0))
         self.birthdayTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.birthdayTipLab)
 
-        self.birthdayField = UITextField.init(frame: CGRect(x:45.0,y:64.0,width:screenWidth-45.0-20.0,height:64.0))
+        self.birthdayField = UITextField.init(frame: CGRect(x:45.0,y:64.0,width:screenWidth-65.0,height:64.0))
         self.birthdayField.textColor = UIColor.init(white: 1.0, alpha: 0.7)
         self.birthdayField.text = ""
         self.birthdayField.isUserInteractionEnabled = false
@@ -849,17 +842,17 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.birthdayField.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.birthdayField)
 
-        let snapchatLab:UILabel = UILabel.init(frame:CGRect(x:16.0,y:64.0*2.0,width:200.0,height:64.0))
+        let snapchatLab:UILabel = UILabel.init(frame:CGRect(x:16.0,y:128.0,width:200.0,height:64.0))
         snapchatLab.text = "👻 Snapchat :"
         snapchatLab.font = UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
         snapchatLab.textColor = UIColor.white
         self.editProfileContentView.addSubview(snapchatLab)
 
-        self.snchatTipLab = UILabel.init(frame: CGRect(x:45.0,y:64.0*2.0+28.0+16.0,width:screenWidth-60.0,height:14.0))
+        self.snchatTipLab = UILabel.init(frame: CGRect(x:45.0,y:172.0,width:screenWidth-60.0,height:14.0))
         self.snchatTipLab.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
         self.editProfileContentView.addSubview(self.snchatTipLab)
 
-        self.snapChatUserName = UsernameTextField.init(frame: CGRect(x:205.0,y:64.0*2.0,width:textFieldWidth,height:64.0))
+        self.snapChatUserName = UsernameTextField.init(frame: CGRect(x:205.0,y:128.0,width:textFieldWidth,height:64.0))
         self.snapChatUserName.textColor = UIColor.init(white: 1.0, alpha: 0.7)
         self.snapChatUserName.text = ""
         self.snapChatUserName.delegate = self
@@ -884,7 +877,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.cancelBtn.addTarget(self, action:#selector(editCancelButtonClick), for: .touchUpInside)
 
         self.saveBtn = BigYellowButton.init(frame: CGRect.zero)
-        self.saveBtn.frame = CGRect(x: space*2.0+width,y: top, width: width, height: 49.0)
+        self.saveBtn.frame = CGRect(x: space + space + width,y: top, width: width, height: 49.0)
         self.saveBtn.setTitle("Save", for: .normal)
         self.saveBtn.setTitleColor(UIColor.black, for: .normal)
         self.saveBtn.titleLabel?.font = UIFont.systemFont(ofSize: 17.0, weight:UIFontWeightMedium)
@@ -911,7 +904,8 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.cancelBtn.isHidden = true
         self.saveBtn.isHidden = true
     }
-    func editCancelButtonClick(){
+    func editCancelButtonClick() {
+		self.mainViewController?.isSwipingEnabled = true
         self.editStatus = false
         self.editBirthdayStatus = false
         self.view.endEditing(true)
@@ -933,14 +927,14 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
 		let screenWidth = UIScreen.main.bounds.size.width
 		let screenHeight = UIScreen.main.bounds.size.height
-		
+
 		let contentY = self.contentScrollview.frame.origin.y
 		let containerY = self.containerView.frame.origin.y
 		let containerWidth = self.containerView.frame.size.width
 		let containerHeight = self.containerView.frame.size.height
 		let profileHeight: CGFloat = self.profileView.frame.size.height
 		let currentWidth = self.view.frame.size.width
-		
+
         let  settingRect:CGRect = CGRect(x:-currentWidth,y:containerY,width:containerWidth,height:containerHeight);
         self.containerView.frame = settingRect
         self.stuffView.frame.origin.x = -currentWidth
@@ -1004,12 +998,12 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
             self.birthdayTipLab.sizeToFit()
             self.birthdayTipLab.textColor = UIColor.init(red: 255.0/255.0, green: 252.0/255.0, blue: 1.0/255.0, alpha: 1.0)
             self.view.endEditing(true)
-			
+
 			let screenHeight = UIScreen.main.bounds.size.height
 			let pickerHeight = self.pickerContainerView.frame.size.height
 			let pickerWidth = self.pickerContainerView.frame.size.width
 			let editWidth = self.editProfileView.frame.size.width
-			
+
             UIView.animate(
                 withDuration: 0.25,
                 delay: 0.0,
@@ -1099,7 +1093,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
         let editProfileHeight :CGFloat = 300.0
 		let editProfileStartPointY = UIScreen.main.bounds.size.height - deltaY - editProfileHeight-12.0
-		
+
         self.profileView.isHidden = true
         self.containerView.isHidden = true
         self.stuffView.isHidden = true
@@ -1125,7 +1119,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         }else{
            self.editProfileView.frame = CGRect(x:5,y:editProfileStartPointY,width:editWidth,height:editProfileHeight)
         }
-        self.pickerContainerView.frame.origin.y = ScreenHeight
+        self.pickerContainerView.frame.origin.y = Environment.ScreenHeight
     }
     func keyBoardWillHide(notification: Notification){
 
@@ -1138,13 +1132,13 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.profileView.isHidden = false
         self.containerView.isHidden = false
         self.stuffView.isHidden = false
-		
+
 		let screenHeight = UIScreen.main.bounds.size.height
 		let screenWidth = UIScreen.main.bounds.size.width
 		let contentY = self.contentScrollview.frame.origin.y
 		let profileHeight = self.profileView.frame.size.height
 		let editWidth = self.editProfileView.frame.size.width
-		
+
         self.pickerContainerView.frame = CGRect(x:0.0,y:screenHeight,width:screenWidth,height:220.0);
 
         self.editProfileView.frame = CGRect(x:5.0,y:contentY+profileHeight+5.0,width:editWidth,height:screenHeight-contentY-profileHeight-31.0)
@@ -1253,15 +1247,15 @@ class SettingTalkToCell: UITableViewCell {
 		self.contentView.addSubview(fullButton)
         fullButton.addTarget(self, action:#selector(genderPerferenceBtnClick), for: .touchUpInside)
     }
-	
+
     func genderPerferenceBtnClick() {
 		AnalyticsCenter.log(withEvent: .settingClick, andParameter: [
 			"type": "talk_to",
 			])
-		
+
         let alertController = UIAlertController(title: "Talk to", message: "Tap who you'd rather talk to", preferredStyle: .actionSheet)
 		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (cancelAlert) in
-			
+
 			AnalyticsCenter.log(withEvent: .settingTalkToClick, andParameter: [
 				"type": "cancel",
 				])
@@ -1271,7 +1265,7 @@ class SettingTalkToCell: UITableViewCell {
             APIController.shared.currentUser?.update(attributes: [.show_gender(nil)], completion: { $0?.log() })
 
             self.genderButton.setImage(#imageLiteral(resourceName: "GenderPreferenceButton"), for: .normal)
-			
+
 			AnalyticsCenter.log(withEvent: .settingTalkToClick, andParameter: [
 				"type": "Both",
 				])
@@ -1283,7 +1277,7 @@ class SettingTalkToCell: UITableViewCell {
             self.genderButton.setImage(#imageLiteral(resourceName: "Guys"), for: .normal)
 
             self.handleSubAlertFunc(isGirls: false)
-			
+
 			AnalyticsCenter.log(withEvent: .settingTalkToClick, andParameter: [
 				"type": "Guys",
 				])
@@ -1295,7 +1289,7 @@ class SettingTalkToCell: UITableViewCell {
             self.genderButton.setImage(#imageLiteral(resourceName: "Girls"), for: .normal)
 
             self.handleSubAlertFunc(isGirls: true)
-			
+
 			AnalyticsCenter.log(withEvent: .settingTalkToClick, andParameter: [
 				"type": "Girls",
 				])

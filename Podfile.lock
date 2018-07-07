@@ -3,7 +3,7 @@ PODS:
   - Adjust (4.14.1):
     - Adjust/Core (= 4.14.1)
   - Adjust/Core (4.14.1)
-  - AgoraRtcEngine_iOS (2.2.1)
+  - AgoraRtcEngine_iOS (2.2.3)
   - Alamofire (4.7.2)
   - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
@@ -64,6 +64,7 @@ PODS:
   - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
     - GoogleToolboxForMac/Defines (= 2.1.4)
   - GPUImage (0.1.71)
+  - Hero (1.2.0)
   - Kingfisher (4.8.0)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
@@ -104,6 +105,7 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Firebase/RemoteConfig
   - GPUImage (from `https://github.com/holla-world/GPUImage.git`, branch `master`)
+  - Hero
   - Kingfisher
   - ObjectMapper (~> 3.1)
   - ObjectMapperAdditions/Realm (~> 4.1)
@@ -136,6 +138,7 @@ SPEC REPOS:
     - FirebaseMessaging
     - FirebaseRemoteConfig
     - GoogleToolboxForMac
+    - Hero
     - Kingfisher
     - nanopb
     - ObjectMapper
@@ -161,7 +164,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AccountKit: f3e48047e6fb1c433dff37c61158fd32bbc482cf
   Adjust: 2bef0f835fc7dcbfe871bf14e6960fabbcbd2c23
-  AgoraRtcEngine_iOS: 11c250ee1f02602712eae4713523946edfcce723
+  AgoraRtcEngine_iOS: 1e1425d17f7ff800287c04150fcb1266966cfaab
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   Amplitude-iOS: 84da24ca8557fa3741888502c30c0b8b365acd7d
@@ -181,6 +184,7 @@ SPEC CHECKSUMS:
   FirebaseRemoteConfig: 3c57e4644bd6976b671ae0b725cd709f198bd1f5
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   GPUImage: f6034f21f92df6171520f604226ae64b90b35911
+  Hero: 33dadf2cd1c98af71e213dcbc2902e6e03622a4e
   Kingfisher: 976d828df2b24834c6a3f2fc4d82cdbd26552be1
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
@@ -193,6 +197,6 @@ SPEC CHECKSUMS:
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
 
-PODFILE CHECKSUM: 5b805cfee4d852020a96dcbf0dfbf94234900a1e
+PODFILE CHECKSUM: 30aff5543fb3dc426bef46dafff5531467b6035e
 
 COCOAPODS: 1.5.3

@@ -159,6 +159,9 @@ class RealmExperiment: MonkeyModel {
 	dynamic var two_p_dashboard_link:String?
 	
 	required convenience init?(map: Map) {
+		if map["id"].currentValue == nil {
+			return nil
+		}
 		self.init()
 	}
 }

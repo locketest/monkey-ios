@@ -21,11 +21,14 @@ class RealmInstagramAccount: MonkeyModel {
 	
     let instagram_photos = List<RealmInstagramPhoto>()
 
-    dynamic var instagram_account_id: String?
+    dynamic var instagram_account_id: String!
     dynamic var code: String?
     dynamic var username: String?
 	
 	required convenience init?(map: Map) {
+		if map["id"].currentValue == nil {
+			return nil
+		}
 		self.init()
 	}
 }

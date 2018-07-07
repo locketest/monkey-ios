@@ -219,8 +219,8 @@ class ChatSession: NSObject {
     }
 
 	func commonParameters(for event: AnalyticEvent) -> [String: String] {
-		let currentUser = APIController.shared.currentUser
-		let is_banned = currentUser?.is_banned.value ?? false
+		let currentUser = UserManager.shared.currentUser
+		let is_banned = currentUser?.is_banned ?? false
         var match_type = "video"
 		let selectMatchMode = Achievements.shared.selectMatchMode ?? .VideoMode
 		if selectMatchMode == .TextMode {
@@ -233,7 +233,7 @@ class ChatSession: NSObject {
 
 		var commonParameters = [String: String]()
 		commonParameters["user_gender"] = currentUser?.gender ?? ""
-		commonParameters["user_age"] = "\(currentUser?.age.value ?? 0)"
+		commonParameters["user_age"] = "\(currentUser?.age ?? 0)"
 		commonParameters["user_country"] = currentUser?.location ?? ""
 		commonParameters["user_ban"] = is_banned ? "true" : "false"
 		commonParameters["match_type"] = match_type
@@ -808,6 +808,7 @@ extension ChatSession {
 						"attributes": [
 							"match_action": messageType.rawValue, // skip or ready
 							"chat_id": currentChat.chatId, // chat_id
+							"send_time": Date().timeIntervalSince1970,
 							"matched_user": [currentChat.user_id ?? ""], // array of user ids
 						]
 					]

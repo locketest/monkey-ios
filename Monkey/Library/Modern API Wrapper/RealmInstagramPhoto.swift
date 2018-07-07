@@ -17,10 +17,13 @@ class RealmInstagramPhoto: MonkeyModel {
 		return "instagram_photo_id"
 	}
 	
-    dynamic var instagram_photo_id: String?
+    dynamic var instagram_photo_id: String!
     dynamic var standard_resolution_image_url: String?
 	
 	required convenience init?(map: Map) {
+		if map["id"].currentValue == nil {
+			return nil
+		}
 		self.init()
 	}
 }

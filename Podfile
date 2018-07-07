@@ -24,6 +24,7 @@ abstract_target 'Monkey' do
 	pod 'Starscream'
 	pod 'CropViewController'
 	pod 'SnapKit', '~> 4.0.0'
+	pod 'Hero'
 	
 	pod 'RealmSwift'
 	pod 'Alamofire'
@@ -48,6 +49,9 @@ abstract_target 'Monkey' do
 		installer.pods_project.targets.each do |target|
 			target.build_configurations.each do |config|
 				config.build_settings['SWIFT_VERSION'] = '4.0'
+				if config.name != 'Release'
+					config.build_settings['SWIFT_COMPILATION_MODE'] = '-wholemodule'
+				end
 			end
 		end
 	end

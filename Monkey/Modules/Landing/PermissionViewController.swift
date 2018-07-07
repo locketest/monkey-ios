@@ -216,12 +216,14 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
             center.requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in
                 // Enable or disable features based on authorization.
                 Achievements.shared.promptedNotifications = granted
+				
+				self.doneWithPermisssions()
             }
         } else { // iOS 9 notification granting
             UIApplication.shared.registerForRemoteNotifications()
+			
+			self.doneWithPermisssions()
         }
-       
-        self.doneWithPermisssions()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -277,12 +279,10 @@ class PermissionViewController: UIViewController, CLLocationManagerDelegate {
     
     func doneWithPermisssions() {
         DispatchQueue.main.async {
-            guard let mainVC = self.storyboard!.instantiateViewController(withIdentifier: "mainVC") as? MainViewController else {
-                return
-            }
+			let mainVC = UIStoryboard.init(name: "Match", bundle: nil).instantiateInitialViewController() as! MainViewController
             mainVC.modalTransitionStyle = .crossDissolve
             
-            self.present(mainVC, animated: true, completion: { _ in })
+            self.present(mainVC, animated: true, completion: nil)
             Achievements.shared.grantedPermissionsV2 = true
         }
     }

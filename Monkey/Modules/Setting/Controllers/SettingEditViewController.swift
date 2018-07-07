@@ -87,7 +87,7 @@ class SettingEditViewController: SwipeableViewController, UITextFieldDelegate {
                 let oldBirthdayDate = Date.init(timeIntervalSince1970: oldBirthday.timeIntervalSince1970)
                 let oldBirthdayString = dateFormatter.string(from: oldBirthdayDate)
                 if (newBirthdayString != oldBirthdayString) {
-                    attributes.append(.birth_date(self.datePicker.date as NSDate))
+                    attributes.append(.birth_date(self.datePicker.date))
                 }
             }
         }
@@ -181,7 +181,6 @@ class SettingEditViewController: SwipeableViewController, UITextFieldDelegate {
     }
     
     func dismissViewControllerFunc() {
-        self.panningTowardsSide = .right
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -217,7 +216,7 @@ class SettingEditViewController: SwipeableViewController, UITextFieldDelegate {
         let photoPathString = APIController.shared.currentUser?.profile_photo_upload_url ?? ""
         
         var localizedTimeString = ""
-        if let secondsInApp = APIController.shared.currentUser?.seconds_in_app.value {
+        if let secondsInApp = APIController.shared.currentUser?.seconds_in_app {
             if secondsInApp < 60 {
                 localizedTimeString = "1 min"
             } else if secondsInApp < 3600 {
@@ -410,8 +409,6 @@ class SettingEditViewController: SwipeableViewController, UITextFieldDelegate {
     }
     
     func initView() {
-        
-        self.panningTowardsSide = .right
         
         self.tableViewHeightConstraint.constant = ScreenHeight < 666 ? (ScreenHeight - 44) : 633
         

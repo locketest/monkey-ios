@@ -59,7 +59,7 @@ class ResumeMyAccountViewController: MonkeyViewController {
     
     func initLimitTimeLabelFunc() {
         
-        if let timeStamp = APIController.shared.currentUser?.delete_at.value {
+        if let timeStamp = APIController.shared.currentUser?.delete_at {
             
             let timeInterval = TimeInterval(timeStamp / 1000)
             let date = Date(timeIntervalSince1970: timeInterval)

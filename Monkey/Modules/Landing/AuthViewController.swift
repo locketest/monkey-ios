@@ -7,9 +7,6 @@
 //
 
 import UIKit
-import Alamofire
-import RealmSwift
-import ObjectMapper
 
 class AuthViewController: MonkeyViewController {
 	
@@ -19,7 +16,7 @@ class AuthViewController: MonkeyViewController {
 	/// When true, don't present a new VC on viewDidAppear
 	private var presentingErrorCallback: (() -> Void)?
 	private var currentAppVersionIsSupported: Bool {
-		guard let minimumAppVersion = APIController.shared.currentExperiment?.minimum_version.value else {
+		guard let minimumAppVersion = UserManager.shared.currentExperiment?.minimum_version.value else {
 			print("Error: could not check if version was supported.")
 			return true
 		}
@@ -137,20 +134,19 @@ class AuthViewController: MonkeyViewController {
 		// 登录之后添加监听
 		UserManager.shared.addMessageObserver(observer: self)
 		var presentingVC: UIViewController!
-        if let delete_at = APIController.shared.currentUser?.delete_at.value, delete_at > 0.0 {
+        if let delete_at = APIController.shared.currentUser?.delete_at, delete_at > 0 {
 			// 如果用户被删除
             presentingVC = UIStoryboard(name: "Settings", bundle: nil).instantiateViewController(withIdentifier: "ResumeMyAccountViewController") as! ResumeMyAccountViewController
         } else if APIController.shared.currentUser?.isCompleteProfile() == false {
 			// 资料不全，编辑信息
-			let accountVC = self.storyboard!.instantiateViewController(withIdentifier: Environment.ScreenHeight < 667.0 ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
-			accountVC.shouldDismissAfterEntry = true
+			let accountVC = UIStoryboard(name: "Onboarding", bundle: nil).instantiateViewController(withIdentifier: Environment.ScreenHeight < 667.0 ? "editAccountSmallVC" : "editAccountVC") as! EditAccountViewController
 			presentingVC = accountVC
 		} else if Achievements.shared.grantedPermissionsV2 == false {
 			// 没有给权限，跳转权限页
-			presentingVC = self.storyboard!.instantiateViewController(withIdentifier: "permVC")
+			presentingVC = UIStoryboard(name: "Onboarding", bundle: nil).instantiateViewController(withIdentifier: "permVC")
 		} else {
 			// 跳转到 discover
-			presentingVC = self.storyboard!.instantiateViewController(withIdentifier: "mainVC")
+			presentingVC = UIStoryboard(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "mainVC")
 		}
 		
 		/// Should be called when ready to open the mainVC after launch setup is complete. Also manages opening to chat if necessary and beginning the background experiments update.
@@ -159,10 +155,10 @@ class AuthViewController: MonkeyViewController {
 		}
 	}
 	
-	func resetToWelcome() {
+	private func resetToWelcome() {
 		let showWelcome = {
 			DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: 0.1), execute: {
-				let vc = self.storyboard!.instantiateViewController(withIdentifier: "welcomeVC")
+				let vc = UIStoryboard.init(name: "Onboarding", bundle: nil).instantiateInitialViewController()!
 				vc.modalTransitionStyle = .crossDissolve
 				self.present(vc, animated: true, completion: nil)
 			})
