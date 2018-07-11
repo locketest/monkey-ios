@@ -19,6 +19,8 @@ class FriendsRequestModel: NSObject {
 	
 	var inviteeIdInt : Int?
 	
+	var inviteAtDouble : Double?
+	
 	var nextInviteAtDouble : Double?
 	
 	var statusInt : Int?
@@ -32,6 +34,7 @@ class FriendsRequestModel: NSObject {
 		
 		friendsRequestModel.userIdInt = dict["user_id"] as? Int
 		friendsRequestModel.inviteeIdInt = dict["invitee_id"] as? Int
+		friendsRequestModel.inviteAtDouble = dict["invite_at"] as? Double
 		friendsRequestModel.nextInviteAtDouble = dict["next_invite_at"] as? Double
 		friendsRequestModel.statusInt = dict["status"] as? Int
 		

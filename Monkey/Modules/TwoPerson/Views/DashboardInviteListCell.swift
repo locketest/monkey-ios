@@ -9,12 +9,12 @@
 import UIKit
 
 protocol DashboardInviteListCellDelegate : NSObjectProtocol {
-	func dashboardInviteListCellBtnClickFunc(friendshipIdString:String)
+	func dashboardInviteListCellBtnClickFunc(userIdInt:Int)
 }
 
 class DashboardInviteListCell: UITableViewCell {
 	
-	var friendshipIdString : String?
+	var userIdInt : Int?
 
     var delegate : DashboardInviteListCellDelegate?
 	
@@ -30,9 +30,9 @@ class DashboardInviteListCell: UITableViewCell {
 		}
 		set(newDashboardInviteListModel){
 			
-			self.nameLabel.text = newDashboardInviteListModel.nameString
+			self.userIdInt = newDashboardInviteListModel.userIdInt
 			
-			self.friendshipIdString = newDashboardInviteListModel.friendshipIdString
+			self.nameLabel.text = newDashboardInviteListModel.nameString
 			
 			self.headImageView.placeholder = Tools.getGenderDefaultImageFunc()
 			self.headImageView.url = newDashboardInviteListModel.pathString
@@ -42,10 +42,9 @@ class DashboardInviteListCell: UITableViewCell {
 				self.actionButton.isUserInteractionEnabled = false
 				self.actionButton.isEnabled = false
 			} else {
-				if let timeStamp = newDashboardInviteListModel.timestampDouble {
-					let date = Date(timeIntervalSince1970: timeStamp / 1000)
-					let second = date.timeIntervalSince(Date())
-					if second > 0 { // 截止时间是当前时间以后就加图层
+				if let timestamp = newDashboardInviteListModel.nextInviteAtDouble {
+					let timestampTuple = Tools.timestampIsExpiredFunc(timestamp: timestamp)
+					if !timestampTuple.isExpired { // 截止时间是当前时间以后就加图层
 						self.actionButton.isUserInteractionEnabled = false
 						self.actionButton.isEnabled = false
 					} else {
@@ -60,7 +59,7 @@ class DashboardInviteListCell: UITableViewCell {
 	@IBAction func btnClickFunc(_ sender: UIButton) {
 		if self.delegate != nil {
 			
-			self.delegate!.dashboardInviteListCellBtnClickFunc(friendshipIdString: self.friendshipIdString!)
+			self.delegate!.dashboardInviteListCellBtnClickFunc(userIdInt: self.userIdInt!)
 			
 			if self.actionButton.isEnabled {
 				self.actionButton.isEnabled = false

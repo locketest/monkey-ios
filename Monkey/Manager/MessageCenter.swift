@@ -301,6 +301,7 @@ class MessageCenter {
 		case .json_api:
 			break
 		case .twop_default:
+			object1 = message
 			selector = #selector(MessageObserver.didReceiveTwopDefault(message:))
 			break
 		default:

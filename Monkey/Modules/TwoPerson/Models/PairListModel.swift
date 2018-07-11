@@ -10,13 +10,15 @@ import UIKit
 
 class PairListModel: NSObject {
 	
-	var userIdString : String?
+	var userIdInt : Int?
 	
 	var pairIdString : String?
 	
-	var inviteeIdString : String?
+	var inviteeIdInt : Int?
 	
 	var nextInviteAtDouble : Double?
+	
+	var inviteAtDouble : Double?
 	
 	var statusInt : Int?
 	
@@ -24,10 +26,11 @@ class PairListModel: NSObject {
 		
 		let pairListModel = PairListModel()
 		
-		pairListModel.userIdString = dict["user_id"] as? String
+		pairListModel.userIdInt = dict["user_id"] as? Int
 		pairListModel.pairIdString = dict["pair_id"] as? String
-		pairListModel.inviteeIdString = dict["invitee_id"] as? String
+		pairListModel.inviteeIdInt = dict["invitee_id"] as? Int
 		pairListModel.nextInviteAtDouble = dict["next_invite_at"] as? Double
+		pairListModel.inviteAtDouble = dict["invite_at"] as? Double
 		pairListModel.statusInt = dict["status"] as? Int
 		
 		return pairListModel

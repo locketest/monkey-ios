@@ -55,6 +55,8 @@
 		34AEE4E320DA445700DECF3A /* DashboardInviteListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E120DA445700DECF3A /* DashboardInviteListModel.swift */; };
 		34AEE4E520DA453200DECF3A /* DashboardInviteListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */; };
 		34AEE4E620DA453200DECF3A /* DashboardInviteListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */; };
+		34E3BFB220F4ADC600EEED11 /* TwopNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E3BFB120F4ADC600EEED11 /* TwopNotificationCenter.swift */; };
+		34E3BFB320F4ADC600EEED11 /* TwopNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E3BFB120F4ADC600EEED11 /* TwopNotificationCenter.swift */; };
 		34FF0D2620D154AF00B1AC24 /* FriendsRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */; };
 		34FF0D2720D154AF00B1AC24 /* FriendsRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */; };
 		34FF0D2A20D1560000B1AC24 /* MyContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2920D1560000B1AC24 /* MyContactsModel.swift */; };
@@ -516,6 +518,7 @@
 		34AEE4BE20DA29FB00DECF3A /* DashboardFriendsListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardFriendsListCell.swift; sourceTree = "<group>"; };
 		34AEE4E120DA445700DECF3A /* DashboardInviteListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardInviteListModel.swift; sourceTree = "<group>"; };
 		34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardInviteListCell.swift; sourceTree = "<group>"; };
+		34E3BFB120F4ADC600EEED11 /* TwopNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwopNotificationCenter.swift; sourceTree = "<group>"; };
 		34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsRequestModel.swift; sourceTree = "<group>"; };
 		34FF0D2920D1560000B1AC24 /* MyContactsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyContactsModel.swift; sourceTree = "<group>"; };
 		34FF0D2E20D2163900B1AC24 /* TwoPerson.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoPerson.xib; sourceTree = "<group>"; };
@@ -849,6 +852,7 @@
 				34A0D3B720D1162F00D6EFED /* TwoPersonPlanViewController.swift */,
 				34AEE40F20D8AA3200DECF3A /* InviteFriendsViewController.swift */,
 				34AEE44320D9F54E00DECF3A /* DashboardMainViewController.swift */,
+				34E3BFB120F4ADC600EEED11 /* TwopNotificationCenter.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -2124,6 +2128,7 @@
 				8435C2F01F144DA800C80AC6 /* FriendTableViewCell.swift in Sources */,
 				341E735F20BBEF34001B8D55 /* SettingEditViewController.swift in Sources */,
 				D17B484220E5010300183E9C /* UserManager.swift in Sources */,
+				34E3BFB220F4ADC600EEED11 /* TwopNotificationCenter.swift in Sources */,
 				848727B11E86B1AD00F13501 /* ConfettiView.swift in Sources */,
 				BF8C38B51E9A0B620089B313 /* MainViewController+Location.swift in Sources */,
 				D1B79D022060C94800F209B4 /* MonkeyFilterCell.swift in Sources */,
@@ -2310,6 +2315,7 @@
 				D1A22AA720A03F8A004F0F05 /* FriendTableViewCell.swift in Sources */,
 				341E736020BBEF34001B8D55 /* SettingEditViewController.swift in Sources */,
 				D17B484320E5010300183E9C /* UserManager.swift in Sources */,
+				34E3BFB320F4ADC600EEED11 /* TwopNotificationCenter.swift in Sources */,
 				D1A22AA820A03F8A004F0F05 /* ConfettiView.swift in Sources */,
 				D1A22AA920A03F8A004F0F05 /* MainViewController+Location.swift in Sources */,
 				D1A22AAA20A03F8A004F0F05 /* MonkeyFilterCell.swift in Sources */,

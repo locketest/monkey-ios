@@ -54,30 +54,47 @@ class DashboardFriendsListCell: UITableViewCell {
 			self.headImageView.url = newDashboardFriendsListModel.pathString
 			
 			// 根据状态控制actionButton的样式和内容，如果status为0未操作，timestampDouble时间还未到，inviteeId是自己，表示是被邀请的item
-			let date = Date(timeIntervalSince1970: newDashboardFriendsListModel.timestampDouble! / 1000)
-			if newDashboardFriendsListModel.statusInt == 0 && date.timeIntervalSince(Date()) > 0 && newDashboardFriendsListModel.inviteeIdString == APIController.shared.currentUser!.user_id {
-				self.actionButton.backgroundColor = UIColor(red: 100 / 255, green: 74 / 255, blue: 241 / 255, alpha: 1)
-				self.actionButton.isJiggling = true
+			if let nextInvite = newDashboardFriendsListModel.nextInviteAtDouble {
+				let nextInviteTuple = Tools.timestampIsExpiredFunc(timestamp: nextInvite)
 				
-				DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + date.timeIntervalSince(Date())) {
-					self.actionButton.isJiggling = false
+				// 如果过期了，正常发起pair，如果没过期，inviteeIdInt不是自己，就是pair，是自己再根据statusInt为0显示accept效果
+				if nextInviteTuple.isExpired {
+					self.actionButton.backgroundColor = UIColor.yellow
+				} else { // 没过期，statusInt为0未操作
+					if newDashboardFriendsListModel.inviteeIdInt?.description != APIController.shared.currentUser!.user_id {
+						self.actionButton.backgroundColor = UIColor.yellow
+					} else {
+						if newDashboardFriendsListModel.statusInt != 1 {
+							self.actionButton.backgroundColor = ActionButtonJigglingColor
+							self.actionButton.isJiggling = true
+							
+							DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + nextInviteTuple.second) {
+								self.actionButton.backgroundColor = UIColor.yellow
+								self.actionButton.isJiggling = false
+							}
+						}
+					}
 				}
-			} else {
-				// todo，睿，进来后如果是主动发起的30秒内，还该有个倒计时
-				self.actionButton.backgroundColor = UIColor.yellow
 			}
 			
-			if newDashboardFriendsListModel.onlineStatusBool! {
-				self.greenView.isHidden = false
-			} else {
-				self.greenView.isHidden = true
+			// online为true时不显示miss状态，按状态优先级显示
+			if let onlineStatusBool = newDashboardFriendsListModel.onlineStatusBool {
+				if onlineStatusBool {
+					self.greenView.isHidden = false
+				} else {
+					self.greenView.isHidden = true
+				}
 			}
 			
 			// 根据miss的状态处理missedLabel显示与隐藏状态、nameLabel的距离约束
-			if newDashboardFriendsListModel.isMissedBool! {
-				self.nameLabelCenterYConstraint.constant = -8
-			} else {
-				self.nameLabelCenterYConstraint.constant = 0
+			if let isMissedBool = newDashboardFriendsListModel.isMissedBool {
+				if isMissedBool {
+					self.nameLabelCenterYConstraint.constant = -8
+					self.missedLabel.isHidden = false
+				} else {
+					self.nameLabelCenterYConstraint.constant = 0
+					self.missedLabel.isHidden = true
+				}
 			}
 		}
 	}
@@ -88,11 +105,23 @@ class DashboardFriendsListCell: UITableViewCell {
 	
 	@IBAction func btnClickFunc(_ sender: JigglyButton) {
 		if self.delegate != nil {
-//			self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!)
+			self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!)
 			
-			// todo，睿，点击后的30秒倒计时，加个封装，传入时间
-			self.addTimerFunc()
+			print("*** color = \(self.actionButton.backgroundColor == UIColor.yellow)")
+			
+			if self.actionButton.backgroundColor == UIColor.yellow {
+				
+			}
+			
 			self.actionButton.isUserInteractionEnabled = false
+			self.addTimerFunc()
+//			self.actionButton.setTitle("⏳", for: .normal)
+			
+//			if !Tools.timestampIsExpiredFunc(timestamp: self.tempDashboardFriendsListModel!.nextInviteAtDouble!).isExpired {
+				// todo，睿，点击后的30秒倒计时，加个封装，传入时间
+//				self.addTimerFunc()
+//				self.actionButton.isUserInteractionEnabled = false
+//			}
 		} else {
 			print("代理为空")
 		}

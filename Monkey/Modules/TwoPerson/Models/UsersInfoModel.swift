@@ -10,7 +10,7 @@ import UIKit
 
 class UsersInfoModel: NSObject {
 	
-	var idString : String?
+	var userIdInt : Int?
 	
 	var usernameString : String?
 	
@@ -30,7 +30,7 @@ class UsersInfoModel: NSObject {
 		
 		let usersInfoModel = UsersInfoModel()
 		
-		usersInfoModel.idString = dict["id"] as? String
+		usersInfoModel.userIdInt = dict["id"] as? Int
 		usersInfoModel.usernameString = dict["first_name"] as? String
 		usersInfoModel.genderString = dict["gender"] as? String
 		usersInfoModel.pathString = dict["photoUrl"] as? String

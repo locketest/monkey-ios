@@ -81,6 +81,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 		
+		let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+		print("*** = \(tokenString)")
+		
 		let currentDeviceTokenString = deviceToken.base64EncodedString()
 		Messaging.messaging().apnsToken = deviceToken
 		FBSDKAppEvents.setPushNotificationsDeviceToken(deviceToken)
@@ -92,6 +95,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
 		self.logNotificationClick(userInfo: userInfo)
 		FBSDKAppEvents.logPushNotificationOpen(userInfo)
+
+        self.handleNotification(application: application, userInfo: userInfo)
+		
+		let _ = TwopNotificationCenter(userInfo: userInfo["default"] as? [String: Any], isBackgrounded: true)
 	}
 	
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -104,6 +111,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				completionHandler(.newData)
 			}
         }
+		
+        self.handleRemoteNotificationFunc(userInfo: userInfo, application: application)
+    }
+
+    func handleRemoteNotificationFunc(userInfo: [AnyHashable : Any], application: UIApplication) {
+		if let notiInfoData = userInfo["data"] as? [String: Any], let link = notiInfoData["link"] as? String, link.contains("banana_recap_popup") {
+			UserDefaults.standard.setValue(link, forKey: KillAppBananaNotificationTag)
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object:link)
+		}
+		
+		let _ = TwopNotificationCenter(userInfo: userInfo["default"] as? [String: Any], isBackgrounded: false)
     }
 
 	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {

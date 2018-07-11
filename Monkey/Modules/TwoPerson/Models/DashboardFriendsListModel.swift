@@ -10,7 +10,7 @@ import UIKit
 
 class DashboardFriendsListModel: NSObject {
 	
-	var idString : String?
+	var userIdInt : Int?
 	
 	var nameString : String?
 	
@@ -18,31 +18,31 @@ class DashboardFriendsListModel: NSObject {
 	
 	var onlineStatusBool : Bool? // 在线状态
 	
-	var inviteeIdString : String?
+	var inviteeIdInt : Int?
 	
-	var friendshipIdString : String?
+//	var friendshipIdString : String?
 	
 	var isMissedBool: Bool?
 	
-	var timestampDouble : Double?
+	var nextInviteAtDouble : Double?
 	
 	var statusInt : Int?
 	
-	class func dashboardFriendsListModel(userInfo:UsersInfoModel, friendsRequestModel:FriendsRequestModel, isMissedBool:Bool = false) -> DashboardFriendsListModel {
+	class func dashboardFriendsListModel(userInfo:UsersInfoModel, pairListModel:PairListModel?, isMissedBool:Bool = false) -> DashboardFriendsListModel {
 		
 		let dashboardFriendsListModel = DashboardFriendsListModel()
 		
-		dashboardFriendsListModel.idString = userInfo.idString
+		dashboardFriendsListModel.userIdInt = userInfo.userIdInt
 		dashboardFriendsListModel.nameString = userInfo.usernameString
 		dashboardFriendsListModel.pathString = userInfo.pathString
 		dashboardFriendsListModel.onlineStatusBool = userInfo.onlineStatusBool
 		
 		dashboardFriendsListModel.isMissedBool = isMissedBool
 		
-		dashboardFriendsListModel.friendshipIdString = friendsRequestModel.userIdInt?.description
-		dashboardFriendsListModel.inviteeIdString = friendsRequestModel.inviteeIdInt?.description
-		dashboardFriendsListModel.timestampDouble = friendsRequestModel.nextInviteAtDouble
-		dashboardFriendsListModel.statusInt = friendsRequestModel.statusInt
+//		dashboardFriendsListModel.friendshipIdString = pairListModel.userIdInt?.description
+		dashboardFriendsListModel.inviteeIdInt = pairListModel?.inviteeIdInt
+		dashboardFriendsListModel.nextInviteAtDouble = pairListModel?.nextInviteAtDouble
+		dashboardFriendsListModel.statusInt = pairListModel?.statusInt
 		
 		return dashboardFriendsListModel
 	}

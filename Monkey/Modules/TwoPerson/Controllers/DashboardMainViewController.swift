@@ -8,6 +8,7 @@
 
 import UIKit
 import DeviceKit
+import SwiftyJSON
 
 enum SocketDefaultMsgTypeEnum : Int {
 	case unlock2p = 0
@@ -15,6 +16,8 @@ enum SocketDefaultMsgTypeEnum : Int {
 	case friendInvite
 	case friendPair
 	case acceptFriendPair
+	case operateFriendInvite // 忽略、邀请操作，通知对方更新可再次邀请状态
+	case friendOnlineStatus
 }
 
 class DashboardMainViewController: MonkeyViewController {
@@ -35,6 +38,8 @@ class DashboardMainViewController: MonkeyViewController {
 	var backClosure: TwopClosureType?
 	
 	var someoneCircle : CAShapeLayer!
+	
+	var tempModel : DashboardFriendsListModel?
 	
 	var invitingAnimLayer : InvitingProgressLayer!
 	
@@ -84,6 +89,8 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+		
+		print("*** = \(APIController.authorization)")
 
         self.initView()
 		
@@ -156,19 +163,27 @@ class DashboardMainViewController: MonkeyViewController {
 		self.twopChatFriendArray.removeAll()
 		self.inviteFriendArray.removeAll()
 		
+		if self.dataArray.isEmpty { return }
+		
 		(self.dataArray[0] as! [DashboardFriendsListModel]).forEach { (friendsListModel) in
-			if friendsListModel.nameString!.contains(sender.text!) {
-				self.twopChatFriendArray.append(friendsListModel)
+			if friendsListModel.nameString != nil {
+				if friendsListModel.nameString!.contains(sender.text!) {
+					self.twopChatFriendArray.append(friendsListModel)
+				}
 			}
 		}
 		
-		(self.dataArray[1] as! [DashboardInviteListModel]).forEach { (inviteListModel) in
-			if inviteListModel.nameString!.contains(sender.text!) {
-				self.inviteFriendArray.append(inviteListModel)
+		if self.dataArray.count == 2 {
+			(self.dataArray[1] as! [DashboardInviteListModel]).forEach { (inviteListModel) in
+				if inviteListModel.nameString!.contains(sender.text!) {
+					self.inviteFriendArray.append(inviteListModel)
+				}
 			}
 		}
 		
-		if self.twopChatFriendArray.count > 0 {
+		let userIdInt = self.twopChatFriendArray.first?.userIdInt
+		
+		if self.twopChatFriendArray.count > 0 && userIdInt != nil {
 			self.searchArray.append(self.twopChatFriendArray as AnyObject)
 		}
 		
@@ -247,7 +262,10 @@ class DashboardMainViewController: MonkeyViewController {
 	}
 	
 	func initCircleFunc() {
-		if let photo = APIController.shared.currentUser?.profile_photo_url { self.meImageView.kf.setImage(with: URL(string: photo), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!) }
+		
+		let photo = APIController.shared.currentUser?.profile_photo_url
+		
+		self.meImageView.kf.setImage(with: URL(string: photo == nil ? "" : photo!), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!)
 	}
 	
 	func handleRequestFinishedFunc(models:[FriendshipModel], friendRequestArray:[FriendsRequestModel], userInfoArray:[UsersInfoModel], pairListArray:[PairListModel]) {
@@ -270,66 +288,77 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		let userIdString = APIController.shared.currentUser!.user_id!
 		
-		// 遍历models，在里面装配两个显示集合
-		models.forEach({ (model) in
+		userInfoArray.forEach({ (userInfo) in
 			
-			userInfoArray.forEach({ (userInfo) in
+			if let unlock2pBool = userInfo.unlock2pBool {
 				
-				if model.friendIdString == userInfo.idString {
+				if unlock2pBool {
+					
+					for pairModel in pairListArray {
+						
+						if userInfo.userIdInt == pairModel.userIdInt || userInfo.userIdInt == pairModel.inviteeIdInt {
+							if userInfo.onlineStatusBool! { // 1 online
+								if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired { // 后改，online里也有miss状态
+									onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
+								} else {
+									onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
+								}
+							} else if pairModel.statusInt == 1 { // 1 pair接受过
+								lastPairArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
+							} else if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired { // timestamp过期了就是missed
+								missedArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
+							} else {
+								otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
+							}
+						}
+					}
+				} else {
+					
+					var friendsRequestModel : FriendsRequestModel?
 					
 					friendRequestArray.forEach({ (friendModel) in
 						
-						if model.friendIdString == friendModel.userIdInt?.description {
-							
-							if userInfo.unlock2pBool! { // 通过unlock2pBool区分是1p还是2p
-								
-								let date = Date(timeIntervalSince1970: friendModel.nextInviteAtDouble! / 1000)
-								
-								if userInfo.onlineStatusBool! { // 1 online
-									onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel))
-								} else if friendModel.statusInt == 1 { // 1 pair接受过
-									lastPairArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel))
-								} else if date.timeIntervalSince(Date()) <= 0 { // timestamp过期了就是missed
-									missedArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel, isMissedBool: true))
-								} else {
-									otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, friendsRequestModel: friendModel))
-								}
-							} else { // 1p，且被邀请id不是自己，就表示自己是主动发起邀请的内容
-								if userIdString != friendModel.inviteeIdInt?.description {
-									self.inviteFriendArray.append(DashboardInviteListModel.dashboardInviteListModel(userInfo: userInfo, friendsRequestModel: friendModel))
-								}
-							}
+						// 1p好友列表里的userId等于planAB里2p好友列表里的userId 且 2p好友列表里的userId等于当前用户的id就说明是用户主动发起的邀请
+						if userInfo.userIdInt == friendModel.inviteeIdInt && Int(userIdString) == friendModel.userIdInt {
+							friendsRequestModel = friendModel
 						}
 					})
+					
+					self.inviteFriendArray.append(DashboardInviteListModel.dashboardInviteListModel(userInfo: userInfo, friendsRequestModel: friendsRequestModel))
 				}
-			})
+			}
 		})
 		
 		// 至此，数据装配完毕，接下来按timestamp排序四个临时集合然后放到twopChatFriendArray里,再将两个集合放到dataArray里
-		onlineArray = onlineArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
-		lastPairArray = lastPairArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
-		missedArray = missedArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
-		otherArray = otherArray.sorted { $0.timestampDouble! > $1.timestampDouble! }
+		onlineArray = onlineArray.sorted { $0.nextInviteAtDouble! > $1.nextInviteAtDouble! }
+		lastPairArray = lastPairArray.sorted { $0.nextInviteAtDouble! > $1.nextInviteAtDouble! }
+		missedArray = missedArray.sorted { $0.nextInviteAtDouble! > $1.nextInviteAtDouble! }
+		otherArray = otherArray.sorted { $0.nextInviteAtDouble! > $1.nextInviteAtDouble! }
 		
 		self.twopChatFriendArray += onlineArray
 		self.twopChatFriendArray += lastPairArray
 		self.twopChatFriendArray += missedArray
 		self.twopChatFriendArray += otherArray
+//		self.twopChatFriendArray += noPairInfoArray
 		
 		self.twopChatFriendArray.forEach { (model) in
-			print("*** model = \(model.idString!)")
+//			print("*** model = \(model.userIdInt!)")
 		}
 		
 		// 如果没有2p好友，加一个空的模型在数据源里，用以显示第一组的无数据cell
 		if self.twopChatFriendArray.isEmpty { self.twopChatFriendArray.append(DashboardFriendsListModel()) }
-		
+
 		self.dataArray.append(self.twopChatFriendArray as AnyObject)
-		self.dataArray.append(self.inviteFriendArray as AnyObject)
+		
+		if self.inviteFriendArray.count > 0 { self.dataArray.append(self.inviteFriendArray as AnyObject) }
+		
 		self.searchArray = self.dataArray
 		self.tableView.reloadData()
 	}
 	
 	func loadPairAndUserInfoFunc(models:[FriendshipModel]) {
+		
+		print("*** = \(APIController.authorization!)")
 		
 		var friendRequestArray : [FriendsRequestModel] = []
 		
@@ -347,7 +376,7 @@ class DashboardMainViewController: MonkeyViewController {
 				case .error(_): break
 				case .success(let jsonAPIDocument):
 					
-					print("*** jsonAPIDocument userInfo = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					print("*** jsonAPIDocument userInfo = \(JSON(jsonAPIDocument.json["data"] as! [[String: AnyObject]]))")
 					
 					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 						array.forEach({ (userInfo) in
@@ -368,7 +397,7 @@ class DashboardMainViewController: MonkeyViewController {
 				case .error(_): break
 				case .success(let jsonAPIDocument):
 					
-					print("*** jsonAPIDocument 2ppairs = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					print("*** jsonAPIDocument 2ppairs = \(JSON(jsonAPIDocument.json["data"] as! [[String: AnyObject]]))")
 					
 					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 						array.forEach({ (pairInfo) in
@@ -389,7 +418,7 @@ class DashboardMainViewController: MonkeyViewController {
 				case .error(_): break
 				case .success(let jsonAPIDocument):
 					
-					print("*** jsonAPIDocument 2pinvitations = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					print("*** jsonAPIDocument 2pinvitations = \(JSON(jsonAPIDocument.json["data"] as! [[String: AnyObject]]))")
 					
 					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 						array.forEach({ (friendModel) in
@@ -412,25 +441,29 @@ class DashboardMainViewController: MonkeyViewController {
 				case .error(_): break
 				case .success(let jsonAPIDocument):
 					
-//					print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					print("*** json friendships = \(jsonAPIDocument.json)")
 					
-					let array = jsonAPIDocument.json["data"] as! [[String: AnyObject]]
-					
-					if array.count > 0 {
+					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 						
-						var models : [FriendshipModel] = []
-						
-						array.forEach({ (model) in
-							models.append(FriendshipModel.friendshipModel(dict: model))
-						})
-						
-						guard models.count > 0 else {
-							self.tableView.isHidden = true
-							self.noAccessContactsBgView.isHidden = false
-							return
+						if array.count > 0 {
+							
+							var models : [FriendshipModel] = []
+							
+							array.forEach({ (model) in
+								
+								if let userIdInt = model["friend_id"] as? Int, userIdInt != 2 { // 去除MonkeyKing
+									models.append(FriendshipModel.friendshipModel(dict: model))
+								}
+							})
+							
+							guard models.count > 0 else {
+								self.tableView.isHidden = true
+								self.noAccessContactsBgView.isHidden = false
+								return
+							}
+							
+							self.loadPairAndUserInfoFunc(models: models)
 						}
-						
-						self.loadPairAndUserInfoFunc(models: models)
 					}
 				}
 		}
@@ -438,7 +471,9 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
+		
 		if self.layoutTagInt == 1 {
+			
 			let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
 			self.meAndSomeoneBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.meImageView, lineWidth: 1.3, strokeColor: MeCircleColor, padding: 5))
 			
@@ -446,6 +481,7 @@ class DashboardMainViewController: MonkeyViewController {
 			
 			self.addSomeoneCircleFunc()
 		}
+		
 		self.layoutTagInt += 1
 	}
 	
@@ -476,6 +512,12 @@ class DashboardMainViewController: MonkeyViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideFunc), name: .UIKeyboardWillHide, object: nil)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(acceptPairNotificationFunc), name: NSNotification.Name(rawValue: AcceptPairNotificationTag), object: nil)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(friendsPairNotificationFunc), name: NSNotification.Name(rawValue: FriendPairNotificationTag), object: nil)
+		
+		self.weAreTeamLabel.text = "Monkey Squad assembled,\nstarting 2P Chat"
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
@@ -486,7 +528,37 @@ class DashboardMainViewController: MonkeyViewController {
 	}
 	
 	deinit {
-		MessageCenter.shared.delMessageObserver(observer: self)
+//		MessageCenter.shared.delMessageObserver(observer: self)
+	}
+}
+
+/**
+ notification相关
+*/
+extension DashboardMainViewController {
+	
+	func friendsPairNotificationFunc(notification:NSNotification) {
+		
+		let array = notification.object as! Array<Any>
+		
+		let twopSocketModel = array.first as! TwopSocketModel
+		
+		if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
+			self.handleFriendPairSocketMsgFunc(twopSocketModel: twopSocketModel)
+		}
+	}
+	
+	func acceptPairNotificationFunc(notification:NSNotification) {
+		
+		let array = notification.object as! Array<Any>
+		
+		let twopSocketModel = array.first as! TwopSocketModel
+		print("*** = \(twopSocketModel.msgIdString!)")
+		
+		if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
+			self.handleConnectinStatusFunc(model: self.tempModel!)
+			self.stopWaittingFunc()
+		}
 	}
 }
 
@@ -496,20 +568,82 @@ class DashboardMainViewController: MonkeyViewController {
 extension DashboardMainViewController : MessageObserver {
 	
 	func didReceiveTwopDefault(message: [String : Any]) {
-		print("*** message = \(message)")
+		
+		print("*** message = \(JSON(message))")
 		
 		let twopSocketModel = TwopSocketModel.twopSocketModel(dict: message as [String : AnyObject])
 		
 		print("*** twopSocketModel = \(twopSocketModel.msgIdString?.description), model = \(twopSocketModel.extDictModel?.friendIdInt)")
 		
 		switch twopSocketModel.msgTypeInt {
+		case SocketDefaultMsgTypeEnum.friendOnlineStatus.rawValue:
+			self.updateOnlineStatusFunc(friendInt: twopSocketModel.senderIdInt!, onlineBool: twopSocketModel.extDictModel!.onlineBool!)
 		case SocketDefaultMsgTypeEnum.friendPair.rawValue: // friendPair
-			break
-		case  SocketDefaultMsgTypeEnum.acceptFriendPair.rawValue: // acceptFriendPair
-			break
+			if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
+				self.handleFriendPairSocketMsgFunc(twopSocketModel: twopSocketModel)
+			}
+		case  SocketDefaultMsgTypeEnum.acceptFriendPair.rawValue: // acceptFriendPair./
+			if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
+				self.handleConnectinStatusFunc(model: self.tempModel!)
+				self.stopWaittingFunc()
+			}
 		default:
 			break
 		}
+	}
+	
+	func updateOnlineStatusFunc(friendInt: Int, onlineBool: Bool) {
+		
+		for (index, value) in self.twopChatFriendArray.enumerated() {
+			
+			if value.userIdInt == friendInt {
+				
+				value.onlineStatusBool = onlineBool
+				
+				let temp = value
+				
+				self.twopChatFriendArray.remove(at: index)
+				self.twopChatFriendArray.insert(temp, at: 0)
+			}
+		}
+		
+		self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+	}
+	
+	func handleFriendPairSocketMsgFunc(twopSocketModel:TwopSocketModel) {
+		
+		for (index, dashboardFriendsListModel) in self.twopChatFriendArray.enumerated() {
+			if twopSocketModel.extDictModel?.friendIdInt == dashboardFriendsListModel.userIdInt {
+				dashboardFriendsListModel.nextInviteAtDouble = twopSocketModel.extDictModel?.expireTimeDouble
+				
+				self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+			}
+		}
+	}
+	
+	// 判断集合里有没有该消息id，有就说明socket已经处理过
+	func handleTwoChannelMsgSendFunc(msgIdString:String?) -> Bool {
+		
+		if msgIdString == nil { return false }
+		
+		let userDefault = UserDefaults.standard
+		
+		let array = userDefault.array(forKey: MessageIdArrayTag)
+		
+		if array == nil {
+			userDefault.setValue([msgIdString], forKey: MessageIdArrayTag)
+		} else {
+			var msgIdArray = array as! [String]
+			
+			if !msgIdArray.contains(msgIdString!) {
+				msgIdArray.append(msgIdString!)
+				userDefault.setValue(msgIdArray, forKey: MessageIdArrayTag)
+			} else {
+				return false
+			}
+		}
+		
+		return true
 	}
 }
 
@@ -548,12 +682,56 @@ extension DashboardMainViewController {
 */
 extension DashboardMainViewController : DashboardFriendsListCellDelegate, DashboardInviteListCellDelegate {
 	
+	func handleConnectinStatusFunc(model:DashboardFriendsListModel?) {
+		// 改变页面状态，10秒后返回dashboard初始页
+		UIView.animate(withDuration: 0.3, animations: {
+			self.friendsTopConstraint.constant = ScreenHeight
+			self.myTeamTopConstraint.constant = ScreenHeight / 2 - 100
+			self.view.layoutIfNeeded()
+		}) { (completed) in
+			UIView.animate(withDuration: 0.5, delay: 0.3, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
+				// todo，睿，此处用CacheImage替代，到connection页时someone的头像为对方给的头像
+				self.someoneImageView.image = UIImage(named: model?.pathString == nil ? "根据性别选择默认头像" : model!.pathString!)
+				self.someoneLabel.text = model?.nameString
+				self.myTeamTopConstraint.constant = 0
+				self.weAreTeamLabel.alpha = 1
+				self.view.layoutIfNeeded()
+			}, completion: { (completed) in
+				UIView.animate(withDuration: 0.5, delay: 5, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+					self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
+					self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
+					self.weAreTeamLabel.alpha = 0
+					self.view.layoutIfNeeded()
+				}, completion: { (completed) in
+					self.someoneImageView.image = UIImage(named: "monkeyDef")
+					self.someoneLabel.text = "2P Chat Buddy"
+				})
+			})
+		}
+	}
+	
 	// 2P CHAT FRIEND LIST
 	func dashboardFriendsListCellBtnClickFunc(model:DashboardFriendsListModel) {
 		self.view.endEditing(true)
 		
-		// inviteeId区分是受邀请(==)，还是主动邀请(!=)
-		let isInviteeBool = APIController.shared.currentUser!.user_id == model.inviteeIdString ? true : false
+//		if let nextInviteAtDouble = model.nextInviteAtDouble {
+//			if Tools.timestampIsExpiredFunc(timestamp: nextInviteAtDouble).isExpired {
+//				let alertController = UIAlertController(title: "Connection time out!", message: nil, preferredStyle: .alert)
+//				alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+//				self.present(alertController, animated: true, completion: nil)
+//				return
+//			}
+//		}
+		
+		var isInviteeBool = false
+		
+		if let nextInviteAtDouble = model.nextInviteAtDouble {
+			// 过期了一定是pair，没过期再根据inviteeId判断是pair还是accept
+			if !Tools.timestampIsExpiredFunc(timestamp: nextInviteAtDouble).isExpired {
+				// inviteeId区分是受邀请(==)，还是主动邀请(!=)
+				isInviteeBool = APIController.shared.currentUser!.user_id == model.inviteeIdInt?.description ? true : false
+			}
+		}
 		
 		// 如果是主动邀请，有三十秒倒计时
 		// 无论点多少个邀请，都是关闭定时器之后再开启定时器，按最后一个的点击算事件30s
@@ -563,32 +741,13 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			}
 			
 			self.startWaittingFunc()
+			
+			self.tempModel = model
 		} else { // 接受邀请
-			// 改变页面状态，10秒后返回dashboard初始页
-			UIView.animate(withDuration: 0.3, animations: {
-				self.friendsTopConstraint.constant = ScreenHeight
-				self.myTeamTopConstraint.constant = ScreenHeight / 2 - 100
-				self.view.layoutIfNeeded()
-			}) { (completed) in
-				UIView.animate(withDuration: 0.5, delay: 0.8, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
-					// todo，睿，此处用CacheImage替代，到connection页时someone的头像为对方给的头像
-					self.someoneImageView.image = UIImage(named: model.pathString!)
-					self.someoneLabel.text = model.nameString
-					self.myTeamTopConstraint.constant = 0
-					self.weAreTeamLabel.alpha = 1
-					self.view.layoutIfNeeded()
-				}, completion: { (completed) in
-					UIView.animate(withDuration: 0.5, delay: 10, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-						self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
-						self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
-						self.weAreTeamLabel.alpha = 0
-						self.view.layoutIfNeeded()
-					}, completion: nil)
-				})
-			}
+			self.handleConnectinStatusFunc(model: model)
 		}
 		
-		let pathString = isInviteeBool ? "accept/\(model.idString!)" : "request/\(model.idString!)"
+		let pathString = isInviteeBool ? "accept/\(model.userIdInt!)" : "request/\(model.userIdInt!)"
 		
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2ppairs/\(pathString)", method: .post, options: [
 			.header("Authorization", APIController.authorization),
@@ -597,27 +756,40 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 				case .error(_): break
 				case .success(let jsonAPIDocument):
 					
-					print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					print("*** json  = \(jsonAPIDocument.json), pathString = \(pathString)")
 					
 					// todo，睿，根据isInviteeBool和返回结果处理之后的逻辑
-					self.pairRequestAcceptModel = PairRequestAcceptModel.pairRequestAcceptModel(dict: jsonAPIDocument.json["data"] as! [String: AnyObject])
-					
+					self.pairRequestAcceptModel = PairRequestAcceptModel.pairRequestAcceptModel(dict: jsonAPIDocument.json as [String: AnyObject])
 				}
 		}
 	}
 	
 	// INVITE FRIENDS ON MONKEY
-	func dashboardInviteListCellBtnClickFunc(friendshipIdString: String) {
-		print("*** friendshipIdString = \(friendshipIdString)")
+	func dashboardInviteListCellBtnClickFunc(userIdInt:Int) {
 		
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/friend2p_request/\(friendshipIdString)", method: .post, options: [
+		print("*** friendshipIdString = \(userIdInt)")
+		
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/request/\(userIdInt)", method: .post, options: [
 			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(_): break
 				case .success(let jsonAPIDocument):
-					// 睿，返回的数据没有意义，无需做任何数据操作
-					print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+					
+					let json = JSON(jsonAPIDocument.json)
+					print("*** json = \(json)")
+					
+					self.inviteFriendArray.forEach({ (inviteModel) in
+						if userIdInt == inviteModel.userIdInt {
+							print("*** before = \(inviteModel.nextInviteAtDouble)")
+							inviteModel.nextInviteAtDouble = json["next_invite_at"].double
+							print("*** after = \(inviteModel.nextInviteAtDouble)")
+						}
+					})
+					
+					// todo，睿，如果是搜索状态下进行此操作，需要去dataArray里找到该元素更改该元素，不然关闭搜索状态后按钮的状态会被重置
+					self.searchArray.removeLast()
+					self.searchArray.append(self.inviteFriendArray as AnyObject)
 				}
 		}
 	}
@@ -636,17 +808,38 @@ extension DashboardMainViewController : UITableViewDataSource, UITableViewDelega
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		if indexPath.section == 0 {
-			if (self.searchArray[indexPath.section] as! [DashboardFriendsListModel])[0].idString != nil {
-				let cell = tableView.dequeueReusableCell(withIdentifier: "friendsCell") as! DashboardFriendsListCell
+			
+			let friendsListModelArray = self.searchArray[indexPath.section] as? [DashboardFriendsListModel]
+			
+			if friendsListModelArray != nil { // 转换成功，说明第一个元素是friendsList
 				
-				cell.dashboardFriendsListModel = (self.searchArray[indexPath.section] as! [DashboardFriendsListModel])[indexPath.row]
+				let userIdInt = friendsListModelArray?.first?.userIdInt
 				
-				cell.delegate = self
-
-				return cell
-			} else {
-				return tableView.dequeueReusableCell(withIdentifier: "noFriendsCell")!
+				if userIdInt != nil { // 有值，说明是正常list
+					return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isFriendsListCell: true)
+				} else { // 没值，显示空值的cell
+					return tableView.dequeueReusableCell(withIdentifier: "noFriendsCell")!
+				}
+			} else { // 转换失败，说明第一个元素是inviteList
+				return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isFriendsListCell: false)
 			}
+		} else {
+			return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isFriendsListCell: false)
+		}
+	}
+	
+	func handleCellForRowFunc(tableView:UITableView, indexPath:IndexPath, isFriendsListCell:Bool) -> UITableViewCell {
+		
+		if isFriendsListCell {
+			
+			let cell = tableView.dequeueReusableCell(withIdentifier: "friendsCell") as! DashboardFriendsListCell
+			
+			cell.dashboardFriendsListModel = (self.searchArray[indexPath.section] as! [DashboardFriendsListModel])[indexPath.row]
+			
+			cell.delegate = self
+			
+			return cell
+			
 		} else {
 			
 			let cell = tableView.dequeueReusableCell(withIdentifier: "inviteCell") as! DashboardInviteListCell
@@ -660,8 +853,20 @@ extension DashboardMainViewController : UITableViewDataSource, UITableViewDelega
 	}
 	
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		
 		let headView = Bundle.main.loadNibNamed("TwoPerson", owner: self, options: nil)![0] as! TwoPersonSectionView
-		headView.sectionTitle.setTitle(self.SectionTitleArray[section], for: .normal)
+		
+		if self.searchArray.count == 2 {
+			headView.sectionTitle.setTitle(self.SectionTitleArray[section], for: .normal)
+		} else {
+			let friendsListModelArray = self.searchArray[section] as? [DashboardFriendsListModel]
+			if friendsListModelArray != nil {
+				headView.sectionTitle.setTitle(self.SectionTitleArray[0], for: .normal)
+			} else {
+				headView.sectionTitle.setTitle(self.SectionTitleArray[1], for: .normal)
+			}
+		}
+		
 		return headView
 	}
 	
@@ -671,7 +876,13 @@ extension DashboardMainViewController : UITableViewDataSource, UITableViewDelega
 	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		if indexPath.section == 0 && (self.searchArray[indexPath.section] as! [DashboardFriendsListModel])[0].idString == nil {
+		
+		let friendsListModelArray = self.searchArray[indexPath.section] as? [DashboardFriendsListModel]
+		
+		let userIdInt = friendsListModelArray?.first?.userIdInt
+		
+		// 空值cell显示条件：只可能在第一组、searchArray里必须包含friendsListArray、该friendsListArray是个空对象，里面属性都没值
+		if indexPath.section == 0 && friendsListModelArray != nil && userIdInt == nil {
 			return 125
 		} else {
 			return 62

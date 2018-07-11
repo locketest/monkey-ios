@@ -154,7 +154,6 @@ class RealmExperiment: MonkeyModel {
     dynamic var mc_invite_desc:String?
     dynamic var mc_invite_btn_pos_text:String?
 	
-	var contact_invite_remain_times = RealmOptional<Int>()
 	dynamic var two_p_unlock_link:String?
 	dynamic var two_p_dashboard_link:String?
 	

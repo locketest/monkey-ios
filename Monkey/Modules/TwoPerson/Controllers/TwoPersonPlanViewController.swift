@@ -91,7 +91,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		super.viewDidLoad()
 		
 		// 睿，临时，记得删除
-//		UserDefaults.standard.setValue(false, forKey: IsUploadContactsTag)
+		UserDefaults.standard.setValue(false, forKey: IsUploadContactsTag)
 		
 		self.initView()
 		
@@ -174,7 +174,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	
 	func pushToDashboardMainVcFunc() {
 		
-		self.dismiss(animated: true, completion: nil)
+//		self.dismiss(animated: true, completion: nil)
 		
 		let vc = self.storyboard?.instantiateViewController(withIdentifier: "DashboardMainViewController") as! DashboardMainViewController
 		vc.modalPresentationStyle = .overFullScreen
@@ -227,16 +227,21 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
+		
 		if self.layoutTagInt == 1 {
+			
 			let SomeOneCircleColor = UIColor(red: 1, green: 252 / 255, blue: 1 / 255, alpha: 1)
 			self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planASomeImageView, lineWidth: 2, strokeColor: SomeOneCircleColor, padding: 5))
 		}
+		
 		self.layoutTagInt += 1
 	}
 	
 	func initCircleFunc() {
 		
-		if let photo = APIController.shared.currentUser?.profile_photo_url { self.planAMeImageView.kf.setImage(with: URL(string: photo), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!) }
+		let photo = APIController.shared.currentUser?.profile_photo_url
+		
+		self.planAMeImageView.kf.setImage(with: URL(string: photo == nil ? "" : photo!), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!)
 		
 		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
 		self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planAMeImageView, lineWidth: 2, strokeColor: MeCircleColor, padding: 5))
@@ -269,7 +274,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	
 	func loadFriendsRequestFunc() {
 		
-		print("*** = \(APIController.authorization!)")
+		print("*** = \(APIController.authorization)")
 		
 		// 拿到friends list里的friendship_id跟后端返回的friendship_id对比，相等就拿头像和名字，跟模型一起传到model里填充完整模型
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
@@ -280,7 +285,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 					print("*** error : = \(error.message)")
 				case .success(let jsonAPIDocument):
 					
-					print("*** jsonAPIDocument = \(jsonAPIDocument.json)")
+					print("*** 2p jsonAPIDocument = \(jsonAPIDocument.json["data"])")
 					
 					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 						
@@ -299,9 +304,11 @@ class TwoPersonPlanViewController: MonkeyViewController {
 									let contactInviteeId = contact["invitee_id"]?.stringValue
 									let contactStatus = contact["status"] as? Int
 									
-									// inviteeId为自己才表示是被邀请的数据，status为0未操作才显示
-									if friendModelUserId == contactUserId && currentUserId == contactInviteeId && TwopChatRequestsStatusEnum.unhandle.rawValue == contactStatus {
-										models.append(FriendsRequestModel.friendsRequestModel(dict: contact, nameString: friendModel.user!.first_name, pathString: friendModel.user!.profile_photo_url))
+									// inviteeId为自己才表示是被邀请的数据，status为0未操作显示
+									if friendModelUserId == contactUserId && currentUserId == contactInviteeId {
+										if TwopChatRequestsStatusEnum.unhandle.rawValue == contactStatus {
+											models.append(FriendsRequestModel.friendsRequestModel(dict: contact, nameString: friendModel.user!.first_name, pathString: friendModel.user!.profile_photo_url))
+										}
 									}
 								})
 							})
@@ -376,22 +383,23 @@ class TwoPersonPlanViewController: MonkeyViewController {
 					case .error(_): break
 					case .success(let jsonAPIDocument):
 						
-						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+//						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as? [[String: AnyObject]])")
 						
-						let array = jsonAPIDocument.json["data"] as! [[String: AnyObject]]
-						
-						if array.count > 0 {
+						if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 							
-							var models : [MyContactsModel] = []
-							
-							array.forEach({ (contact) in
-								models.append(MyContactsModel.myContactsModel(dict: contact))
-							})
-							
-							if CodableTools.encodeFunc(models: models, forKey: MyContactsModelTag) {
-								self.handleMyContactsFunc(models: models)
-							} else {
-								print("error: encode error")
+							if array.count > 0 {
+								
+								var models : [MyContactsModel] = []
+								
+								array.forEach({ (contact) in
+									models.append(MyContactsModel.myContactsModel(dict: contact))
+								})
+								
+								if CodableTools.encodeFunc(models: models, forKey: MyContactsModelTag) {
+									self.handleMyContactsFunc(models: models)
+								} else {
+									print("error: encode error")
+								}
 							}
 						}
 					}
@@ -415,9 +423,13 @@ class TwoPersonPlanViewController: MonkeyViewController {
 			} else {
 				// todo，睿，此处次数从用户配置信息中拿出
 				let contact_invite_remain_times = APIController.shared.currentUser!.contact_invite_remain_times
-				self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " \(contact_invite_remain_times) ", textThree:"friends to unlock 2P Chat", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
+				self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " \(contact_invite_remain_times.value!) ", textThree:"friends to unlock 2P Chat", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
 			}
 		}
+	}
+	
+	func initInviteFriendsNotificationFunc() {
+		NotificationCenter.default.addObserver(self, selector: #selector(handleNotificationMsgFunc), name: NSNotification.Name(rawValue: InviteFriendsNotificationTag), object: nil)
 	}
 	
 	func initUnlockNextBtnFunc() {
@@ -449,6 +461,8 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		self.initUnlockNextBtnFunc()
 		
+		self.initInviteFriendsNotificationFunc()
+		
 		MessageCenter.shared.addMessageObserver(observer: self)
 	}
 	
@@ -460,7 +474,26 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	}
 	
 	deinit {
-		MessageCenter.shared.delMessageObserver(observer: self)
+//		MessageCenter.shared.delMessageObserver(observer: self)
+	}
+}
+
+/**
+ notification相关
+*/
+extension TwoPersonPlanViewController {
+	
+	func handleNotificationMsgFunc(notification:NSNotification) {
+		
+		let array = notification.object as! Array<Any>
+		
+		let twopSocketModel = array.first as! TwopSocketModel
+		print("*** = \(twopSocketModel.msgIdString!)")
+		
+		let isBackgrounded = array.last as! Bool
+		print("*** = \(isBackgrounded)")
+		
+		self.initData() // 收到friends request刷新列表并更新main的红点值
 	}
 }
 
@@ -487,6 +520,8 @@ extension TwoPersonPlanViewController : MessageObserver {
 			currentUser?.reload(completion: { (error) in
 			})
 		case SocketDefaultMsgTypeEnum.friendInvite.rawValue: // friendInvite
+			
+			// 好友邀请不发socket消息，只发notification消息，故如下可以删除
 			self.initData() // 收到friends request刷新列表并更新main的红点值
 			
 			if self.updateRedDotClosure != nil {
@@ -603,6 +638,7 @@ extension TwoPersonPlanViewController : UITableViewDataSource, UITableViewDelega
 			cell.delegate = self
 			
 			return cell
+			
 		} else {
 			let cell = tableView.dequeueReusableCell(withIdentifier: "friendsCell") as! FriendsRequestCell
 			
@@ -671,7 +707,7 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 							if let realm = try? Realm() {
 								do {
 									try realm.write {
-										UserManager.shared.currentExperiment!.contact_invite_remain_times.value = remainTimes
+										UserManager.shared.currentUser!.contact_invite_remain_times.value = remainTimes
 									}
 								} catch(let error) {
 									print("Error: ", error)
@@ -726,11 +762,12 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 			self.myContactsArray = array
 			
 			self.searchArray.removeLast()
+			self.dataArray.removeLast()
 			
 			self.searchArray.append(self.myContactsArray as AnyObject)
+			self.dataArray.append(self.myContactsArray as AnyObject)
 		} else {
 			print("error: decode error")
-			return
 		}
 	}
 	
@@ -1086,7 +1123,10 @@ extension TwoPersonPlanViewController {
 		
 		let alertController = UIAlertController(title: nil, message: "Allow contacts to make more friends!", preferredStyle: .alert)
 		
-		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+			self.noAccessContactsBgView.isHidden = false
+			self.view.bringSubview(toFront: self.noAccessContactsBgView)
+		}))
 		
 		alertController.addAction(UIAlertAction(title: "Sure", style: .default, handler: { (defaultAlert) in
 			self.openSettingsFunc()

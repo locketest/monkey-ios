@@ -28,7 +28,10 @@ class TwopSocketModel: NSObject {
 		twopSocketModel.msgTypeInt = dict["msg_type"] as? Int
 		twopSocketModel.senderIdInt = dict["sender_id"] as? Int
 		twopSocketModel.contentString = dict["content"] as? String
-		twopSocketModel.extDictModel = TwopSocketExtDictModel.twopSocketExtDictModel(dict: dict["ext"] as! [String:AnyObject])
+		
+		if let extDict = dict["ext"] as? [String:AnyObject] {
+			twopSocketModel.extDictModel = TwopSocketExtDictModel.twopSocketExtDictModel(dict: extDict)
+		}
 		
 		return twopSocketModel
 	}
@@ -38,6 +41,8 @@ class TwopSocketModel: NSObject {
 class TwopSocketExtDictModel: NSObject {
 	
 	var friendIdInt : Int?
+	
+	var onlineBool : Bool?
 	
 	var friendshipIdString : String?
 	
@@ -52,6 +57,7 @@ class TwopSocketExtDictModel: NSObject {
 		let twopSocketExtDictModel = TwopSocketExtDictModel()
 		
 		twopSocketExtDictModel.friendIdInt = dict["friend_id"] as? Int
+		twopSocketExtDictModel.onlineBool = dict["online"] as? Bool
 		twopSocketExtDictModel.friendshipIdString = dict["friendship_id"] as? String
 		twopSocketExtDictModel.channelKeyString = dict["channel_key"] as? String
 		twopSocketExtDictModel.channelNameString = dict["channel_name"] as? String

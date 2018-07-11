@@ -10,7 +10,7 @@ import UIKit
 
 class DashboardInviteListModel: NSObject {
 	
-	var idString : String?
+	var userIdInt : Int?
 	
 	var nameString : String?
 	
@@ -18,21 +18,21 @@ class DashboardInviteListModel: NSObject {
 	
 	var friendshipIdString : String?
 	
-	var timestampDouble : Double?
+	var nextInviteAtDouble : Double?
 	
 	var statusInt : Int?
 	
-	class func dashboardInviteListModel(userInfo:UsersInfoModel, friendsRequestModel:FriendsRequestModel) -> DashboardInviteListModel {
+	class func dashboardInviteListModel(userInfo:UsersInfoModel, friendsRequestModel:FriendsRequestModel?) -> DashboardInviteListModel {
 		
 		let dashboardInviteListModel = DashboardInviteListModel()
 		
-		dashboardInviteListModel.idString = userInfo.idString
+		dashboardInviteListModel.userIdInt = userInfo.userIdInt
 		dashboardInviteListModel.nameString = userInfo.usernameString
 		dashboardInviteListModel.pathString = userInfo.pathString
 		
-		dashboardInviteListModel.friendshipIdString = friendsRequestModel.userIdInt?.description
-		dashboardInviteListModel.timestampDouble = friendsRequestModel.nextInviteAtDouble
-		dashboardInviteListModel.statusInt = friendsRequestModel.statusInt
+		dashboardInviteListModel.friendshipIdString = friendsRequestModel?.userIdInt?.description
+		dashboardInviteListModel.nextInviteAtDouble = friendsRequestModel?.nextInviteAtDouble
+		dashboardInviteListModel.statusInt = friendsRequestModel?.statusInt
 		
 		return dashboardInviteListModel
 	}

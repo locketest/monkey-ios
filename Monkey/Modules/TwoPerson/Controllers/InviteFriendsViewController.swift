@@ -9,6 +9,7 @@
 import UIKit
 import Contacts
 import MessageUI
+import SwiftyJSON
 
 class InviteFriendsViewController: MonkeyViewController {
 	
@@ -20,17 +21,27 @@ class InviteFriendsViewController: MonkeyViewController {
 	
 	@IBOutlet weak var searchCancelButton: UIButton!
 	
+	@IBOutlet weak var tableViewTitleLabel: UILabel!
+	
 	@IBOutlet weak var userNotFoundLabel: UILabel!
 	
 	@IBOutlet weak var tableView: UITableView!
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+		
+		UserDefaults.standard.setValue(false, forKey: IsUploadContactsTag)
 
         self.initView()
 		
 		self.initData()
     }
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		self.removeKeyboardObserverFunc()
+	}
 	
 	@IBAction func dismissBtnClickFunc(_ sender: UIButton) {
 		self.dismiss(animated: true, completion: nil)
@@ -55,6 +66,7 @@ class InviteFriendsViewController: MonkeyViewController {
 		
 		if sender.text!.isEmpty || Tools.trimSpace(string: sender.text!).count == 0 {
 			self.searchCancelButton.isHidden = false
+			self.tableViewTitleLabel.isHidden = false
 			self.userNotFoundLabel.isHidden = true
 			self.searchArray = self.dataArray
 			self.tableView.reloadData()
@@ -82,8 +94,10 @@ class InviteFriendsViewController: MonkeyViewController {
 		
 		if self.searchArray.count == 0 {
 			self.userNotFoundLabel.isHidden = false
+			self.tableViewTitleLabel.isHidden = true
 		} else {
 			self.userNotFoundLabel.isHidden = true
+			self.tableViewTitleLabel.isHidden = false
 		}
 		
 		self.tableView.reloadData()
@@ -123,29 +137,30 @@ class InviteFriendsViewController: MonkeyViewController {
 		
 		if contacts == nil { // 说明没有请求过联系人，去请求联系人
 			
-			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .get, options: [
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/contacts/", method: .get, options: [
 				.header("Authorization", APIController.authorization),
 				]).addCompletionHandler { (response) in
 					switch response {
 					case .error(_): break
 					case .success(let jsonAPIDocument):
 						
-						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as! [[String: AnyObject]])")
+						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"])")
 						
-						let array = jsonAPIDocument.json["data"] as! [[String: AnyObject]]
-						
-						if array.count > 0 {
+						if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 							
-							var models : [MyContactsModel] = []
-							
-							array.forEach({ (contact) in
-								models.append(MyContactsModel.myContactsModel(dict: contact))
-							})
-							
-							if CodableTools.encodeFunc(models: models, forKey: MyContactsModelTag) {
-								self.handleMyContactsFunc(models: models)
-							} else {
-								print("error: encode error")
+							if array.count > 0 {
+								
+								var models : [MyContactsModel] = []
+								
+								array.forEach({ (contact) in
+									models.append(MyContactsModel.myContactsModel(dict: contact))
+								})
+								
+								if CodableTools.encodeFunc(models: models, forKey: MyContactsModelTag) {
+									self.handleMyContactsFunc(models: models)
+								} else {
+									print("error: encode error")
+								}
 							}
 						}
 					}
@@ -153,6 +168,17 @@ class InviteFriendsViewController: MonkeyViewController {
 		} else {
 			self.handleMyContactsFunc(models: nil)
 		}
+	}
+	
+	func addKeyboardObserverFunc() {
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideFunc), name: .UIKeyboardWillHide, object: nil)
+	}
+	
+	func removeKeyboardObserverFunc() {
+		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
 	}
 	
 	func initData() {
@@ -165,14 +191,12 @@ class InviteFriendsViewController: MonkeyViewController {
 	
 	func initView() {
 		
+		self.addKeyboardObserverFunc()
+		
 		let cleanButton = self.searchTextField.value(forKey: "_clearButton") as! UIButton
 		cleanButton.setImage(UIImage(named: "clearButton")!, for: .normal)
 		
 		self.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSForegroundColorAttributeName : UIColor.darkGray])
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideFunc), name: .UIKeyboardWillHide, object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(handleRemoteMsgFunc), name: NSNotification.Name(rawValue: GoToSettingTag), object: nil)
 	}
@@ -181,17 +205,59 @@ class InviteFriendsViewController: MonkeyViewController {
 /**
  代理相关
 */
-extension InviteFriendsViewController : MyContactsCellDelegate {
+extension InviteFriendsViewController : MyContactsCellDelegate, MFMessageComposeViewControllerDelegate {
 	
 	func sendInviteContactFunc(phoneString: String) {
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact/\(phoneString)", method: .post, options: [
+		
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/contactinvitations/\(phoneString)", method: .post, options: [
 			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(_): break
-				case .success(_): break
+				case .success(let jsonAPIDocument):
+					
+					print("*** jsonAPIDocument = \(JSON(jsonAPIDocument.json))")
+					
+					if let nextInviteAtDouble = jsonAPIDocument.json["next_invite_at"] as? Double {
+						
+						if let array = CodableTools.decodeFunc(type: MyContactsModel.self, decodeKey: MyContactsModelTag) {
+							
+							array.forEach { (model) in
+								if model.phoneString == phoneString {
+									model.nextInviteAtDouble = nextInviteAtDouble
+								}
+							}
+							
+							// 存array，变更数据源
+							if CodableTools.encodeFunc(models: array, forKey: MyContactsModelTag) {
+								print("encode success")
+							} else {
+								print("encode error")
+							}
+							
+							self.dataArray = array
+							self.searchArray = self.dataArray
+						} else {
+							print("error: decode error")
+						}
+					} else {
+						print("error: value is nil")
+					}
 				}
 		}
+	}
+	
+	func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith
+		result: MessageComposeResult) {
+		if result == .sent {
+			print("*** sent")
+		} else {
+			print("*** unsend")
+		}
+		
+		self.addKeyboardObserverFunc()
+		
+		controller.dismiss(animated: true, completion: nil)
 	}
 	
 	// myContacts邀请
@@ -209,6 +275,7 @@ extension InviteFriendsViewController : MyContactsCellDelegate {
 			let inviteFriendsViewController = MFMessageComposeViewController()
 			inviteFriendsViewController.recipients = [phoneString]
 			inviteFriendsViewController.body = currentExperiment.two_p_dashboard_link!
+			inviteFriendsViewController.messageComposeDelegate = self
 			self.present(inviteFriendsViewController, animated: true)
 		}
 	}
@@ -225,6 +292,8 @@ extension InviteFriendsViewController : UITableViewDataSource, UITableViewDelega
 		let cell = tableView.dequeueReusableCell(withIdentifier: "contactsCell") as! MyContactsCell
 		
 		cell.myContactsModel = self.searchArray[indexPath.row]
+		
+		cell.delegate = self
 		
 		return cell
 	}
@@ -295,9 +364,9 @@ extension InviteFriendsViewController {
 		
 		if sortedArray.count > 0 {
 			
-//			print("*** sortedArray = \(sortedArray)")
+			print("*** sortedArray = \(sortedArray)")
 			
-			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2p/contact", method: .put, parameters: ["data":sortedArray], options: [
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/contacts/", method: .post, parameters: ["data":sortedArray], options: [
 				.header("Authorization", APIController.authorization),
 				]).addCompletionHandler { (response) in
 					switch response {
@@ -314,9 +383,15 @@ extension InviteFriendsViewController {
 		}
 	}
 	
+	func handlePhoneNumberFormatFunc(phoneString:String) -> String {
+		return phoneString.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "")
+	}
+	
 	func toJSONStringFunc(model:ContactModel) -> Any? {
 		
-		let string = "{\"name\":\"\(model.firstName!) \(model.familyName!)\", \"phoneNumber\":\"\(model.phoneNumber!)\"}"
+		let phoneString = self.handlePhoneNumberFormatFunc(phoneString: model.phoneNumber!)
+		
+		let string = "{\"name\":\"\(model.firstName!) \(model.familyName!)\", \"phone_number\":\"\(phoneString)\"}"
 		
 		if let data = string.data(using: String.Encoding.utf8, allowLossyConversion: false) {
 			if let jsonAny = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) {
