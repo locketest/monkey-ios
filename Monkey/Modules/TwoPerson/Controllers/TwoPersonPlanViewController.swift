@@ -93,6 +93,8 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		// 睿，临时，记得删除
 		UserDefaults.standard.setValue(false, forKey: IsUploadContactsTag)
 		
+		print("*** = \(APIController.authorization)")
+		
 		self.initView()
 		
 		self.initData()

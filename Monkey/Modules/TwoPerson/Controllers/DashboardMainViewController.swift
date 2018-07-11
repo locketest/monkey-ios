@@ -39,6 +39,8 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	var someoneCircle : CAShapeLayer!
 	
+	var tempCell: DashboardFriendsListCell?
+	
 	var tempModel : DashboardFriendsListModel?
 	
 	var invitingAnimLayer : InvitingProgressLayer!
@@ -523,6 +525,8 @@ class DashboardMainViewController: MonkeyViewController {
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		
+		self.stopTimerFunc()
+		
 		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
 		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
 	}
@@ -557,6 +561,7 @@ extension DashboardMainViewController {
 		
 		if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
 			self.handleConnectinStatusFunc(model: self.tempModel!)
+			self.tempCell?.stopTimerFunc()
 			self.stopWaittingFunc()
 		}
 	}
@@ -582,9 +587,10 @@ extension DashboardMainViewController : MessageObserver {
 			if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
 				self.handleFriendPairSocketMsgFunc(twopSocketModel: twopSocketModel)
 			}
-		case  SocketDefaultMsgTypeEnum.acceptFriendPair.rawValue: // acceptFriendPair./
+		case  SocketDefaultMsgTypeEnum.acceptFriendPair.rawValue: // acceptFriendPair
 			if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
 				self.handleConnectinStatusFunc(model: self.tempModel!)
+				self.tempCell?.stopTimerFunc()
 				self.stopWaittingFunc()
 			}
 		default:
@@ -607,16 +613,25 @@ extension DashboardMainViewController : MessageObserver {
 			}
 		}
 		
-		self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+		if self.twopChatFriendArray.count > 0 {
+			
+		}
+
+		
+		if self.dataArray.count > 0 {
+			self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+		}
 	}
 	
 	func handleFriendPairSocketMsgFunc(twopSocketModel:TwopSocketModel) {
 		
-		for (index, dashboardFriendsListModel) in self.twopChatFriendArray.enumerated() {
+		for dashboardFriendsListModel in self.twopChatFriendArray {
 			if twopSocketModel.extDictModel?.friendIdInt == dashboardFriendsListModel.userIdInt {
-				dashboardFriendsListModel.nextInviteAtDouble = twopSocketModel.extDictModel?.expireTimeDouble
 				
-				self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+				dashboardFriendsListModel.nextInviteAtDouble = twopSocketModel.extDictModel?.expireTimeDouble
+				dashboardFriendsListModel.inviteeIdInt = Int(APIController.shared.currentUser!.user_id!)
+				
+				self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
 			}
 		}
 	}
@@ -682,7 +697,7 @@ extension DashboardMainViewController {
 */
 extension DashboardMainViewController : DashboardFriendsListCellDelegate, DashboardInviteListCellDelegate {
 	
-	func handleConnectinStatusFunc(model:DashboardFriendsListModel?) {
+	func handleConnectinStatusFunc(model:DashboardFriendsListModel?, isPair: Bool = true) {
 		// 改变页面状态，10秒后返回dashboard初始页
 		UIView.animate(withDuration: 0.3, animations: {
 			self.friendsTopConstraint.constant = ScreenHeight
@@ -697,7 +712,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 				self.weAreTeamLabel.alpha = 1
 				self.view.layoutIfNeeded()
 			}, completion: { (completed) in
-				UIView.animate(withDuration: 0.5, delay: 5, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+				UIView.animate(withDuration: 0.5, delay: 30, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
 					self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
 					self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
 					self.weAreTeamLabel.alpha = 0
@@ -705,37 +720,29 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 				}, completion: { (completed) in
 					self.someoneImageView.image = UIImage(named: "monkeyDef")
 					self.someoneLabel.text = "2P Chat Buddy"
+					
+					if isPair {
+						let inviteeIdInt = APIController.shared.currentUser!.user_id == model?.userIdInt?.description ? model?.inviteeIdInt : model?.userIdInt
+						self.twopChatFriendArray[self.twopChatFriendArray.index(of: model!)!].inviteeIdInt = inviteeIdInt
+					}
+					
+					// 接受成功后改变status状态，0未操作
+					self.twopChatFriendArray[self.twopChatFriendArray.index(of: model!)!].statusInt = 0
+					self.twopChatFriendArray[self.twopChatFriendArray.index(of: model!)!].nextInviteAtDouble = self.pairRequestAcceptModel?.nextInviteAtDouble
+					
+					self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
 				})
 			})
 		}
 	}
 	
 	// 2P CHAT FRIEND LIST
-	func dashboardFriendsListCellBtnClickFunc(model:DashboardFriendsListModel) {
+	func dashboardFriendsListCellBtnClickFunc(model: DashboardFriendsListModel, cell: DashboardFriendsListCell, isPair: Bool) {
 		self.view.endEditing(true)
-		
-//		if let nextInviteAtDouble = model.nextInviteAtDouble {
-//			if Tools.timestampIsExpiredFunc(timestamp: nextInviteAtDouble).isExpired {
-//				let alertController = UIAlertController(title: "Connection time out!", message: nil, preferredStyle: .alert)
-//				alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//				self.present(alertController, animated: true, completion: nil)
-//				return
-//			}
-//		}
-		
-		var isInviteeBool = false
-		
-		if let nextInviteAtDouble = model.nextInviteAtDouble {
-			// 过期了一定是pair，没过期再根据inviteeId判断是pair还是accept
-			if !Tools.timestampIsExpiredFunc(timestamp: nextInviteAtDouble).isExpired {
-				// inviteeId区分是受邀请(==)，还是主动邀请(!=)
-				isInviteeBool = APIController.shared.currentUser!.user_id == model.inviteeIdInt?.description ? true : false
-			}
-		}
 		
 		// 如果是主动邀请，有三十秒倒计时
 		// 无论点多少个邀请，都是关闭定时器之后再开启定时器，按最后一个的点击算事件30s
-		if !isInviteeBool { // 发起pair
+		if isPair { // 发起pair
 			if self.timer != nil {
 				self.stopWaittingFunc()
 			}
@@ -743,11 +750,14 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			self.startWaittingFunc()
 			
 			self.tempModel = model
+			
+			self.tempCell = cell
+			
 		} else { // 接受邀请
-			self.handleConnectinStatusFunc(model: model)
+			self.handleConnectinStatusFunc(model: model, isPair: false)
 		}
 		
-		let pathString = isInviteeBool ? "accept/\(model.userIdInt!)" : "request/\(model.userIdInt!)"
+		let pathString = isPair ? "request/\(model.userIdInt!)" : "accept/\(model.userIdInt!)"
 		
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2ppairs/\(pathString)", method: .post, options: [
 			.header("Authorization", APIController.authorization),
@@ -756,7 +766,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 				case .error(_): break
 				case .success(let jsonAPIDocument):
 					
-					print("*** json  = \(jsonAPIDocument.json), pathString = \(pathString)")
+					print("*** json after click = \(jsonAPIDocument.json), pathString = \(pathString)")
 					
 					// todo，睿，根据isInviteeBool和返回结果处理之后的逻辑
 					self.pairRequestAcceptModel = PairRequestAcceptModel.pairRequestAcceptModel(dict: jsonAPIDocument.json as [String: AnyObject])

@@ -9,7 +9,7 @@
 import UIKit
 
 protocol DashboardFriendsListCellDelegate : NSObjectProtocol {
-	func dashboardFriendsListCellBtnClickFunc(model:DashboardFriendsListModel)
+	func dashboardFriendsListCellBtnClickFunc(model: DashboardFriendsListModel, cell: DashboardFriendsListCell, isPair: Bool)
 }
 
 class DashboardFriendsListCell: UITableViewCell {
@@ -53,26 +53,20 @@ class DashboardFriendsListCell: UITableViewCell {
 			self.headImageView.placeholder = Tools.getGenderDefaultImageFunc()
 			self.headImageView.url = newDashboardFriendsListModel.pathString
 			
-			// 根据状态控制actionButton的样式和内容，如果status为0未操作，timestampDouble时间还未到，inviteeId是自己，表示是被邀请的item
 			if let nextInvite = newDashboardFriendsListModel.nextInviteAtDouble {
+				
 				let nextInviteTuple = Tools.timestampIsExpiredFunc(timestamp: nextInvite)
 				
-				// 如果过期了，正常发起pair，如果没过期，inviteeIdInt不是自己，就是pair，是自己再根据statusInt为0显示accept效果
-				if nextInviteTuple.isExpired {
+				if newDashboardFriendsListModel.inviteeIdInt?.description != APIController.shared.currentUser!.user_id { // 主动发起邀请
 					self.actionButton.backgroundColor = UIColor.yellow
-				} else { // 没过期，statusInt为0未操作
-					if newDashboardFriendsListModel.inviteeIdInt?.description != APIController.shared.currentUser!.user_id {
+					// todo，睿，根据剩余时间添加图层
+				} else { // 被邀请
+					self.actionButton.backgroundColor = ActionButtonJigglingColor
+					self.actionButton.isJiggling = true
+					
+					DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + nextInviteTuple.second) {
 						self.actionButton.backgroundColor = UIColor.yellow
-					} else {
-						if newDashboardFriendsListModel.statusInt != 1 {
-							self.actionButton.backgroundColor = ActionButtonJigglingColor
-							self.actionButton.isJiggling = true
-							
-							DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + nextInviteTuple.second) {
-								self.actionButton.backgroundColor = UIColor.yellow
-								self.actionButton.isJiggling = false
-							}
-						}
+						self.actionButton.isJiggling = false
 					}
 				}
 			}
@@ -104,17 +98,9 @@ class DashboardFriendsListCell: UITableViewCell {
 	}
 	
 	@IBAction func btnClickFunc(_ sender: JigglyButton) {
+		
 		if self.delegate != nil {
-			self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!)
 			
-			print("*** color = \(self.actionButton.backgroundColor == UIColor.yellow)")
-			
-			if self.actionButton.backgroundColor == UIColor.yellow {
-				
-			}
-			
-			self.actionButton.isUserInteractionEnabled = false
-			self.addTimerFunc()
 //			self.actionButton.setTitle("⏳", for: .normal)
 			
 //			if !Tools.timestampIsExpiredFunc(timestamp: self.tempDashboardFriendsListModel!.nextInviteAtDouble!).isExpired {
@@ -122,6 +108,28 @@ class DashboardFriendsListCell: UITableViewCell {
 //				self.addTimerFunc()
 //				self.actionButton.isUserInteractionEnabled = false
 //			}
+			
+			if let model = self.tempDashboardFriendsListModel, let nextInvite = model.nextInviteAtDouble {
+				
+				let nextInviteTuple = Tools.timestampIsExpiredFunc(timestamp: nextInvite)
+				
+				if nextInviteTuple.isExpired { // 时间过期就是主动发起
+					self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!, cell: self, isPair: true)
+					self.actionButton.isUserInteractionEnabled = false
+					self.addTimerFunc()
+				} else {
+					if model.inviteeIdInt?.description != APIController.shared.currentUser!.user_id { // 时间过期，inviteeIdInt不是自己亦是主动邀请
+						self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!, cell: self, isPair: true)
+						self.actionButton.isUserInteractionEnabled = false
+						self.addTimerFunc()
+					} else { // 被邀请
+						self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!, cell: self, isPair: false)
+						self.actionButton.backgroundColor = UIColor.yellow
+						self.actionButton.isJiggling = false
+					}
+				}
+			}
+			
 		} else {
 			print("代理为空")
 		}
@@ -145,6 +153,14 @@ class DashboardFriendsListCell: UITableViewCell {
 	func addTimerFunc() {
 		self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(progressUpdateFunc), userInfo: nil, repeats: true)
 		RunLoop.current.add(self.timer!, forMode: .commonModes)
+	}
+	
+	func stopTimerFunc() {
+		self.timeTuple = (300, 300)
+		self.actionButton.isUserInteractionEnabled = true
+		self.shapeLayer.removeFromSuperlayer()
+		self.timer.invalidate()
+		self.timer = nil
 	}
 	
 	func addProgressViewFunc(progress:CGFloat) -> CAShapeLayer {

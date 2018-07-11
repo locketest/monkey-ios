@@ -3,7 +3,7 @@ PODS:
   - Adjust (4.14.1):
     - Adjust/Core (= 4.14.1)
   - Adjust/Core (4.14.1)
-  - AgoraRtcEngine_iOS (2.2.3)
+  - AgoraRtcEngine_iOS (2.2.1)
   - Alamofire (4.7.2)
   - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
@@ -164,7 +164,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AccountKit: f3e48047e6fb1c433dff37c61158fd32bbc482cf
   Adjust: 2bef0f835fc7dcbfe871bf14e6960fabbcbd2c23
-  AgoraRtcEngine_iOS: 1e1425d17f7ff800287c04150fcb1266966cfaab
+  AgoraRtcEngine_iOS: 11c250ee1f02602712eae4713523946edfcce723
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   Amplitude-iOS: 84da24ca8557fa3741888502c30c0b8b365acd7d
@@ -197,6 +197,6 @@ SPEC CHECKSUMS:
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
 
-PODFILE CHECKSUM: 30aff5543fb3dc426bef46dafff5531467b6035e
+PODFILE CHECKSUM: f079ef0e9a7a4ebacf397f6fc26f6edaf666a71d
 
 COCOAPODS: 1.5.3

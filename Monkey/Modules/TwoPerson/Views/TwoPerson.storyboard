@@ -1183,20 +1183,20 @@
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FxV-Aq-bi0">
                                         <rect key="frame" x="0.0" y="45" width="365" height="391.66666666666669"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Why not try 2P with your friends" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Rn-xR-bga">
-                                                <rect key="frame" x="60" y="186" width="246" height="21"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Why not try 2P with your friends" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Rn-xR-bga">
+                                                <rect key="frame" x="40" y="186.33333333333331" width="285" height="20.333333333333343"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🙉🙈🙊" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vkx-tR-U2y">
-                                                <rect key="frame" x="115" y="130.66666666666669" width="135" height="48"/>
+                                                <rect key="frame" x="115" y="131" width="135" height="48"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MEi-eA-PAs" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
-                                                <rect key="frame" x="112.66666666666669" y="227" width="140" height="48"/>
+                                                <rect key="frame" x="112.66666666666669" y="226.66666666666663" width="140" height="48"/>
                                                 <color key="backgroundColor" red="1" green="0.98823529409999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="48" id="R34-Ts-Aa7"/>
@@ -1219,7 +1219,9 @@
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="8Rn-xR-bga" secondAttribute="trailing" constant="40" id="1i1-wR-RVG"/>
                                             <constraint firstItem="MEi-eA-PAs" firstAttribute="top" secondItem="8Rn-xR-bga" secondAttribute="bottom" constant="20" id="3zz-F6-u5L"/>
+                                            <constraint firstItem="8Rn-xR-bga" firstAttribute="leading" secondItem="FxV-Aq-bi0" secondAttribute="leading" constant="40" id="Anx-M1-VWC"/>
                                             <constraint firstItem="vkx-tR-U2y" firstAttribute="centerX" secondItem="FxV-Aq-bi0" secondAttribute="centerX" id="PMa-In-10j"/>
                                             <constraint firstItem="MEi-eA-PAs" firstAttribute="centerX" secondItem="FxV-Aq-bi0" secondAttribute="centerX" id="SGq-fB-NYl"/>
                                             <constraint firstItem="8Rn-xR-bga" firstAttribute="centerY" secondItem="FxV-Aq-bi0" secondAttribute="centerY" id="t2M-mJ-Qhw"/>
