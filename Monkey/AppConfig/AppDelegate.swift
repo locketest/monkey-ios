@@ -96,7 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		self.logNotificationClick(userInfo: userInfo)
 		FBSDKAppEvents.logPushNotificationOpen(userInfo)
 
-        self.handleNotification(application: application, userInfo: userInfo)
+		self.handleRemoteNotificationFunc(userInfo: userInfo, application: application)
 		
 		let _ = TwopNotificationCenter(userInfo: userInfo["default"] as? [String: Any], isBackgrounded: true)
 	}
