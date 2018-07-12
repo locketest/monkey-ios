@@ -14,6 +14,8 @@ public let MyContactsModelTag = "MyContactsModel"
 
 public let IsUploadContactsTag = "IsUploadContacts"
 
+public let ProfileImageDefault = "ProfileImageDefault"
+
 public let ActionButtonJigglingColor = UIColor(red: 100 / 255, green: 74 / 255, blue: 241 / 255, alpha: 1)
 
 public let ContactsImageRootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first! + "/contactsImage"
@@ -33,8 +35,8 @@ class Tools: NSObject {
 	/**
 	 根据性别获取默认头像
 	*/
-	class func getGenderDefaultImageFunc() -> String {
-		return APIController.shared.currentUser?.gender == Gender.female.rawValue ? "ProfileImageDefaultFemale" : "ProfileImageDefaultMale"
+	class func getGenderDefaultImageFunc(genderString:String) -> String {
+		return genderString == Gender.female.rawValue ? "ProfileImageDefaultFemale" : "ProfileImageDefaultMale"
 	}
 	
 	/**

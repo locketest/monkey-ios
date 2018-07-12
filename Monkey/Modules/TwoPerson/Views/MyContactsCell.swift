@@ -72,7 +72,7 @@ class MyContactsCell: UITableViewCell {
 			if FileManager.default.fileExists(atPath: ContactsImageRootPath + "/" + newMyContactsModel.phoneString!) {
 				self.headImageView.image = UIImage(contentsOfFile: ContactsImageRootPath + "/" + newMyContactsModel.phoneString!)
 			} else {
-				self.headImageView.image = UIImage(named: Tools.getGenderDefaultImageFunc())
+				self.headImageView.image = UIImage(named: ProfileImageDefault)
 			}
 		}
 	}

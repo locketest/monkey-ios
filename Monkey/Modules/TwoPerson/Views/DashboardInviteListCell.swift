@@ -34,7 +34,7 @@ class DashboardInviteListCell: UITableViewCell {
 			
 			self.nameLabel.text = newDashboardInviteListModel.nameString
 			
-			self.headImageView.placeholder = Tools.getGenderDefaultImageFunc()
+			self.headImageView.placeholder = ProfileImageDefault
 			self.headImageView.url = newDashboardInviteListModel.pathString
 			
 			// statusInt为0表示未操作，此时按钮不能点，为1，再判断timestamp，可以点击的时间，如果小于当前时间，就可以点，否则还是不能点

@@ -243,7 +243,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		let photo = APIController.shared.currentUser?.profile_photo_url
 		
-		self.planAMeImageView.kf.setImage(with: URL(string: photo == nil ? "" : photo!), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc())!)
+		self.planAMeImageView.kf.setImage(with: URL(string: photo == nil ? "" : photo!), placeholder: UIImage(named: ProfileImageDefault)!)
 		
 		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
 		self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planAMeImageView, lineWidth: 2, strokeColor: MeCircleColor, padding: 5))

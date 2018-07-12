@@ -16,6 +16,8 @@ class DashboardFriendsListModel: NSObject {
 	
 	var pathString : String?
 	
+	var genderString : String?
+	
 	var onlineStatusBool : Bool? // 在线状态
 	
 	var inviteeIdInt : Int?
@@ -35,6 +37,7 @@ class DashboardFriendsListModel: NSObject {
 		dashboardFriendsListModel.userIdInt = userInfo.userIdInt
 		dashboardFriendsListModel.nameString = userInfo.usernameString
 		dashboardFriendsListModel.pathString = userInfo.pathString
+		dashboardFriendsListModel.genderString = userInfo.genderString
 		dashboardFriendsListModel.onlineStatusBool = userInfo.onlineStatusBool
 		
 		dashboardFriendsListModel.isMissedBool = isMissedBool

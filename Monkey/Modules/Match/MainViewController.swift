@@ -145,6 +145,41 @@ class MainViewController: SwipeableViewController {
 		
 		// load bananas
 		self.loadBananaData(isNotificationBool: false)
+		
+		// red point
+		self.handleRedPointStatus()
+	}
+	
+	private func handleRedPointStatus(){
+		
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
+			.header("Authorization", APIController.authorization),
+			]).addCompletionHandler { (response) in
+				switch response {
+				case .error(let error):
+					print("*** error : = \(error.message)")
+				case .success(let jsonAPIDocument):
+					
+					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
+						
+						var models : [FriendsRequestModel] = []
+						
+						array.forEach({ (dict) in
+							
+							let userId = APIController.shared.currentUser!.user_id
+							
+							let friendsRequestModel = FriendsRequestModel.friendsRequestModel(dict: dict)
+							
+							// 被邀请人为自己，并且未操作
+							if userId == friendsRequestModel.inviteeIdInt?.description && TwopChatRequestsStatusEnum.unhandle.rawValue == friendsRequestModel.statusInt {
+								models.append(friendsRequestModel)
+							}
+						})
+						
+						self.refreshRemindTip(count: models.count)
+					}
+				}
+		}
 	}
 	
 	private func configureApperance() {
@@ -413,10 +448,12 @@ class MainViewController: SwipeableViewController {
 		self.matchType = matchType
 	}
 	
-	fileprivate func refreshRemindTip() {
-		if self.matchModeSwitch.isHidden == false, self.matchType == .Onep, self.isMatchStart == false {
+	fileprivate func refreshRemindTip(count: Int = 0) {
+		let currentUser = APIController.shared.currentUser
+		if self.matchModeSwitch.isHidden == false, currentUser?.cached_unlocked_two_p == true, self.isMatchStart == false, count > 0 {
 			// refresh count
 			self.twoPTipLabel.isHidden = false
+			self.twoPTipLabel.text = count.description
 		}else {
 			self.twoPTipLabel.isHidden = true
 		}
@@ -531,36 +568,6 @@ class MainViewController: SwipeableViewController {
 						self.showBananaDescription(isNotificationBool: isNotificationBool)
 					}
 				}
-		}
-	}
-	
-	func getUnhandledFriendsRequestCountFunc() {
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
-			.header("Authorization", APIController.authorization),
-			]).addCompletionHandler { [weak self] (response) in
-				switch response {
-				case .error(let error):
-					print("*** error : = \(error.message)")
-				case .success(let jsonAPIDocument):
-					print("*** jsonAPIDocument = \(jsonAPIDocument.json)")
-					
-					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
-						if array.count > 0 {
-							
-							var models : [FriendsRequestModel] = []
-							
-							array.forEach({ (contact) in
-								let userId = APIController.shared.currentUser!.user_id
-								let friendsRequestModel = FriendsRequestModel.friendsRequestModel(dict: contact)
-								
-								if userId == friendsRequestModel.inviteeIdInt?.description && TwopChatRequestsStatusEnum.unhandle.rawValue == friendsRequestModel.statusInt {
-									models.append(friendsRequestModel)
-								}
-							})
-						}
-					}
-				}
-				self?.refreshRemindTip()
 		}
 	}
 	

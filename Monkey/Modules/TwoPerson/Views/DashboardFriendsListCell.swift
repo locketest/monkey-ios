@@ -50,15 +50,18 @@ class DashboardFriendsListCell: UITableViewCell {
 			
 			self.nameLabel.text = newDashboardFriendsListModel.nameString
 			
-			self.headImageView.placeholder = Tools.getGenderDefaultImageFunc()
+			self.headImageView.placeholder = ProfileImageDefault
 			self.headImageView.url = newDashboardFriendsListModel.pathString
 			
 			if let nextInvite = newDashboardFriendsListModel.nextInviteAtDouble {
 				
 				let nextInviteTuple = Tools.timestampIsExpiredFunc(timestamp: nextInvite)
 				
+				self.emojiLabel.text = "🙌"
+				
 				if newDashboardFriendsListModel.inviteeIdInt?.description != APIController.shared.currentUser!.user_id { // 主动发起邀请
 					self.actionButton.backgroundColor = UIColor.yellow
+					self.actionButton.isJiggling = false
 					// todo，睿，根据剩余时间添加图层
 				} else { // 被邀请
 					self.actionButton.backgroundColor = ActionButtonJigglingColor
@@ -157,6 +160,10 @@ class DashboardFriendsListCell: UITableViewCell {
 	func addTimerFunc() {
 		self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(progressUpdateFunc), userInfo: nil, repeats: true)
 		RunLoop.current.add(self.timer!, forMode: .commonModes)
+	}
+	
+	func stopJigglingFunc() {
+		self.actionButton.backgroundColor = UIColor.yellow
 	}
 	
 	func stopTimerFunc() {
