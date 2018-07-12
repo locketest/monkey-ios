@@ -101,8 +101,6 @@ class DashboardFriendsListCell: UITableViewCell {
 		
 		if self.delegate != nil {
 			
-//			self.actionButton.setTitle("⏳", for: .normal)
-			
 //			if !Tools.timestampIsExpiredFunc(timestamp: self.tempDashboardFriendsListModel!.nextInviteAtDouble!).isExpired {
 				// todo，睿，点击后的30秒倒计时，加个封装，传入时间
 //				self.addTimerFunc()
@@ -114,28 +112,30 @@ class DashboardFriendsListCell: UITableViewCell {
 				let nextInviteTuple = Tools.timestampIsExpiredFunc(timestamp: nextInvite)
 				
 				if nextInviteTuple.isExpired { // 时间过期就是主动发起
-					self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!, cell: self, isPair: true)
-					self.actionButton.isUserInteractionEnabled = false
-					self.addTimerFunc()
+					self.sendPairFunc()
 				} else {
 					if model.inviteeIdInt?.description != APIController.shared.currentUser!.user_id { // 时间过期，inviteeIdInt不是自己亦是主动邀请
-						self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!, cell: self, isPair: true)
-						self.actionButton.isUserInteractionEnabled = false
-						self.addTimerFunc()
-					} else { // 被邀请
+						self.sendPairFunc()
+					} else { // 被邀请，此处可将所有条件并联判断其它就是send pair
 						self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!, cell: self, isPair: false)
 						self.actionButton.backgroundColor = UIColor.yellow
+						self.emojiLabel.text = "🙌"
 						self.actionButton.isJiggling = false
 					}
 				}
 			} else {
-				self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!, cell: self, isPair: true)
-				self.actionButton.isUserInteractionEnabled = false
-				self.addTimerFunc()
+				self.sendPairFunc()
 			}
 		} else {
 			print("代理为空")
 		}
+	}
+	
+	func sendPairFunc() {
+		self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!, cell: self, isPair: true)
+		self.actionButton.isUserInteractionEnabled = false
+		self.emojiLabel.text = "⏳"
+		self.addTimerFunc()
 	}
 	
 	func progressUpdateFunc() {
@@ -144,6 +144,7 @@ class DashboardFriendsListCell: UITableViewCell {
 			self.timer.invalidate()
 			self.timeTuple.0 = self.timeTuple.1
 			self.shapeLayer.removeFromSuperlayer()
+			self.emojiLabel.text = "🙌"
 			self.actionButton.isUserInteractionEnabled = true
 			return
 		}

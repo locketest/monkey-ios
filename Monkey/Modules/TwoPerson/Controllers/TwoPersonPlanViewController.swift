@@ -424,7 +424,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 				self.topTitleLabel.font = UIFont.boldSystemFont(ofSize: 28)
 			} else {
 				// todo，睿，此处次数从用户配置信息中拿出
-				let contact_invite_remain_times = APIController.shared.currentUser!.contact_invite_remain_times
+				let contact_invite_remain_times = APIController.shared.currentUser!.cached_contact_invite_remain_times
 				self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " \(contact_invite_remain_times) ", textThree:"friends to unlock 2P Chat", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
 			}
 		}
@@ -709,7 +709,7 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 							if let realm = try? Realm() {
 								do {
 									try realm.write {
-										UserManager.shared.currentUser!.contact_invite_remain_times = remainTimes
+										UserManager.shared.currentUser!.cached_contact_invite_remain_times = remainTimes
 									}
 								} catch(let error) {
 									print("Error: ", error)
