@@ -296,23 +296,28 @@ class DashboardMainViewController: MonkeyViewController {
 				
 				if unlock2pBool {
 					
-					for pairModel in pairListArray {
+					if pairListArray.count > 0 {
 						
-						if userInfo.userIdInt == pairModel.userIdInt || userInfo.userIdInt == pairModel.inviteeIdInt {
-							if userInfo.onlineStatusBool! { // 1 online
-								if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired { // 后改，online里也有miss状态
-									onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
+						for pairModel in pairListArray {
+							
+							if userInfo.userIdInt == pairModel.userIdInt || userInfo.userIdInt == pairModel.inviteeIdInt {
+								if userInfo.onlineStatusBool! { // 1 online
+									if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired { // 后改，online里也有miss状态
+										onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
+									} else {
+										onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
+									}
+								} else if pairModel.statusInt == 1 { // 1 pair接受过
+									lastPairArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
+								} else if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired { // timestamp过期了就是missed
+									missedArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
 								} else {
-									onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
+									otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
 								}
-							} else if pairModel.statusInt == 1 { // 1 pair接受过
-								lastPairArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
-							} else if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired { // timestamp过期了就是missed
-								missedArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
-							} else {
-								otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
 							}
 						}
+					} else {
+						otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo))
 					}
 				} else {
 					
@@ -354,7 +359,10 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		if self.inviteFriendArray.count > 0 { self.dataArray.append(self.inviteFriendArray as AnyObject) }
 		
-		self.searchArray = self.dataArray
+		if !(self.twopChatFriendArray[0].userIdInt == nil && self.inviteFriendArray.count == 0) {
+			self.searchArray = self.dataArray
+		}
+		
 		self.tableView.reloadData()
 	}
 	
@@ -500,12 +508,6 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		MessageCenter.shared.addMessageObserver(observer: self)
 		
-		self.myTeamTopConstraint.constant = Device() == .iPhoneX ? 40 : 64
-		
-		self.friendsTopConstraint.constant = Device() == .iPhoneX ? 185 : 209
-		
-		self.friendsBottomConstraint.constant = Device() == .iPhoneX ? 44 : 80
-		
 		let cleanButton = self.searchTextField.value(forKey: "_clearButton") as! UIButton
 		cleanButton.setImage(UIImage(named: "clearButton")!, for: .normal)
 		
@@ -626,6 +628,7 @@ extension DashboardMainViewController : MessageObserver {
 	func handleFriendPairSocketMsgFunc(twopSocketModel:TwopSocketModel) {
 		
 		for dashboardFriendsListModel in self.twopChatFriendArray {
+			print("*** = \(twopSocketModel.extDictModel?.friendIdInt), = \(dashboardFriendsListModel.userIdInt)")
 			if twopSocketModel.extDictModel?.friendIdInt == dashboardFriendsListModel.userIdInt {
 				
 				dashboardFriendsListModel.nextInviteAtDouble = twopSocketModel.extDictModel?.expireTimeDouble

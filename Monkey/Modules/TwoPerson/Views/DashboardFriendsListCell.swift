@@ -128,8 +128,11 @@ class DashboardFriendsListCell: UITableViewCell {
 						self.actionButton.isJiggling = false
 					}
 				}
+			} else {
+				self.delegate!.dashboardFriendsListCellBtnClickFunc(model: self.tempDashboardFriendsListModel!, cell: self, isPair: true)
+				self.actionButton.isUserInteractionEnabled = false
+				self.addTimerFunc()
 			}
-			
 		} else {
 			print("代理为空")
 		}

@@ -25,7 +25,7 @@ class TwopMatchController: MonkeyViewController {
 		guard let currentUser = UserManager.shared.currentUser else { return }
 		
 		// initial panel
-		if !currentUser.cached_unlocked_two_p {
+		if currentUser.cached_unlocked_two_p {
 			// dashboard
 			self.initialPanel = UIStoryboard.init(name: "TwoPerson", bundle: nil).instantiateViewController(withIdentifier: "DashboardMainViewController") as! DashboardMainViewController
 		}else {

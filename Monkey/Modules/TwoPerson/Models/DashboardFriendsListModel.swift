@@ -28,7 +28,7 @@ class DashboardFriendsListModel: NSObject {
 	
 	var statusInt : Int?
 	
-	class func dashboardFriendsListModel(userInfo:UsersInfoModel, pairListModel:PairListModel?, isMissedBool:Bool = false) -> DashboardFriendsListModel {
+	class func dashboardFriendsListModel(userInfo:UsersInfoModel, pairListModel:PairListModel? = nil, isMissedBool:Bool = false) -> DashboardFriendsListModel {
 		
 		let dashboardFriendsListModel = DashboardFriendsListModel()
 		
