@@ -43,7 +43,7 @@ class InviteFriendsViewController: MonkeyViewController {
 		self.removeKeyboardObserverFunc()
 	}
 	
-	@IBAction func dismissBtnClickFunc(_ sender: UIButton) {
+	func dismissBtnClickFunc(_ sender: Any) {
 		self.dismiss(animated: true, completion: nil)
 	}
 	
@@ -190,6 +190,11 @@ class InviteFriendsViewController: MonkeyViewController {
 	}
 	
 	func initView() {
+		self.view.hero.modifiers = [.fade]
+		
+		let tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(dismissBtnClickFunc(_:)))
+		tapGesture.delegate = self
+		self.view.addGestureRecognizer(tapGesture)
 		
 		self.addKeyboardObserverFunc()
 		
@@ -591,3 +596,17 @@ extension InviteFriendsViewController {
 		alertWindow.rootViewController?.present(alert, animated: true, completion: nil)
 	}
 }
+
+extension InviteFriendsViewController: UIGestureRecognizerDelegate {
+	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+		let location = gestureRecognizer.location(in: self.tableView.superview)
+		
+		if let rect = self.tableView.superview?.bounds, rect.contains(location) {
+			return false
+		}
+		return true
+	}
+}
+
+
+

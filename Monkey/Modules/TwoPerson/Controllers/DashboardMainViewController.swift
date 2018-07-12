@@ -7,8 +7,8 @@
 //  Dashboard主页
 
 import UIKit
-import DeviceKit
 import SwiftyJSON
+import Hero
 
 enum SocketDefaultMsgTypeEnum : Int {
 	case unlock2p = 0
@@ -501,6 +501,7 @@ class DashboardMainViewController: MonkeyViewController {
 	}
 	
 	func initView() {
+		self.view.hero.modifiers = [.fade]
 		
 		self.initCircleFunc()
 		
@@ -676,7 +677,7 @@ extension DashboardMainViewController {
 		
 		self.endEditButton.isHidden = false
 		
-		if Device() == .iPhoneX { return }
+		if Environment.isIphoneX { return }
 		
 		self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
 		self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam * 2 - self.InitialTopConstraintTuple.friends)
@@ -688,7 +689,7 @@ extension DashboardMainViewController {
 			self.endEditButton.isHidden = true
 		} else { return } // Q1
 		
-		if Device() == .iPhoneX { return }
+		if Environment.isIphoneX { return }
 		
 		self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
 		self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)

@@ -121,6 +121,7 @@ class SwipeableViewController: MonkeyViewController, UIGestureRecognizerDelegate
 		super.viewDidAppear(animated)
 		
 		self.isSwipingEnabled = true
+		Socket.shared.isEnabled = true
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {

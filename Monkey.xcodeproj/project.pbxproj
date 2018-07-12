@@ -215,6 +215,7 @@
 		D153AC0120F32C71005C1EC1 /* LocalPreviewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D153ABFF20F32C71005C1EC1 /* LocalPreviewContainer.swift */; };
 		D161553920F634E100145FC9 /* VideoCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D161553820F634E100145FC9 /* VideoCallManager.swift */; };
 		D161553A20F634E100145FC9 /* VideoCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D161553820F634E100145FC9 /* VideoCallManager.swift */; };
+		D161554120F7033E00145FC9 /* PairMatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D161554020F7033E00145FC9 /* PairMatchViewController.swift */; };
 		D17B483920E387F100183E9C /* OnepMatchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17B483820E387F100183E9C /* OnepMatchController.swift */; };
 		D17B483A20E387F100183E9C /* OnepMatchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17B483820E387F100183E9C /* OnepMatchController.swift */; };
 		D17B483C20E3889400183E9C /* OnepMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17B483B20E3889400183E9C /* OnepMatchManager.swift */; };
@@ -661,6 +662,7 @@
 		D151874920E9076B0095617C /* InAppNotificationBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InAppNotificationBar.xib; sourceTree = "<group>"; };
 		D153ABFF20F32C71005C1EC1 /* LocalPreviewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPreviewContainer.swift; sourceTree = "<group>"; };
 		D161553820F634E100145FC9 /* VideoCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCallManager.swift; sourceTree = "<group>"; };
+		D161554020F7033E00145FC9 /* PairMatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairMatchViewController.swift; sourceTree = "<group>"; };
 		D17B483820E387F100183E9C /* OnepMatchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnepMatchController.swift; sourceTree = "<group>"; };
 		D17B483B20E3889400183E9C /* OnepMatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnepMatchManager.swift; sourceTree = "<group>"; };
 		D17B483E20E38A3F00183E9C /* MessageCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCenter.swift; sourceTree = "<group>"; };
@@ -1181,6 +1183,7 @@
 		D105860520A0565000E63ADC /* Match */ = {
 			isa = PBXGroup;
 			children = (
+				D161553F20F7030A00145FC9 /* PairMatch */,
 				D1E5301120F59CA700016858 /* MatchPair */,
 				D1C94F4020ECC69C00A3E4E6 /* TwoPerson */,
 				D17B483720E387CB00183E9C /* OnePerson */,
@@ -1384,6 +1387,14 @@
 				D14478682058C5A400485D68 /* Info.plist */,
 			);
 			path = PushService;
+			sourceTree = "<group>";
+		};
+		D161553F20F7030A00145FC9 /* PairMatch */ = {
+			isa = PBXGroup;
+			children = (
+				D161554020F7033E00145FC9 /* PairMatchViewController.swift */,
+			);
+			path = PairMatch;
 			sourceTree = "<group>";
 		};
 		D16C40A520A05ECA005424C9 /* Library */ = {
@@ -2131,6 +2142,7 @@
 				D1F2712A20D8CE9B00F44C01 /* BlurEffectView.swift in Sources */,
 				D1B79D312060DACB00F209B4 /* IFEarlybirdFilter.m in Sources */,
 				34AEE41020D8AA3200DECF3A /* InviteFriendsViewController.swift in Sources */,
+				D161554120F7033E00145FC9 /* PairMatchViewController.swift in Sources */,
 				8B46EAEA1E8767C00069C7D7 /* UsernameTextField.swift in Sources */,
 				D1B79D392060DACB00F209B4 /* IFAmaroFilter.m in Sources */,
 				8464868D1F1D65240092E89E /* JigglyButton.swift in Sources */,

@@ -458,6 +458,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     }
 
     func sendCancelCallMessage() {
+		self.viewModel.cancelCall()
 		self.videoCallManager.closeCall()
 		self.viewModel.sendText("Call canceled")
 		self.videoCall = nil

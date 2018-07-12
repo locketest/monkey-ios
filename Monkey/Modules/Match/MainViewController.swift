@@ -377,6 +377,13 @@ class MainViewController: SwipeableViewController {
 		
 		// add local preview
 		self.localPreview.addLocalPreview()
+		
+		if self.matchType == .Onep {
+			self.isSwipingEnabled = true
+		}else {
+			self.isSwipingEnabled = false
+		}
+		
 		UIView.animate(withDuration: 0.3) {
 			self.contentView.alpha = 1.0
 		}

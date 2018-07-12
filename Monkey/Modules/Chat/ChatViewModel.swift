@@ -186,26 +186,12 @@ class ChatViewModel {
 	
 	/// Makes the API request and returns the parameters necessary for initializing a chat session.
 	func initiateCall() {
-		guard let friendshipId = self.friendship?.friendship_id else {
-			print("Error: Missing friendship id.")
-			return
-		}
 		guard let userId = self.friendship?.user?.user_id else {
 			print("Error: Missing user id which makes no sense")
 			return
 		}
 		
-		let parameters: [String: Any] = [
-			"data": [
-				"type": "videocall",
-				"friendship": [
-					"id" : friendshipId,
-					"friend_id": userId,
-				]
-			]
-		]
-		
-		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V13.rawValue)/\(ApiType.Videocall)", method: .post, parameters: parameters) { (result: JSONAPIResult<[String: Any]>) in
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/\(ApiType.Videocall.rawValue)/request/\(userId)", method: .post) { (result: JSONAPIResult<[String: Any]>) in
 			switch result {
 			case .error(let error):
 				// revert fade animation back to screen
@@ -217,6 +203,17 @@ class ChatViewModel {
 				break
 //				self.delegate?.processRecievedRealmCallFromServer(realmVideoCall: videoCall)
 			}
+		}
+	}
+	
+	/// Makes the API request and returns the parameters necessary for initializing a chat session.
+	func cancelCall() {
+		guard let userId = self.friendship?.user?.user_id else {
+			print("Error: Missing user id which makes no sense")
+			return
+		}
+		
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/\(ApiType.Videocall.rawValue)/cancel/\(userId)", method: .post) { (_) in
 		}
 	}
 	
