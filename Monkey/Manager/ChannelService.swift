@@ -7,28 +7,46 @@
 //
 
 import Foundation
+import ObjectMapper
 
 protocol ChannelServiceProtocol {
-	func remoteViewFor(user user_id: Int) -> UIView?
-
+	// 远程用户加入房间
 	func remoteUserDidJoined(user user_id: Int)
+	
+	// 远程用户离开房间(是否掉线)
 	func remoteUserDidQuited(user user_id: Int, droped: Bool)
 
+	// 收到远程用户视频
 	func didReceiveRemoteVideo(user user_id: Int)
 
+	// media_key 失效
 	func channelKeyInvalid()
+	
+	// 自己成功加入房间
+	func joinChannelSuccess()
+	
+	// 自己成功退出房间
+	func leaveChannelSuccess()
+	
+	// 收到房间内错误
+	func didReceiveChannelError(error: Error?)
 
 	// 处理消息回调
 	func didReceiveChannelMessage(message: [String: Any])
 }
 
 protocol ChannelServiceManager {
-	func joinChannel(matchModel: VideoCallProtocol, complete: @escaping CompletionHandler)
-	func leaveChannel(complete: @escaping CompletionHandler)
+	// 加入新房间
+	func joinChannel(matchModel: ChannelModel)
+	// 离开旧房间
+	func leaveChannel()
+	
+	// 对所有远程用户静音开关
+	func muteAllRemoteUser(mute: Bool)
+	// 对某个远程用户静音开关
 	func mute(user user_id: Int, mute: Bool)
-
-	func sendMessage(message: [String: Any])
-	func readyToCaptureStream() -> Bool
+	// 发送一条房间内消息
+	func sendMessage(message: MatchMessage)
 }
 
 class ChannelService {
@@ -36,128 +54,185 @@ class ChannelService {
 
 	static let shared = ChannelService()
 	private init() {
-		cameraManager.streamHandler = self
+		self.cameraManager.streamHandler = self
+		self.agoraService.observer = self
+		self.opentokService.observer = self
 	}
 
-	/**
-	*  当前匹配到的 match
-	*/
-	var matchModel: VideoCallProtocol?
 	/**
 	*  channel observer
 	*/
 	var channelDelegate: ChannelServiceProtocol?
-
+	// 当前匹配到的 match
+	fileprivate var matchModel: ChannelModel?
 	// agora service
-	var agoraService = AgoraService.shared
+	fileprivate var agoraService = AgoraService.shared
 	// opentok service
-	var opentokService = OpenTokService.init()
+	fileprivate var opentokService = OpenTokService.shared
 
-	var channelService: ChannelServiceManager? {
-		return channelService(for: matchModel)
+	// 根据当前模型选择 channelService
+	fileprivate func channelService(for match: ChannelModel) -> ChannelServiceManager {
+		if match.supportAgora() {
+			return self.agoraService
+		}else {
+			return self.opentokService
+		}
 	}
 
 	// 等待发送的消息
-	var peddingMessages: [MatchMessage] = [MatchMessage]()
-	// 是否可发送视频流
-	var captureStream = false
+	fileprivate var peddingMessages: [MatchMessage] = [MatchMessage]()
 }
 
 extension ChannelService: ChannelServiceManager {
-
-	func channelService(for match: VideoCallProtocol?) -> ChannelServiceManager? {
-		guard let match = match else {
-			return nil
-		}
-		if match.supportAgora() {
-			return agoraService
-		}else {
-			return opentokService
-		}
+	
+	func joinChannel(matchModel: ChannelModel) {
+		self.matchModel = matchModel
+		self.channelService(for: matchModel).joinChannel(matchModel: matchModel)
 	}
 
-	func joinChannel(matchModel: VideoCallProtocol, complete: @escaping CompletionHandler) {
-		leaveChannel(matchModel: self.matchModel) {
-			self.matchModel = nil
-			self.channelService(for: matchModel)?.joinChannel(matchModel: matchModel, complete: {
-				self.matchModel = matchModel
-				complete()
-			})
-		}
-	}
-
-	private func leaveChannel(matchModel: VideoCallProtocol?, complete: @escaping CompletionHandler) {
-		guard let leaveMatch = matchModel else {
-			complete()
+	// 离开房间
+	func leaveChannel() {
+		// 如果还在房间
+		guard let match = self.matchModel else {
 			return
 		}
-		channelService(for: leaveMatch)?.leaveChannel(complete: complete)
+		// 离开 channel
+		self.channelService(for: match).leaveChannel()
+		// 模型置空
+		self.matchModel = nil
+		// 消息情空
+		self.peddingMessages.removeAll()
+	}
+	
+	// 静音所有用户
+	func muteAllRemoteUser(mute: Bool) {
+		guard let match = self.matchModel else { return }
+		
+		self.channelService(for: match).muteAllRemoteUser(mute: mute)
 	}
 
-	func leaveChannel(complete: @escaping CompletionHandler) {
-		self.matchModel = nil
-		leaveChannel(matchModel: matchModel) {
-			complete()
+	// 对某个人静音开关
+	func mute(user user_id: Int, mute: Bool) {
+		guard let match = self.matchModel else { return }
+		
+		self.channelService(for: match).mute(user: user_id, mute: mute)
+	}
+	
+	func sendMessage(type: MessageType, body: String) {
+		let dic = [
+			"type": type.rawValue,
+			"body": body,
+			]
+		
+		// json to model
+		if let message = Mapper<MatchMessage>().map(JSON: dic) {
+			self.sendMessage(message: message)
 		}
 	}
-
-	func sendMessage(message: [String: Any]) {
-		channelService?.sendMessage(message: message)
+	
+	// 发送消息
+	func sendMessage(message: MatchMessage) {
+		// 没有 match 不会发送消息
+		guard let match = self.matchModel, match.allUserJoined() else {
+			// 缓存消息等对方加入后发送
+			self.peddingMessages.append(message)
+			return
+		}
+		
+		self.channelService(for: match).sendMessage(message: message)
 	}
-
-	func mute(user user_id: Int, mute: Bool) {
-		channelService?.mute(user: user_id, mute: mute)
-	}
-
-	func readyToCaptureStream() -> Bool {
-		return captureStream
+	
+	// 发送 pedding message
+	fileprivate func dispatchPeddingMessages(to user_id: Int) {
+		guard let match = self.matchModel else { return }
+		// 如果对方全都加入房间了，且当前有未发送完的消息，继续发送
+		if match.allUserJoined() {
+			// 遍历发送未发送消息
+			let peddingMessages = self.peddingMessages
+			let channelService = self.channelService(for: match)
+			peddingMessages.forEach { (message) in
+				channelService.sendMessage(message: message)
+			}
+			
+			// 清空未发送消息
+			self.peddingMessages.removeAll()
+		}
 	}
 }
 
 extension ChannelService: ChannelServiceProtocol {
-	func remoteViewFor(user user_id: Int) -> UIView? {
-		return channelDelegate?.remoteViewFor(user: user_id)
+	func joinChannelSuccess() {
+		guard let match = self.matchModel else { return }
+		
+		match.joined = true
+		self.channelDelegate?.joinChannelSuccess()
+	}
+	
+	func leaveChannelSuccess() {
+		self.channelDelegate?.leaveChannelSuccess()
 	}
 
 	func remoteUserDidJoined(user user_id: Int) {
-//		matchModel?.user?.joined = true
-//		channelService?.mute(user: user_id, mute: true)
-		channelDelegate?.remoteUserDidJoined(user: user_id)
+		// 如果进入的人是匹配到的人
+		guard let match = self.matchModel, let user = match.matchedUser(with: user_id) else { return }
+		// joined
+		user.joined = true
+		// mute first
+		self.channelService(for: match).mute(user: user_id, mute: true)
+		// 当前有未发送完的消息，继续发送
+		self.dispatchPeddingMessages(to: user_id)
+		// notify delegate
+		self.channelDelegate?.remoteUserDidJoined(user: user_id)
 	}
+	
 	func remoteUserDidQuited(user user_id: Int, droped: Bool) {
-		channelDelegate?.remoteUserDidQuited(user: user_id, droped: droped)
+		guard let match = self.matchModel, match.matchedUser(with: user_id) != nil else { return }
+		
+		// 与远程用户断开连接
+		self.channelDelegate?.remoteUserDidQuited(user: user_id, droped: droped)
 	}
 
 	func didReceiveRemoteVideo(user user_id: Int) {
-//		matchModel?.user?.connected = true
-		channelDelegate?.didReceiveRemoteVideo(user: user_id)
+		// 如果收到的流，不是当前匹配到的用户的流
+		guard let match = self.matchModel, let user = match.matchedUser(with: user_id) else { return }
+		
+		user.joined = true
+		if user.accept == false {
+			self.channelDelegate?.didReceiveChannelMessage(message: [
+				"type": MessageType.Accept.rawValue,
+				])
+		}
+		user.accept = true
+		user.connected = true
+		self.channelDelegate?.didReceiveRemoteVideo(user: user_id)
+	}
+	
+	func didReceiveChannelError(error: Error?) {
+		self.channelDelegate?.didReceiveChannelError(error: error)
 	}
 
 	func channelKeyInvalid() {
-
+		self.channelDelegate?.channelKeyInvalid()
 	}
 
 	func didReceiveChannelMessage(message: [String: Any]) {
-		channelDelegate?.didReceiveChannelMessage(message: message)
+		// 如果收到的消息，不是匹配到的用户发送的消息
+		
+		self.channelDelegate?.didReceiveChannelMessage(message: message)
 	}
 }
 
-extension ChannelService: StreamBufferHandler, StreamRawDataHandler {
+extension ChannelService: StreamRawDataHandler, StreamBufferHandler {
 	func newFrameBufferAvailable(_ frameBuffer: CVPixelBuffer) {
-		guard readyToCaptureStream() == true, let currentMatchModel = matchModel else {
-			return
-		}
-		if currentMatchModel.supportAgora() {
-			agoraService.newFrameBufferAvailable(frameBuffer)
+		guard let match = self.matchModel else { return }
+		
+		if match.supportAgora() {
+			self.agoraService.newFrameBufferAvailable(frameBuffer)
 		}
 	}
 
 	func newFrameRawDataAvailable(_ rawData: UnsafeMutablePointer<GLubyte>) {
-		guard readyToCaptureStream() == true, let currentMatchModel = matchModel else {
-			return
-		}
-		if currentMatchModel.supportAgora() == false {
-			opentokService.newFrameRawDataAvailable(rawData)
-		}
+//		guard let match = self.matchModel else { return }
+		
 	}
 }

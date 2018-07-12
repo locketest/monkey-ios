@@ -146,6 +146,19 @@ class UserManager {
 	}
 	
 	private func notifyUserLogin() {
+		if let realm = try? Realm(), let currentUser = self.currentUser {
+			do {
+				try realm.write {
+					currentUser.cached_match_type = currentUser.match_type
+					currentUser.cached_enable_two_p = currentUser.enabled_two_p
+					currentUser.cached_unlocked_two_p = currentUser.unlocked_two_p
+					currentUser.cached_contact_invite_remain_times = currentUser.contact_invite_remain_times
+				}
+			} catch(let error) {
+				print("Error: ", error)
+			}
+		}
+		
 		// some config
 		Configs.signAsLogin()
 		

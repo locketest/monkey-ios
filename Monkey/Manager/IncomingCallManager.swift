@@ -43,23 +43,23 @@ class IncomingCallManager {
     var chatSession:ChatSession?
     var skipCallIds:[String] = []
 	init() {
-		let realm = try? Realm()
-		incomingCallNotificationToken = realm?.objects(RealmCall.self).observe({ [unowned self] (changes) in
-			self.checkForIncomingCall()
-		})
+//		let realm = try? Realm()
+//		incomingCallNotificationToken = realm?.objects(RealmCall.self).observe({ [unowned self] (changes) in
+//			self.checkForIncomingCall()
+//		})
 	}
     
     func checkForIncomingCall() {
-        let realm = try? Realm()
-        guard let incomingCall = realm?.objects(RealmVideoCall.self).first(where: { (chat) -> Bool in
-            let status = chat.status == "WAITING"
-            let isNotInitiator = chat.initiator?.user_id != APIController.shared.currentUser?.user_id
-            let hasSession = chat.session_id?.isEmpty == false
-            return status && isNotInitiator && hasSession
-        }) else {
-            return
-        }
-        self.reactToIncomingCall(incomingCall)
+//        let realm = try? Realm()
+//        guard let incomingCall = realm?.objects(RealmVideoCall.self).first(where: { (chat) -> Bool in
+//            let status = chat.status == "WAITING"
+//            let isNotInitiator = chat.initiator?.user_id != APIController.shared.currentUser?.user_id
+//            let hasSession = true
+//            return status && isNotInitiator && hasSession
+//        }) else {
+//            return
+//        }
+//        self.reactToIncomingCall(incomingCall)
     }
     
 	func reactToIncomingCall(_ realmCall: RealmVideoCall) {
@@ -93,23 +93,24 @@ class IncomingCallManager {
     ///  if user ignore video call , call this func
 	func cancelVideoCall(chatsession: ChatSession) {
 		self.chatSession = nil
-		if let friendShip = chatsession.videoCall?.matchedFriendship, let friendshipID = friendShip.friendship_id, let chat_id = chatsession.chat?.chatId, let user_id = chatsession.videoCall?.user?.user_id ?? chatsession.videoCall?.initiator?.user_id {
-			let param = [
-				"data": [
-					"type": "videocall",
-					"chat_id": chat_id,
-					"friendship": [
-						"id": friendshipID,
-						"friend_id": user_id,
-					]
-				]
-			]
-			JSONAPIRequest.init(url: "\(Environment.baseURL)/api/\(ApiVersion.V13.rawValue)/videocall/cancel", method: .post, parameters: param, options: [.header("Authorization", APIController.authorization),])
-		}
+//		if let friendShip = chatsession.videoCall?.matchedFriendship, let friendshipID = friendShip.friendship_id, let chat_id = chatsession.chat?.chatId, let user_id = chatsession.videoCall?.user?.user_id ?? chatsession.videoCall?.initiator?.user_id {
+//			let param = [
+//				"data": [
+//					"type": "videocall",
+//					"chat_id": chat_id,
+//					"friendship": [
+//						"id": friendshipID,
+//						"friend_id": user_id,
+//					]
+//				]
+//			]
+//			JSONAPIRequest.init(url: "\(Environment.baseURL)/api/\(ApiVersion.V13.rawValue)/videocall/cancel", method: .post, parameters: param, options: [.header("Authorization", APIController.authorization),])
+//		}
 	}
     
     func createChatSession(fromCall: RealmCall) -> ChatSession? {
-        guard let chatId = fromCall.chat_id, let sessionId = fromCall.session_id, let userId = fromCall.initiator?.user_id else {
+	let sessionId = fromCall.channel_name
+        guard let chatId = fromCall.chat_id, let userId = fromCall.initiator?.user_id else {
             return nil
         }
         
@@ -119,7 +120,8 @@ class IncomingCallManager {
     }
     
 	func createChatSession(fromVideoCall: RealmVideoCall) -> ChatSession? {
-		guard let chatId = fromVideoCall.chat_id, let sessionId = fromVideoCall.session_id, let userId = fromVideoCall.initiator?.user_id else {
+		let sessionId = fromVideoCall.channel_name
+		guard let chatId = fromVideoCall.chat_id, let userId = fromVideoCall.initiator?.user_id else {
 			return nil
 		}
 		

@@ -128,16 +128,16 @@ extension UInt32 {
 
 extension String {
 	public func containsEmojiFunc() -> Bool {
-		let codepoints = self.unicodeScalars.map { $0.value }
-		
-		if let first = codepoints.first, let last = codepoints.last {
-			let isKeycapEmoji = last == .combiningEnclosingKeycap && codepoints.contains(.variationSelector16)
-			let isEmoji = CodePointSet.contains(first) && last != .variationSelector15
-			
-			return isKeycapEmoji || isEmoji
-		} else {
+//		let codepoints = self.unicodeScalars.map { $0.value }
+//		
+//		if let first = codepoints.first, let last = codepoints.last {
+//			let isKeycapEmoji = last == .combiningEnclosingKeycap && codepoints.contains(.variationSelector16)
+//			let isEmoji = CodePointSet.contains(first) && last != .variationSelector15
+//			
+//			return isKeycapEmoji || isEmoji
+//		} else {
 			return false
-		}
+//		}
 	}
 }
 

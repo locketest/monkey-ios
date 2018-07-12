@@ -66,6 +66,7 @@ class Socket {
 	fileprivate static var messageId = 1
 	// 是否有写入权限
 	fileprivate var isAuthorized = false
+	fileprivate var isReconnecting = false
 	// 是否可用
 	var isEnabled = false {
 		didSet {
@@ -133,19 +134,18 @@ class Socket {
 					self.isAuthorized = true
 					// 刚连接成功时，将所有未发送的消息全部发送
 					let socketWrites = self.pendingSocketWrites
-					self.pendingSocketWrites = [SocketWrite]()
 					for socketWrite in socketWrites {
 						self.write(string: socketWrite.string)
 					}
+					self.pendingSocketWrites.removeAll()
 				}else {
 					// 授权出错，直接断开连接
 					self.disconnect()
 				}
-			}else {
-				fallthrough
 			}
+			
 		default:
-			delegate.receive(message: message, from: channel)
+			self.delegate.receive(message: message, from: channel)
 			break
 		}
 	}
@@ -162,11 +162,17 @@ class Socket {
 	}
 
 	// 出错重连
-	fileprivate func didReceive(error: Error) {
+	fileprivate func didReceive(error: Error?) {
+		guard self.isReconnecting == false else {
+			return
+		}
+		
+		self.isReconnecting = true
 		// 收到错误重连
 		if self.isEnabled {
 			self.webSocket.connect()
 		}
+		
 		// 5s 之后重连
 		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
 			if self.isEnabled {
@@ -185,6 +191,7 @@ extension Socket: WebSocketDelegate {
 			return // Signed out.
 		}
 		
+		self.isReconnecting = false
 		// 连接成功时，先发送授权消息
 		self.webSocket.write(string: [0, SocketChannel.authorization.rawValue, [
 			"authorization": authorization,
@@ -199,13 +206,18 @@ extension Socket: WebSocketDelegate {
 		self.isAuthorized = false
 		// 清空回调和未发送消息
 		self.pendingSocketWrites.removeAll()
-		// 如果发生错误，尝试重连
-		if let error = error {
+		// 如果断连，需要重连
+		if self.isEnabled {
 			self.didReceive(error: error)
 		}
 	}
 	// 收到文本消息
 	func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
+		self.websocketDidReceiveMessage(text: text)
+	}
+	
+	// 收到文本消息
+	func websocketDidReceiveMessage(text: String) {
 		print("websocketDidReceiveMessage \(text)")
 		guard let result = text.asJSON as? [Any] else {
 			print("Result must be an array")

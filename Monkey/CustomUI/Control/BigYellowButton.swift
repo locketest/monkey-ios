@@ -110,6 +110,7 @@ import UIKit
     func setPadding(_ padding: CGFloat) {
         self.titleEdgeInsets = UIEdgeInsetsMake(0, -emojiLabel!.frame.origin.x + padding, 0, padding);
     }
+	
     override init(frame: CGRect) {
         super.init(frame: frame)
         afterInit()
@@ -119,6 +120,7 @@ import UIKit
         super.init(coder: aDecoder)
         afterInit()
     }
+	
     func afterInit() {
         self.showsTouchWhenHighlighted = false
         self.tintColor = .clear

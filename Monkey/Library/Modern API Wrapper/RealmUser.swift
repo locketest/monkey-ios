@@ -42,7 +42,7 @@ class RealmUser: MonkeyModel {
 	dynamic var cached_unlocked_two_p: Bool = false
 	
 	// twop a\b test plan. 1 for planA, 2 for planB
-	dynamic var two_p_user_group_type: Int = UnlockPlan.A.rawValue
+	dynamic var two_puser_group_type: Int = UnlockPlan.A.rawValue
 	
 	// how many contact should invite again
 	dynamic var contact_invite_remain_times: Int = 0

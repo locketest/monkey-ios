@@ -190,6 +190,9 @@ enum OnepStatus {
 	func canSwipe() -> Bool {
 		return self == .WaitingStart || self == .RequestMatch
 	}
+	func processMatch() -> Bool {
+		return self.canSwipe() == false
+	}
 }
 
 // twop match status

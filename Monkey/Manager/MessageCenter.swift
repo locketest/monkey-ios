@@ -15,8 +15,6 @@ import ObjectMapper
 	@objc optional func didReceiveOnepMatch(match: MatchModel)
 	@objc optional func didReceiveTwopMatch(match: MatchModel)
 	
-	// 收到房间消息
-	@objc optional func didReceiveRoomMessage(action: String, in chat: String)
 	// 收到对 match 的操作
 	@objc optional func didReceiveSkip(in chat: String)
 	@objc optional func didReceiveAccept(in chat: String)
@@ -68,95 +66,42 @@ class MessageCenter {
 		LogManager.shared.addLog(type: .SendSocketMessage, subTitle: channel.rawValue, info: message)
 	}
 	
-	func handle(message: [String: Any], from channel: SocketChannel) {
-		
-		var messageInfo = JSONAPIDocument.init(json: message)
+	func handle(messageDic: [String: Any], from channel: SocketChannel) {
+		var messageDoc = JSONAPIDocument.init(json: messageDic)
 		var messageObject: Any? = nil
 
 		// handle some message data
 		switch channel {
 		case .match_receive:
-			var match_info = messageInfo.dataResource?.attributes
-			// 设置 match 属性
-			if let meta = messageInfo.meta, let next_fact = meta["next_fact"] as? String {
-				match_info?["next_fact"] = next_fact
-			}
 			
-			if let match_data = messageInfo.dataResource?.json, let match_id = match_data["id"] as? String {
-				match_info?["id"] = match_id
-			}
-			
-			// 更正 match 结构
-			if let match_relationships = messageInfo.dataResource?.relationships {
-				if let user_info = match_relationships["user"] as? [String: Any], let user_id = user_info["id"] as? String {
-					// 设置 match 到的 user_id
-					match_info?["user_id"] = user_id
-					
-					// 配置 json，使 includes 可用
-					if let user_data = user_info["data"] as? [String: Any] {
-						var include = user_data // 构造 user 字典
-						var user_attributes = user_data["attributes"] as? [String: Any] ?? [String: Any]() // 构造 user 属性
-						// 构造 user 外键关系
-						var user_relationships = [String: Any]()
-						// user channesl
-						if let channels = user_attributes["channels"] as? [String] {
-							// make channels with user's channels
-							let channels_info = channels.flatMap { (channel_id) -> [String: String]? in
-								return [
-									"type": "channels",
-									"id": channel_id,
-									]
-							}
-							user_relationships["channels"] = ["data": channels_info]
-						}
-						
-						// user instagram_account
-						if let instagram_account = user_attributes["instagram_account_id"] as? String {
-							user_relationships["instagram_account"] = ["data": [
-								"type": "instagram_accounts",
-								"id": instagram_account,
-								]]
-						}
-						include["relationships"] = user_relationships
-						
-						// 构造新的 JsonApiDocument
-						var new_message_info = messageInfo.json
-						var new_match_relationships = match_relationships
-						new_match_relationships["user"] = user_data
-						new_message_info["relationships"] = new_match_relationships
-						new_message_info["included"] = [include]
-						messageInfo = JSONAPIDocument.init(json: new_message_info)
-					}
-				}
-				
-				// 设置 match 的 channel
-				if let channels_info = match_relationships["channels"] as? [String: Any], let channels = channels_info["data"] as? [[String: Any]], let user_channel = channels.first, let channel_id = user_channel["id"] as? String {
-					match_info?["channel_id"] = channel_id
-				}
-				
-				if let channel_info = match_relationships["channel"] as? [String: Any], let channel_id = channel_info["id"] as? String {
-					match_info?["channel_id"] = channel_id
-				}
+			var matchJson = messageDic
+			// 老的数据
+			if messageDoc.dataResource?.id != nil {
+				// conver to new matchJson
+				matchJson = self.parseMatch(old: messageDoc)
+				// 构造不能使用的 json 格式
+				messageDoc = JSONAPIDocument.init(data: matchJson)
+			}else {
+				matchJson = self.parseMatch(new: matchJson)
 			}
 			
 			// 根据 match attributes 构造 match 对象
-			if let match_info = match_info, let matchModel = Mapper<MatchModel>().map(JSON: match_info) {
+			if let matchModel = Mapper<MatchModel>().map(JSON: matchJson) {
+				// 构造 match model
 				messageObject = matchModel
-				// 设置 match_user 属性
-				
 			}
 			break
 		case .call_receive:
 			// call_id
-			var call_info = messageInfo.dataResource?.attributes
-			if let call_data = messageInfo.dataResource?.json, let match_id = call_data["id"] as? String {
+			var call_info = messageDoc.dataResource?.attributes
+			if let call_data = messageDoc.dataResource?.json, let match_id = call_data["id"] as? String {
 				call_info?["id"] = match_id
 			}
 			
 			// call_relationships
-			if let call_relationships = messageInfo.dataResource?.relationships {
+			if let call_relationships = messageDoc.dataResource?.relationships {
 				// 构造新的 json 和 document
-				var new_message_info = messageInfo.json
+				var new_message_info = messageDoc.json
 				var new_call_relationships = call_relationships
 				
 				// 设置 match 到的 user_id
@@ -187,7 +132,7 @@ class MessageCenter {
 				}
 				
 				new_message_info["relationships"] = new_call_relationships
-				messageInfo = JSONAPIDocument.init(json: new_message_info)
+				messageDoc = JSONAPIDocument.init(json: new_message_info)
 			}
 			
 			// 根据 call attributes 构造 match 对象
@@ -219,11 +164,11 @@ class MessageCenter {
 			break
 		}
 		
-		RealmDataController.shared.apply(messageInfo) { (_) in
+		RealmDataController.shared.apply(messageDoc) { (_) in
 			if messageObject == nil {
-				messageObject = messageInfo
+				messageObject = messageDoc
 			}
-			self.dispatch(object: messageObject, message: message, from: channel)
+			self.dispatch(object: messageObject, message: messageDic, from: channel)
 		}
 	}
 	
@@ -235,7 +180,7 @@ class MessageCenter {
 		
 		switch channel {
 		case .match_outroom:
-			if let attribute = message["attributes"] as? [String: Any], let action = attribute["match_action"] as? String, let send_time = attribute["send_time"] as? TimeInterval, send_time != 0 {
+			if let messageDoc = object as? JSONAPIDocument, let attribute = messageDoc.dataResource?.attributes, let action = attribute["match_action"] as? String, let send_time = attribute["send_time"] as? TimeInterval, send_time != 0 {
 				let currentTime = Date.init().timeIntervalSince1970
 				let duration = Int(ceil(currentTime - send_time))
 				var session = "7+"
@@ -248,12 +193,11 @@ class MessageCenter {
 					"receive_action": action,
 					])
 			}
-//			selector = #selector(MessageObserver.didReceiveRoomMessage(action:in:))
 			fallthrough
 		case .call_outroom:
-//			selector = #selector(MessageObserver.didReceiveRoomMessage(action:in:))
-			if let objectDocument = object as? JSONAPIDocument, let objectAttributes = objectDocument.dataResource?.attributes, let action = objectAttributes["action"] as? String, let chat_id = objectAttributes["chat_id"] as? String {
+			if let messageDoc = object as? JSONAPIDocument, let attribute = messageDoc.dataResource?.attributes, let action = attribute["match_action"] as? String, let chat_id = attribute["chat_id"] as? String {
 				object1 = chat_id
+				
 				if action == MessageType.Accept.rawValue {
 					selector = #selector(MessageObserver.didReceiveAccept(in:))
 				}else {
@@ -263,10 +207,12 @@ class MessageCenter {
 			break
 		case .match_receive:
 			object1 = object
-			if let match = object as? MatchModel, match.pair() == true {
-				selector = #selector(MessageObserver.didReceiveTwopMatch(match:))
-			}else {
-				selector = #selector(MessageObserver.didReceiveOnepMatch(match:))
+			if let match = object as? MatchModel {
+				if match.pair() {
+					selector = #selector(MessageObserver.didReceiveTwopMatch(match:))
+				}else {
+					selector = #selector(MessageObserver.didReceiveOnepMatch(match:))
+				}
 			}
 			break
 		case .call_receive:
@@ -314,18 +260,101 @@ class MessageCenter {
 				if selector == #selector(MessageObserver.didReceiveUnknowMessage(message:channel:)) {
 					observer.didReceiveUnknowMessage?(message: message, channel: channel.rawValue)
 				}else if object1 == nil {
-					observer.perform(selector)
+					let _ = observer.perform(selector)
 				}else {
-					observer.perform(selector, with: object1)
+					let _ = observer.perform(selector, with: object1)
 				}
 			}
 		})
+	}
+	
+	private func parseMatch(old messageInfo: JSONAPIDocument) -> [String: Any] {
+		var matchDic = messageInfo.dataResource?.attributes ?? [String: Any]()
+		// 设置 match 属性
+		if let meta = messageInfo.meta, let next_fact = meta["next_fact"] as? String {
+			matchDic["fact"] = next_fact
+		}
+		
+		if let match_id = messageInfo.dataResource?.id {
+			matchDic["match_id"] = match_id
+		}
+		
+		if let session_id = matchDic["session_id"] as? String {
+			matchDic["channel_name"] = session_id
+		}
+		
+		if let media_key = matchDic["media_key"] as? String {
+			matchDic["channel_key"] = media_key
+		}
+		
+		if let token = matchDic["token"] as? String {
+			matchDic["channel_key"] = token
+		}
+		
+		if let match_distance = matchDic["match_distance"] {
+			matchDic["match_distance"] = match_distance
+		}
+		
+		// 更正 match 结构
+		if let match_relationships = messageInfo.dataResource?.relationships {
+			if let user_info = match_relationships["user"] as? JSONAPIDocument, let user_id = user_info.dataResource?.id {
+				// 设置 match 到的 user
+				var user_attributes = user_info.dataResource?.attributes ?? [String: Any]() // 构造 user 属性
+				let user_id = Int(user_id)
+				user_attributes["id"] = user_id
+				
+				// 构造 user_info
+				var user_info_attributes: [String: Any] = [String: Any]()
+				user_info_attributes["user_id"] = user_id
+				user_info_attributes["bio"] = matchDic["bio"]
+				
+				// user channesl
+				if let channels = user_attributes["channels"] as? [String], let first = channels.first, let tree_id = Int(first) {
+					// make channels with user's channels
+					user_info_attributes["tree_id"] = tree_id
+				}
+				// user_info in users
+				user_attributes["user_info"] = user_info_attributes
+				// users
+				matchDic["users"] = [user_attributes]
+			}
+		}
+		return matchDic
+	}
+	
+	private func parseMatch(new messageJson: [String: Any]) -> [String: Any] {
+		var matchDic = messageJson
+		if let users = messageJson["users"] as? [[String: Any]] {
+			var new_users = [[String: Any]]()
+			let user_infos = messageJson["user_infos"] as? [[String: Any]]
+			
+			for user in users {
+				var new_user = user
+				let user_id = user["id"] as? Int
+				
+				var new_user_info = [String: Any]()
+				if let user_infos = user_infos {
+					for user_info in user_infos {
+						if let user_info_id = user_info["user_id"] as? Int, user_info_id == user_id {
+							new_user_info = user_info
+						}
+					}
+				}
+				if new_user_info["user_id"] == nil {
+					new_user_info["user_id"] = user_id
+				}
+				new_user["user_info"] = new_user_info
+				new_users.append(new_user)
+			}
+			matchDic["users"] = new_users
+		}
+		return matchDic
 	}
 }
 
 extension MessageCenter: SocketMessageHandler {
 	public func receive(message: [String: Any], from channel: String) {
-		self.handle(message: message, from: SocketChannel.init(channel: channel))
+		self.handle(messageDic: message, from: SocketChannel.init(channel: channel))
 		LogManager.shared.addLog(type: .ReceiveSocketMessage, subTitle: channel, info: message)
 	}
 }

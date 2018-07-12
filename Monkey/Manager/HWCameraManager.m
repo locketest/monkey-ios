@@ -94,8 +94,11 @@
 
 #pragma mark - pixel
 - (void)addPixellate {
-	self.pixellated = YES;
+	if (self.pixellated) {
+		return;
+	}
 	
+	self.pixellated = YES;
 	[self clearFilter];
 	_gpuImagefilter = [[GPUImageFilterGroup alloc] init];
 	[_gpuImagefilter addFilter:self.pixellateFilter];
@@ -105,6 +108,10 @@
 }
 
 - (void)removePixellate {
+	if (self.pixellated == NO) {
+		return;
+	}
+	
 	self.pixellated = NO;
 	
 	[self clearFilter];
@@ -162,7 +169,7 @@
 
 - (GPUImageView *)gpuImageView {
 	if (!_gpuImageView) {
-		_gpuImageView = [[GPUImageView alloc] init];
+		_gpuImageView = [[GPUImageView alloc] initWithFrame:UIScreen.mainScreen.bounds];
 		_gpuImageView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
 		_gpuImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		[_gpuImageView setInputRotation:kGPUImageFlipHorizonal atIndex:0];
@@ -321,7 +328,8 @@
 		CVPixelBufferLockBaseAddress(pixelBuffer, 0);
 		[self.streamHandler newFrameBufferAvailable:pixelBuffer];
 		CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-	}else if ([self isCaptureStarted]) {
+	}else if (self.opentok_capture) {
+		NSLog(@"consume frame");
 		CVPixelBufferLockBaseAddress(pixelBuffer, 0);
 		self.videoFrame.format.estimatedCaptureDelay = 100;
 		[self.videoFrame clearPlanes];

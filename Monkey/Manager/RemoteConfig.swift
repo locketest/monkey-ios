@@ -39,6 +39,7 @@ class RemoteConfigManager {
             return 5; // default value
         }
     }
+	
     var match_autoskip_warncount: Int {
         if let match_autoskip_warncount = remoteConfig.configValue(forKey: "match_auto_skip").numberValue?.intValue {
             return (match_autoskip_warncount == 0) ? 5 : match_autoskip_warncount;

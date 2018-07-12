@@ -16,13 +16,6 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     
     let viewModel = FriendsViewModel.sharedFreindsViewModel
     
-    /// When opening notifications that route you to a specific conversation from cold launch, the code that manages the navigation executes too early, leaving user stuck on FriendsVC. This fixes that
-    var callingFromViewDidLoad = false
-    
-    /// Deep link a conversation from APNS
-    var initialConversation: String?
-    var initialConversationOptions: [AnyHashable: Any]?
-    
     var longPressGestureRecognizer: UILongPressGestureRecognizer?
     
     /// A reference to the presented instagramVC. Currently used to forward longPressGestureRecognizer updates
@@ -52,27 +45,12 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
         self.view.addGestureRecognizer(longPressGesture)
         self.longPressGestureRecognizer = longPressGesture
-        
-        self.callingFromViewDidLoad = true
-        self.reloadData()
-        self.callingFromViewDidLoad = false
     }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-//		if let mainVC = self.presentingViewController as? MainViewController {
-//            IncomingCallManager.shared.delegate = mainVC
-//		}
-        
-        // Do not allow user to return to chat they just swiped away from
-        self.checkDeepLink()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-		
-    }
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		self.swipableViewControllerPresentFromLeft = nil
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -196,6 +174,15 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
             break
         }
     }
+	
+	override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		
+		if (gestureRecognizer == self.friendsTableView.panGestureRecognizer || otherGestureRecognizer == self.friendsTableView.panGestureRecognizer) {
+			return false
+		}
+		
+		return super.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
+	}
     
     func friendshipForCell(from longPressGesture: UILongPressGestureRecognizer) -> RealmFriendship? {
 		let friendsLocation = longPressGesture.location(in: self.friendsTableView)
@@ -214,6 +201,7 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
         let storyboard = UIStoryboard(name: "Chat", bundle: Bundle.main)
         let chatViewController = storyboard.instantiateViewController(withIdentifier: "chat") as! ChatViewController
         chatViewController.viewModel.friendshipId = friendship.friendship_id
+		self.swipableViewControllerPresentFromLeft = chatViewController
 		
 		let isMonkeyKing = friendship.user?.isMonkeyKing() ?? false
 		chatViewController.isMonkeyKingBool = isMonkeyKing
@@ -223,17 +211,11 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
 				"type": isAccountNew ? "new" : "old",
 				])
 		}
-        
-        if let chatId = self.initialConversationOptions?["chat_id"] as? String {
-            chatViewController.acceptChat(chatId: chatId)
-        }
+		
         self.present(chatViewController, animated: true)
     }
     
     func reloadData() {
-        if !self.callingFromViewDidLoad {
-            self.checkDeepLink()
-        }
         // Show no friends view if has friends
         let numberOfFriends = self.viewModel.friendships.count
         if numberOfFriends == 0 {
@@ -248,28 +230,6 @@ class FriendsViewController: SwipeableViewController, UITableViewDelegate, UITab
     func reloadFriendships() {
         self.reloadData()
         self.friendsTableView.reloadData()
-    }
-    
-    /// Checks if there is a conversation to push onto the stack, then opens that friendship
-    func checkDeepLink() {
-        guard let friendshipToPush = self.initialConversation else {
-            return
-        }
-        
-        // filter down friendships that match the friendship id
-        let chatLinkPredicate = NSPredicate(format: "friendship_id == \"\(friendshipToPush)\"")
-        let matchingChats = self.viewModel.friendships?.filter(chatLinkPredicate)
-        
-        guard let initialFriendship = matchingChats?.first else {
-            self.initialConversation = nil
-            self.initialConversationOptions = nil
-            return
-        }
-		
-        self.openChat(initialFriendship)
-        // Ensure that deep link is not acted upon twice, we reset these values to nil
-        self.initialConversation = nil
-        self.initialConversationOptions = nil
     }
 }
 

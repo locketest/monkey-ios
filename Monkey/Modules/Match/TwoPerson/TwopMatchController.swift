@@ -31,7 +31,7 @@ class TwopMatchController: MonkeyViewController {
 		}else {
 			// unlock panel
 			let unlockPanel = UIStoryboard.init(name: "TwoPerson", bundle: nil).instantiateViewController(withIdentifier: "TwoPersonPlanViewController") as! TwoPersonPlanViewController
-			if currentUser.two_p_user_group_type == UnlockPlan.A.rawValue {
+			if currentUser.two_puser_group_type == UnlockPlan.A.rawValue {
 				// plan A
 				unlockPanel.isPlanBIsUnLockedTuple = (false, false)
 			}else {
@@ -80,6 +80,14 @@ class TwopMatchController: MonkeyViewController {
 }
 
 extension TwopMatchController: MatchObserver {
+	func didReceiveMessage(type: String, in chat: String) {
+		
+	}
+	
+	func matchTypeChanged(newType: MatchType) {
+		
+	}
+	
 	func appMovedToBackground() {
 		
 	}

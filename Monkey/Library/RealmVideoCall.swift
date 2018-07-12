@@ -10,38 +10,28 @@ import Foundation
 import RealmSwift
 import ObjectMapper
 
-protocol VideoCallProtocol {
-	
-	var session_id: String? { get set }
-	// token for opentok
-	var token: String? { get set }
-	// media_key for agora
-	var media_key: String? { get set }
-	
-	var video_service: String? { get set }
-	
-	var created_at: NSDate? { get set }
-	
-	var bio: String? { get set }
-	var status: String? { get set }
-	
-	var user: RealmUser? { get set }
-	var initiator: RealmUser? { get set }
-	var friendship: RealmFriendship? { get set }
-	var matchedFriendship: RealmFriendship? { get }
-	
-	var channelToken: String { get }
-	
-	// 是否支持 agora
-	func supportAgora() -> Bool
-	
-	func supportSocket() -> Bool
-}
-
 class RealmVideoCall: MonkeyModel, VideoCallProtocol {
+	
+	func allUserJoined() -> Bool {
+		return false
+	}
+	
+	func allUserAccepted() -> Bool {
+		return false
+	}
+	
+	func allUserConnected() -> Bool {
+		return false
+	}
+	
+	func matchedUser(with user_id: Int) -> MatchUser? {
+		return nil
+	}
+	
 	override class var api_version: ApiVersion {
 		return ApiVersion.V13
 	}
+	
 	override class var type: String {
 		return ApiType.Videocall.rawValue
 	}
@@ -51,13 +41,13 @@ class RealmVideoCall: MonkeyModel, VideoCallProtocol {
 	
 	dynamic var chat_id: String?
 	
-	dynamic var session_id: String?
+	dynamic var channel_name: String = ""
 	// token for opentok
 	dynamic var token: String?
 	// media_key for agora
 	dynamic var media_key: String?
 	
-	dynamic var video_service: String?
+	dynamic var video_service: String = ""
 	
 	dynamic var created_at: NSDate?
 	
@@ -77,6 +67,14 @@ class RealmVideoCall: MonkeyModel, VideoCallProtocol {
 	}
 	
 	var channelToken: String {
+		if supportAgora() {
+			return media_key ?? ""
+		}else {
+			return token ?? ""
+		}
+	}
+	
+	var channel_key: String {
 		if supportAgora() {
 			return media_key ?? ""
 		}else {

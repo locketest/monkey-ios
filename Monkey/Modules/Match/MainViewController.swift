@@ -1,4 +1,3 @@
-
 //  MainViewController.swift
 //  Monkey
 //
@@ -46,17 +45,19 @@ typealias MatchContainer = MatchObserver & MonkeyViewController & TransationDele
 }
 
 @objc protocol MatchObserver: NSObjectProtocol {
-	@objc optional func preventShowMenu() -> Bool
-	
 	@objc optional func appMovedToBackground()
 	
 	@objc optional func appMovedToForeground()
 	
 	@objc optional func appWillTerminate()
 	
-	@objc optional func onMatchMessageReceived()
+	@objc optional func didReceiveOnepMatch(match: MatchModel)
 	
-	@objc optional func matchTypeChanged(newType: MatchType)
+	@objc optional func didReceiveTwopMatch(match: MatchModel)
+	
+	func didReceiveMessage(type: String, in chat: String)
+	
+	func matchTypeChanged(newType: MatchType)
 }
 
 class MainViewController: SwipeableViewController {
@@ -87,7 +88,7 @@ class MainViewController: SwipeableViewController {
 	}
 	
 	@IBOutlet weak var colorGradientView: UIView!
-	@IBOutlet weak var localPreview: UIView!
+	@IBOutlet weak var localPreview: LocalPreviewContainer!
 	@IBOutlet weak var contentView: UIView!
 	@IBOutlet weak var contentTopMargin: NSLayoutConstraint!
 	@IBOutlet weak var contentBottomMagrin: NSLayoutConstraint!
@@ -112,6 +113,7 @@ class MainViewController: SwipeableViewController {
 	@IBOutlet weak var bananaCountLabel: UILabel!
 	
 	@IBOutlet weak var channelUpdateRemindV: UIView!
+	var isMatchStart: Bool = false
 	
 	var yesterdayString: Int?
 	var addTimeString: Int?
@@ -170,17 +172,6 @@ class MainViewController: SwipeableViewController {
 		self.refreshMatchTypeStatus()
 	}
 	
-	/// Inserts HWCameraManager.shared().localPreviewView at the back of the ViewController's view and sets it's constraints.
-	private func addPublisherToView() {
-		let localCameraView = HWCameraManager.shared().localPreviewView
-		guard localCameraView.superview != self.localPreview else {
-			return
-		}
-		self.localPreview.insertSubview(localCameraView, at: 0)
-		localCameraView.frame = self.localPreview.bounds
-		localCameraView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-	}
-	
 	private func configureSwipableVC() {
 		// initial child view controller
 		self.swipableViewControllerPresentFromRight = (UIStoryboard(name: "Channels", bundle: .main).instantiateInitialViewController() as! SwipeableViewController)
@@ -194,6 +185,8 @@ class MainViewController: SwipeableViewController {
 	}
 	
 	func startMatch() {
+		self.isMatchStart = true
+		self.twoPTipLabel.isHidden = true
 		self.filtersButton.isHidden = true
 		self.matchModeSwitch.isHidden = true
 	}
@@ -219,9 +212,11 @@ class MainViewController: SwipeableViewController {
 	}
 	
 	func endMatch() {
+		self.isMatchStart = false
 		self.matchModeSwitch.isHidden = false
 		if self.matchType == .Onep {
 			self.filtersButton.isHidden = false
+			self.refreshRemindTip()
 		}
 	}
 	
@@ -231,6 +226,7 @@ class MainViewController: SwipeableViewController {
 			hideButton = true
 		}
 		
+		self.twoPTipLabel.isHidden = hideButton
 		self.filtersButton.isHidden = hideButton
 		self.friendsButton.isHidden = hideButton
 		self.settingsButton.isHidden = hideButton
@@ -248,6 +244,23 @@ class MainViewController: SwipeableViewController {
 			self.switchToTwop()
 		}
 		self.matchType = mode
+		
+		let realm = try? Realm()
+		do {
+			try realm?.write {
+				UserManager.shared.currentUser?.cached_match_type = mode.rawValue
+			}
+		} catch(let error) {
+			print("Error: ", error)
+		}
+		
+		let attributes: [RealmUser.Attribute] = [
+			.match_type(mode.rawValue)
+			]
+		
+		UserManager.shared.currentUser?.update(attributes: attributes, completion: { (_) in
+			
+		})
 	}
 	
 	private func switchToOnep() {
@@ -307,11 +320,11 @@ class MainViewController: SwipeableViewController {
 			topMatchVC.beginAppearanceTransition(true, animated: true)
 		}
 		self.contentView.insertSubview(topMatchVC.view, at: 0)
-		topMatchVC.view.frame = self.colorGradientView.bounds
+		topMatchVC.view.frame = self.contentView.bounds
 		topMatchVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		
 		let showComplete = {
-//			topMatchVC.endAppearanceTransition()
+			//			topMatchVC.endAppearanceTransition()
 			topMatchVC.didMove(toParentViewController: self)
 			completion?()
 			// enable
@@ -324,9 +337,29 @@ class MainViewController: SwipeableViewController {
 		}
 	}
 	
+	var matchViewController: UIViewController?
+	@IBAction func presentVideoMode(_ sender: Any) {
+		let matchViewController = self.storyboard?.instantiateViewController(withIdentifier: "OnepPair")
+		self.present(matchViewController!, animated: false, completion: nil)
+	}
+	
+	@IBAction func presentTextMode(_ sender: Any) {
+		let matchViewController = self.storyboard?.instantiateViewController(withIdentifier: "TwopPair")
+		self.present(matchViewController!, animated: false, completion: nil)
+	}
+	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		// reset local color Gradient
+		UIView.animate(withDuration: 0.3) {
+			self.contentView.alpha = 0
+		}
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -335,21 +368,26 @@ class MainViewController: SwipeableViewController {
 		// show current match view controller
 		self.showCurrentDiscovery()
 		
-		// add local preview
-		self.addPublisherToView()
-		
 		// check first name
 		self.handleFirstNameExistFunc()
 		
 		// should present banana
 		self.refreshBananas()
 		self.handleBananaAlertFunc()
+		
+		// add local preview
+		self.localPreview.addLocalPreview()
+		UIView.animate(withDuration: 0.3) {
+			self.contentView.alpha = 1.0
+		}
 	}
 	
 	private func showCurrentDiscovery() {
+		guard self.topMatchDiscovery.parent == nil else { return }
+		
 		self.show(new: self.topMatchDiscovery)
 	}
-
+	
 	private func refreshMatchTypeStatus() {
 		var matchType = MatchType.Onep
 		if let currentUser = UserManager.shared.currentUser, self.matchType == nil {
@@ -369,7 +407,7 @@ class MainViewController: SwipeableViewController {
 	}
 	
 	fileprivate func refreshRemindTip() {
-		if self.matchModeSwitch.isHidden == false, self.matchType == .Onep {
+		if self.matchModeSwitch.isHidden == false, self.matchType == .Onep, self.isMatchStart == false {
 			// refresh count
 			self.twoPTipLabel.isHidden = false
 		}else {
@@ -640,7 +678,6 @@ extension MainViewController {
 
 // application status notify
 extension MainViewController: MatchObserver {
-	
 	fileprivate func addObserver() {
 		UserManager.shared.addMessageObserver(observer: self)
 		MessageCenter.shared.addMessageObserver(observer: self)
@@ -680,11 +717,7 @@ extension MainViewController: MatchObserver {
 		
 	}
 	
-	func onMatchMessageReceived() {
-		
-	}
-	
-	func currentMatchModeChanged() {
+	func didReceiveMessage(type: String, in chat: String) {
 		
 	}
 	
@@ -701,11 +734,7 @@ extension MainViewController: MatchObserver {
 			self.refreshRemindTip()
 		}
 		
-		self.topMatchDiscovery.matchTypeChanged?(newType: newType)
-	}
-	
-	func preventShowMenu() -> Bool {
-		return false
+		self.topMatchDiscovery.matchTypeChanged(newType: newType)
 	}
 }
 
@@ -783,8 +812,16 @@ extension MainViewController {
 
 extension MainViewController: MessageObserver {
 	
+	// 收到对 match 的操作
+	func didReceiveSkip(in chat: String) {
+		self.topMatchDiscovery.didReceiveMessage(type: MessageType.Skip.rawValue, in: chat)
+	}
+	func didReceiveAccept(in chat: String) {
+		self.topMatchDiscovery.didReceiveMessage(type: MessageType.Accept.rawValue, in: chat)
+	}
+	
 	func webSocketDidRecieveVideoCall(videoCall: Any, data: [String : Any]) {
-// present call view controller
+		// present call view controller
 //		if let chatsession = IncomingCallManager.shared.createChatSession(fromVideoCall: videoc) {
 //			let callnoti = NotificationManager.shared.showCallNotification(chatSession: chatsession, completion: { (callResponse) in
 //				switch callResponse {
@@ -807,20 +844,22 @@ extension MainViewController: MessageObserver {
 //		}
 	}
 	
-	func webSocketDidRecieveMatch(match: Any, data: [String : Any]) {
-//		AnalyticsCenter.log(event: AnalyticEvent.matchReceivedTotal)
-//		if let realmCall = match as? RealmCall {
-//			LogManager.shared.addLog(type: .ReceiveMatchMessage, subTitle: "video_service: \(realmCall.video_service ?? "") - notify_accept: \(realmCall.notify_accept.value ?? false)", info: data)
-//			if self.chatSession == nil, self.stopFindingReasons.count == 0 {
-//				self.progressMatch(call: realmCall, data: data)
-//			}
-//		}
+	func didReceiveOnepMatch(match: MatchModel) {
+		if self.topMatchDiscovery is OnepMatchController {
+			self.topMatchDiscovery.didReceiveOnepMatch!(match: match)
+		}
+	}
+	
+	func didReceiveTwopMatch(match: MatchModel) {
+		if self.topMatchDiscovery is TwopMatchController {
+			self.topMatchDiscovery.didReceiveTwopMatch!(match: match)
+		}
 	}
 }
 
 extension MainViewController: UserObserver {
 	
-//	var bananaNotificationToken: NotificationToken?
+	//	var bananaNotificationToken: NotificationToken?
 }
 
 extension UIViewController {
@@ -851,7 +890,7 @@ extension UIViewController {
 extension MainViewController {
 	func heroDidEndAnimatingTo(viewController: UIViewController) {
 		self.topMatchDiscovery.didMoveTo(screen: viewController)
-
+		
 	}
 	func heroDidEndAnimatingFrom(viewController: UIViewController) {
 		self.topMatchDiscovery.didShowFrom(screen: viewController)

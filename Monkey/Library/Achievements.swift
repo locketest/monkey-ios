@@ -29,6 +29,72 @@ public enum MatchMode: String {
 	case VideoMode = "1"
 	case TextMode = "2"
 	case EventMode = "3"
+	
+	var backgroundColor: UIColor {
+		switch self {
+		case .VideoMode:
+			return UIColor.init(red: 100.0 / 255.0, green: 74.0 / 255.0, blue: 241.0 / 255.0, alpha: 1.0)
+		case .TextMode:
+			fallthrough
+		case .EventMode:
+			return UIColor.init(red: 150.0 / 255.0, green: 14.0 / 255.0, blue: 255.0 / 255.0, alpha: 1.0)
+		}
+	}
+	
+	var titleColor: UIColor {
+		switch self {
+		case .VideoMode:
+			fallthrough
+		case .TextMode:
+			return UIColor.white
+		case .EventMode:
+			return UIColor.init(red: 255.0 / 255.0, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1)
+		}
+	}
+	
+	var borderColor: CGColor {
+		switch self {
+		case .VideoMode:
+			fallthrough
+		case .TextMode:
+			return UIColor.clear.cgColor
+		case .EventMode:
+			return UIColor.init(red: 255.0 / 255.0, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1).cgColor
+		}
+	}
+	
+	var pedding: CGFloat {
+		switch self {
+		case .VideoMode:
+			fallthrough
+		case .TextMode:
+			return 0
+		case .EventMode:
+			return 14
+		}
+	}
+	
+	var title: String {
+		switch self {
+		case .VideoMode:
+			return "Video Chat"
+		case .TextMode:
+			return "Text Chat"
+		case .EventMode:
+			return "Fan Meet"
+		}
+	}
+	
+	var emoji: String {
+		switch self {
+		case .VideoMode:
+			return "🎦"
+		case .TextMode:
+			return "💬"
+		case .EventMode:
+			return "🤩"
+		}
+	}
 }
 
 enum MatchingMode: String {

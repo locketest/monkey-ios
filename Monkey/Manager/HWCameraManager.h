@@ -30,7 +30,7 @@
 /**
  *  输出流处理
  */
-@property (nonatomic, weak, nullable) id <StreamBufferHandler> streamHandler;
+@property (nonatomic, weak, nullable) id <StreamRawDataHandler, StreamBufferHandler> streamHandler;
 /**
  *  当前滤镜类型
  */

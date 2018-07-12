@@ -12,13 +12,23 @@ import RealmSwift
 import Kingfisher
 import ObjectMapper
 
-typealias MatchViewController = UIViewController & MatchViewControllerProtocol
+typealias MatchHandler = UIViewController & MatchServiceObserver
+
+protocol MatchMessageObserver {
+	func handleReceivedMessage(message: Message)
+	func present(from matchHandler: MatchHandler, with matchModel: ChannelModel, complete: CompletionHandler?)
+	func dismiss(complete: CompletionHandler?)
+}
 
 class OnepMatchController: MonkeyViewController {
 	
 	internal func showAlert(alert: UIAlertController) {
 		self.present(alert, animated: true, completion: nil)
 	}
+	
+	// match manager
+	fileprivate let matchManager = OnepMatchManager.default
+	fileprivate var nextFact = APIController.shared.currentExperiment?.initial_fact_discover ?? ""
 	
 	// tap to start
 	@IBOutlet weak var startView: UIView!
@@ -29,7 +39,6 @@ class OnepMatchController: MonkeyViewController {
 	@IBOutlet weak var loadingContentView: MakeUIViewGreatAgain!
 	// match tips
 	@IBOutlet weak var loadingTextLabel: LoadingTextLabel!
-	var nextFact = APIController.shared.currentExperiment?.initial_fact_discover ?? ""
 	
 	// user info
 	@IBOutlet weak var commonTreeTip: UILabel!
@@ -73,10 +82,10 @@ class OnepMatchController: MonkeyViewController {
 		
 //		Step 2: tap to start
 		let startGesture = UITapGestureRecognizer.init(target: self, action: #selector(startFindingMatch))
-		startView.addGestureRecognizer(startGesture)
+		self.startView.addGestureRecognizer(startGesture)
 	}
 	
-	func configureApperance() {
+	private func configureApperance() {
 		self.view.backgroundColor = UIColor.clear
 		
 		// event mode 展示
@@ -113,6 +122,9 @@ class OnepMatchController: MonkeyViewController {
 		self.acceptButton.isHidden = true
 		self.rejectButton.isHidden = true
 		self.skipButton.isHidden = true
+		
+		// tip
+		self.update(tip: nil)
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -121,7 +133,7 @@ class OnepMatchController: MonkeyViewController {
 		self.refreshMatchModeStatus()
 	}
 	
-	func refreshMatchModeStatus() {
+	fileprivate func refreshMatchModeStatus() {
 		if self.onepStatus.canSwipe() {
 			// 如果 text chat mode 开关打开
 			if RemoteConfigManager.shared.text_chat_mode {
@@ -233,7 +245,7 @@ class OnepMatchController: MonkeyViewController {
 		print("eventModeOpen = \(eventModeOpen)")
 	}
 	
-	func loadCurrentEventMode() {
+	fileprivate func loadCurrentEventMode() {
 		guard let authorization = UserManager.authorization else {
 			return
 		}
@@ -276,10 +288,11 @@ class OnepMatchController: MonkeyViewController {
 		self.startView.isHidden = (newStatus != .WaitingStart)
 		self.exitButton.isHidden = (newStatus != .RequestMatch)
 		self.loadingContentView.isHidden = (newStatus == .WaitingStart || newStatus == .Chating)
-		self.loadingTextLabel.isHidden = (newStatus == .RequestMatch)
-		self.matchModeContainer.isHidden = (newStatus != .WaitingResponse || newStatus != .Connecting)
-		self.matchUserPhoto.isHidden = (newStatus != .WaitingResponse || newStatus != .Connecting)
-		self.commonTreeTip.isHidden = (newStatus != .WaitingResponse || newStatus != .Connecting)
+		self.loadingTextLabel.isHidden = (newStatus != .RequestMatch)
+		self.matchModeContainer.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
+		self.matchUserPhoto.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
+		self.commonTreeTip.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
+		self.skippedText.isHidden = (newStatus == .WaitingStart || newStatus == .Chating)
 		self.acceptButton.isHidden = (newStatus != .WaitingResponse)
 		self.rejectButton.isHidden = (newStatus != .WaitingResponse)
 		self.skipButton.isHidden = (newStatus != .WaitingResponse)
@@ -288,7 +301,6 @@ class OnepMatchController: MonkeyViewController {
 		switch oldStatus {
 		case .WaitingStart:
 			break
-			//
 		case .RequestMatch:
 			break
 		case .WaitingResponse:
@@ -296,37 +308,44 @@ class OnepMatchController: MonkeyViewController {
 		case .Connecting:
 			break
 		case .Chating:
-			break
+			self.startFindingChats(forReason: "chating")
 		}
 		
 		switch newStatus {
 		case .WaitingStart:
-			break
-			//
+			// 回到状态1
+			self.stopFindingChats(forReason: "tap-to-start")
+			mainVC.endMatch()
 		case .RequestMatch:
-			if oldStatus != .WaitingStart {
+			if oldStatus == .WaitingStart {
+				// 从状态1过来
+				mainVC.startMatch()
+				self.startFindingChats(forReason: "tap-to-start")
+			}else {
+				// 从其他状态过来
 				self.startFindingChats(forReason: "receive-match")
 				mainVC.endMatchProcess()
 			}
 			self.resetFact()
 		case .WaitingResponse:
+			mainVC.beginMatchProcess()
 			self.stopFindingChats(forReason: "receive-match")
 			self.showMatchInfo()
-			mainVC.beginMatchProcess()
 		case .Connecting:
-			break
+			self.tryChating()
 		case .Chating:
-			break
+			self.stopFindingChats(forReason: "chating")
 		}
 	}
 	
-	var responseTimeoutCount = 0
-	var matchRequestTimer: Timer?
-	var chatRequest: JSONAPIRequest? // use to know match request is running
-	var continuous_request_count = 0
-	var request_id: String?
-	var request_time: Date!
-	var stopFindingReasons = ["tap-to-start"]
+	fileprivate var responseTimeoutCount = 0
+	fileprivate var matchRequestTimer: Timer?
+	fileprivate var chatRequest: JSONAPIRequest? // use to know match request is running
+	fileprivate var continuous_request_count = 0
+	fileprivate var request_id: String?
+	fileprivate var request_time: Date!
+	fileprivate var isFindingMatch: Bool = false
+	fileprivate var stopFindingReasons = ["tap-to-start"]
 	
 	func commomParameters(for event: AnalyticEvent) -> [String: Any] {
 		let currentUser = APIController.shared.currentUser
@@ -350,12 +369,19 @@ class OnepMatchController: MonkeyViewController {
 	fileprivate var matchModel: MatchModel? = nil
 	
 	@IBAction func acceptButtonTapped(sender: Any) {
+		self.acceptMatch(auto: false)
+	}
+	
+	private func acceptMatch(auto: Bool) {
 		self.responseTimeoutCount = 0
+		self.acceptButton.isHidden = true
+		self.skipButton.isHidden = true
+		self.rejectButton.isHidden = true
+		
 		guard let matchModel = self.matchModel else { return }
 		
-		let acceptTime = Date.init()
-		let user_id: String = matchModel.left?.user.user_id ?? ""
-		let duration: TimeInterval = matchModel.beginTime.timeIntervalSince1970 - request_time.timeIntervalSince1970
+		let user_id: Int = matchModel.left.user_id
+		let duration: TimeInterval = matchModel.beginTime.timeIntervalSince1970 - self.request_time.timeIntervalSince1970
 		AnalyticsCenter.log(withEvent: .clickMatchSelect, andParameter: [
 			"type": "Accept",
 			"info": user_id,
@@ -363,144 +389,147 @@ class OnepMatchController: MonkeyViewController {
 			])
 		
 		AnalyticsCenter.log(withEvent: .matchSendAccept, andParameter: [
-			"type": (sender is BigYellowButton) ? "btn accept" : "auto accept",
+			"type": auto ? "auto accept" : "btn accept",
 			])
-		
-		matchModel.acceptTime = acceptTime
 		matchModel.accept = true
-		self.updateResponseStatus()
+		self.matchManager.accept(auto: false)
+		
+		self.update(tip: "Waiting...", duration: 0)
+		self.tryConnecting()
 	}
 	
 	@IBAction func rejectButtonTapped(_ sender: Any) {
-		self.responseTimeoutCount = 0
-		guard let matchModel = self.matchModel else { return }
-		
-		let user_id: String = matchModel.left?.user.user_id ?? ""
-		let duration: TimeInterval = matchModel.beginTime.timeIntervalSince1970 - request_time.timeIntervalSince1970
-		AnalyticsCenter.log(withEvent: .clickMatchSelect, andParameter: [
-			"type": "Reject",
-			"info": user_id,
-			"match duration": duration,
-			])
-		AnalyticsCenter.log(event: .matchSendSkip)
-		
-		matchModel.skip = true
-		self.updateResponseStatus()
+		self.skipMatch(auto: false, reject: true)
 	}
 	
 	@IBAction func skipButtonTapped(_ sender: Any) {
+		self.skipMatch(auto: false, reject: false)
+	}
+	
+	private func skipMatch(auto: Bool, reject: Bool) {
 		self.responseTimeoutCount = 0
 		guard let matchModel = self.matchModel else { return }
 		
-		let user_id: String = matchModel.left?.user.user_id ?? ""
-		let duration: TimeInterval = matchModel.beginTime.timeIntervalSince1970 - request_time.timeIntervalSince1970
+		let user_id: Int = matchModel.left.user_id
+		let duration: TimeInterval = matchModel.beginTime.timeIntervalSince1970 - self.request_time.timeIntervalSince1970
 		AnalyticsCenter.log(withEvent: .clickMatchSelect, andParameter: [
-			"type": "Skip",
+			"type": reject ? "Reject" : "Skip",
 			"info": user_id,
 			"match duration": duration,
 			])
 		
 		AnalyticsCenter.log(event: .matchSendSkip)
-		
 		matchModel.skip = true
-		self.updateResponseStatus()
+		self.matchManager.skip(auto: auto)
+		// 如果不是 auto skip，需要继续处理
+		if auto == false {
+			self.handleMatchError(error: .MySkip)
+		}
 	}
 	
-	private func updateResponseStatus() {
-		
-	}
-	
-	func progressMatch(call: RealmCall, data: [String: Any]) {
-//		let jsonAPIDocument = JSONAPIDocument.init(json: data)
-//
-//		if let meta = jsonAPIDocument.meta, let nextFact = meta["next_fact"] as? String {
-//			self.nextFact = nextFact
-//		}
-//
-//		guard let chatId = call.chat_id, /*let received_id = call.request_id, self.request_id == received_id,*/ let sessionId = call.session_id else {
-//			print("Error: RealmCall object did not return with sufficient data to create a chatSession")
-//			return
-//		}
-//		if call.channelToken.count == 0 {
-//			return
-//		}
-//
-//		self.stopFindingChats(forReason: "receive-match")
-//		self.listTree(tree: call.user?.channels.first?.channel_id ?? "")
-//		self.matchUserPhoto.isHidden = false
-//
-//		var imageName = "ProfileImageDefaultMale"
-//		if call.user?.gender == Gender.female.rawValue {
-//			imageName = "ProfileImageDefaultFemale"
-//		}
-//		let placeholder = UIImage.init(named: imageName)
-//		let profile_photo_url = URL.init(string: call.user?.profile_photo_url ?? "")
-//		self.matchUserPhoto.kf.setImage(with: profile_photo_url, placeholder: placeholder)
-//
-//		var bio = "connecting"
-//		if let callBio = call.bio, let convertBio = callBio.removingPercentEncoding {
-//			bio = convertBio
-//			if RemoteConfigManager.shared.app_in_review == true {
-//				let user_age_str = convertBio.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "")
-//				//				print("match a user with age \(user_age_str)")
-//				if let age_range = convertBio.range(of: user_age_str), let user_age = Int(user_age_str), user_age < 19, user_age > 0 {
-//					let new_age = abs(Int.arc4random() % 5) + 19
-//					bio = convertBio.replacingCharacters(in: age_range, with: "\(new_age)")
-//				}
-//			}
-//		}
-//
-//		if let match_distance = call.match_distance.value, match_distance > 0, Achievements.shared.nearbyMatch == true {
-//			bio = bio.appending("\n🏡\(match_distance)m")
-//		}
-		
-//		self.chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: call.user?.first_name, gender: call.user?.gender, age: call.user?.age.value, location: call.user?.location, profile_image_url: call.user?.profile_photo_url, user_id: call.user?.user_id, match_mode: call.match_mode), token: call.channelToken, loadingDelegate: self, isDialedCall: false)
-		
+	fileprivate func handleReceivedMatch(match: MatchModel) {
 //		AnalyticsCenter.add(amplitudeUserProperty: ["match_receive": 1])
 //		AnalyticsCenter.add(firstdayAmplitudeUserProperty: ["match_receive": 1])
-//
 //		self.chatSession?.track(matchEvent: .matchFirstRecieved)
 //		self.chatSession?.track(matchEvent: .matchReceived)
-//		self.start(fact: bio)
-//
-//		if Achievements.shared.autoAcceptMatch {
-//			self.acceptButtonTapped(sender: self)
-//		}
+		self.matchModel = match
+		self.update(to: .WaitingResponse)
+		self.matchManager.match(with: match)
+		
+		// auto accept
+		if Achievements.shared.autoAcceptMatch && match.matched_pair() == false {
+			self.acceptMatch(auto: true)
+		}
+	}
+	
+	fileprivate func handleMatchError(error: MatchError) {
+		guard self.onepStatus.processMatch() else { return }
+		
+		// auto skip
+		if self.onepStatus == .WaitingResponse {
+			self.skipMatch(auto: true, reject: false)
+		}
+		
+		// 显示错误文案
+		if self.onepStatus == .Connecting, error.shouldShowTimeOut() {
+			self.update(tip: "Time out!!")
+		}else if self.onepStatus == .WaitingResponse, error.shouldShowSkip() {
+			self.update(tip: "Skipped!!")
+		}else {
+			self.update(tip: nil)
+		}
+		
+		// dismiss chat controller
+		self.dismissMatchedView()
+		
+		// 断开连接
+		self.matchManager.disconnect()
+		
+		// 服务器上报配对结果，必须在上一步记录检测结果之后
+		self.reportMatchEnd()
+		
+		// 更新状态
+		self.update(to: .RequestMatch)
 	}
 	
 	private func showMatchInfo() {
 		guard let matchModel = self.matchModel else { return }
 		
-		let matchMode = MatchMode.init(string: matchModel.match_mode)
-		if matchMode == .VideoMode {
-			self.acceptButton.backgroundColor = UIColor.init(red: 100.0 / 255.0, green: 74.0 / 255.0, blue: 241.0 / 255.0, alpha: 1.0)
-			self.matchModeEmojiLeft.text = "🎦"
-			self.matchModeEmojiRight.text = "🎦"
-			self.matchModeTip.text = "Video Chat"
-			self.factTextBottom.constant = 0
-			self.matchModeContainer.layer.borderColor = UIColor.clear.cgColor
-			self.matchModeTip.textColor = UIColor.white
-		}else if matchMode == .TextMode {
-			self.acceptButton.backgroundColor = UIColor.init(red: 150.0 / 255.0, green: 14.0 / 255.0, blue: 255.0 / 255.0, alpha: 1.0)
-			self.matchModeEmojiLeft.text = "💬"
-			self.matchModeEmojiRight.text = "💬"
-			self.matchModeTip.text = "Text Chat"
-			self.factTextBottom.constant = 0
-			self.matchModeContainer.layer.borderColor = UIColor.clear.cgColor
-			self.matchModeTip.textColor = UIColor.white
+		if let commonChannel = matchModel.left.commonChannel() {
+			self.commonTreeTip.text = commonChannel.emoji
+			self.commonTreeTip.isHidden = false
 		}else {
-			self.acceptButton.backgroundColor = UIColor.init(red: 150.0 / 255.0, green: 14.0 / 255.0, blue: 255.0 / 255.0, alpha: 1.0)
-			self.matchModeEmojiLeft.text = "🤩"
-			self.matchModeEmojiRight.text = "🤩"
-			self.matchModeTip.text = "Fan Meet"
-			self.factTextBottom.constant = 14
-			self.matchModeContainer.layer.borderColor = UIColor.init(red: 255.0 / 255.0, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1).cgColor
-			self.matchModeTip.textColor = UIColor.init(red: 255.0 / 255.0, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1)
+			self.commonTreeTip.isHidden = true
+		}
+		
+		self.matchUserPhoto.isHidden = false
+		let placeholder = UIImage.init(named: matchModel.left.defaltAvatar)
+		let profile_photo_url = URL.init(string: matchModel.left.photo_read_url ?? "")
+		self.matchUserPhoto.kf.setImage(with: profile_photo_url, placeholder: placeholder)
+		
+		self.setFactText(matchModel.showedBio(for: matchModel.left.user_id))
+		
+		let matchMode = matchModel.match_room_mode
+		self.acceptButton.backgroundColor = matchMode.backgroundColor
+		self.matchModeEmojiLeft.text = matchMode.emoji
+		self.matchModeEmojiRight.text = matchMode.emoji
+		self.matchModeTip.text = matchMode.title
+		self.factTextBottom.constant = matchMode.pedding
+		self.matchModeContainer.layer.borderColor = matchMode.borderColor
+		self.matchModeTip.textColor = matchMode.titleColor
+		
+		self.update(tip: nil)
+	}
+	
+	fileprivate func tryConnecting() {
+		guard self.onepStatus == .WaitingResponse else { return }
+		guard let matchModel = self.matchModel else { return }
+		
+		// 如果都 accept 了
+		if matchModel.accept && matchModel.allUserAccepted() {
+			self.update(tip: "Connecting...", duration: 0)
+			self.matchManager.connect()
+			self.update(to: .Connecting)
 		}
 	}
 	
-	weak var matchViewController: MatchViewController?
-	func presentCallViewController() {
+	fileprivate func tryChating() {
+		guard self.onepStatus == .Connecting else { return }
+		guard let matchModel = self.matchModel else { return }
+		
+		// 如果已经收到所有人的流
+		if matchModel.allUserConnected() {
+			// present
+			self.showMatchedView()
+			// stop timer
+			self.matchManager.beginChat()
+			// update status
+			self.update(to: .Chating)
+		}
+	}
+	
+	var matchViewController: MatchMessageObserver?
+	func showMatchedView() {
 		guard let matchModel = self.matchModel else { return }
 		
 		Achievements.shared.totalChats += 1
@@ -508,86 +537,58 @@ class OnepMatchController: MonkeyViewController {
 		if (matchModel.match_room_mode == .TextMode) {
 			matchModeId = "textModeVC"
 		}
-			
-		let matchViewController = self.storyboard?.instantiateViewController(withIdentifier: matchModeId) as! MatchViewController
+		
+		let matchViewController = self.storyboard?.instantiateViewController(withIdentifier: matchModeId) as! MatchMessageObserver
 		self.matchViewController = matchViewController
-//		matchViewController.commonTree = self.curCommonTree
-		
-//		viewController.present(matchViewController, animated: false, completion: nil)
-//		if chatSession.friendMatched {
-//			matchViewController.friendMatched(in: nil)
-//		}
+		matchViewController.present(from: self, with: matchModel, complete: nil)
 	}
 	
-	func dismissCallViewController() {
-		HWCameraManager.shared().removePixellate()
-		HWCameraManager.shared().changeCameraPosition(to: .front)
-		
+	func dismissMatchedView() {
+		self.matchViewController?.dismiss(complete: { [weak self] in
+			guard self?.onepStatus == .RequestMatch else { return }
+			
+			// should show unfriend
+			self?.processEndMatch()
+		})
+		self.matchViewController = nil
+	}
+	
+	func processEndMatch() {
 		guard let matchModel = self.matchModel else { return }
-//		if chatSession.isReportedChat, chatSession.friendMatched, let userID = self.chatSession?.realmCall?.user?.user_id, chatSession.isReportedByOther == false {
-//			self.showAfterReportFriendAlert(userID: userID)
-//		}else if let realmVideoCall = chatSession.realmVideoCall, let userID = realmVideoCall.initiator?.user_id, chatSession.isReportedChat, chatSession.isReportedByOther == false {
-//			/// it is a video call
-//			self.showAfterReportFriendAlert(userID: userID)
-//		}
 		
-//		chatSession.chat?.update(callback: nil)
+		// unfriend
+		if matchModel.isReportPeople(), matchModel.friendAdded() {
+			//			self.showAfterReportFriendAlert(userID: userID)
+		}
 		
-//		if chatSession.wasSkippable {
-//			self.resetFact()
-//		}
-//		if chatSession.response != .skipped && !chatSession.didConnect {
-//			self.skipped(show: false)
-//		}
-//
-//		let presentingViewController = self.matchViewController?.presentingViewController
-//		self.factTextView.text = self.nextFact
-//		let callViewController = self.matchViewController
-//
-//		if chatSession.matchMode == .VideoMode && chatSession.hadAddTime == false {
-//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
-//		}else if chatSession.matchMode == .TextMode && chatSession.isUnMuteSound == false,
-//			let connectTime = chatSession.connectTime,
-//			(Date.init().timeIntervalSince1970 - connectTime) <= 30.0 {
-//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
-//		}else if let connectTime = chatSession.connectTime,
-//			(Date.init().timeIntervalSince1970 - connectTime) <= 30.0 {
-//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
-//		}
-//
-//		UIView.animate(withDuration: 0.3, animations: {
-//			callViewController?.isPublisherViewEnlarged = true
-//			callViewController?.view.layoutIfNeeded()
-//		}) { [unowned self] (success) in
-//			presentingViewController?.dismiss(animated: false) {
-//				UIView.animate(withDuration: 0.2, animations: {
-////					self.colorGradientView.alpha = 1.0
-//					presentingViewController?.view.alpha = 1.0
-//				}) { (Bool) in
-//					self.containerView.setNeedsLayout()
-//					self.matchViewController = nil
-//
-//					if chatSession.chat?.sharedSnapchat == true, chatSession.chat?.theySharedSnapchat == true, UserDefaults.standard.bool(forKey: showRateAlertReason.addFriendJust.rawValue) == false {
-//						UserDefaults.standard.set(true, forKey: showRateAlertReason.addFriendJust.rawValue)
-//						self.showRateAlert(reason: .addFriendJust)
-//					} else if Configs.contiLogTimes() == 3,
-//						UserDefaults.standard.bool(forKey: showRateAlertReason.contiLoginThreeDay.rawValue) == false {
-//						UserDefaults.standard.set(true,forKey: showRateAlertReason.contiLoginThreeDay.rawValue)
-//						self.showRateAlert(reason: .contiLoginThreeDay)
-//					}
-//				}
-//			}
-//		}
+		// screen shot when disconnect
+		if matchModel.match_room_mode == .VideoMode && matchModel.addTimeCount() == 0 {
+			//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
+		}else if matchModel.match_room_mode == .TextMode && matchModel.isUnmuted() == false, matchModel.chatDuration > 30 {
+			//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
+		}else if matchModel.chatDuration <= 30.0 {
+			//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
+		}
 		
-		self.startFindingChats(forReason: "receive-match")
+		// show rating
+		if matchModel.friendAdded(), UserDefaults.standard.bool(forKey: showRateAlertReason.addFriendJust.rawValue) == false {
+			UserDefaults.standard.set(true, forKey: showRateAlertReason.addFriendJust.rawValue)
+			self.showRateAlert(reason: .addFriendJust)
+		} else if Configs.contiLogTimes() == 3,
+			UserDefaults.standard.bool(forKey: showRateAlertReason.contiLoginThreeDay.rawValue) == false {
+			UserDefaults.standard.set(true,forKey: showRateAlertReason.contiLoginThreeDay.rawValue)
+			self.showRateAlert(reason: .contiLoginThreeDay)
+		}
 	}
 	
+	func reportMatchEnd() {
+		self.matchModel = nil
+	}
 }
 
 // MARK: - loading view logic
 extension OnepMatchController {
-	
-	func setFactText(_ text: String) {
+	fileprivate func setFactText(_ text: String) {
 		self.factTextView.text = text
 	}
 	
@@ -595,78 +596,58 @@ extension OnepMatchController {
 		self.setFactText(self.nextFact)
 	}
 	
-	func start(fact: String) {
-		self.setFactText(fact)
-	}
-	
-	func listTree(tree: String) {
-//		if let curTree = APIController.shared.currentUser?.channels.first, tree == curTree.channel_id {
-//			self.chatSession?.common_tree = curTree.title!
-////			self.curCommonTree = curTree
-//			self.commonTreeTip.text = curTree.emoji
-//			self.commonTreeTip.isHidden = false
-//		}
-	}
-	
-	func skipped(show: Bool = true) {
-//		DispatchQueue.main.async {
-//			self.start()
-//			if show {
-//				self.skippedText.layer.opacity = 1.0
-//			}
-//			self.skippedText.text = "Skipped!!"
-//			self.factTextView.text = self.nextFact
-//			UIView.animate(withDuration: 1.5, animations: {
-//				self.skippedText.layer.opacity = 0.0
-//			})
-//			self.hideTreeLabels()
-//		}
+	fileprivate func update(tip: String?, duration: TimeInterval = 1.5) {
+		if let tip = tip {
+			self.skippedText.alpha = 0.0
+			self.skippedText.text = tip
+			UIView.animate(withDuration: duration, animations: {
+				self.skippedText.alpha = 1.0
+			})
+		}else {
+			self.skippedText.alpha = 0.0
+		}
 	}
 }
 
 // request match
 extension OnepMatchController {
 	func startFindingChats(forReason: String) {
-		let prevReasonCount = self.stopFindingReasons.count
+		let oldReasonCount: Int = self.stopFindingReasons.count
 		let reason = self.stopFindingReasons.removeObject(object: forReason)
-		print("Started finding \(forReason):  \(reason)")
-		if prevReasonCount != 0 && self.stopFindingReasons.count == 0 {
-			self.beginMatchRequest()
+		print("Started finding: \(reason)")
+		if self.stopFindingReasons.count == 0 {
+			self.isFindingMatch = true
+			if oldReasonCount != 0 {
+				self.beginMatchRequest()
+			}
 		} else {
-			print("Still not finding because: \(stopFindingReasons.split(separator: ","))")
+			print("Still not finding because: \(self.stopFindingReasons.split(separator: ","))")
 		}
 	}
 	
 	func stopFindingChats(forReason: String) {
 		print("Stopped finding: \(forReason)")
 		self.continuous_request_count = 0
+		self.isFindingMatch = false
+		
+		let oldReasonsCount = stopFindingReasons.count
 		self.stopFindingReasons.append(forReason)
-		if self.stopFindingReasons.count == 1 {
+		if oldReasonsCount == 0 {
 			self.stopMatchRequest()
 		}
 		
-		if forReason == "show-screen" || forReason == "tap-to-start" {
+		if oldReasonsCount == 0 && (forReason == "show-screen" || forReason == "tap-to-start") {
 			self.revokePrevMatchRequest()
 		}
 	}
 	
 	func startFindingMatch() {
-		if let mainVC = self.mainViewController {
-			mainVC.startMatch()
-		}
-		
 		UIApplication.shared.isIdleTimerDisabled = true
-		self.startFindingChats(forReason: "tap-to-start")
 		self.update(to: .RequestMatch)
 	}
 	
 	@IBAction func exitButtonTapped(_ sender: Any) {
-		if let mainVC = self.mainViewController {
-			mainVC.endMatch()
-		}
-		
 		UIApplication.shared.isIdleTimerDisabled = false
-		self.stopFindingChats(forReason: "tap-to-start")
 		self.update(to: .WaitingStart)
 	}
 	
@@ -693,14 +674,14 @@ extension OnepMatchController {
 	func consumeMatchRequest() {
 		print("consume match request")
 		
-		if (self.chatRequest != nil || self.matchModel != nil) {
+		if (self.chatRequest != nil || self.isFindingMatch == false) {
 			print("Already finding because chatRequest or Retrieving new session before finished with old session.")
 			return
 		}
 		
 		self.generateNewRequestID()
-		
 		AnalyticsCenter.log(event: AnalyticEvent.matchRequestTotal)
+		
 		let parameters: [String: Any] = [
 			"data": [
 				"type": "chats",
@@ -713,15 +694,10 @@ extension OnepMatchController {
 			]
 		]
 		
-		RealmCall.request(url: RealmCall.common_request_path, method: .post, parameters: parameters) { (error) in
+		self.chatRequest = RealmCall.request(url: RealmCall.common_request_path, method: .post, parameters: parameters) { (error) in
 			print("Chat request completed with error = \(String(describing: error))")
 			self.cancelMatchRequest()
 			self.trackMatchRequest()
-			LogManager.shared.addLog(type: .ApiRequest, subTitle: RealmCall.requst_subfix, info: [
-				"error": "\(error.debugDescription)",
-				"url": RealmCall.common_request_path,
-				"method": HTTPMethod.post.rawValue,
-				])
 		}
 	}
 	
@@ -761,6 +737,30 @@ extension OnepMatchController {
 	}
 	
 	func trackMatchRequest() {
+		var commonParameters = self.commomParameters(for: AnalyticEvent.matchRequest)
+		commonParameters["failure"] = "\(self.continuous_request_count)"
+		
+		AnalyticsCenter.add(amplitudeUserProperty: ["match_request": 1])
+		AnalyticsCenter.add(firstdayAmplitudeUserProperty: ["match_request": 1])
+		AnalyticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
+		AnalyticsCenter.log(withEvent: AnalyticEvent.matchRequest, andParameter: commonParameters)
+		
+		self.continuous_request_count += 1;
+	}
+	
+	func trackMatchReceive() {
+		var commonParameters = self.commomParameters(for: AnalyticEvent.matchRequest)
+		commonParameters["failure"] = "\(self.continuous_request_count)"
+		
+		AnalyticsCenter.add(amplitudeUserProperty: ["match_request": 1])
+		AnalyticsCenter.add(firstdayAmplitudeUserProperty: ["match_request": 1])
+		AnalyticsCenter.log(withEvent: AnalyticEvent.matchFirstRequest, andParameter: commonParameters)
+		AnalyticsCenter.log(withEvent: AnalyticEvent.matchRequest, andParameter: commonParameters)
+		
+		self.continuous_request_count += 1;
+	}
+	
+	func trackMatchSuccess() {
 		var commonParameters = self.commomParameters(for: AnalyticEvent.matchRequest)
 		commonParameters["failure"] = "\(self.continuous_request_count)"
 		
@@ -859,7 +859,82 @@ extension OnepMatchController {
 	}
 }
 
+extension OnepMatchController {
+	func handleReceivedMessage(message: Message) {
+		let type = MessageType.init(type: message.type)
+		switch type {
+		case .Skip:
+			self.receiveSkip()
+		case .Accept:
+			self.receiveAccept()
+		default:
+			self.matchViewController?.handleReceivedMessage(message: message)
+		}
+	}
+	
+	fileprivate func receiveSkip() {
+		self.matchModel?.left.skip = true
+		self.handleMatchError(error: .OtherSkip)
+	}
+	
+	fileprivate func receiveAccept() {
+		self.matchModel?.left.accept = true
+		self.tryConnecting()
+	}
+}
+
+extension OnepMatchController: MatchServiceObserver {
+	func disconnect(reason: MatchError) {
+		self.handleMatchError(error: reason)
+	}
+	
+	func remoteVideoReceived(user user_id: Int) {
+		// 收到对方的视频流
+		self.tryChating()
+	}
+	
+	func channelMessageReceived(message: Message) {
+		self.handleReceivedMessage(message: message)
+	}
+}
+
 extension OnepMatchController: MatchObserver {
+	func didReceiveOnepMatch(match: MatchModel) {
+		
+		if let nextFact = match.fact {
+			self.nextFact = nextFact
+		}
+		
+		guard match.request_id == self.request_id else {
+			print("Error: match message object did not return with sufficient data to create a chatSession")
+			return
+		}
+		
+		guard self.isFindingMatch == true else {
+			print("Error: error state to receive match")
+			return
+		}
+		
+		self.handleReceivedMatch(match: match)
+	}
+	
+	func didReceiveMessage(type: String, in chat: String) {
+		guard let matchModel = self.matchModel else { return }
+		guard matchModel.match_id == chat else {
+			return
+		}
+		
+		self.handleReceivedMessage(message: Message.init(type: type))
+	}
+	
+	func matchTypeChanged(newType: MatchType) {
+		if newType == .Onep {
+			self.matchManager.delegate = self
+		}else {
+			self.matchManager.delegate = nil
+		}
+	}
+	
 	func appMovedToBackground() {
 		self.stopFindingChats(forReason: "application-status")
 //		self.chatSession?.userTurnIntoBackground()
@@ -878,6 +953,7 @@ extension OnepMatchController: MatchObserver {
 extension OnepMatchController: TransationDelegate {
 	func didMoveTo(screen: UIViewController) {
 		self.stopFindingChats(forReason: "show-screen")
+		self.update(tip: nil)
 	}
 	
 	func didShowFrom(screen: UIViewController) {

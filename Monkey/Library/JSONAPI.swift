@@ -11,6 +11,7 @@ import Alamofire
 
 typealias JSONAPIRequestCompletionHandler = (_ result: JSONAPIResult<JSONAPIDocument>) -> Void
 typealias JSONAPIRequestErrorHandler = (_ error: APIError?) -> Void
+typealias JSONCompletionHandler = (_ result: JSONAPIResult<[String: Any]>) -> Void
 
 class JSONAPIRequest {
 	/// Enumerations that can be passed to a request options object to modify default request behaviour.
@@ -22,6 +23,8 @@ class JSONAPIRequest {
 	private weak var dataRequest: DataRequest?
 	/// The document returned by the request. This will not be populated until shortly before completion is called.
 	private(set) var responseJSONAPIDocument: JSONAPIDocument?
+	/// The document returned by the request. This will not be populated until shortly before completion is called.
+	private(set) var responseJSON: [String: Any]?
 	/**
 	Perform an HTTP request based on the JSON API standard.
 	
@@ -64,7 +67,7 @@ class JSONAPIRequest {
 	
 	@discardableResult func addCompletionHandler(_ handler: @escaping JSONAPIRequestCompletionHandler) -> Self {
 		self.dataRequest?.responseJSON { (response) in
-			guard let responseJSON = response.result.value as? [String:Any], // Response format validation failed.
+			guard let responseJSON = response.result.value as? [String: Any], // Response format validation failed.
 				!response.result.isFailure else // Alamofire validation failed.
 			{
 				var status: String?
@@ -74,12 +77,38 @@ class JSONAPIRequest {
 				}
 				return handler(.error(APIError(code: String((response.result.error as NSError?)?.code ?? -1), status: status, message: response.result.error?.localizedDescription ?? "Unknown request error.")))
 			}
+			
+			self.responseJSON = responseJSON
 			let responseJSONAPIDocument = JSONAPIDocument(json: responseJSON)
 			self.responseJSONAPIDocument = responseJSONAPIDocument
 			if let jsonApiError = responseJSONAPIDocument.errors?[0] {
 				return handler(.error(APIError(jsonApiError: jsonApiError)))
 			}
 			handler(.success(responseJSONAPIDocument))
+		}
+		return self
+	}
+	
+	@discardableResult func addJsonCompletionHandler(_ handler: @escaping JSONCompletionHandler) -> Self {
+		self.dataRequest?.responseJSON { (response) in
+			guard let responseJSON = response.result.value as? [String: Any], // Response format validation failed.
+				!response.result.isFailure else // Alamofire validation failed.
+			{
+				var status: String?
+				
+				if let statusCode = response.response?.statusCode {
+					status = String(statusCode)
+				}
+				return handler(.error(APIError(code: String((response.result.error as NSError?)?.code ?? -1), status: status, message: response.result.error?.localizedDescription ?? "Unknown request error.")))
+			}
+			
+			self.responseJSON = responseJSON
+			let responseJSONAPIDocument = JSONAPIDocument(json: responseJSON)
+			self.responseJSONAPIDocument = responseJSONAPIDocument
+			if let jsonApiError = responseJSONAPIDocument.errors?[0] {
+				return handler(.error(APIError(jsonApiError: jsonApiError)))
+			}
+			handler(.success(responseJSON))
 		}
 		return self
 	}

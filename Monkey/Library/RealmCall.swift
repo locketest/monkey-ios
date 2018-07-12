@@ -12,6 +12,23 @@ import ObjectMapper
 import ObjectMapperAdditions
 
 class RealmCall: MonkeyModel, VideoCallProtocol {
+	
+	func allUserJoined() -> Bool {
+		return false
+	}
+	
+	func allUserAccepted() -> Bool {
+		return false
+	}
+	
+	func allUserConnected() -> Bool {
+		return false
+	}
+	
+	func matchedUser(with user_id: Int) -> MatchUser? {
+		return nil
+	}
+	
 	override class var requst_subfix: String {
 		return "match_request"
 	}
@@ -28,13 +45,13 @@ class RealmCall: MonkeyModel, VideoCallProtocol {
     dynamic var chat_id: String?
 	dynamic var request_id: String?
 
-	dynamic var session_id: String?
+	dynamic var channel_name: String = ""
 	// token for opentok
 	dynamic var token: String?
 	// media_key for agora
 	dynamic var media_key: String?
 
-	dynamic var video_service: String?
+	dynamic var video_service: String = "agora"
 	dynamic var event_mode: String?
 	dynamic var match_mode: String?
 
@@ -57,6 +74,14 @@ class RealmCall: MonkeyModel, VideoCallProtocol {
 	}
 
 	var channelToken: String {
+		if supportAgora() {
+			return media_key ?? ""
+		}else {
+			return token ?? ""
+		}
+	}
+	
+	var channel_key: String {
 		if supportAgora() {
 			return media_key ?? ""
 		}else {

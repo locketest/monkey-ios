@@ -56,23 +56,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-	var userEnteredAt : Date?
-	func applicationWillResignActive(_ application: UIApplication) {
-		if let secondsInSession = userEnteredAt?.timeIntervalSinceNow {
-			let lifetimeSeconds = APIController.shared.currentUser?.seconds_in_app ?? 0
-			let newSecondsInApp = Int(-secondsInSession) + lifetimeSeconds
-			
-			APIController.shared.currentUser?.update(attributes: [.seconds_in_app(newSecondsInApp)], completion: { (_) in
-				
-			})
-		}
-		self.userEnteredAt = nil
-	}
-
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		FBSDKAppEvents.activateApp()
 
-		self.userEnteredAt = Date()
 	}
 
 	func applicationWillEnterForeground(_ application: UIApplication) {

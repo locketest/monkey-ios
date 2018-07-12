@@ -16,6 +16,7 @@ enum ApiType: String {
 	case Experiment = "experiments"
 
 	case Users = "users"
+	case MonkeyUser = "user"
 	case Instagram_accounts = "instagram_accounts"
 	case Instagram_photos = "instagram_photos"
 	case Bananas = "bananas"
@@ -44,6 +45,8 @@ enum ApiVersion: String {
 	case V12 = "v1.2"
 	case V13 = "v1.3"
 	case V20 = "v2.0"
+	
+	case V2 = "v2"
 }
 
 typealias CompletionHandler = () -> Void
@@ -129,6 +132,18 @@ protocol APIRequestProtocol: APIProtocol {
 	- parameter data: The API error data.
 	*/
 	@discardableResult static func request(url: String?, method: HTTPMethod, parameters: Parameters?, completion: @escaping JSONAPIRequestCompletionHandler) -> JSONAPIRequest?
+	
+	/**
+	Perform an HTTP request based on the JSON API standard.
+	
+	- parameter path: The path to append to the `APIController.baseURL` path, including a leading `/`.
+	- parameter method: The HTTPMethod to server, defalut is GET.
+	- parameter parameters: The parameter to server, defalut is nil.
+	- parameter completion: Called with two mutually exclusive result objects rafter the request completes.
+	- parameter error: An APIError sent if the data request returns a JSON API error object or when the response is invalid JSON API format.
+	- parameter data: The API error data.
+	*/
+	@discardableResult static func request(url: String?, method: HTTPMethod, parameters: Parameters?, jsonCompletion: @escaping JSONCompletionHandler) -> JSONAPIRequest?
 }
 
 protocol CommonAPIRequestProtocol: APIRequestProtocol {
@@ -236,6 +251,31 @@ extension APIRequestProtocol {
 					completion(.success(jsonAPIDocument))
 				}
 			})
+	}
+	
+	@discardableResult static func request(url: String?, method: HTTPMethod = .get, parameters: Parameters? = nil, jsonCompletion: @escaping JSONCompletionHandler) -> JSONAPIRequest? {
+		guard let url = url else {
+			jsonCompletion(.error(APIError(code: "-1", status: nil, message: "request url should not be nil")))
+			return nil
+		}
+		
+		var options: [JSONAPIRequest.RequestOption]?
+		if let authorization = UserManager.authorization {
+			options = [
+				.header("Authorization", authorization),
+			]
+		}
+		
+		print("API request:request url:\(url)\nobject type:\(type)\nobject api version:\(api_version)\nobject subfix:\(requst_subfix)")
+		
+		return JSONAPIRequest(url: url, method: method, parameters: parameters, options: options).addJsonCompletionHandler({ (result) in
+			switch result {
+			case .error(let error):
+				jsonCompletion(.error(error))
+			case .success(let jsonResult):
+				jsonCompletion(.success(jsonResult))
+			}
+		})
 	}
 }
 

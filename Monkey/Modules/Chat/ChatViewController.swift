@@ -13,7 +13,7 @@ import SafariServices
 import Kingfisher
 import DeviceKit
 
-class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UITextViewDelegate, IncomingCallManagerDelegate {
+class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UITextViewDelegate {
     /// Table showing the conversation as chat bubbles
     @IBOutlet weak var chatTableView: UITableView!
     /// Input view for conversation
@@ -21,16 +21,16 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     /// Image view showing the users profile picture
     @IBOutlet weak var profileImageView:CachedImageView!
     /// Label containing the users name
-    @IBOutlet weak var profileNameLabel:UILabel!
+    @IBOutlet weak var profileNameLabel: UILabel!
     /// Label describing the last time the user was online
-    @IBOutlet weak var profileActiveLabel:UILabel!
+    @IBOutlet weak var profileActiveLabel: UILabel!
     /// Bottom constraint for view, changed with keyboard movements
-    @IBOutlet var bottomConstraint:NSLayoutConstraint!
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     /// Height of chat text view constraint, used to lock when we go past 3 lines
-    @IBOutlet var inputHeightConstraint:NSLayoutConstraint!
-    @IBOutlet var placeholderTextLabel: UILabel!
+    @IBOutlet weak var inputHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var placeholderTextLabel: UILabel!
     /// Button that opens snapchat when tapped
-    @IBOutlet var snapchatButton: BigYellowButton!
+    @IBOutlet weak var snapchatButton: BigYellowButton!
     /// The button used to make and answer calls
     @IBOutlet weak var callButton: JigglyButton!
     /// The Emoji on the callButton that recieves the animations for calls
@@ -48,21 +48,18 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
     /// Data backing for ChatViewController
     lazy var viewModel = ChatViewModel()
-    let textInset:CGFloat = 12
-    let maxBubbleWidth:CGFloat = 244
-    var pendingCallId:String?
+    let textInset: CGFloat = 12
+    let maxBubbleWidth: CGFloat = 244
+    var pendingCallId: String?
     /// Is dismissing keyboard
     var isAnimatingDown = false
-	
 	var isTrackingMessage = false
 
-    var callTimer:Timer?
+    var callTimer: Timer?
 
-    var isMonkeyKingBool : Bool?
-
+    var isMonkeyKingBool: Bool = false
     let MonkeyKingShadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-
-    let MonkeyKingBgColor = UIColor(red: 34 / 255, green: 29 / 255, blue: 62 / 255, alpha: 1)
+    let MonkeyKingBgColor = UIColor(red: 34.0 / 255.0, green: 29.0 / 255.0, blue: 62.0 / 255.0, alpha: 1)
 
     /// A reference to the presented instagramVC. Currently used to forward longPressGestureRecognizer updates
     weak var instagramViewController: InstagramPopupViewController?
@@ -71,32 +68,13 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     /// The previous location of the user's finger, used to calculate velocity to pass to instagramVC if they do not lift finger to pan
     var previousLongPressLocation: CGPoint?
 
-    weak var callViewController:CallViewController?
-    var nextSessionToPresent:ChatSession?
-    var chatSession: ChatSession? {
-        didSet {
-            guard self.chatSession != oldValue else {
-                return
-            }
-
-            guard let chatSession = self.chatSession else {
-                return
-            }
-
-            // it's being passed to us by incomingCallManager
-            if chatSession.response != .accepted {
-                chatSession.loadingDelegate = self
-
-                self.callButton.backgroundColor = Colors.purple
-                self.callButton.isJiggling = true
-            }
-
-            // else: we're the initiator and have already done UI changes so nothing to do
-        }
-    }
+	var videoCall: VideoCallModel?
+	var videoCallManager = VideoCallManager.default
+	var callViewController: MatchMessageObserver?
+	
     /// Placeholder text for the chat input UITextView
-    var isShowingPlaceholderText = true {
-        didSet {
+	var isShowingPlaceholderText: Bool = true {
+        didSet(oldValue) {
             guard isShowingPlaceholderText != oldValue else {
                 return
             }
@@ -134,7 +112,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.chatTableView.reloadData()
         self.chatTableView.scrollToBottom(animated: true)
 
-        if !self.isMonkeyKingBool! {
+        if self.isMonkeyKingBool == false {
             if (self.viewModel.friendship?.user_is_typing ?? false) == true {
                 self.profileActiveLabel.text = "typing..."
             } else if self.callButton.isSpinning {
@@ -146,39 +124,32 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             self.profileActiveLabel.isHidden = true
         }
     }
-
-    func callFailedBeforeInitializingChatSession() {
-        self.callButton.isJiggling = false
-        self.callButton.isSpinning = false
-        self.sendCancelCallMessage()
-        self.stopCallSound()
-    }
-
-    /// This method is a callback for the API request to create a RealmCall object. It is only called when user initiates a call.
-    func processRecievedRealmCallFromServer(realmVideoCall: RealmVideoCall) {
-        guard let sessionId = realmVideoCall.session_id, let chatId = realmVideoCall.chat_id else {
-            self.callFailedBeforeInitializingChatSession()
-            print("Chat couldn't be created because the server did not return the correct token, chat, or session_id")
-            return
-        }
-		let realm = try? Realm()
-		do {
-			try realm?.write {
-				realmVideoCall.initiator = self.viewModel.friendship?.user
-			}
-		} catch(let error) {
-			print("Error: ", error)
-		}
-
-        let chatSession = ChatSession(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: sessionId, chat: Chat(chat_id: chatId, first_name: self.profileNameLabel.text, profile_image_url: nil, user_id: realmVideoCall.initiator?.user_id), token: realmVideoCall.channelToken, loadingDelegate: self, isDialedCall: true)
-        self.chatSession = chatSession
-		
-		chatSession.accept() // we accept before setting it because didSet checks to see if it's been accepted to differientiate bw initiated and incoming calls
-    }
+	
+	func callCanceled() {
+		self.callFailed()
+		self.sendCancelCallMessage()
+	}
+	
+	func callFailed() {
+		self.callButton.isJiggling = false
+		self.callButton.isSpinning = false
+		self.callButton.backgroundColor = Colors.white(0.06)
+		self.videoCallManager.closeCall()
+	}
+	
+	/// This method is a callback for the API request to create a RealmCall object. It is only called when user initiates a call.
+	func callSuccess(videoCall: VideoCallModel) {
+		self.videoCall = videoCall
+		// we accept before setting it because didSet checks to see if it's been accepted to differientiate bw initiated and incoming calls
+		videoCall.accept = true
+		self.videoCallManager.startCall()
+	}
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.viewModel.delegate = self
+		self.videoCallManager.delegate = self
+		MessageCenter.shared.addMessageObserver(observer: self)
 
         self.chatTableView.delegate = self
         self.chatTableView.dataSource = self
@@ -193,11 +164,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 		self.profileImageView.placeholder = imageName
 		self.profileImageView.url = self.viewModel.friendship?.user?.profile_photo_url
 
-        // Slide down immediately on scroll down
-        //TODO: Make interactive https://stackoverflow.com/a/19576934/1767028
         self.chatTableView.keyboardDismissMode = .onDrag
-
-        Socket.shared.isEnabled = true
         self.chatTextField.delegate = self
 
         // Setup input UITextView to start out with the 'placeholder' text, with proper insets
@@ -208,6 +175,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.chatTableView.contentInset = UIEdgeInsetsMake(14, 0, 10, 0)
 
         self.callButton.emojiLabel = self.callEmojiLabel
+		self.callButton.backgroundColor = Colors.white(0.06)
 
         // Hide snapchat button if we dont have a snapchat for them
         if self.viewModel.friendship?.user?.username == nil {
@@ -215,22 +183,10 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         }
 
         self.handleViewFunc()
-
-        // notifications for keyboard hide/show
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
-
-        // notification for dictation
-        NotificationCenter.default.addObserver(self, selector: #selector(changeInputMode(notification:)), name: .UITextInputCurrentInputModeDidChange, object: nil)
     }
 
     func handleViewFunc() {
-
-        guard self.isMonkeyKingBool != nil else {
-            print("Monkey King user id is nil")
-            return
-        }
-
-        if self.isMonkeyKingBool! {
+        if self.isMonkeyKingBool {
             self.aboutUsButton.layer.shadowColor = MonkeyKingShadowColor
             self.aboutUsButton.backgroundColor = MonkeyKingBgColor
             self.aboutUsButton.layer.shadowOpacity = 0.7
@@ -252,7 +208,34 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             self.callButton.isHidden = false
         }
     }
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		if let friendship = self.viewModel.friendship {
+			let user = friendship.user
+			
+			self.profileNameLabel.text = user?.first_name
+		}
+	}
 
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		// enter forground
+		NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+		// notifications for keyboard hide/show
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
+		// notification for dictation
+		NotificationCenter.default.addObserver(self, selector: #selector(changeInputMode(notification:)), name: .UITextInputCurrentInputModeDidChange, object: nil)
+		
+		// endTransition on DismissPopupAnimator calls view life cycle methods (even if cancelled); dont want keyboard to come up over insta
+		if self.isMonkeyKingBool == false {
+			self.chatTextField.becomeFirstResponder()
+		}
+		self.chatTableView.scrollToBottom()
+	}
+	
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         /// AT LEAST TWO ENGINEERS MUST APPROVE ALL CODE ADDED TO THIS FUNCTION
@@ -263,15 +246,10 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        if self.presentedViewController == nil || self.presentingViewController == nil { // aka not moving to call or getting alert
-            NotificationCenter.default.removeObserver(self)
-            self.chatSession?.disconnect(.consumed)
-            self.stopCallSound()
-        }
+		NotificationCenter.default.removeObserver(self)
     }
 
     @IBAction func aboutUsBtnClickFunc(_ sender: BigYellowButton) {
-		
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertController.addAction(UIAlertAction(title: "💖 Rate Us", style: .default, handler: { (UIAlertAction) in
@@ -313,13 +291,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         switch longPressGestureRecognizer.state {
         case .began:
 
-            // TEMP UX FIX: "Will be fixed in 2 weeks" : Sept 14
-            // View hierarchy breaks when place call -> open isntagram -> call gets accepted while instagram open
-            if let chatSession = self.chatSession, chatSession.response == .accepted { // we are placing a call
-                print("Not opening instagram becauase we are placing a call. FIX THIS ALREADY!!")
-                return
-            }
-
             guard let friendship = self.viewModel.friendship else {
                 return
             }
@@ -332,7 +303,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
                 return
             }
 
-            if !self.isMonkeyKingBool! {
+            if self.isMonkeyKingBool == false {
                 instagramVC.responderAfterDismissal = self.chatTextField
             }
 
@@ -342,7 +313,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
             instagramVC.friendshipId = friendshipId
             instagramVC.userId = friendship.user?.user_id
-            instagramVC.isMonkeyKingBool = self.isMonkeyKingBool!
+            instagramVC.isMonkeyKingBool = self.isMonkeyKingBool
 			
 			AnalyticsCenter.log(withEvent: .insgramClick, andParameter: [
 				"entrance": "convopage",
@@ -383,60 +354,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        // endTransition on DismissPopupAnimator calls view life cycle methods (even if cancelled); dont want keyboard to come up over insta
-        if !self.isMonkeyKingBool! {
-            self.chatTextField.becomeFirstResponder()
-        }
-        self.chatTableView.scrollToBottom()
-
-        IncomingCallManager.shared.delegate = self
-    }
-    func incomingCallManager(_ incomingCallManager: IncomingCallManager, didDismissNotificatationFor chatSession: ChatSession) {
-
-    }
-    func incomingCallManager(_ incomingCallManager: IncomingCallManager, shouldShowNotificationFor chatSession: ChatSession) -> Bool {
-        guard self.viewModel.friendship?.user?.user_id == chatSession.realmCall?.initiator?.user_id else {
-            return true
-        }
-
-        guard chatSession != self.chatSession else { // incoming manager trying to send us local, so it's a status update and we ignore
-            return false
-        }
-
-        if self.chatSession != nil {
-            guard let incomingInitiator = chatSession.realmCall?.initiator?.user_id, let localInitiator = self.chatSession?.realmCall?.initiator?.user_id else {
-                print("Error: Initiator is missing in RealmCall object")
-                return false
-            }
-
-            if incomingInitiator != localInitiator { // they both placed call at same time
-                guard let incomingCallDateIntervalSince1970 = chatSession.realmCall?.created_at?.timeIntervalSince1970, let localCallDateIntervalSince1970 = self.chatSession?.realmCall?.created_at?.timeIntervalSince1970 else {
-                    return false
-                }
-                if incomingCallDateIntervalSince1970 < localCallDateIntervalSince1970 { // incoming call came first
-                    // next chat to accept (act on call end)
-                    self.chatSession?.disconnect(.consumed)
-                    self.nextSessionToPresent = chatSession
-                    return false
-                } else { // local call came first
-                    chatSession.disconnect(.consumed) // disconnect from external, the other person should connect with above code
-                    return false
-                }
-            }
-        }
-
-        chatSession.loadingDelegate = self
-        self.chatSession = chatSession
-        return false
-    }
-
-    func incomingCallManager(_ incomingCallManager: IncomingCallManager, transitionToChatSession chatSession: ChatSession) {
-        chatSession.loadingDelegate = self
-        self.chatSession = chatSession
-    }
-
     /// Ensure scrolling the message table does not trigger the change page scroll view pan gesture recognizer
     override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 
@@ -445,17 +362,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         }
 
         return super.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        if let friendship = self.viewModel.friendship {
-            let user = friendship.user
-			
-            self.profileNameLabel.text = user?.first_name
-        }
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
 	
     func applicationWillEnterForeground() {
@@ -473,26 +379,27 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         }
 
         // calculate keyboard displacement against window bounds
-        let currentViewHeight = UIApplication.shared.keyWindow?.bounds.height
-        let keyboardDisplacement = currentViewHeight! - endFrame.origin.y
+        let currentViewHeight = Environment.ScreenHeight
+        var keyboardDisplacement = currentViewHeight - endFrame.origin.y
 
         // if we're sliding down, resign first responder on the textview
         /*if self.bottomConstraint.constant > keyboardDisplacement + 5 {
             self.chatTextField.resignFirstResponder()
         }*/
+		if keyboardDisplacement > 0 && Environment.isIphoneX {
+			keyboardDisplacement -= 34
+		}
         self.bottomConstraint.constant = keyboardDisplacement + 5
         self.view.layoutIfNeeded()
     }
 
     /// This will catch any time people change language, but we only care about dictation so we can hide placeholder
     func changeInputMode(notification : NSNotification) {
-
         if chatTextField.textInputView.textInputMode?.primaryLanguage == "dictation" {
             self.isShowingPlaceholderText = false
         } else if chatTextField.text.unicodeScalars.first?.value == 65532 { // the unicode for "object replacement character"; occurs when speaker says nothing
             self.isShowingPlaceholderText = true
         }
-
     }
 
     /// When we get a newline (and ONLY a newline, prevents pasting things with a newline from triggering send), we treat that as a 'send' action
@@ -547,17 +454,14 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.isShowingPlaceholderText = true
 
 		AnalyticsCenter.log(event: .sentMessageConvo)
-
         self.view.layoutIfNeeded()
     }
 
     func sendCancelCallMessage() {
-        if let chatSession = self.chatSession {
-            IncomingCallManager.shared.cancelVideoCall(chatsession: chatSession)
-        }
-
-        self.viewModel.sendText("Call canceled")
-        self.view.layoutIfNeeded()
+		self.videoCallManager.closeCall()
+		self.viewModel.sendText("Call canceled")
+		self.videoCall = nil
+		self.view.layoutIfNeeded()
     }
 
     @IBAction func addSnapchat(_ sender: Any) {
@@ -577,23 +481,23 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 			"type": "video_call",
 			])
 		
-        if let chatSession = self.chatSession {
-            if chatSession.response == .accepted && chatSession.status != .consumed && chatSession.status != .consumedWithError {
-                chatSession.disconnect(.consumed)
-                self.stopCallSound()
-                self.callButton.isJiggling = false
-                self.callButton.backgroundColor = Colors.white(0.06)
-            } else {
-                self.callButton.isSpinning = true
-                self.profileActiveLabel.text = "connecting..."
-                self.chatSession?.accept()
+        if let videoCall = self.videoCall {
+			// video call from my self
+			if videoCall.accept == true {
+				self.callCanceled()
+			}else {
+				// accept other video call
+				videoCall.accept = true
+				self.videoCallManager.connect(with: videoCall)
+				self.callButton.isSpinning = true
+				self.profileActiveLabel.text = "connecting..."
 			}
-            return
-        }
-        self.callButton.isJiggling = true
-        self.viewModel.initiateCall()
+		}else {
+			self.callButton.backgroundColor = Colors.purple
+			self.callButton.isJiggling = true
+			self.viewModel.initiateCall()
+		}
     }
-
 
     @IBAction func startConvo(_ sender: UIButton) {
         self.viewModel.sendText(nil)
@@ -601,115 +505,80 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     }
 }
 
-/// Mark - ChatSessionLoadingDelegate
-extension ChatViewController: ChatSessionLoadingDelegate {
-    func presentCallViewController(for chatSession:ChatSession) {
-        self.callButton.isSpinning = false
-        self.callButton.isJiggling = false
-        self.callButton.backgroundColor = Colors.white(0.06)
-        self.stopCallSound()
-        self.chatTextField.resignFirstResponder()
-        UIView.animate(withDuration: 0.3, animations: {
-            self.view.alpha = 0.0
-        }) { (Bool) in
-            let callViewController = UIStoryboard(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "callVC") as! CallViewController
-            self.callViewController = callViewController
-            self.callViewController?.chatSession = self.chatSession
-            self.chatSession?.callDelegate = callViewController
-
-            self.present(callViewController, animated: false)
-
-            Achievements.shared.totalChats += 1
-        }
-    }
-
-    func chatSession(_ chatSession: ChatSession, callEndedWithError error:Error?) {
-        self.callButton.isSpinning = false
-        self.callButton.isJiggling = false
-        self.stopCallSound()
-        if chatSession.didConnect == false {
-            self.sendCancelCallMessage()
-        }
-
-        self.chatSession = nil
-        self.isMonkeyKingBool! ? (self.profileActiveLabel.isHidden = true) : (self.profileActiveLabel.text = viewModel.userLastOnlineAtString)
-
-        if let nextSessionToPresent = self.nextSessionToPresent {
-            self.nextSessionToPresent = nil
-            nextSessionToPresent.loadingDelegate = self
-            nextSessionToPresent.accept() // accept external (must be done before self.chatSession or else it will think its an unaccepted incoming call and trigger purple and calls)
-            self.chatSession = nextSessionToPresent
-        }
-
-        self.callButton.backgroundColor = Colors.white(0.06)
-    }
-
-    func dismissCallViewController(for chatSession:ChatSession) {
-
-        HWCameraManager.shared().removePixellate()
-        HWCameraManager.shared().changeCameraPosition(to: .front)
-
-        self.callButton.isJiggling = false
-        self.callButton.isSpinning = false // sets jiggling to false if its true so captures both
-        self.stopCallSound()
-
-        chatSession.chat?.update(callback: nil)
-		let presentingViewController = self.callViewController?.presentingViewController
+extension ChatViewController: MatchServiceObserver {
+	func disconnect(reason: MatchError) {
+		switch reason {
+		case .WaitingTimeOut:
+			fallthrough
+		case .ConnectTimeOut:
+			self.callCanceled()
+		default:
+			break
+		}
+		self.endVideoCall()
+	}
+	
+	func remoteVideoReceived(user user_id: Int) {
+		guard let videoCall = self.videoCall else { return }
 		
-//		UIView.animate(withDuration: 0.2, animations: {
-//			self.colorGradientView.alpha = 1.0
-//			presentingViewController?.view.alpha = 1.0
-//		}) { (Bool) in
-//			self.containerView.setNeedsLayout()
-//			self.matchViewController = nil
-//		}
+		// 如果已经收到所有人的流
+		if videoCall.allUserConnected() {
+			self.startVideoCall()
+		}
+	}
+	
+	func channelMessageReceived(message: Message) {
+		
+	}
+	
+	func startVideoCall() {
+		guard let videoCall = self.videoCall else { return }
+		
+		Achievements.shared.totalChats += 1
+		let callViewController = self.storyboard?.instantiateViewController(withIdentifier: "callVC") as! MatchMessageObserver
+		self.callViewController = callViewController
+		callViewController.present(from: self, with: videoCall, complete: nil)
+	}
+	
+	func endVideoCall() {
+		self.callViewController?.dismiss(complete: nil)
+		self.callViewController = nil
+		self.callFailed()
+	}
+}
 
-        print("Consumed")
-        UIView.animate(withDuration: 0.3, animations: {
-            self.callViewController?.isPublisherViewEnlarged = true
-            self.callViewController?.view.layoutIfNeeded()
-        }) { [weak self] (success) in
-            presentingViewController?.dismiss(animated: false) {
-                let publisherContainerView = self?.presentingViewController!.presentingViewController!.view
-                publisherContainerView?.insertSubview(HWCameraManager.shared().localPreviewView, at: 0)
-                HWCameraManager.shared().localPreviewView.translatesAutoresizingMaskIntoConstraints = false
-                let viewsDict = ["view": HWCameraManager.shared().localPreviewView,]
-                publisherContainerView?.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
-                publisherContainerView?.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
-                UIView.animate(withDuration: 0.2, animations: {
-                    self?.view.alpha = 1.0
-					presentingViewController?.view.alpha = 1.0
-                }) { (Bool) in
-					self?.callViewController = nil
-				}
-            }
-        }
-    }
-
-    func shouldShowConnectingStatus(in chatSession: ChatSession) {
-        // do noting
-    }
-
-    internal func initiateCallTimer() {
-        self.stopCallSound()
-        self.callTimer = Timer(timeInterval: 2.52, target: self, selector: #selector(playCallSound), userInfo: nil, repeats: true)
-        RunLoop.main.add(self.callTimer!, forMode: .commonModes)
-        self.callTimer?.fire()
-    }
-
-    func playCallSound() {
-        SoundPlayer.shared.play(sound: .call)
-    }
-
-    func stopCallSound() {
-        SoundPlayer.shared.stopPlayer()
-        self.callTimer?.invalidate()
-        self.callTimer = nil
-    }
-
-    func acceptChat(chatId:String) {
-        IncomingCallManager.shared.delegate = self
-    }
+/// Mark - ChatSessionLoadingDelegate
+extension ChatViewController: MessageObserver {
+	
+	// 收到对 match 的操作
+	func didReceiveSkip(in chat: String) {
+		if chat == self.videoCall?.chat_id {
+			self.callFailed()
+		}
+	}
+	
+	func didReceiveAccept(in chat: String) {
+		if let videoCall = self.videoCall, chat == videoCall.chat_id {
+			self.videoCallManager.connect(with: videoCall)
+			self.callButton.isSpinning = true
+			self.profileActiveLabel.text = "connecting..."
+		}
+	}
+	
+	// 收到对方的 video call
+	func didReceiveVideoCall(call: VideoCallModel) {
+		if "\(call.left.user_id)" == self.viewModel.friendship?.user?.user_id {
+			self.callButton.backgroundColor = Colors.purple
+			self.callButton.isJiggling = true
+			self.videoCall = call
+		}
+	}
+	
+	func didReceiveCallCancel(call: String) {
+		if call == self.videoCall?.chat_id {
+			self.callFailed()
+		}
+	}
 }
 
 // MARK: -- Tableview Delegate & Data Source
@@ -777,7 +646,7 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if !self.isMonkeyKingBool! {
+        if self.isMonkeyKingBool == false {
             self.startConvoButton.isHidden = self.viewModel.messageCount != 0
         }
         return self.viewModel.messageCount
@@ -844,5 +713,4 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
         return true
     }
-
 }

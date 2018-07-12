@@ -15,12 +15,8 @@ extension TextChatViewController {
 	
 	@IBAction func report(_ sender: BigYellowButton) {
 		
-		self.chatSession?.chat?.showReport += 1
-		
-		guard let chatId = self.chatSession?.chat?.chatId else {
-			print("Error: No chat id available")
-			return
-		}
+		let chatId = self.matchModel.match_id
+		self.matchModel.left.showReport = true
 		
 		let alert = UIAlertController(title: "Are you sure you'd like to report this user?", message: APIController.shared.currentExperiment?.report_warning_text ?? "Your account will be disabled if you falsely report a user.", preferredStyle: .actionSheet)
 		alert.addAction(UIAlertAction(title: "🔞  Person is nude", style: .default, handler: {
@@ -48,35 +44,27 @@ extension TextChatViewController {
 	}
 	
 	func sendReport(reason: ReportType, chat_id: String) {
-		chatSession?.chat?.reportReason = reason
+		guard let authorization = UserManager.authorization else { return }
 		
-		guard let authorization = APIController.authorization else {
-			return
-		}
-		
-		if let addedTime = self.chatSession?.hadAddTime, addedTime == false, self.chatSession?.matchMode == .VideoMode {
+		self.matchModel.left.reportReason = reason
+		if self.matchModel.addTimeCount() == 0, self.matchModel.match_room_mode == .VideoMode {
 			//  open pixel effect and cant close anymore
 			HWCameraManager.shared().addPixellate()
 			
-			if let subscriberView = self.chatSession?.remoteView {
-				// add blur after take screen shot
-				let eff = UIBlurEffect.init(style: .light)
-				let blurV = UIVisualEffectView.init(effect: eff)
-				blurV.frame = self.view.bounds
-				subscriberView.addSubview(blurV)
-			}
+			let subscriberView = self.matchModel.left.renderContainer
+			// add blur after take screen shot
+			let eff = UIBlurEffect.init(style: .light)
+			let blurV = UIVisualEffectView.init(effect: eff)
+			blurV.frame = self.view.bounds
+			subscriberView.addSubview(blurV)
 		}
 		
-		self.chatSession?.isReportedChat = true
-		self.chatSession?.sentReport()
-		
-		self.policeButton.emojiLabel?.text = "😳"
 		self.policeButton.isEnabled = false
+		self.policeButton.emojiLabel?.text = "😳"
 		
 		let url = "\(Environment.baseURL)/api/v1.2/reports"
 		let headers: [JSONAPIRequest.RequestOption] = [
 			.header("Authorization", authorization),
-			.header("Accept", "application/json"),
 			]
 		
 		let parameters: Parameters = [
@@ -93,32 +81,30 @@ extension TextChatViewController {
 	}
 	
 	func autoScreenShotUpload(source: AutoScreenShotType) {
-		guard let authorization = APIController.authorization, let currentUser = APIController.shared.currentUser, currentUser.shouldUploadScreenShot() == true else {
+		guard let authorization = UserManager.authorization, let currentUser = UserManager.shared.currentUser, currentUser.shouldUploadScreenShot() == true else {
 			return
 		}
 		
-		if  let myGender = APIController.shared.currentUser?.gender,
-			let otherGender = self.chatSession?.chat?.gender,
-			myGender == "male" && otherGender == "male",
-			(arc4random() % 100) > (RemoteConfigManager.shared.moderation_gender_match) {
+		if  let myGender = currentUser.gender,
+			myGender == Gender.male.rawValue,
+			let otherGender = self.matchModel.left.gender,
+			myGender == otherGender,
+			Int.arc4random() % 100 > (RemoteConfigManager.shared.moderation_gender_match) {
 			return
 		}
 		
 		RealmUser.lastScreenShotTime = Date().timeIntervalSince1970
-		
 		HWCameraManager.shared().snapStream { (imageData) in
-			
 			let url = "\(Environment.baseURL)/api/v1.2/reports"
 			let headers: [JSONAPIRequest.RequestOption] = [
 				.header("Authorization", authorization),
-				.header("Accept", "application/json"),
 				]
 			
 			let parameters: Parameters = [
 				"data": [
 					"type": "screenshots",
 					"attributes": [
-						"reason":source.rawValue
+						"reason": source.rawValue
 					]
 				]
 			]

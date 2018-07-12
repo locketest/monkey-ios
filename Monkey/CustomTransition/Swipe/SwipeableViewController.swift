@@ -134,8 +134,9 @@ class SwipeableViewController: MonkeyViewController, UIGestureRecognizerDelegate
 		let translation: CGPoint = panGestureRecognizer.translation(in: self.view)
 		let translationX: CGFloat = translation.x
 		let translationY: CGFloat = translation.y
-		let viewHeight: CGFloat = translationContentSize.height
-		let viewWidth: CGFloat = translationContentSize.width
+		let translationSize = self.translationContentSize
+		let viewHeight: CGFloat = translationSize.height
+		let viewWidth: CGFloat = translationSize.width
 		
 		var progress: CGFloat = 0
 		if let currentDiretion = self.panningTowardsSide {
@@ -288,6 +289,69 @@ extension MainViewController {
 		}else {
 			Hero.shared.apply(modifiers: [.opacity(1 - progress)], to: self.contentView)
 		}
+	}
+}
+
+
+extension FriendsViewController: HeroViewControllerDelegate {
+	func heroWillStartAnimatingFrom(viewController: UIViewController) {
+		if let fromVC = viewController as? ChatViewController {
+			let fromView: UIView = fromVC.view
+			let viewCenter: CGPoint = self.view.center
+			let viewSize: CGSize = self.view.frame.size
+			let halfWidth: CGFloat = viewSize.width / 2.0
+			let widthPlusHalf: CGFloat = halfWidth * 3.0
+			
+			self.view.hero.modifiers = [.position(CGPoint.init(x: widthPlusHalf, y: viewCenter.y)), .useNoSnapshot]
+			fromView.hero.modifiers = [.position(CGPoint.init(x: -halfWidth, y: viewCenter.y)), .useNoSnapshot]
+		}
+	}
+	
+	func heroWillStartAnimatingTo(viewController: UIViewController) {
+		if let toVC = viewController as? ChatViewController {
+			let toView: UIView = toVC.view
+			let originCenter: CGPoint = self.view.center
+			let originSize: CGSize = self.view.frame.size
+			let halfWidth: CGFloat = originSize.width / 2.0
+			let widthPlusHalf: CGFloat = halfWidth * 3.0
+			
+			self.view.hero.modifiers = [.position(CGPoint.init(x: widthPlusHalf, y: originCenter.y)), .useNoSnapshot]
+			toView.hero.modifiers = [.position(CGPoint.init(x: originCenter.x - originSize.width, y: originCenter.y)), .useNoSnapshot]
+		}
+	}
+}
+
+extension FriendsViewController {
+	override func swipeableAnimatingFrom(viewController: SwipeableViewController, translation: CGPoint, progress: CGFloat) {
+		guard viewController is ChatViewController else {
+			super.swipeableAnimatingFrom(viewController: viewController, translation: translation, progress: progress)
+			return
+		}
+		
+		let originCenter = self.view.center
+		let translationX: CGFloat = translation.x
+		
+		let viewSize: CGSize = view.frame.size
+		let viewWidth: CGFloat = viewSize.width
+		let halfWidth: CGFloat = viewWidth / 2.0
+		
+		Hero.shared.apply(modifiers: [.position(CGPoint.init(x: viewWidth + halfWidth + translationX, y: originCenter.y))], to: self.view)
+	}
+
+	override func swipeableAnimatingTo(viewController: SwipeableViewController, translation: CGPoint, progress: CGFloat) {
+		guard viewController is ChatViewController else {
+			super.swipeableAnimatingTo(viewController: viewController, translation: translation, progress: progress)
+			return
+		}
+
+		let originCenter = self.view.center
+		let translationX: CGFloat = translation.x
+		
+		let viewSize: CGSize = view.frame.size
+		let viewWidth: CGFloat = viewSize.width
+		let halfWidth: CGFloat = viewWidth / 2.0
+		
+		Hero.shared.apply(modifiers: [.position(CGPoint.init(x: translationX - halfWidth, y: originCenter.y))], to: self.view)
 	}
 }
 

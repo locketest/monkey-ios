@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import DeviceKit
 import ObjectMapper
 
 class TextChatViewController: MonkeyViewController {
@@ -18,20 +17,21 @@ class TextChatViewController: MonkeyViewController {
 	@IBOutlet weak var friendButton: SmallYellowButton!
     @IBOutlet weak var instagramPopupButton: SmallYellowButton!
 	@IBOutlet weak var endCallButton: SmallYellowButton!
-	@IBOutlet weak var publisherContainerView: UIView!
-	weak var remoteStreamView: UIView?
+	
+	fileprivate var remoteStreamView: UIView!
+	@IBOutlet weak var publisherContainerView: LocalPreviewContainer!
+	@IBOutlet weak var publisherContainerViewLeftConstraint: NSLayoutConstraint!
+	@IBOutlet weak var publisherContainerViewWidthConstraint: NSLayoutConstraint!
+	@IBOutlet weak var publisherContainerViewTopConstraint: NSLayoutConstraint!
+	@IBOutlet weak var publisherContainerViewHeightConstraint: NSLayoutConstraint!
 	
 	@IBOutlet weak var inputContainerView: UIView!
 	@IBOutlet weak var placeholderTextLabel: UILabel!
 	@IBOutlet weak var textInputView: UITextView!
 	@IBOutlet weak var textMessageList: UITableView!
 	@IBOutlet weak var GradientView: UIView!
-	@IBOutlet weak var publisherContainerViewLeftConstraint: NSLayoutConstraint!
-	@IBOutlet weak var publisherContainerViewWidthConstraint: NSLayoutConstraint!
-	@IBOutlet weak var publisherContainerViewTopConstraint: NSLayoutConstraint!
-	@IBOutlet weak var publisherContainerViewHeightConstraint: NSLayoutConstraint!
 	/// Height of chat text view constraint, used to lock when we go past 3 lines
-	@IBOutlet weak var inputHeightConstraint:NSLayoutConstraint!
+	@IBOutlet weak var inputHeightConstraint: NSLayoutConstraint!
 	
 	@IBOutlet weak var conversationTip: UILabel!
 	@IBOutlet weak var soundButtonHeightConstraint: NSLayoutConstraint!
@@ -42,19 +42,19 @@ class TextChatViewController: MonkeyViewController {
     @IBOutlet weak var commonTreeContainView: UIView!
     @IBOutlet weak var commonTreeEmojiLabel: UILabel!
     @IBOutlet weak var commonTreeLabel: UILabel!
-    	
-	var chatSession: ChatSession?
-	var messages = [TextMessage].init()
-	var soundPlayer = SoundPlayer.shared
-	var eras = "👂"
 	
-	var isLinkInstagramBool: Bool {
-		return chatSession?.videoCall?.matchedFriendship?.user?.instagram_account != nil
+	fileprivate var soundPlayer = SoundPlayer.shared
+	fileprivate var eras = "👂"
+	fileprivate var winEmojis = "🎉👻🌟😀💎♥️🎊🎁🐬🙉🔥"
+	fileprivate var animator: UIDynamicAnimator!
+	fileprivate var isAnimatingUnMuted = false
+	fileprivate var isAnimatingDismiss = false
+	
+	fileprivate var isLinkInstagramBool: Bool {
+		return self.matchModel.left.instagram_id != nil
 	}
-    
-    var commonTree:RealmChannel?
 	
-	var tips = [
+	fileprivate let tips = [
 		"Share your weekend vibe. Use emojis only.",
 		"Most monkeys have tails. If you didn’t know now you know.",
 		"Share what you’re doing right now and make it rhyme.",
@@ -94,82 +94,66 @@ class TextChatViewController: MonkeyViewController {
 		"Is Post Malone a G? Give 2 reasons why/why not.",
 		"Be a good monkey and share what you did last weekend.",
 	]
-	var winEmojis = "🎉👻🌟😀💎♥️🎊🎁🐬🙉🔥"
-	var animator: UIDynamicAnimator!
-	var isAnimatingUnMuted = false
 	
-	func isIphoneX() -> Bool {
-		return Device() == Device.iPhoneX
+	fileprivate var messages: [TextMessage] = [TextMessage]()
+	var matchModel: MatchModel!
+	var matchHandler: MatchHandler!
+	
+	/**
+	When true, sets constraints to make the publisher camera view fill the screen.
+	
+	When false, sets constraints to pin to top right corner for a call.
+	*/
+	var isPublisherViewEnlarged = true { // true when skip button,
+		didSet {
+			if self.isPublisherViewEnlarged {
+				publisherContainerViewLeftConstraint.constant = 0.0
+				publisherContainerViewTopConstraint.constant = 0.0
+				
+				publisherContainerViewHeightConstraint.constant = self.view.frame.size.height
+				publisherContainerViewWidthConstraint.constant = self.view.frame.size.width
+			} else {
+				publisherContainerViewLeftConstraint.constant = 4
+				publisherContainerViewTopConstraint.constant = Environment.isIphoneX ? 44 : 20
+				
+				publisherContainerViewWidthConstraint.constant = (self.containerView.frame.size.width - 76.0) / 2.0
+				publisherContainerViewHeightConstraint.constant = 192
+			}
+		}
 	}
-	
-	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-		super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-		
-	}
-	
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-		
-	}
-	
-	deinit {
-		KeyboardManager.default().removeKeyboardObserver(self)
-		NotificationCenter.default.removeObserver(self, name: .UITextInputCurrentInputModeDidChange, object: nil)
-		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(refreshTypingStatus), object: nil)
-		print("(self) deinit...")
-	}
-	
     override func viewDidLoad() {
         super.viewDidLoad()
-		Socket.shared.isEnabled = true
-		self.endCallButton.isEnabled = false
-		self.soundButton.isHidden = true
-		self.friendButton.isHidden = true
-		self.endCallButton.isHidden = true
-        self.instagramPopupButton.isHidden = true
 		
-		self.textInputView.delegate = self
-		self.textInputView.layer.masksToBounds = true
-		self.textInputView.layer.cornerRadius = 8
-		self.textInputView.font = UIFont.systemFont(ofSize: 17)
+		self.addObserver()
+		self.configureRemotePreview()
+		self.configureLocalPreview()
 		
-		self.textMessageList.keyboardDismissMode = .onDrag
-		self.soundButton.alpha = 0
-		self.friendButton.alpha = 0
-		self.endCallButton.alpha = 0
-		
-		self.conversationTip.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightMedium)
-		self.conversationTip.backgroundColor = UIColor.clear
-		
-		let random: Int = Int(arc4random_uniform(UInt32(self.tips.count)))
-		self.conversationTip.text = self.tips[random]
-		
-		if let subView = self.chatSession?.remoteView {
-			self.containerView.insertSubview(subView, belowSubview: policeButton)
-			subView.frame = UIScreen.main.bounds
-			self.remoteStreamView = subView
+		// refresh friend
+		let isFriend = self.matchModel.left.friendMatched
+		self.refresh(with: isFriend)
+		self.setupCommonTree()
+    }
+	
+	func togglePublisherEffects() {
+		if HWCameraManager.shared().pixellated == false {
+			HWCameraManager.shared().addPixellate()
+		} else {
+			HWCameraManager.shared().removePixellate()
 		}
-		
-		if isIphoneX() {
-			inputContainerViewBottomConstraint.constant = 34
-			policeButtonTopConstraint.constant = 52
+	}
+	
+	func setupCommonTree(){
+		if let curcommonTree = self.matchModel.left.commonChannel() {
+			self.commonTreeLabel.adjustsFontSizeToFitWidth = true
+			self.commonTreeLabel.minimumScaleFactor = 0.5
+			self.commonTreeEmojiLabel.text = curcommonTree.emoji
+			self.commonTreeLabel.text = curcommonTree.title
 		}else {
-			inputContainerViewBottomConstraint.constant = 0
-			policeButtonTopConstraint.constant = 28
+			self.commonTreeContainView.isHidden = true
 		}
-		
-		let gradientLayer = CAGradientLayer();
-		gradientLayer.colors = [UIColor.black.cgColor, UIColor.clear.cgColor]
-		gradientLayer.startPoint = CGPoint.init(x: 0, y: 0)
-		gradientLayer.endPoint = CGPoint.init(x: 0, y: 1)
-		gradientLayer.frame = CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 32)
-		GradientView.layer.addSublayer(gradientLayer)
-		
-		animator = UIDynamicAnimator(referenceView: self.containerView)
-		self.publisherContainerView.layer.masksToBounds = true
-		updatePublisherViewConstraints(enlarged: true)
-        // Do any additional setup after loading the view.
-		
+	}
+	
+	func addObserver() {
 		// notifications for keyboard hide/show
 		KeyboardManager.default().addKeyboardWillShowObserver(self) {[weak self] (keyboardTransition) in
 			guard let `self` = self else { return }
@@ -187,22 +171,97 @@ class TextChatViewController: MonkeyViewController {
 		}
 		KeyboardManager.default().addKeyboardWillDismissObserver(self) {[weak self] (keyboardTransition) in
 			guard let `self` = self else { return }
-			self.inputContainerViewBottomConstraint.constant = self.isIphoneX() ? 34 : 0
+			self.inputContainerViewBottomConstraint.constant = Environment.isIphoneX ? 34 : 0
 			UIView.animate(withDuration: keyboardTransition.animationDuration, delay: 0.0, options: keyboardTransition.animationOption, animations: {
 				self.containerView.layoutIfNeeded()
 			}, completion: nil)
 		}
-		
-//		self.view.backgroundColor = UIColor.clear
-//		self.containerView.backgroundColor = UIColor.clear
 		self.containerView.isUserInteractionEnabled = true
 		self.containerView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(stopEditing)))
 		self.publisherContainerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(togglePublisherEffects)))
 		
 		// notification for dictation
 		NotificationCenter.default.addObserver(self, selector: #selector(changeInputMode(notification:)), name: .UITextInputCurrentInputModeDidChange, object: nil)
+	}
+	
+	func configureLocalPreview() {
+		if Environment.isIphoneX {
+			inputContainerViewBottomConstraint.constant = 34
+			policeButtonTopConstraint.constant = 52
+		}else {
+			inputContainerViewBottomConstraint.constant = 0
+			policeButtonTopConstraint.constant = 28
+		}
 		
-		DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: Double(RemoteConfigManager.shared.next_show_time))) {[weak self] in
+		self.animator = UIDynamicAnimator(referenceView: self.containerView)
+		
+		self.textInputView.delegate = self
+		self.textInputView.layer.masksToBounds = true
+		self.textInputView.layer.cornerRadius = 8
+		self.textInputView.font = UIFont.systemFont(ofSize: 17)
+		self.textMessageList.keyboardDismissMode = .onDrag
+		
+		self.conversationTip.font = UIFont.systemFont(ofSize: 17, weight: UIFontWeightMedium)
+		self.conversationTip.backgroundColor = UIColor.clear
+		
+		let random: Int = abs(Int.arc4random()) %  self.tips.count
+		self.conversationTip.text = self.tips[random]
+		
+		self.publisherContainerView.layer.cornerRadius = 4.0
+		self.publisherContainerView.layer.masksToBounds = true
+		let gradientLayer = CAGradientLayer();
+		gradientLayer.colors = [UIColor.black.cgColor, UIColor.clear.cgColor]
+		gradientLayer.startPoint = CGPoint.init(x: 0, y: 0)
+		gradientLayer.endPoint = CGPoint.init(x: 0, y: 1)
+		gradientLayer.frame = CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 32)
+		self.GradientView.layer.addSublayer(gradientLayer)
+		
+		// add local preview
+		self.publisherContainerView.addLocalPreview()
+		self.publisherContainerView.pixellateable = true
+		self.enlargedPublisherView(duration: 0)
+	}
+	
+	func configureRemotePreview() {
+		let remotePreview = self.matchModel.left.renderContainer
+		self.containerView.insertSubview(remotePreview, belowSubview: policeButton)
+		self.remoteStreamView = remotePreview
+	}
+	
+	func refresh(with friendStatus: Bool) {
+		
+		if friendStatus {
+			// hide addfriend
+			self.instagramPopupButton.isHidden = !self.isLinkInstagramBool
+			self.addFriendButtonHeightConstraint.constant = self.isLinkInstagramBool ? 60 : 0
+			self.friendButton.isEnabled = false
+			self.friendButton.isHidden = true
+			
+			self.endCallButton.emoji = "👋"
+			self.endCallButton.setTitle("Pce out", for: .normal)
+		}else {
+			self.friendButton.isEnabled = true
+			self.friendButton.isHidden = false
+			
+			// hide instagram
+			self.instagramPopupButton.isEnabled = false
+			self.instagramPopupButton.isHidden = true
+		}
+	}
+	
+	deinit {
+		KeyboardManager.default().removeKeyboardObserver(self)
+		NotificationCenter.default.removeObserver(self, name: .UITextInputCurrentInputModeDidChange, object: nil)
+		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(refreshTypingStatus), object: nil)
+	}
+
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		self.endCallButton.alpha = 0
+		
+		self.soundButton.isHidden = false
+		let next_show_time: Double = Double(RemoteConfigManager.shared.next_show_time)
+		DispatchQueue.main.asyncAfter(deadline: DispatchTime.after(seconds: next_show_time)) { [weak self] in
 			guard let `self` = self else { return }
 			self.endCallButton.isHidden = false
 			self.endCallButton.isEnabled = true
@@ -210,82 +269,34 @@ class TextChatViewController: MonkeyViewController {
 				self.endCallButton.alpha = 1
 			})
 		}
-    }
-    
-    func handleInstagramPopupBtnHiddenFunc(isHidden: Bool) {
-        self.instagramPopupButton.isHidden = self.isLinkInstagramBool ? isHidden : true
-    }
-	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
 		
-		self.publisherContainerView.addSubview(HWCameraManager.shared().localPreviewView)
-		let viewsDict = ["view": HWCameraManager.shared().localPreviewView]
-		self.publisherContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
-		self.publisherContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: NSLayoutFormatOptions(), metrics: nil, views: viewsDict))
-	}
-	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		
-		self.isPublisherViewEnlarged = false
-		self.soundButton.isHidden = false
-        
-        if let friendMatchedBool = self.chatSession?.friendMatched {
-            self.friendButton.isHidden = friendMatchedBool
-        }
-        
-        self.handleInstagramPopupBtnHiddenFunc(isHidden: !self.friendButton.isHidden)
+		self.soundButton.alpha = 1.0
+		self.friendButton.alpha = 1.0
+		self.remoteStreamView.layer.cornerRadius = 4.0
+		self.remoteStreamView.layer.masksToBounds = true
 		
 		let streamViewWidth: CGFloat = (self.containerView.frame.size.width - 76.0) / 2.0
-		UIView.animate(withDuration: 0.3) {
-			self.soundButton.alpha = 1.0
-			self.friendButton.alpha = 1.0
-//			self.endCallButton.alpha = 1
-			self.remoteStreamView?.layer.cornerRadius = 4.0
-			self.remoteStreamView?.layer.masksToBounds = true
-			self.remoteStreamView?.frame = CGRect.init(x: self.containerView.frame.size.width - streamViewWidth - 4.0, y: self.isIphoneX() ? 44.0 : 20.0, width: streamViewWidth, height: 192.0)
-			self.view.layoutIfNeeded()
-            
-            self.setupCommonTree()
-		}
+		let remoteX: CGFloat = self.containerView.frame.size.width - streamViewWidth - 4.0
+		let remoteY: CGFloat = Environment.isIphoneX ? 44.0 : 20.0
+		self.remoteStreamView.frame = CGRect.init(x: remoteX, y: remoteY, width: streamViewWidth, height: 192.0)
+		self.enlargedPublisherView(enlarged: false)
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		self.textInputView.resignFirstResponder()
 		self.updateIsTyping(false)
-		
-		self.remoteStreamView?.layer.masksToBounds = false
-		self.soundButton.isUserInteractionEnabled = false
-		self.friendButton.isUserInteractionEnabled = false
-		self.endCallButton.isUserInteractionEnabled = false
-		self.policeButton.isUserInteractionEnabled = false
-		UIView.animate(withDuration: 0.3, animations: {
-			self.remoteStreamView?.layer.cornerRadius = 0
-			self.soundButton.alpha = 0
-			self.friendButton.alpha = 0
-			self.endCallButton.alpha = 0
-			self.policeButton.alpha = 0
-		})
 	}
     
     @IBAction func alertInstagramPopupVcFunc(_ sender: SmallYellowButton) {
-        
         let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as! InstagramPopupViewController
-		instagramVC.userId = self.chatSession?.videoCall?.user?.user_id ?? self.chatSession?.videoCall?.initiator?.user_id
-
+//		instagramVC.userId = self.chatSession?.videoCall?.user?.user_id ?? self.chatSession?.videoCall?.initiator?.user_id
         instagramVC.followMyIGTagBool = false
-        
         self.present(instagramVC, animated: true)
     }
 	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 		self.stopEditing()
-	}
-	
-	func requestPresentation(of alertController: UIAlertController, from view: UIView) {
-		self.present(alertController, animated: true, completion: nil)
 	}
 	
 	func stopEditing() {
@@ -295,101 +306,44 @@ class TextChatViewController: MonkeyViewController {
 	// Sound Button
 	@IBAction func unMute(_ sender: BigYellowButton) {
 		self.soundButton.isEnabled = false
+		self.soundButton.layer.opacity = 0.5
 		
 		if Achievements.shared.unMuteFirstTextMode == false {
-			let chatSession = self.chatSession
-			
+			Achievements.shared.unMuteFirstTextMode = true
 			let unMuteFirstTextModeAlert = UIAlertController(title: nil, message: "To successfully turn on sound, both users have to tap the button", preferredStyle: .alert)
-			unMuteFirstTextModeAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: {[weak self] (UIAlertAction) in
-				
-				Achievements.shared.unMuteFirstTextMode = true
+			unMuteFirstTextModeAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { [weak self] (UIAlertAction) in
 				guard let `self` = self else { return }
-				if chatSession == self.chatSession && chatSession?.status == .connected {
-					self.chatSession?.sentUnMute()
-				}
+				self.unMute()
 			}))
-			let mainVC = self.presentingViewController as? OnepMatchController
-			mainVC?.showAlert(alert: unMuteFirstTextModeAlert)
+			self.present(unMuteFirstTextModeAlert, animated: true, completion: nil)
 		}else {
-			self.chatSession?.sentUnMute()
+			self.unMute()
 		}
 	}
 	
 	// Add Friend Button
 	@IBAction func addSnapchat(_ sender: BigYellowButton) {
-		sender.isEnabled = false
+		self.friendButton.isEnabled = false
+		self.friendButton.layer.opacity = 0.5
 		
 		if Achievements.shared.addFirstSnapchat == false {
+			Achievements.shared.addFirstSnapchat = true
 			let addFirstSnapchatAlert = UIAlertController(title: nil, message: "To successfully add friends, both users have to tap the button", preferredStyle: .alert)
-			addFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: {[weak self] (UIAlertAction) in
-				Achievements.shared.addFirstSnapchat = true
+			addFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { [weak self] (UIAlertAction) in
 				guard let `self` = self else { return }
-				if let chatSession = self.chatSession, chatSession.status == .connected {
-					self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
-				}
+				self.addSnapchat()
 			}))
-			let mainVC = self.presentingViewController as? OnepMatchController
-			mainVC?.showAlert(alert: addFirstSnapchatAlert)
+			self.present(addFirstSnapchatAlert, animated: true)
 		}else {
-			self.chatSession?.sendSnapchat(username: APIController.shared.currentUser!.snapchat_username!)
+			self.addSnapchat()
 		}
 	}
 	
 	// Next Button
 	@IBAction func endCall(_ sender: BigYellowButton) {
-		self.chatSession?.chat?.my_pce_out = true
 		self.endCallButton.isEnabled = false
-		self.chatSession?.disconnect(.consumed)
-	}
-	
-	func togglePublisherEffects() {
-		if HWCameraManager.shared().pixellated == false {
-			HWCameraManager.shared().addPixellate()
-		} else {
-			HWCameraManager.shared().removePixellate()
-		}
-	}
-    
-    func setupCommonTree(){
-        if let curcommonTree = self.commonTree {
-            self.commonTreeLabel.adjustsFontSizeToFitWidth = true
-            self.commonTreeLabel.minimumScaleFactor = 0.5
-            self.commonTreeEmojiLabel.text = curcommonTree.emoji
-            self.commonTreeLabel.text = curcommonTree.title
-        }else {
-            self.commonTreeContainView.isHidden = true
-        }
-    }
-	
-	func updatePublisherViewConstraints(enlarged: Bool) {
-		if enlarged {
-			publisherContainerView.layer.cornerRadius = 0
-			publisherContainerViewLeftConstraint.constant = 0
-			publisherContainerViewTopConstraint.constant = 0
-			
-			publisherContainerViewWidthConstraint.constant = self.containerView.frame.size.width
-			publisherContainerViewHeightConstraint.constant = self.containerView.frame.size.height
-		}else {
-			publisherContainerView.layer.cornerRadius = 4
-			publisherContainerViewLeftConstraint.constant = 4
-			publisherContainerViewTopConstraint.constant = isIphoneX() ? 44 : 20
-			
-			publisherContainerViewWidthConstraint.constant = (self.containerView.frame.size.width - 76.0) / 2.0
-			publisherContainerViewHeightConstraint.constant = 192
-		}
-		self.view.setNeedsLayout()
-	}
-	
-	var isPublisherViewEnlarged = true { // true when skip button,
-		didSet {
-			updatePublisherViewConstraints(enlarged: isPublisherViewEnlarged)
-		}
-	}
-	
-	var hideStatusBarForScreenshot = false {
-		didSet {
-			self.setNeedsStatusBarAppearanceUpdate()
-		}
+		self.endCallButton.layer.opacity = 0.5
+		self.dismiss(complete: nil)
 	}
 	
 	/// Placeholder text for the chat input UITextView
@@ -416,31 +370,12 @@ class TextChatViewController: MonkeyViewController {
 	func reloadData() {
 		self.textMessageList.reloadData()
 		self.textMessageList.scrollToBottom(animated: true)
-		
-		
-	}
-	
-	override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-		if hideStatusBarForScreenshot {
-			return .none
-		}
-		return .slide
 	}
 	
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-	
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 }
 
 extension TextChatViewController: UITextViewDelegate {
@@ -466,7 +401,7 @@ extension TextChatViewController: UITextViewDelegate {
 			return false
 		}
 		
-		self.chatSession?.sentTypeStatus()
+		OnepMatchManager.default.sendMatchMessage(type: .Typing)
 		let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
 		self.isShowingPlaceholderText = (newText.count == 0)
 		
@@ -493,7 +428,7 @@ extension TextChatViewController: UITextViewDelegate {
 		}
 		let body = messageText.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
 		if body.isEmpty == false {
-			self.chatSession?.sentTextMessage(text: messageText)
+			OnepMatchManager.default.sendMatchMessage(type: .Text, body: body)
 			let messageInfo = [
 				"type": MessageType.Text.rawValue,
 				"body": messageText,
@@ -546,36 +481,56 @@ extension TextChatViewController: UITableViewDelegate, UITableViewDataSource {
 	}
 }
 
-extension TextChatViewController: MatchViewControllerProtocol {
-    
-    func opponentDidTurnToBackground(in chatSession: ChatSession) {
-        self.autoScreenShotUpload(source: .opponent_background)
-    }
-    
-	internal func friendMatched(in chatSession: ChatSession?) {
-		if let _ = chatSession {
-			Achievements.shared.snapchatMatches += 1
-			self.celebrateAddFriend()
+extension TextChatViewController {
+	
+	func addSnapchat() {
+		// request to add snapchat
+		guard let match = self.matchModel else { return }
+		
+		if match.left.friendRequested {
+			match.left.friendAccept = true
+			self.addFriendSuccess()
 		}else {
-            self.addFriendButtonHeightConstraint.constant = self.isLinkInstagramBool ? 60 : 0
-			self.friendButton.alpha = 0
-            self.instagramPopupButton.isHidden = !self.isLinkInstagramBool
-			self.view.setNeedsLayout()
+			match.left.friendRequest = true
+		}
+		OnepMatchManager.default.sendMatchMessage(type: .AddFriend)
+	}
+	
+	func receivedAddSnapchat(message: Message) {
+		guard let match = self.matchModel else { return }
+		
+		if match.left.friendRequest {
+			match.left.friendAccepted = true
+			self.addFriendSuccess()
+		}else {
+			match.left.friendRequested = true
+		}
+	}
+	
+	func unMute() {
+		// requested to add minute
+		guard let match = self.matchModel else { return }
+		
+		match.unMuteRequest = true
+		if match.left.unMuteRequest {
+			self.soundUnMuted()
 		}
 		
-		self.endCallButton.emoji = "👋"
-		self.endCallButton.setTitle("Pce out", for: .normal)
+		OnepMatchManager.default.sendMatchMessage(type: .UnMute)
 	}
 	
-	func soundUnMuted(in chatSession: ChatSession) {
-		self.celebrateUnMuted()
-	}
-	
-	func minuteAdded(in chatSession: ChatSession) {
+	func receivedUnMute(message: Message) {
+		guard let match = self.matchModel else { return }
 		
+		match.left.unMuteRequest = true
+		if match.unMuteRequest {
+			self.soundUnMuted()
+		}
 	}
 	
-	func celebrateAddFriend() {
+	func addFriendSuccess() {
+		Achievements.shared.snapchatMatches += 1
+		
 		soundPlayer.play(sound: .win)
 		animator.removeAllBehaviors()
 		let gravityBehaviour = UIGravityBehavior()
@@ -586,9 +541,11 @@ extension TextChatViewController: MatchViewControllerProtocol {
 		
 		for _ in 1...130 {
 			let emojiLabel = UILabel()
-			emojiLabel.text = String(winEmojis[winEmojis.index(winEmojis.startIndex, offsetBy: (Int(arc4random_uniform(UInt32(winEmojis.count)))))])
+			let randomIndex: Int = abs(Int.arc4random()) % winEmojis.count
+			emojiLabel.text = String(winEmojis[winEmojis.index(winEmojis.startIndex, offsetBy: randomIndex)])
 			emojiLabel.font = UIFont.systemFont(ofSize: 39.0)
-			emojiLabel.frame = CGRect(x: (self.friendButton.superview?.frame.origin.x)! + 30, y: self.friendButton.frame.origin.y, width: 50, height: 50)
+			let positionX: CGFloat = self.friendButton.superview!.frame.origin.x + 30
+			emojiLabel.frame = CGRect(x: positionX, y: self.friendButton.frame.origin.y, width: 50, height: 50)
 			self.containerView.insertSubview(emojiLabel, belowSubview: self.friendButton)
 			
 			gravityBehaviour.addItem(emojiLabel)
@@ -617,26 +574,23 @@ extension TextChatViewController: MatchViewControllerProtocol {
 				emojiLabel.removeFromSuperview()
 			}
 		}
-		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
-			if self.chatSession?.status == .connected {
-                // 如果link 了 Instagram，添加好友后约束不变，否则高度约束变为0，sound按钮下掉
-				self.addFriendButtonHeightConstraint.constant = self.isLinkInstagramBool ? 60 : 0
-                // pop按钮显示与否就跟link的状态一样，与上也有一定关联
-                self.instagramPopupButton.isHidden = !self.isLinkInstagramBool
-				self.view.setNeedsLayout()
-			}
+		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) { [weak self] in
+			self?.refresh(with: true)
 		}
 	}
 	
-	func celebrateUnMuted() {
+	func soundUnMuted() {
+		ChannelService.shared.muteAllRemoteUser(mute: false)
+		
 		AudioServicesPlayAlertSound(1519) // kSystemSoundID_Vibrate: (this is  `Peek` or a weak boom, 1520 is `Pop` or a strong boom)
 		soundPlayer.play(sound: .score)
 		for _ in 1...18 {
 			let emojiLabel = UILabel()
 			emojiLabel.text = eras
 			emojiLabel.font = UIFont.systemFont(ofSize: 39.0)
-			let xDifference:CGFloat = CGFloat(arc4random_uniform(100))
-			emojiLabel.frame = CGRect(x: (self.soundButton.superview?.frame.origin.x)! + xDifference, y: self.soundButton.frame.origin.y, width: 50, height: 50)
+			let xDifference: CGFloat = CGFloat(arc4random_uniform(100))
+			let positionX: CGFloat = self.soundButton.superview!.frame.origin.x + 30
+			emojiLabel.frame = CGRect(x: positionX + xDifference, y: self.soundButton.frame.origin.y, width: 50, height: 50)
 			UIView.animate(withDuration: TimeInterval(CGFloat(arc4random_uniform(200)) / 100.0), animations: {
 				emojiLabel.layer.opacity = 0.0
 				emojiLabel.frame.origin.y = self.containerView.frame.size.height - 350
@@ -646,11 +600,9 @@ extension TextChatViewController: MatchViewControllerProtocol {
 			self.containerView.insertSubview(emojiLabel, belowSubview: self.soundButton)
 		}
 		
-		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
-			if self.chatSession?.status == .connected {
-				self.soundButtonHeightConstraint.constant = 0
-				self.view.setNeedsLayout()
-			}
+		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) { [weak self] in
+			self?.soundButtonHeightConstraint.constant = 0
+			self?.view.setNeedsLayout()
 		}
 	}
 	
@@ -658,7 +610,11 @@ extension TextChatViewController: MatchViewControllerProtocol {
 		return CGFloat(arc4random()) / CGFloat(UINT32_MAX) * abs(firstNum - secondNum) + min(firstNum, secondNum)
 	}
 	
-	func received(textMessage: TextMessage, in chatSession: ChatSession) {
+	func receivedTurnBackground(message: Message) {
+		self.autoScreenShotUpload(source: .opponent_background)
+	}
+	
+	func received(textMessage: TextMessage) {
 		if let lastMessage = self.messages.last, lastMessage.type == MessageType.Typing.rawValue {
 			if textMessage.type == MessageType.Typing.rawValue {
 				return
@@ -675,11 +631,70 @@ extension TextChatViewController: MatchViewControllerProtocol {
 		}
 	}
 	
+	func receivedReport(message: Message) {
+		self.matchModel.left.reported = true
+	}
+	
 	func refreshTypingStatus() {
 		if let lastMessage = self.messages.last, lastMessage.type == MessageType.Typing.rawValue {
 			self.messages.removeLast()
 			self.reloadData()
 		}
+	}
+}
+
+extension TextChatViewController: MatchMessageObserver {
+	func present(from matchHandler: MatchHandler, with matchModel: ChannelModel, complete: CompletionHandler?) {
+		self.matchModel = matchModel as! MatchModel
+		self.matchHandler = matchHandler
+		
+		matchHandler.present(self, animated: false, completion: complete)
+	}
+	
+	func dismiss(complete: CompletionHandler? = nil) {
+		guard self.isAnimatingDismiss == false else {
+			complete?()
+			return
+		}
+		
+		self.isAnimatingDismiss = true
+		self.view.isUserInteractionEnabled = false
+		self.enlargedPublisherView(enlarged: true) { [weak self] in
+			self?.dismiss(animated: false, completion: {
+				complete?()
+				self?.matchHandler.disconnect(reason: .MyQuit)
+			})
+		}
+	}
+	
+	fileprivate func enlargedPublisherView(enlarged: Bool = true, duration: TimeInterval = 0.3, complete: CompletionHandler? = nil) {
+		self.isPublisherViewEnlarged = enlarged
+		UIView.animate(withDuration: duration, animations: {
+			self.view.layoutIfNeeded()
+		}) { (_) in
+			complete?()
+		}
+	}
+	
+	func handleReceivedMessage(message: Message) {
+		let type = MessageType.init(type: message.type)
+		switch type {
+		case .AddFriend:
+			self.receivedAddSnapchat(message: message)
+		case .Report:
+			self.receivedReport(message: message)
+		case .UnMute:
+			self.receivedUnMute(message: message)
+		case .Background:
+			self.receivedTurnBackground(message: message)
+		case .Typing:
+			fallthrough
+		case .Text:
+			self.received(textMessage: message as! TextMessage)
+		default:
+			break
+		}
+		
 	}
 }
 

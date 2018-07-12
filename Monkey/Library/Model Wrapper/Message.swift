@@ -10,10 +10,8 @@ import Foundation
 import ObjectMapper
 
 enum MessageType: String {
-	init?(type: String?) {
-		guard let messageType = type else { return nil }
-		
-		switch messageType {
+	init(type: String?) {
+		switch type {
 		case MessageType.Typing.rawValue:
 			self = .Typing
 		case MessageType.UnMute.rawValue:
@@ -32,6 +30,8 @@ enum MessageType: String {
 			self = .Match
 		case MessageType.Text.rawValue:
 			self = .Text
+		case MessageType.Foreground.rawValue:
+			self = .Foreground
 		default:
 			self = .Normal
 		}
@@ -48,18 +48,40 @@ enum MessageType: String {
 	case Text = "text"
 	case Match = "Match"
     case Background = "turntobackground"
+	case Foreground = "turntoforeground"
+	
+	func supportSocket() -> Bool {
+		switch self {
+		case .Accept:
+			fallthrough
+		case.Skip:
+			return true
+		default:
+			return false
+		}
+	}
 }
 
 class Message: NSObject, Mappable {
 	var sender: String?
 	var parameter: String?
-	lazy var type: String = MessageType.Normal.rawValue
+	var type: String = MessageType.Normal.rawValue
 	lazy var body: String = ""
 	lazy var time = Date.init().timeIntervalSince1970
 	
+	// get type from type
+	var messageType: MessageType {
+		return MessageType.init(type: type)
+	}
+	
+	var supportSocket: Bool {
+		let type = self.messageType
+		return type.supportSocket()
+	}
+	
 	func messageJson() -> [String: Any] {
 		return [
-			"sender": sender ?? APIController.shared.currentUser?.user_id ?? "",
+			"sender": sender ?? UserManager.UserID ?? "",
 			"type": type,
 			"body": body,
 			"time": time,
@@ -67,7 +89,14 @@ class Message: NSObject, Mappable {
 	}
 	
 	required init?(map: Map) {
-		
+		if map["type"].currentValue == nil {
+			return nil
+		}
+	}
+	
+	init(type: String) {
+		super.init()
+		self.type = type
 	}
 	
 	func mapping(map: Map) {
@@ -83,6 +112,7 @@ class MatchMessage: Message {
 	var room: String?
 	
 	required init?(map: Map) {
+		
 		super.init(map: map)
 	}
 	
@@ -97,7 +127,7 @@ class TextMessage: MatchMessage {
 	static let minmumHeight: CGFloat = 21
 	static let maxmumWidth: CGFloat = UIScreen.main.bounds.size.width - 20 - 16
 	var direction: MessageDirection {
-		if let sender = self.sender, let current_user = APIController.shared.currentUser?.user_id, sender == current_user {
+		if let sender = self.sender, let current_user = UserManager.UserID, sender == current_user {
 			return .Send
 		}
 		return .Received
@@ -127,7 +157,6 @@ class TextMessage: MatchMessage {
 	
 	override func mapping(map: Map) {
 		super.mapping(map: map)
-		
 	}
 }
 

@@ -12,6 +12,8 @@ import RealmSwift
 
 protocol ChatViewModelDelegate: class {
 	func reloadData()
+	func callFailed()
+	func callSuccess(videoCall: VideoCallModel)
 }
 
 /// Represents a message that has been created locally and is currently being sent to server.
@@ -65,26 +67,26 @@ class ChatViewModel {
 	
 	var userLastOnlineAtString: String {
 		if let lastOnlineAt: TimeInterval = friendship?.user?.last_online_at?.timeIntervalSinceNow {
-			var secondsSinceOnline = max(lastOnlineAt, friendship?.last_message_received_at?.timeIntervalSinceNow ?? -TimeInterval.greatestFiniteMagnitude)
-			var localizedTime = ""
-			let seconds: Double = 60
-			let hours: Double = 60
-			let days: Double = 24
+			var secondsSinceOnline: TimeInterval = max(lastOnlineAt, friendship?.last_message_received_at?.timeIntervalSinceNow ?? -TimeInterval.greatestFiniteMagnitude)
+			var localizedTime: String = ""
+			let seconds: TimeInterval = 60
+			let hours: TimeInterval = 60
+			let days: TimeInterval = 24
 			
 			secondsSinceOnline = -secondsSinceOnline
 			if secondsSinceOnline > seconds * hours * days * 2 {
 				localizedTime = "A few days ago"
 			} else if secondsSinceOnline > seconds * hours * days {
-				let daysAgo = Int(secondsSinceOnline / (seconds * hours * days))
-				let plurality = daysAgo > 1 ? "s" : ""
+				let daysAgo: Int = Int(secondsSinceOnline / (seconds * hours * days))
+				let plurality: String = daysAgo > 1 ? "s" : ""
 				localizedTime = "\(daysAgo) day\(plurality) ago"
 			} else if secondsSinceOnline > seconds * hours {
-				let hoursAgo = Int(secondsSinceOnline / (seconds * hours))
-				let plurality = hoursAgo > 1 ? "s" : ""
+				let hoursAgo: Int = Int(secondsSinceOnline / (seconds * hours))
+				let plurality: String = hoursAgo > 1 ? "s" : ""
 				localizedTime = "\(hoursAgo) hour\(plurality) ago"
 			} else if secondsSinceOnline > seconds {
-				let minutesAgo = Int(secondsSinceOnline / seconds)
-				let plurality = minutesAgo > 1 ? "s" : ""
+				let minutesAgo: Int = Int(secondsSinceOnline / seconds)
+				let plurality: String = minutesAgo > 1 ? "s" : ""
 				localizedTime = "\(minutesAgo) minute\(plurality) ago"
 			} else {
 				localizedTime = "Online"
@@ -126,7 +128,6 @@ class ChatViewModel {
 			return
 		}
 		
-		// TODO: the user have snapchat username but his username is not correct
 		guard let url = URL(string: "snapchat://add/\(snapchat_username)") else {
 			print("Error: could not get snapchat username to add")
 			return
@@ -134,8 +135,7 @@ class ChatViewModel {
 		
 		if UIApplication.shared.canOpenURL(url) {
 			UIApplication.shared.openURL(url)
-		} else {
-			let backupUrl = URL(string: "https://www.snapchat.com/add/\(snapchat_username)")!
+		} else if let backupUrl = URL(string: "https://www.snapchat.com/add/\(snapchat_username)") {
 			UIApplication.shared.openURL(backupUrl)
 		}
 	}
@@ -205,15 +205,16 @@ class ChatViewModel {
 			]
 		]
 		
-		RealmVideoCall.create(method: .post, parameters: parameters) { (result: JSONAPIResult<RealmVideoCall>) in
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V13.rawValue)/\(ApiType.Videocall)", method: .post, parameters: parameters) { (result: JSONAPIResult<[String: Any]>) in
 			switch result {
 			case .error(let error):
 				// revert fade animation back to screen
 				// notify user call failed
 				error.log(context: "Create (POST) on an initiated call")
-//				self.delegate?.callFailedBeforeInitializingChatSession()
-			case .success(let videoCall):
-				print(videoCall)
+				self.delegate?.callFailed()
+			case .success(let responseJSON):
+				
+				break
 //				self.delegate?.processRecievedRealmCallFromServer(realmVideoCall: videoCall)
 			}
 		}
