@@ -279,7 +279,7 @@ extension InviteFriendsViewController : MyContactsCellDelegate, MFMessageCompose
 			
 			let inviteFriendsViewController = MFMessageComposeViewController()
 			inviteFriendsViewController.recipients = [phoneString]
-			inviteFriendsViewController.body = currentExperiment.two_p_dashboard_link!
+			inviteFriendsViewController.body = currentExperiment.two_p_dashboard_link ?? "error: msg is nil"
 			inviteFriendsViewController.messageComposeDelegate = self
 			self.present(inviteFriendsViewController, animated: true)
 		}

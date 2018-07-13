@@ -385,7 +385,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 					case .error(_): break
 					case .success(let jsonAPIDocument):
 						
-//						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as? [[String: AnyObject]])")
+						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as? [[String: AnyObject]])")
 						
 						if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 							
@@ -888,7 +888,7 @@ extension TwoPersonPlanViewController {
 				})
 			})
 			
-//			print("*** sortedArray = \(JSON(sortedArray))")
+			print("*** sortedArray = \(JSON(sortedArray))")
 			
 			self.sendUploadContactsRequestFunc(sortedArray: sortedArray)
 		}
@@ -907,7 +907,8 @@ extension TwoPersonPlanViewController {
 					case .error(let error):
 						print("*** error = \(error.description)") // 睿，上线时删除
 					case .success(let jsonAPIDocument):
-//						print("*** upload contacts jsonAPIDocument = \(jsonAPIDocument.json)") // 睿，上线时删除
+						
+						print("*** upload contacts jsonAPIDocument = \(jsonAPIDocument.json)") // 睿，上线时删除
 						
 						UserDefaults.standard.setValue(true, forKey: IsUploadContactsTag)
 						
@@ -1126,6 +1127,13 @@ extension TwoPersonPlanViewController {
 		let alertController = UIAlertController(title: nil, message: "Allow contacts to make more friends!", preferredStyle: .alert)
 		
 		alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+			
+			self.tableView.isHidden = true
+			
+			if !self.isPlanBIsUnLockedTuple.isPlanB {
+				self.noAccessInPlanBImageView.isHidden = true
+			}
+			
 			self.noAccessContactsBgView.isHidden = false
 			self.view.bringSubview(toFront: self.noAccessContactsBgView)
 		}))
