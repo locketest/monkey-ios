@@ -33,7 +33,7 @@ class UsersInfoModel: NSObject {
 		usersInfoModel.userIdInt = dict["id"] as? Int
 		usersInfoModel.usernameString = dict["first_name"] as? String
 		usersInfoModel.genderString = dict["gender"] as? String
-		usersInfoModel.pathString = dict["photoUrl"] as? String
+		usersInfoModel.pathString = dict["photo_read_url"] as? String
 		usersInfoModel.unlock2pBool = dict["unlocked_two_p"] as? Bool
 		usersInfoModel.onlineStatusBool = dict["online"] as? Bool
 		usersInfoModel.lastLoginTimeDouble = dict["lastLoginTime"] as? Double

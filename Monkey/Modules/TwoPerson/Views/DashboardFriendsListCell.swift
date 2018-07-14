@@ -50,8 +50,8 @@ class DashboardFriendsListCell: UITableViewCell {
 			
 			self.nameLabel.text = newDashboardFriendsListModel.nameString
 			
-			self.headImageView.placeholder = ProfileImageDefault
 			self.headImageView.url = newDashboardFriendsListModel.pathString
+			self.headImageView.placeholder = Tools.getGenderDefaultImageFunc(genderString: newDashboardFriendsListModel.genderString ?? "")
 			
 			if let nextInvite = newDashboardFriendsListModel.nextInviteAtDouble {
 				

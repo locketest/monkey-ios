@@ -93,11 +93,19 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		// 睿，临时，记得删除
 		UserDefaults.standard.setValue(false, forKey: IsUploadContactsTag)
 		
-		print("*** = \(APIController.authorization)")
+		print("*** authorization = \(APIController.authorization), id = \(APIController.shared.currentUser?.user_id)")
 		
 		self.initView()
 		
 		self.initData()
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+			self.addKeyboardObserverFunc()
+		}
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -241,9 +249,9 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	
 	func initCircleFunc() {
 		
-		let photo = APIController.shared.currentUser?.profile_photo_url
-		
-		self.planAMeImageView.kf.setImage(with: URL(string: photo == nil ? "" : photo!), placeholder: UIImage(named: ProfileImageDefault)!)
+		if let currentUser = APIController.shared.currentUser {
+			self.planAMeImageView.kf.setImage(with: URL(string: currentUser.profile_photo_url ?? ""), placeholder: UIImage(named: currentUser.defaltAvatar)!)
+		}
 		
 		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
 		self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planAMeImageView, lineWidth: 2, strokeColor: MeCircleColor, padding: 5))
@@ -261,8 +269,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	}
 	
 	func initTextFieldFunc() {
-		
-		self.addKeyboardObserverFunc()
 		
 		let cleanButton = self.searchOutTableTextField.value(forKey: "_clearButton") as! UIButton
 		cleanButton.setImage(UIImage(named: "clearButton")!, for: .normal)
@@ -518,9 +524,15 @@ extension TwoPersonPlanViewController : MessageObserver {
 			
 			self.pushToDashboardMainVcFunc()
 			
-			let currentUser = UserManager.shared.currentUser
-			currentUser?.reload(completion: { (error) in
-			})
+			if let realm = try? Realm() {
+				do {
+					try realm.write {
+						UserManager.shared.currentUser!.cached_unlocked_two_p = true
+					}
+				} catch(let error) {
+					print("Error: ", error)
+				}
+			}
 		case SocketDefaultMsgTypeEnum.friendInvite.rawValue: // friendInvite
 			
 			// 好友邀请不发socket消息，只发notification消息，故如下可以删除
@@ -700,6 +712,16 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 							self.unlockNextButton.isHidden = false
 							self.topTitleLabel.text = "🎉 UNLOCKED 🎉"
 							self.topTitleLabel.font = UIFont.boldSystemFont(ofSize: 28)
+							
+							if let realm = try? Realm() {
+								do {
+									try realm.write {
+										UserManager.shared.currentUser!.cached_unlocked_two_p = true
+									}
+								} catch(let error) {
+									print("Error: ", error)
+								}
+							}
 						} else {
 							
 							if self.isPlanBIsUnLockedTuple.isPlanB {
@@ -731,8 +753,6 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 		} else {
 			print("*** unsend")
 		}
-		
-		self.addKeyboardObserverFunc()
 		
 		controller.dismiss(animated: true, completion: nil)
 	}
@@ -1142,7 +1162,8 @@ extension TwoPersonPlanViewController {
 			self.openSettingsFunc()
 		}))
 		
-		self.alertKeyAndVisibleFunc(alert: alertController)
+//		self.alertKeyAndVisibleFunc(alert: alertController)
+		self.present(alertController, animated: true, completion: nil)
 	}
 	
 	func alertKeyAndVisibleFunc(alert:UIAlertController) {

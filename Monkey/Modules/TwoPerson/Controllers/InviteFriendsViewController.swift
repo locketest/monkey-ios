@@ -451,7 +451,7 @@ extension InviteFriendsViewController {
 		// 截取大写首字母
 		let familyNameString = Tools.subStringFunc(string: stringPinYin, start: 1, end: 1)
 		
-		if familyNameString.containsEmojiFunc() { return "*" }
+		if familyNameString.containsEmoji { return "*" }
 		
 		// 判断姓名首位是否为大写字母
 		let regexA = "^[A-Z]$"
@@ -585,7 +585,8 @@ extension InviteFriendsViewController {
 			self.openSettingsFunc()
 		}))
 		
-		self.alertKeyAndVisibleFunc(alert: alertController)
+//		self.alertKeyAndVisibleFunc(alert: alertController)
+		self.present(alertController, animated: true, completion: nil)
 	}
 	
 	func alertKeyAndVisibleFunc(alert:UIAlertController) {

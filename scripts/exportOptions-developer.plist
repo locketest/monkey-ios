@@ -19,9 +19,9 @@
   <key>provisioningProfiles</key>
 	<dict>
 		<key>cool.monkey.ios</key>
-		<string>02b17d90-3b00-4f0d-9542-b78ae3c8dd6e</string>
+		<string>8c4ba91f-f009-4618-9dd5-6ca0342e1b42</string>
 		<key>cool.monkey.ios.PushService</key>
-		<string>33daece1-56d0-4ebe-817c-d58d9aa785c7</string>
+		<string>4c5812c2-e637-4b47-8241-6130ceba7fb1</string>
 	</dict>
 </dict>
 </plist>

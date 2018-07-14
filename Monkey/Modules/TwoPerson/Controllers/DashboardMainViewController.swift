@@ -104,7 +104,7 @@ class DashboardMainViewController: MonkeyViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		print("*** = \(APIController.authorization)")
+		print("*** authorization = \(APIController.authorization), id = \(APIController.shared.currentUser?.user_id)")
 
         self.initView()
 		
@@ -288,11 +288,9 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	func initCircleFunc() {
 		
-		let currentUser = APIController.shared.currentUser!
-		
-		let photo = currentUser.profile_photo_url
-		
-		self.meImageView.kf.setImage(with: URL(string: photo == nil ? "" : photo!), placeholder: UIImage(named: currentUser.defaltAvatar)!)
+		if let currentUser = APIController.shared.currentUser {
+			self.meImageView.kf.setImage(with: URL(string: currentUser.profile_photo_url ?? ""), placeholder: UIImage(named: currentUser.defaltAvatar)!)
+		}
 	}
 	
 	func handleRequestFinishedFunc(models:[FriendshipModel], friendRequestArray:[FriendsRequestModel], userInfoArray:[UsersInfoModel], pairListArray:[PairListModel]) {
@@ -327,18 +325,25 @@ class DashboardMainViewController: MonkeyViewController {
 							
 							if userInfo.userIdInt == pairModel.userIdInt || userInfo.userIdInt == pairModel.inviteeIdInt {
 								if userInfo.onlineStatusBool! { // 1 online
-									if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired { // 后改，online里也有miss状态
+									if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired && pairModel.statusInt == TwopChatRequestsStatusEnum.unhandle.rawValue { // 后改，online里也有miss状态
 										onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
 									} else {
 										onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
 									}
 								} else if pairModel.statusInt == 1 { // 1 pair接受过
 									lastPairArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
-								} else if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired { // timestamp过期了就是missed
+								} else if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired && pairModel.statusInt == TwopChatRequestsStatusEnum.unhandle.rawValue { // timestamp过期了就是missed
 									missedArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
 								} else {
 									otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
 								}
+							} else {
+								let otherModel = DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel)
+								otherArray.forEach({ (model) in
+									if model.userIdInt != otherModel.userIdInt && model.inviteeIdInt != otherModel.userIdInt {
+										otherArray.append(otherModel)
+									}
+								})
 							}
 						}
 					} else {
@@ -588,7 +593,9 @@ extension DashboardMainViewController {
 		print("*** = \(twopSocketModel.msgIdString!)")
 		
 		if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
-			self.startConnectingFunc()
+			if let friendIdInt = twopSocketModel.extDictModel?.friendIdInt {
+				self.startConnectingFunc(friendIdInt: friendIdInt, twopSocketModel: twopSocketModel)
+			}
 		}
 	}
 }
@@ -613,7 +620,9 @@ extension DashboardMainViewController : MessageObserver {
 			}
 		case  SocketDefaultMsgTypeEnum.acceptFriendPair.rawValue: // acceptFriendPair
 			if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
-				self.startConnectingFunc()
+				if let friendIdInt = twopSocketModel.extDictModel?.friendIdInt {
+					self.startConnectingFunc(friendIdInt: friendIdInt, twopSocketModel: twopSocketModel)
+				}
 			}
 		default:
 			break
@@ -736,17 +745,19 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 		}
 	}
 	
-	func startConnectingFunc() {
+	func startConnectingFunc(friendIdInt:Int, twopSocketModel:TwopSocketModel) {
+		
+		self.pairRequestAcceptModel?.channelKeyString = twopSocketModel.extDictModel?.channelKeyString
+		self.pairRequestAcceptModel?.channelNameString = twopSocketModel.extDictModel?.channelNameString
+		
 		self.handleConnectinStatusFunc()
 		self.tempCell?.stopTimerFunc()
 		self.stopWaittingFunc()
 		
 		self.addPairTimerFunc()
 		
-		if self.delegate != nil && self.pairRequestAcceptModel != nil {
-			self.delegate!.twopStartConnectingFunc!(pairRequestAcceptModel: self.pairRequestAcceptModel!)
-		} else {
-			print("代理为空")
+		if let delegate = self.delegate, let model = self.pairRequestAcceptModel {
+			delegate.twopStartConnectingFunc!(pairRequestAcceptModel: model)
 		}
 	}
 	
@@ -769,7 +780,8 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].inviteeIdInt = inviteeIdInt
 			
 			// 接受成功后改变status状态，0未操作
-			self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].statusInt = 0
+			self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].isMissedBool = false
+			self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].statusInt = self.pairRequestAcceptModel?.statusInt
 			self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].nextInviteAtDouble = self.pairRequestAcceptModel?.nextInviteAtDouble
 			
 			self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
@@ -793,8 +805,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			self.view.layoutIfNeeded()
 		}) { (completed) in
 			UIView.animate(withDuration: 0.5, delay: 0.3, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
-				// todo，睿，到connection页时someone的头像为对方给的头像
-				self.someoneImageView.image = UIImage(named: self.tempModel?.pathString == nil ? Tools.getGenderDefaultImageFunc(genderString: self.tempModel!.genderString ?? "") : self.tempModel!.pathString!)
+				self.someoneImageView.kf.setImage(with: URL(string: self.tempModel!.pathString ?? ""), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc(genderString: self.tempModel!.genderString ?? ""))!)
 				self.someoneLabel.text = self.tempModel?.nameString
 				self.myTeamTopConstraint.constant = 0
 				self.weAreTeamLabel.alpha = 1
@@ -839,10 +850,8 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 					self.pairRequestAcceptModel = PairRequestAcceptModel.pairRequestAcceptModel(dict: jsonAPIDocument.json as [String: AnyObject])
 					
 					if !isPair {
-						if self.delegate != nil && self.pairRequestAcceptModel != nil {
-							self.delegate!.twopStartConnectingFunc!(pairRequestAcceptModel: self.pairRequestAcceptModel!)
-						} else {
-							print("代理为空")
+						if let delegate = self.delegate, let model = self.pairRequestAcceptModel {
+							delegate.twopStartConnectingFunc!(pairRequestAcceptModel: model)
 						}
 					}
 				}
