@@ -1,16 +1,15 @@
 //
-//  MainViewController+Clock.swift
+//  PairMatchViewController+Action.swift
 //  Monkey
 //
-//  Created by Philip Bernstein on 7/9/17.
-//  Copyright © 2017 Monkey Squad. All rights reserved.
+//  Created by 王广威 on 2018/7/12.
+//  Copyright © 2018年 Monkey Squad. All rights reserved.
 //
 
 import Foundation
-import AudioToolbox
+import UIKit
 
-// Extension for MainViewController to help with Timimg
-extension CallViewController: CountingLabelDelegate {
+extension PairMatchViewController: CountingLabelDelegate {
 	func minuteAdded() {
 		self.enableAddMinute()
 		
@@ -68,17 +67,17 @@ extension CallViewController: CountingLabelDelegate {
 			emojiLabel.font = UIFont.systemFont(ofSize: 39.0)
 			let xDifference: CGFloat = CGFloat(arc4random_uniform(100))
 			
-			let originX: CGFloat = self.addMinuteButton.frame.origin.x + xDifference
-			emojiLabel.frame = CGRect(x: originX, y: self.addMinuteButton.frame.origin.y, width: 50, height: 50)
+			let originX: CGFloat = self.addTimeButton.frame.origin.x + xDifference
+			emojiLabel.frame = CGRect(x: originX, y: self.addTimeButton.frame.origin.y, width: 50, height: 50)
 			
 			let duration: TimeInterval = (TimeInterval(arc4random_uniform(200)) / 100)
 			UIView.animate(withDuration: duration, animations: {
 				emojiLabel.layer.opacity = 0.0
-				emojiLabel.frame.origin.y = self.containerView.frame.size.height - 350
+				emojiLabel.frame.origin.y = self.view.frame.size.height - 350
 			}) { (Bool) in
 				emojiLabel.removeFromSuperview()
 			}
-			self.containerView.insertSubview(emojiLabel, belowSubview: self.addMinuteButton)
+			self.view.insertSubview(emojiLabel, belowSubview: self.addTimeButton)
 		}
 	}
 	
@@ -87,16 +86,14 @@ extension CallViewController: CountingLabelDelegate {
 		
 		if arc4random_uniform(2) == 0 {
 			clock.text = "🕑"
-		} else if self.matchModel.left.friendMatched == true {
-			clock.text = "✌️"
 		} else {
 			clock.text = "‼️"
 		}
 		
 		clock.font = UIFont.systemFont(ofSize: 39.0)
 		let size:CGFloat = 60
-		clock.frame = CGRect(x: self.statusCornerView.frame.origin.x + self.statusCornerView.frame.size.width - size, y: self.statusCornerView.frame.origin.y + self.statusCornerView.frame.size.height - size, width: size, height: size)
-		self.containerView.insertSubview(clock, belowSubview: statusCornerView)
+		clock.frame = CGRect(x: self.clockLabelBackgroundView.frame.origin.x + self.clockLabelBackgroundView.frame.size.width - size, y: self.clockLabelBackgroundView.frame.origin.y + self.clockLabelBackgroundView.frame.size.height - size, width: size, height: size)
+		self.view.insertSubview(clock, belowSubview: self.clockLabelBackgroundView)
 		UIView.animate(withDuration: 0.7, delay: 0.3, options: .curveEaseIn, animations:{
 			clock.layer.opacity = 0
 		})
@@ -119,34 +116,23 @@ extension CallViewController: CountingLabelDelegate {
 			return
 		}
 		
-		if self.matchModel.isVideoCall {
-			clockTime += 100
+		if clockTime > 0 {
+			clockTime -= 100
 			clockLabel.text = "\(String(format: "%02d", (Int(clockTime / 1000) / 60))):\(String(format: "%02d", Int(clockTime / 1000) % 60))"
-			currentMatchPastTime = 0
-		} else {
-			if clockTime > 0 {
-				clockTime -= 100
-				clockLabel.text = "\(String(format: "%02d", (Int(clockTime / 1000) / 60))):\(String(format: "%02d", Int(clockTime / 1000) % 60))"
-				
-				currentMatchPastTime += 100
-				if currentMatchPastTime == 5000 {
-					autoScreenShotUpload(source: .match_5s)
-				}
+		}
+		if clockTime <= 3900 && clockTime > 300 {
+			if self.matchModel?.isReportPeople() == false {
+				dripClock()
 			}
-			if clockTime <= 3900 && clockTime > 300 {
-				if let chat = self.matchModel as? MatchModel, chat.isReportPeople() == false {
-					dripClock()
-				}
+		}
+		if clockTime == 3900 {
+			if self.matchModel?.isReportedPeople() == false {
+				self.soundPlayer.play(sound: .clock)
 			}
-			if clockTime == 3900 {
-				if let chat = self.matchModel as? MatchModel, chat.isReportedPeople() == false {
-					self.soundPlayer.play(sound: .clock)
-				}
-			} else if clockTime == 900 {
-				self.soundPlayer.play(sound: .fail)
-			} else if clockTime == 400 {
-				self.dismiss(complete: nil)
-			}
+		} else if clockTime == 900 {
+			self.soundPlayer.play(sound: .fail)
+		} else if clockTime == 400 {
+			self.disconnect(reason: .TimeOver)
 		}
 	}
 	
@@ -167,9 +153,9 @@ extension CallViewController: CountingLabelDelegate {
 			let randomIndex: Int = abs(Int.arc4random()) % winEmojis.count
 			emojiLabel.text = String(winEmojis[winEmojis.index(winEmojis.startIndex, offsetBy: randomIndex)])
 			emojiLabel.font = UIFont.systemFont(ofSize: 39.0)
-			let positionX: CGFloat = self.snapchatButton.frame.origin.x + 30
-			emojiLabel.frame = CGRect(x: positionX, y: self.snapchatButton.frame.origin.y, width: 50, height: 50)
-			self.containerView.insertSubview(emojiLabel, belowSubview: self.snapchatButton)
+			let positionX: CGFloat = self.addTimeButton.frame.origin.x + 30
+			emojiLabel.frame = CGRect(x: positionX, y: self.addTimeButton.frame.origin.y, width: 50, height: 50)
+			self.view.insertSubview(emojiLabel, belowSubview: self.addTimeButton)
 			
 			gravityBehaviour.addItem(emojiLabel)
 			
@@ -179,7 +165,7 @@ extension CallViewController: CountingLabelDelegate {
 			animator.addBehavior(itemBehaviour)
 			
 			let pushBehavior: UIPushBehavior = UIPushBehavior(items: [emojiLabel], mode: .instantaneous)
-			pushBehavior.pushDirection = CGVector(dx: self.randomBetweenNumbers(firstNum: -200, secondNum: 100), dy: -self.randomBetweenNumbers(firstNum: 0, secondNum: self.containerView.frame.size.height))
+			pushBehavior.pushDirection = CGVector(dx: self.randomBetweenNumbers(firstNum: -200, secondNum: 100), dy: -self.randomBetweenNumbers(firstNum: 0, secondNum: self.view.frame.size.height))
 			pushBehavior.magnitude = self.randomBetweenNumbers(firstNum: 1.0, secondNum: 4.0)
 			animator.addBehavior(pushBehavior)
 			emojiLabels.append(emojiLabel)
@@ -198,10 +184,22 @@ extension CallViewController: CountingLabelDelegate {
 			}
 		}
 		
-		self.stopClockTimer()
-		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) { [weak self] in
-			self?.switchClock(open: false)
-			self?.refresh(with: true)
+		self.checkFriendStatus()
+	}
+	
+	func checkFriendStatus() {
+		guard let match = self.matchModel else { return }
+		
+		if match.matched_pair() {
+			if match.left.friendMatched && match.right?.friendMatched == true && match.left.user_info?.isFriendWithPair == true && match.left.user_info?.isFriendWithPair == true {
+				self.refresh(with: true)
+			}else {
+				self.refresh(with: false)
+			}
+		}else if match.left.friendMatched && match.left.user_info?.isFriendWithPair == true {
+			self.refresh(with: true)
+		}else {
+			self.refresh(with: false)
 		}
 	}
 	
@@ -209,83 +207,77 @@ extension CallViewController: CountingLabelDelegate {
 		return CGFloat(arc4random()) / CGFloat(UINT32_MAX) * abs(firstNum - secondNum) + min(firstNum, secondNum)
 	}
 	
-	// MARK: Snapchat Button
-	@IBAction func addSnapchat(_ sender: BigYellowButton) {
-		if Achievements.shared.addFirstSnapchat == false {
-			Achievements.shared.addFirstSnapchat = true
-			let addFirstSnapchatAlert = UIAlertController(title: nil, message: "To successfully add friends, both users have to tap the button", preferredStyle: .alert)
-			addFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { [weak self] (UIAlertAction) in
-				guard let `self` = self else { return }
-				self.addSnapchat()
-			}))
-			self.present(addFirstSnapchatAlert, animated: true)
-		}else {
-			self.addSnapchat()
-		}
-	}
-	
 	// MARK: - Minute Button
 	@IBAction func addMinute(_ sender: BigYellowButton) {
-		if Achievements.shared.isOnboardingExplainAddTimePopupCompleted == false {
-			Achievements.shared.isOnboardingExplainAddTimePopupCompleted = true
-			let explainAddTimeAlert = UIAlertController(title: nil, message: "To successfully add time, both users have to tap the button", preferredStyle: .alert)
-			explainAddTimeAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { [weak self] (UIAlertAction) in
-				guard let `self` = self else { return }
-				self.addMinute()
-			}))
-			self.present(explainAddTimeAlert, animated: true, completion: nil)
-		}else {
-			self.addMinute()
-		}
+		self.addMinute()
 	}
 	
-	func addSnapchat() {
-		// request to add snapchat
-		self.disableAddSnapchat()
-		guard let match = self.matchModel else { return }
-		if match.left.friendRequested {
-			match.left.friendAccept = true
-			self.addFriendSuccess()
-		}else {
-			match.left.friendRequest = true
-		}
-		OnepMatchManager.default.sendMatchMessage(type: .AddFriend)
-		
-		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/matches/\(match.match_id)/addfriend/\(match.left.user_id)", method: .post) { (_) in
-			
-		}
-	}
-	
-	func addMinute() {
+	func addMinute(fromMySelf: Bool = true) {
 		// requested to add minute
 		self.disableAddMinute()
-		guard let match = self.matchModel as? MatchModel else { return }
+		guard let match = self.matchModel else { return }
 		
-		match.addTimeRequestCount += 1
-		if match.addTimeRequestCount == match.left.addTimeCount {
+		let addTimeRequestCount = match.addTimeRequestCount
+		let matchAddTimeRequestCount = match.left.addTimeCount
+		if addTimeRequestCount < matchAddTimeRequestCount {
 			self.minuteAdded()
+			match.addTimeRequestCount = matchAddTimeRequestCount
+			self.friendPairModel.left.addTimeCount = matchAddTimeRequestCount
+		}else {
+			match.addTimeRequestCount = matchAddTimeRequestCount + 1
+			self.friendPairModel.left.addTimeCount = matchAddTimeRequestCount + 1
 		}
 		
-		OnepMatchManager.default.sendMatchMessage(type: .AddTime)
+		if fromMySelf {
+			OnepMatchManager.default.sendMatchMessage(type: .AddTime)
+		}
 	}
 	
 	func receivedAddTime(message: Message) {
-		guard let match = self.matchModel as? MatchModel else { return }
-		
-		match.left.addTimeCount += 1
-		if match.addTimeRequestCount == match.left.addTimeCount {
-			self.minuteAdded()
+		guard let match = self.matchModel else { return }
+		if message.sender == self.friendPairModel.left.user_id {
+			self.addMinute(fromMySelf: false)
+		}else {
+			let addTimeRequestCount = match.addTimeRequestCount
+			let matchAddTimeRequestCount = match.left.addTimeCount
+			if matchAddTimeRequestCount < addTimeRequestCount {
+				self.minuteAdded()
+				match.left.addTimeCount = addTimeRequestCount
+				match.right?.addTimeCount = addTimeRequestCount
+			}else {
+				match.left.addTimeCount = addTimeRequestCount + 1
+				match.right?.addTimeCount = addTimeRequestCount + 1
+			}
 		}
 	}
 	
 	func receivedAddSnapchat(message: Message) {
-		guard let match = self.matchModel else { return }
-		
-		if match.left.friendRequest {
-			match.left.friendAccepted = true
-			self.addFriendSuccess()
-		}else {
-			match.left.friendRequested = true
+		if message.sender == self.friendPairModel.left.user_id {
+			if let target = message.target?.first, let user = matchModel?.matchedUser(with: target) {
+				if user.user_info?.addFriendRequest == true {
+					user.user_info?.addFriendAccept = true
+					self.checkFriendStatus()
+				}else {
+					user.user_info?.addFriendRequest = true
+				}
+			}
+		}else if let user = matchModel?.matchedUser(with: message.sender ?? 0) {
+			if let target = message.target?.first, target == self.friendPairModel.left.user_id {
+				if user.user_info?.addFriendRequest == true {
+					user.user_info?.addFriendAccept = true
+					self.checkFriendStatus()
+				}else {
+					user.user_info?.addFriendRequest = true
+				}
+			}else {
+				if user.friendRequest == true {
+					user.friendAccepted = true
+					self.addFriendSuccess()
+					self.remoteInfo?.addFriend(user: user)
+				}else {
+					user.friendRequested = true
+				}
+			}
 		}
 	}
 	
@@ -294,21 +286,19 @@ extension CallViewController: CountingLabelDelegate {
 	}
 	
 	func receivedReport(message: Message) {
-		self.matchModel.left.reported = true
-	}
-	
-	func disableAddSnapchat() {
-		self.snapchatButton.isEnabled = false
-		self.snapchatButton.layer.opacity = 0.5
+		if message.sender == self.friendPairModel.left.user_id {
+			self.reportMatch()
+		}
 	}
 	
 	func enableAddMinute() {
-		self.addMinuteButton.isEnabled = true
-		self.addMinuteButton.layer.opacity = 1.0
+		self.addTimeButton.isEnabled = true
+		self.addTimeButton.layer.opacity = 1.0
 	}
+	
 	func disableAddMinute() {
-		self.addMinuteButton.isEnabled = false
-		self.addMinuteButton.layer.opacity = 0.5
+		self.addTimeButton.isEnabled = false
+		self.addTimeButton.layer.opacity = 0.5
 	}
 	
 	// MARK: - CountingLabelDelegate
@@ -316,3 +306,4 @@ extension CallViewController: CountingLabelDelegate {
 		self.throttleFunction()
 	}
 }
+

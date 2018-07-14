@@ -66,15 +66,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-		
-		let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-		print("*** = \(tokenString)")
-		
-		let currentDeviceTokenString = deviceToken.base64EncodedString()
-		Messaging.messaging().apnsToken = deviceToken
-		FBSDKAppEvents.setPushNotificationsDeviceToken(deviceToken)
-		UserDefaults.standard.set(currentDeviceTokenString, forKey: "apns_token")
-		Apns.update(token: currentDeviceTokenString, callback: nil)
+		let thisToken = deviceToken.base64EncodedString()
+		let prevToken = Achievements.shared.apns_token ?? ""
+		if prevToken != thisToken {
+			Messaging.messaging().apnsToken = deviceToken
+			FBSDKAppEvents.setPushNotificationsDeviceToken(deviceToken)
+			Achievements.shared.apns_token = thisToken
+			Apns.update(token: thisToken)
+		}
 	}
 
 	// receive remote notification

@@ -25,7 +25,6 @@ class FriendsViewModel {
 		self.friendshipsNotificationToken = self.friendships?.observe { (change) in
 			self.delegate?.reloadFriendships()
 		}
-		self.refreshMessageList()
 		self.refreshFriendships()
 	}
 	
@@ -78,7 +77,7 @@ class FriendsViewModel {
 	}
 	
 	var friendships: Results<RealmFriendship>? {
-		let userId = APIController.shared.currentUser?.user_id ?? ""
+		let userId = UserManager.UserID ?? ""
 		// Predicates restricting which users come back (we don't want friendships as a result from blocks)
 		let isNotCurrentUser = NSPredicate(format: "user.user_id != \"\(userId)\"")
 		let isNotBlocker = NSPredicate(format: "is_blocker == NO")

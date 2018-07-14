@@ -9,7 +9,7 @@
 import Foundation
 import Starscream
 
-enum SocketChannel: String {
+public enum SocketChannel: String {
 	case internal_error = "internal_error"
 	case callback = "callback"
 	
@@ -47,7 +47,7 @@ enum SocketChannel: String {
 
 // socket message call back(main queue)
 public protocol SocketMessageHandler: class {
-	func receive(message: [String: Any], from channel: String)
+	func receive(message: [String: Any], from channel: SocketChannel)
 }
 
 class Socket {
@@ -59,6 +59,11 @@ class Socket {
 	
 	// 底层 websocket
 	fileprivate let webSocket = WebSocket(url: URL(string: Environment.socketURL)!)
+	
+	// 记时，和记录上次发送消息时间
+	fileprivate var lastResponseTime = Date().timeIntervalSince1970
+	fileprivate var pingTimer: Timer?
+	
 	// 消息代理回调
 	fileprivate let delegate: SocketMessageHandler = MessageCenter.shared
 
@@ -96,14 +101,53 @@ class Socket {
 	}
 	
 	// 断开连接
+	fileprivate func authorization() {
+		// flat
+		self.isAuthorized = true
+		// ping
+		self.scheduleSendPing()
+		// 刚连接成功时，将所有未发送的消息全部发送
+		self.dispatchPeddingMessages()
+	}
+	
+	// 断开连接
 	fileprivate func disconnect() {
+		// 授权状态重置
 		self.isAuthorized = false
-		self.webSocket.disconnect()
+		
+		if self.webSocket.isConnected {
+			// cancel send ping
+			self.cancelSendPing()
+			// 清空回调和未发送消息
+			self.clearPeddingMessages()
+			// 主动断开连接
+			self.webSocket.disconnect()
+		}
 	}
 	
 	// 应用进入前台，尝试重连
 	@objc fileprivate func appBecomeActive() {
 		self.connect()
+	}
+	
+	fileprivate func scheduleSendPing() {
+		self.pingTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(sendPing), userInfo: nil, repeats: true)
+	}
+	
+	fileprivate func cancelSendPing() {
+		self.pingTimer?.invalidate()
+		self.pingTimer = nil
+	}
+	
+	@objc func sendPing() {
+		guard self.isEnabled else {
+			return
+		}
+		
+		let currentTime = Date().timeIntervalSince1970
+		guard currentTime - lastResponseTime < 30  else { return }
+		self.lastResponseTime = currentTime
+		self.webSocket.write(ping: Data())
 	}
 
 	// 外部调用发送 socket 消息
@@ -113,71 +157,86 @@ class Socket {
 		self.write(string: data.toJSON)
 	}
 	
-	// 收到 socket 消息
-	fileprivate func receive(message: [String: Any], from channel: String) {
-		// 如果有 error
-		let error = message["error"] as? [String: Any]
-		if let error = error {
-			self.didReceive(error: NSError(domain: "NSMonkeyAPIErrorDomain", code: error["code"] as? Int ?? -1, userInfo: error))
+	// 向 websocket server 发送消息
+	fileprivate func write(string: String, completion: (() -> ())? = nil) {
+		if self.isAuthorized {
+			print("Queuing message: \(string.trunc(length: 100))")
+			self.pendingSocketWrites.append(SocketWrite(string: string))
+		} else {
+			print("Writing message: \(string.trunc(length: 100))")
+			self.webSocket.write(string: string, completion: completion)
+			// record send time
+			self.lastResponseTime = Date().timeIntervalSince1970
 		}
-		
+	}
+	// 一次性发送所有 pedding messages
+	fileprivate func dispatchPeddingMessages() {
+		let socketWrites = self.pendingSocketWrites
+		for socketWrite in socketWrites {
+			self.write(string: socketWrite.string)
+		}
+		self.clearPeddingMessages()
+	}
+	
+	// clear pedding messages
+	fileprivate func clearPeddingMessages() {
+		self.pendingSocketWrites.removeAll()
+	}
+	
+	// 收到 socket 消息
+	fileprivate func receive(message: [String: Any], from channel: SocketChannel) {
 		switch channel {
-		case SocketChannel.internal_error.rawValue:
-			break
-		case SocketChannel.callback.rawValue:
-			guard let messageId = message["id"] as? Int else {
-				print("Callback missing message ID")
-				return
-			}
-			if messageId == 0 {
-				if error == nil {
-					self.isAuthorized = true
-					// 刚连接成功时，将所有未发送的消息全部发送
-					let socketWrites = self.pendingSocketWrites
-					for socketWrite in socketWrites {
-						self.write(string: socketWrite.string)
-					}
-					self.pendingSocketWrites.removeAll()
-				}else {
-					// 授权出错，直接断开连接
-					self.disconnect()
-				}
-			}
-			
+		case .internal_error:
+			fallthrough
+		case .callback:
+			self.didReceive(callback: message)
 		default:
+			self.lastResponseTime = Date().timeIntervalSince1970
 			self.delegate.receive(message: message, from: channel)
 			break
 		}
 	}
 	
-	// 向 websocket server 发送消息
-	fileprivate func write(string: String, completion: (() -> ())? = nil) {
-		guard self.isAuthorized else {
-			print("Queuing message: \(string.trunc(length: 100))")
-			self.pendingSocketWrites.append(SocketWrite(string: string))
+	// 服务端回调
+	fileprivate func didReceive(callback message: [String: Any]) {
+		// 如果有 error
+		let error = message["error"] as? [String: Any]
+		if let error = error {
+			// 重连
+			self.didReceive(error: NSError(domain: "NSMonkeyAPIErrorDomain", code: error["code"] as? Int ?? -1, userInfo: error))
 			return
 		}
-		print("Writing message: \(string.trunc(length: 100))")
-		self.webSocket.write(string: string, completion: completion)
+		guard let messageId = message["id"] as? Int else {
+			print("Callback missing message ID")
+			return
+		}
+		guard messageId == 0 else {
+			print("can not handle other callback")
+			return
+		}
+		
+		// 授权成功
+		self.authorization()
 	}
 
 	// 出错重连
 	fileprivate func didReceive(error: Error?) {
-		guard self.isReconnecting == false else {
+		// 开启了 socket
+		guard self.isEnabled else {
 			return
 		}
-		
-		self.isReconnecting = true
-		// 收到错误重连
-		if self.isEnabled {
-			self.webSocket.connect()
+		// 需要重连
+		guard self.isReconnecting else {
+			return
 		}
+		// 先断连重置 flag
+		self.disconnect()
+		// 收到错误重连
+		self.connect()
 		
 		// 5s 之后重连
 		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
-			if self.isEnabled {
-				self.webSocket.connect()
-			}
+			self.didReceive(error: error)
 		}
 	}
 }
@@ -187,10 +246,10 @@ extension Socket: WebSocketDelegate {
 	func websocketDidConnect(socket: WebSocketClient) {
 		print("websocketDidConnect \(webSocket)")
 		
-		guard let authorization = APIController.authorization else {
+		guard let authorization = UserManager.authorization else {
 			return // Signed out.
 		}
-		
+		// 取消重连状态
 		self.isReconnecting = false
 		// 连接成功时，先发送授权消息
 		self.webSocket.write(string: [0, SocketChannel.authorization.rawValue, [
@@ -202,22 +261,13 @@ extension Socket: WebSocketDelegate {
 	// 断开连接
 	func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
 		print("websocketDidDisconnect \(String(describing: error))")
-		
-		self.isAuthorized = false
-		// 清空回调和未发送消息
-		self.pendingSocketWrites.removeAll()
+		// 重连状态初始化
+		self.isReconnecting = true
 		// 如果断连，需要重连
-		if self.isEnabled {
-			self.didReceive(error: error)
-		}
+		self.didReceive(error: error)
 	}
 	// 收到文本消息
 	func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
-		self.websocketDidReceiveMessage(text: text)
-	}
-	
-	// 收到文本消息
-	func websocketDidReceiveMessage(text: String) {
 		print("websocketDidReceiveMessage \(text)")
 		guard let result = text.asJSON as? [Any] else {
 			print("Result must be an array")
@@ -232,8 +282,9 @@ extension Socket: WebSocketDelegate {
 			return
 		}
 		
-		self.receive(message: message, from: channel)
+		self.receive(message: message, from: SocketChannel.init(channel: channel))
 	}
+	
 	// 收到数据流消息
 	func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
 		print("websocketDidReceiveData \(data)")

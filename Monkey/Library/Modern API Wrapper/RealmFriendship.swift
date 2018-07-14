@@ -79,7 +79,7 @@ extension RealmFriendship {
 				"attributes": attributesJSON,
 			],
 			], options: [
-				.header("Authorization", APIController.authorization),
+				.header("Authorization", UserManager.authorization),
 				]).addCompletionHandler { (response) in
 					switch response {
 					case .error(let error):

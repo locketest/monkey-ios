@@ -1,57 +1,73 @@
 //
-//  TextChatViewController+Reporting.swift
+//  OnepPairMatchViewController+Reporting.swift
 //  Monkey
 //
-//  Created by 王广威 on 2018/2/7.
+//  Created by 王广威 on 2018/7/13.
 //  Copyright © 2018年 Monkey Squad. All rights reserved.
 //
 
 import Foundation
 import Alamofire
-import Social
 
-// extension for TextChatViewController to handle Reporting
-extension TextChatViewController {
-	
-	@IBAction func report(_ sender: BigYellowButton) {
+// extension for CallViewController to handle Reporting
+extension OnepPairMatchViewController {
+	func report(user: MatchUser) {
 		
-		self.matchModel.left.showReport = true
-		
+		let chatId = self.matchModel.match_id
+		user.showReport = true
 		let alert = UIAlertController(title: "Are you sure you'd like to report this user?", message: APIController.shared.currentExperiment?.report_warning_text ?? "Your account will be disabled if you falsely report a user.", preferredStyle: .actionSheet)
 		alert.addAction(UIAlertAction(title: "🔞  Person is nude", style: .default, handler: {
 			(UIAlertAction) in
-			self.sendReport(reason: .nudity)
+			self.sendReport(reason: .nudity, chat_id: chatId, user: user)
 		}))
 		
 		alert.addAction(UIAlertAction(title: "👊 Person has drugs or weapon", style: .default, handler: {
 			(UIAlertAction) in
-			self.sendReport(reason: .drugsOrWeapon)
+			self.sendReport(reason: .drugsOrWeapon, chat_id: chatId, user: user)
 		}))
-		
+		//Previously violence
 		alert.addAction(UIAlertAction(title: "😷 Person is mean or bullying", style: .default, handler: {
 			(UIAlertAction) in
-			self.sendReport(reason: .meanOrBully)
+			self.sendReport(reason: .meanOrBully, chat_id: chatId, user: user)
 		}))
 		
 		alert.addAction(UIAlertAction(title: "👴 Person has fake age/gender", style: .default, handler: {
 			(UIAlertAction) in
-			self.sendReport(reason: .ageOrGender)
+			self.sendReport(reason: .ageOrGender, chat_id: chatId, user: user)
 		}))
 		
 		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 		self.present(alert, animated: true, completion: nil)
 	}
 	
-	
-	func sendReport(reason: ReportType) {
-		self.matchModel.left.reportReason = reason
-		OnepMatchManager.default.sendMatchMessage(type: .Report, to: self.matchModel.left)
-		let url = "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/reports/\(self.matchModel.left.user_id)"
+	func sendReport(reason: ReportType, chat_id: String, user: MatchUser) {
+		user.reportReason = reason
+		self.reportMatch(user: user)
+		OnepMatchManager.default.sendMatchMessage(type: .Report, to: user)
+		
+		let url = "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/reports/\(user.user_id)"
 		MonkeyModel.request(url: url, method: .post) { (_) in
 			
 		}
-		
-		self.matchHandler.disconnect(reason: .MySkip)
+	}
+	
+	func reportMatch(user: MatchUser? = nil) {
+		if let subscriberView = self.remotePairView, self.matchModel.addTimeCount() == 0 {
+			//  open pixel effect and cant close anymore
+			HWCameraManager.shared().addPixellate()
+			// add blur after take screen shot
+			let eff = UIBlurEffect.init(style: .light)
+			let blurV = UIVisualEffectView.init(effect: eff)
+			blurV.frame = subscriberView.bounds
+			blurV.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+			subscriberView.addSubview(blurV)
+			
+			if let user = user {
+				subscriberView.reported(user: user)
+			}
+		}else {
+			self.matchHandler.disconnect(reason: .MySkip)
+		}
 	}
 	
 	func autoScreenShotUpload(source: AutoScreenShotType) {

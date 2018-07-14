@@ -45,8 +45,6 @@ class DashboardMainViewController: MonkeyViewController {
 	// 是否是通过手势关闭的键盘标识
 	var isTapEndEditingBool = false
 	
-	var backClosure: TwopClosureType?
-	
 	var someoneCircle : CAShapeLayer!
 	
 	var tempCell: DashboardFriendsListCell?
@@ -114,14 +112,6 @@ class DashboardMainViewController: MonkeyViewController {
 	@IBAction func tapGestureClickFunc(_ sender: UITapGestureRecognizer) {
 		self.isTapEndEditingBool = true
 		self.view.endEditing(true)
-	}
-	
-	@IBAction func twoPersonBtnClickFunc(_ sender: BigYellowButton) {
-		self.dismiss(animated: true, completion: nil)
-		
-		if self.backClosure != nil {
-			self.backClosure!()
-		}
 	}
 	
 	@IBAction func endEditingBtnClickFunc(_ sender: UIButton) {
@@ -289,7 +279,7 @@ class DashboardMainViewController: MonkeyViewController {
 	func initCircleFunc() {
 		
 		if let currentUser = APIController.shared.currentUser {
-			self.meImageView.kf.setImage(with: URL(string: currentUser.profile_photo_url ?? ""), placeholder: UIImage(named: currentUser.defaltAvatar)!)
+			self.meImageView.kf.setImage(with: URL(string: currentUser.profile_photo_url ?? ""), placeholder: UIImage(named: currentUser.defaultAvatar)!)
 		}
 	}
 	
@@ -807,7 +797,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			UIView.animate(withDuration: 0.5, delay: 0.3, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
 				self.someoneImageView.kf.setImage(with: URL(string: self.tempModel!.pathString ?? ""), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc(genderString: self.tempModel!.genderString ?? ""))!)
 				self.someoneLabel.text = self.tempModel?.nameString
-				self.myTeamTopConstraint.constant = 0
+				self.myTeamTopConstraint.constant = 20
 				self.weAreTeamLabel.alpha = 1
 				self.view.layoutIfNeeded()
 			}, completion: nil)

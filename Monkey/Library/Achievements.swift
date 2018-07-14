@@ -21,6 +21,8 @@ public enum MatchMode: String {
 			self = .TextMode
 		case MatchMode.VideoMode.rawValue:
 			self = .VideoMode
+		case MatchMode.PairMode.rawValue:
+			self = .PairMode
 		default:
 			self = .VideoMode
 		}
@@ -29,9 +31,12 @@ public enum MatchMode: String {
 	case VideoMode = "1"
 	case TextMode = "2"
 	case EventMode = "3"
+	case PairMode = "4"
 	
 	var backgroundColor: UIColor {
 		switch self {
+		case .PairMode:
+			fallthrough
 		case .VideoMode:
 			return UIColor.init(red: 100.0 / 255.0, green: 74.0 / 255.0, blue: 241.0 / 255.0, alpha: 1.0)
 		case .TextMode:
@@ -43,6 +48,8 @@ public enum MatchMode: String {
 	
 	var titleColor: UIColor {
 		switch self {
+		case .PairMode:
+			fallthrough
 		case .VideoMode:
 			fallthrough
 		case .TextMode:
@@ -54,6 +61,8 @@ public enum MatchMode: String {
 	
 	var borderColor: CGColor {
 		switch self {
+		case .PairMode:
+			fallthrough
 		case .VideoMode:
 			fallthrough
 		case .TextMode:
@@ -65,6 +74,8 @@ public enum MatchMode: String {
 	
 	var pedding: CGFloat {
 		switch self {
+		case .PairMode:
+			return 120
 		case .VideoMode:
 			fallthrough
 		case .TextMode:
@@ -76,6 +87,8 @@ public enum MatchMode: String {
 	
 	var title: String {
 		switch self {
+		case .PairMode:
+			return "2P Mode"
 		case .VideoMode:
 			return "Video Chat"
 		case .TextMode:
@@ -87,6 +100,8 @@ public enum MatchMode: String {
 	
 	var emoji: String {
 		switch self {
+		case .PairMode:
+			return "🙌"
 		case .VideoMode:
 			return "🎦"
 		case .TextMode:
@@ -549,6 +564,14 @@ class Achievements {
 		}
 		get {
 			return defaults.string(forKey: "MonkeySelectFilter") ?? "Normal"
+		}
+	}
+	var apns_token: String? {
+		set {
+			defaults.set(newValue, forKey: "apns_token")
+		}
+		get {
+			return defaults.string(forKey: "apns_token")
 		}
 	}
 }

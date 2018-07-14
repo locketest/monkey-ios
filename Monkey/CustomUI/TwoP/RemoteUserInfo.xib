@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="RemoteUserInfo" customModule="Monkey" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tph-f4-Uub" customClass="ColorGradientView" customModule="Monkey" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <subviews>
+                        <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jAB-du-hxu" customClass="SmallYellowButton" customModule="Monkey" customModuleProvider="target">
+                            <rect key="frame" x="315" y="27" width="40" height="40"/>
+                            <color key="backgroundColor" red="1" green="0.20000000000000001" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="40" id="dp5-Pb-7zb"/>
+                                <constraint firstAttribute="height" constant="40" id="iCs-cm-h5e"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="👮"/>
+                                <userDefinedRuntimeAttribute type="boolean" keyPath="roundedSquare" value="NO"/>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="reportTapped:" destination="iN0-l3-epB" eventType="touchUpInside" id="kEU-6r-0Oq"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="reported" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="haU-Vu-7Ug">
+                            <rect key="frame" x="305" y="69" width="58" height="17"/>
+                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.3921568627" green="0.015686274510000001" blue="0.94509803920000002" alpha="0.74547838180000003" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="haU-Vu-7Ug" secondAttribute="trailing" constant="12" id="AW8-1T-a5J"/>
+                        <constraint firstItem="jAB-du-hxu" firstAttribute="top" secondItem="Uye-mW-iRH" secondAttribute="top" constant="7" id="EiQ-eS-D5l"/>
+                        <constraint firstItem="haU-Vu-7Ug" firstAttribute="top" secondItem="jAB-du-hxu" secondAttribute="bottom" constant="2" id="jCs-6d-f8R"/>
+                        <constraint firstAttribute="trailing" secondItem="jAB-du-hxu" secondAttribute="trailing" constant="20" id="ze0-kU-VXm"/>
+                    </constraints>
+                    <viewLayoutGuide key="safeArea" id="Uye-mW-iRH"/>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eou-90-IdI" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                    <rect key="frame" x="20" y="27" width="40" height="40"/>
+                    <color key="backgroundColor" red="1" green="0.98431372549999996" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="Ae3-Dz-gfU"/>
+                        <constraint firstAttribute="height" constant="40" id="Ch8-PR-bdZ"/>
+                    </constraints>
+                    <state key="normal" title="🎉"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="20"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="friendTapped:" destination="iN0-l3-epB" eventType="touchUpInside" id="1q4-vA-XG3"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dk9-VL-TvU" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                    <rect key="frame" x="20" y="27" width="40" height="40"/>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29801484166808223" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="Btb-OG-Z4Q"/>
+                        <constraint firstAttribute="height" constant="40" id="n7h-NR-ZeW"/>
+                    </constraints>
+                    <state key="normal" title="🌄"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="20"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="insgramTapped:" destination="iN0-l3-epB" eventType="touchUpInside" id="flj-Ko-ZdJ"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="eou-90-IdI" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="7" id="6Pb-cU-RwC"/>
+                <constraint firstItem="Tph-f4-Uub" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="9qC-LZ-pgx"/>
+                <constraint firstItem="dk9-VL-TvU" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="FfD-X5-Gaf"/>
+                <constraint firstItem="dk9-VL-TvU" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="7" id="HOE-eO-7f1"/>
+                <constraint firstAttribute="bottom" secondItem="Tph-f4-Uub" secondAttribute="bottom" id="Sc6-aB-25f"/>
+                <constraint firstItem="eou-90-IdI" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="Sdh-UC-AjI"/>
+                <constraint firstItem="Tph-f4-Uub" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="s36-oW-7E7"/>
+                <constraint firstAttribute="trailing" secondItem="Tph-f4-Uub" secondAttribute="trailing" id="vui-w9-Cgm"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="colorGradient" destination="Tph-f4-Uub" id="qPG-uu-iIp"/>
+                <outlet property="friendButton" destination="eou-90-IdI" id="n5p-dN-P53"/>
+                <outlet property="instagramButton" destination="dk9-VL-TvU" id="GpW-F0-ER0"/>
+                <outlet property="reportButton" destination="jAB-du-hxu" id="RHf-hC-8M1"/>
+                <outlet property="reportLabel" destination="haU-Vu-7Ug" id="jvV-0v-fHJ"/>
+            </connections>
+            <point key="canvasLocation" x="24.5" y="51.5"/>
+        </view>
+    </objects>
+</document>

@@ -30,8 +30,12 @@ enum MessageType: String {
 			self = .Match
 		case MessageType.Text.rawValue:
 			self = .Text
+		case MessageType.Background.rawValue:
+			self = .Background
 		case MessageType.Foreground.rawValue:
 			self = .Foreground
+		case MessageType.PceOut.rawValue:
+			self = .PceOut
 		default:
 			self = .Normal
 		}
@@ -46,7 +50,9 @@ enum MessageType: String {
 	case Accept = "ready"
 	case Skip = "skip"
 	case Text = "text"
+	case Confirm = "confirm"
 	case Match = "Match"
+	case PceOut = "pceout"
     case Background = "turntobackground"
 	case Foreground = "turntoforeground"
 	
@@ -63,11 +69,13 @@ enum MessageType: String {
 }
 
 class Message: NSObject, Mappable {
-	var sender: String?
-	var parameter: String?
 	var type: String = MessageType.Normal.rawValue
-	lazy var body: String = ""
+	var body: String = ""
 	lazy var time = Date.init().timeIntervalSince1970
+	
+	var sender: Int?
+	var parameter: String?
+	var target: [Int]?
 	
 	// get type from type
 	var messageType: MessageType {
@@ -80,12 +88,21 @@ class Message: NSObject, Mappable {
 	}
 	
 	func messageJson() -> [String: Any] {
-		return [
-			"sender": sender ?? UserManager.UserID ?? "",
+		var basicJson: [String: Any] = [
 			"type": type,
 			"body": body,
 			"time": time,
 		]
+		if let sender = Int(UserManager.UserID ?? "0") {
+			basicJson["sender"] = sender
+		}
+		if let target = target {
+			basicJson["target"] = target
+		}
+		if let parameter = parameter {
+			basicJson["parameter"] = parameter
+		}
+		return basicJson
 	}
 	
 	required init?(map: Map) {
@@ -104,22 +121,30 @@ class Message: NSObject, Mappable {
 		type <- map["type"]
 		body <- map["body"]
 		sender <- map["sender"]
+		target <- map["target"]
 		parameter <- map["parameter"]
 	}
 }
 
 class MatchMessage: Message {
-	var room: String?
+	var match_id: String?
 	
 	required init?(map: Map) {
-		
 		super.init(map: map)
+	}
+	
+	override func messageJson() -> [String : Any] {
+		var basicJson = super.messageJson()
+		if let match_id = match_id {
+			basicJson["match_id"] = match_id
+		}
+		return basicJson
 	}
 	
 	override func mapping(map: Map) {
 		super.mapping(map: map)
 		
-		room <- map["room"]
+		match_id <- map["match_id"]
 	}
 }
 
@@ -127,7 +152,7 @@ class TextMessage: MatchMessage {
 	static let minmumHeight: CGFloat = 21
 	static let maxmumWidth: CGFloat = UIScreen.main.bounds.size.width - 20 - 16
 	var direction: MessageDirection {
-		if let sender = self.sender, let current_user = UserManager.UserID, sender == current_user {
+		if let sender = self.sender, let current_user = UserManager.UserID, sender == Int(current_user) {
 			return .Send
 		}
 		return .Received

@@ -108,7 +108,7 @@ class RealmUser: MonkeyModel {
 	var channels = List<RealmChannel>()
 	
 	// 默认头像
-	var defaltAvatar: String {
+	var defaultAvatar: String {
 		if self.isFemale() {
 			return "ProfileImageDefaultFemale"
 		}else {
@@ -198,6 +198,21 @@ extension RealmUser {
 			isMonkeyKing = true
 		}
 		return isMonkeyKing
+	}
+	
+	func refreshCache() {
+		if let realm = try? Realm() {
+			do {
+				try realm.write {
+					self.cached_match_type = self.match_type
+					self.cached_enable_two_p = self.enabled_two_p
+					self.cached_unlocked_two_p = self.unlocked_two_p
+					self.cached_contact_invite_remain_times = self.contact_invite_remain_times
+				}
+			} catch(let error) {
+				print("Error: ", error)
+			}
+		}
 	}
 }
 

@@ -14,7 +14,7 @@ import ObjectMapper
 	@objc optional func currentUserDidLogin()
 	@objc optional func currentUserDidLogout()
 	
-	@objc optional func currentUserChangeInfomation()
+	@objc optional func currentUserInfomationChanged()
 }
 
 class UserManager {
@@ -56,9 +56,6 @@ class UserManager {
 		return threadSafeRealm?.object(ofType: RealmMatchInfo.self, forPrimaryKey: RealmMatchInfo.type)
 	}
 	
-	// current login action
-	var loginMethod: LoginMethod? = nil
-	
 	// 消息回调处理
 	private let safe_queue = DispatchQueue(label: "com.monkey.cool.SafeUserObserverQueue", attributes: .concurrent)
 	private var observers: WeakSet<UserObserver> = WeakSet<UserObserver>()
@@ -75,11 +72,13 @@ class UserManager {
 	}
 	
 	private var InitialLogin: Bool? = nil
+	// current login action
+	var loginMethod: LoginMethod? = nil
 	func isUserLogin() -> Bool {
 		return InitialLogin ?? false
 	}
+	
 	func login(completion: @escaping (_ error: APIError?) -> Void) {
-		
 		RealmDataController.shared.setupRealm { (setupError: APIError?) in
 			// 如果初始化出错
 			if let apiError = setupError {
@@ -98,6 +97,7 @@ class UserManager {
 				// 自动登录
 				self.loginMethod = self.InitialLogin == nil ? .autoLogin : LoginMethod(rawValue: authorization.action)
 				self.InitialLogin = true
+				self.saveToUserDefault(auth: authorization)
 			}else {
 				// 未登录
 				self.loginMethod = nil
@@ -113,7 +113,13 @@ class UserManager {
 		}
 	}
 	
+	func saveToUserDefault(auth: Authorization) {
+		APIController.authorization = auth.auth_token
+		APIController.user_id = auth.user_id
+	}
+	
 	func logout(completion: @escaping (_ error: APIError?) -> Void) {
+		self.clearUserDefaultsData()
 		RealmDataController.shared.deleteAllData { (error) in
 			// 如果已经是登出状态
 			if self.InitialLogin == false {
@@ -132,10 +138,19 @@ class UserManager {
 			
 			// do something first
 			self.notifyUserLogout()
+			
 			// callback after notify
 			completion(nil)
 		}
 	}
+	
+	func clearUserDefaultsData() {
+		// remove old data
+		Achievements.shared.apns_token = nil
+		APIController.authorization = nil
+		APIController.user_id = nil
+	}
+	
 	// notify observer
 	private func notifyObserver() {
 		if self.isUserLogin() {
@@ -146,24 +161,8 @@ class UserManager {
 	}
 	
 	private func notifyUserLogin() {
-		if let realm = try? Realm(), let currentUser = self.currentUser {
-			do {
-				try realm.write {
-					currentUser.cached_match_type = currentUser.match_type
-					currentUser.cached_enable_two_p = currentUser.enabled_two_p
-					currentUser.cached_unlocked_two_p = currentUser.unlocked_two_p
-					currentUser.cached_contact_invite_remain_times = currentUser.contact_invite_remain_times
-				}
-			} catch(let error) {
-				print("Error: ", error)
-			}
-		}
-		
 		// some config
 		Configs.signAsLogin()
-		
-		// set user_id for some analytics
-		AnalyticsCenter.loginAccount()
 		
 		// enable socket
 		Socket.shared.isEnabled = true

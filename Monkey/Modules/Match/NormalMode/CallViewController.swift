@@ -54,7 +54,7 @@ class CallViewController: MonkeyViewController {
 	// match model
 	weak var matchModel: ChannelModel!
 	// match matchHandler
-	fileprivate weak var matchHandler: MatchHandler!
+	weak var matchHandler: MatchHandler!
 	
 	// for click animate
 	var currentMatchPastTime = 0
@@ -103,7 +103,6 @@ class CallViewController: MonkeyViewController {
 		// refresh friend
 		let isFriend = self.matchModel.left.friendMatched
 		self.refresh(with: isFriend)
-		self.setupCommonTree()
 	}
 	
 	func configureReportStatus() {
@@ -114,7 +113,7 @@ class CallViewController: MonkeyViewController {
 		}
 	}
 	
-	func setupCommonTree(){
+	func setupCommonTree() {
 		if let commonTree = self.matchModel.left.commonChannel() {
 			self.commonTreeLabel.adjustsFontSizeToFitWidth = true
 			self.commonTreeLabel.minimumScaleFactor = 0.5
@@ -157,6 +156,7 @@ class CallViewController: MonkeyViewController {
 		
 		self.clockLabelBackgroundView.layer.cornerRadius = 20
 		self.clockLabelBackgroundView.layer.masksToBounds = true
+		self.commonTreeContainV.isHidden = true
 		
 		self.animator = UIDynamicAnimator(referenceView: self.containerView)
 	}
@@ -320,7 +320,7 @@ extension CallViewController: MatchMessageObserver {
 		}
 	}
 	
-	func handleReceivedMessage(message: Message) {
+	func handleReceivedMessage(message: MatchMessage) {
 		let type = MessageType.init(type: message.type)
 		switch type {
 		case .AddTime:

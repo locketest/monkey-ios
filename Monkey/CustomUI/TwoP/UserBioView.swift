@@ -23,8 +23,8 @@ class UserBioView: MakeUIViewGreatAgain {
 	}
 	
 	var container: UIStackView = UIStackView()
-	var avatarBorder: UIView = UIView()
-	var avatarView: UIImageView = UIImageView()
+//	var avatarBorder: UIView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: 60, height: 60))
+	var avatarView: UIImageView = UIImageView(frame: CGRect.init(x: 0, y: 0, width: 52, height: 52))
 	var bioLabel: UILabel = UILabel()
 	
 	func configureApperance() {
@@ -33,39 +33,46 @@ class UserBioView: MakeUIViewGreatAgain {
 		self.bioLabel.font = UIFont.systemFont(ofSize: 13)
 		self.bioLabel.textColor = UIColor.white
 		self.bioLabel.textAlignment = .center
+//		self.bioLabel.snp.makeConstraints { (maker) in
+//			maker.width.lessThanOrEqualTo(80)
+//		}
 		
-		self.avatarBorder.layer.cornerRadius = 28
-		self.avatarBorder.layer.borderColor = UIColor.init(red: 125.0 / 255.0, green: 116.0 / 255.0, blue: 153.0 / 255.0, alpha: 1).cgColor
-		self.avatarBorder.layer.masksToBounds = true
-		self.avatarBorder.layer.borderWidth = 2.0
+//		self.avatarBorder.layer.cornerRadius = 30
+//		self.avatarBorder.layer.borderColor = UIColor.init(red: 125.0 / 255.0, green: 116.0 / 255.0, blue: 153.0 / 255.0, alpha: 1).cgColor
+//		self.avatarBorder.layer.masksToBounds = true
+//		self.avatarBorder.layer.borderWidth = 2.0
+//		self.avatarBorder.snp.makeConstraints { (maker) in
+//			maker.width.height.equalTo(60)
+//		}
 		
 		self.avatarView.layer.cornerRadius = 26
 		self.avatarView.layer.masksToBounds = true
-		self.avatarBorder.addSubview(self.avatarView)
+		
+		self.avatarView.layer.shadowColor = UIColor.black.cgColor
+		self.avatarView.layer.shadowOpacity = 0.5
+		self.avatarView.layer.shadowRadius = 4
+//		self.avatarBorder.addSubview(self.avatarView)
 		self.avatarView.snp.makeConstraints { (maker) in
-			maker.center.equalTo(0)
 			maker.width.height.equalTo(52)
+//			maker.center.equalToSuperview()
 		}
 		
-		self.container.alignment = .fill
+		self.container.alignment = .center
 		self.container.distribution = .equalSpacing
 		self.container.axis = .vertical
-		self.container.spacing = 13.0
-		self.container.addArrangedSubview(self.avatarBorder)
-		self.container.addArrangedSubview(self.bioLabel)
-		self.avatarBorder.snp.makeConstraints { (maker) in
-			maker.width.height.equalTo(56)
-		}
-		
+		self.container.spacing = 20.0
 		self.addSubview(container)
 		self.container.snp.makeConstraints { (maker) in
-			maker.center.equalTo(0)
+			maker.center.equalToSuperview()
 		}
+		
+		self.container.addArrangedSubview(self.avatarView)
+		self.container.addArrangedSubview(self.bioLabel)
 	}
 	
 	func show(with user: MatchUser) {
 		let avatarUrl: URL? = URL.init(string: user.photo_read_url ?? "")
-		let placeholder: UIImage? = UIImage.init(named: user.defaltAvatar)
+		let placeholder: UIImage? = UIImage.init(named: user.defaultAvatar)
 		self.avatarView.kf.setImage(with: avatarUrl, placeholder: placeholder)
 		self.bioLabel.text = user.showedBio()
 	}

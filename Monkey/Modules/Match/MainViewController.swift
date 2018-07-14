@@ -153,7 +153,7 @@ class MainViewController: SwipeableViewController {
 	private func handleRedPointStatus(){
 		
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
-			.header("Authorization", APIController.authorization),
+			.header("Authorization", UserManager.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(let error):
@@ -248,7 +248,9 @@ class MainViewController: SwipeableViewController {
 	
 	func endMatch() {
 		self.isMatchStart = false
-		self.matchModeSwitch.isHidden = false
+		if UserManager.shared.currentUser?.cached_enable_two_p == true {
+			self.matchModeSwitch.isHidden = false
+		}
 		if self.matchType == .Onep {
 			self.filtersButton.isHidden = false
 			self.refreshRemindTip()
@@ -359,7 +361,7 @@ class MainViewController: SwipeableViewController {
 		topMatchVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		
 		let showComplete = {
-			//			topMatchVC.endAppearanceTransition()
+//			topMatchVC.endAppearanceTransition()
 			topMatchVC.didMove(toParentViewController: self)
 			completion?()
 			// enable
@@ -379,7 +381,7 @@ class MainViewController: SwipeableViewController {
 	}
 	
 	@IBAction func presentTextMode(_ sender: Any) {
-		let matchViewController = self.storyboard?.instantiateViewController(withIdentifier: "TwopPair")
+		let matchViewController = self.storyboard?.instantiateViewController(withIdentifier: "PairMatch")
 		self.present(matchViewController!, animated: false, completion: nil)
 	}
 	
@@ -658,7 +660,7 @@ extension MainViewController {
 	
 	func setupFriendships() {
 		// Predicates restricting which users come back (we don't want friendships as a result from blocks)
-		let userId = APIController.shared.currentUser?.user_id ?? ""
+		let userId = UserManager.UserID ?? ""
 		let isNotCurrentUser = NSPredicate(format: "user.user_id != \"\(userId)\"")
 		let isInConversation = NSPredicate(format: "last_message_at != nil")
 		let isNotBlocker = NSPredicate(format: "is_blocker == NO")

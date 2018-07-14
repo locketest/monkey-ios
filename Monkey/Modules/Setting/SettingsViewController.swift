@@ -251,7 +251,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 
 	func refreshEditStatus() {
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/\(UserOptions.api_version.rawValue)/\(UserOptions.requst_subfix)", options: [
-			.header("Authorization", APIController.authorization),
+			.header("Authorization", UserManager.authorization),
 			]).addCompletionHandler {[weak self] (response) in
 			switch response {
 				case .error( _): break
@@ -294,10 +294,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			}
 		}
 	}
-
-    internal func showAlert(alert: UIAlertController) {
-        self.present(alert, animated: true, completion: nil)
-    }
 
 //    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 //        if self.editStatus {
@@ -701,23 +697,9 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			AnalyticsCenter.log(withEvent: .settingSignOutClick, andParameter: [
 				"type": "yes",
 				])
-			RealmDataController.shared.deleteAllData() { (error) in
-				guard error == nil else {
-					error?.log()
-					return
-				}
-				APIController.authorization = nil
-//				Socket.shared.fetchCollection = false
-				UserDefaults.standard.removeObject(forKey: "user_id")
-				UserDefaults.standard.removeObject(forKey: "apns_token")
-
-				let rootVC = self.view.window?.rootViewController
-				rootVC?.presentedViewController?.dismiss(animated: false, completion: {
-					DispatchQueue.main.async {
-						rootVC?.dismiss(animated: true, completion: nil)
-					}
-				})
-			}
+			UserManager.shared.logout(completion: { (_) in
+				
+			})
 		}))
 
 		self.present(alertController, animated: true, completion: nil)

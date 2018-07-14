@@ -10,14 +10,34 @@ import Foundation
 import ObjectMapper
 
 enum MatchError {
-	case MySkip
-	case OtherSkip
-	case ResponseTimeOut
-	case WaitingTimeOut
-	case ConnectTimeOut
+	// myself quit
 	case MyQuit
+	// 1p myself skip
+	case MySkip
+	// 被别人 skip
+	case OtherSkip
+	// 别人离开房间
 	case OtherQuit
+	// pair skip
+	case PairSkip
+	// pair quit
+	case PairQuit
+	
+	// pair connect time out
+	case PairTimeOut
+	// confirm pair match time out
+	case ConfirmTimeOut
+	// 1p myself no response
+	case ResponseTimeOut
+	// waiting other response time out
+	case WaitingTimeOut
+	// connect time out
+	case ConnectTimeOut
+	// re connect time out
+	case ReConnectTimeOut
+	// time over
 	case TimeOver
+	// channel server error
 	case ServerError
 	
 	func shouldShowSkip() -> Bool {
@@ -33,12 +53,19 @@ enum MatchError {
 		}
 		return false
 	}
+	
+	func shouldQuit() -> Bool {
+		if self == .MyQuit || self == .PairQuit {
+			return true
+		}
+		return false
+	}
 }
 
 protocol MatchServiceObserver {
 	func disconnect(reason: MatchError)
 	func remoteVideoReceived(user user_id: Int)
-	func channelMessageReceived(message: Message)
+	func channelMessageReceived(message: MatchMessage)
 }
 
 class OnepMatchManager {
@@ -58,28 +85,28 @@ class OnepMatchManager {
 		self.channelService.channelDelegate = self
 		// stop other timer
 		self.stopAllTimer()
-		
 		// receive a new match
 		self.matchModel = model
-		
 		// begin response timer
 		self.startResponseTimer()
-		
 		// 如果支持 accept 前置，就添加 socket 监听，否则直接进入 channel
-		if model.supportSocket() == false {
+		if model.supportSocket() == false || model.matched_pair() == true {
 			// join new channel
 			self.channelService.joinChannel(matchModel: model)
 		}
 	}
 	
 	func accept(auto: Bool) {
+		guard let match = self.matchModel else { return }
+		
 		// send accept message
 		self.sendResponse(type: .Accept)
 		// start waiting other timeout
 		self.startWaitingTimer()
 		// 如果是老版本，accept 时，发送 stream
-		if self.matchModel?.supportSocket() == false {
-			self.captureSwitch(open: true)
+		if match.supportSocket() == false || match.matched_pair() == true {
+			// 开始上传视频流
+			self.channelService.captureSwitch(open: true)
 		}
 	}
 	
@@ -94,49 +121,29 @@ class OnepMatchManager {
 		
 		guard let match = self.matchModel else { return }
 		// 如果是新版本，开始连接时才会进入 channel
-		if match.supportSocket() == true {
+		if match.supportSocket() == true && match.matched_pair() == false {
 			self.channelService.joinChannel(matchModel: match)
 			// 开始上传视频流
-			self.captureSwitch(open: true)
+			self.channelService.captureSwitch(open: true)
 		}
 		
 		// connect timer
 		self.startConnectTimer()
 	}
 	
+	// begin video chat
 	func beginChat() {
 		self.stopAllTimer()
+		// 如果不是 text mode, 开启声音
 		if self.matchModel?.match_room_mode != .TextMode {
 			self.channelService.muteAllRemoteUser(mute: false)
 		}
 	}
 	
 	func disconnect() {
-		self.stopAllTimer()
-		self.captureSwitch(open: false)
 		self.channelService.leaveChannel()
+		self.stopAllTimer()
 		self.matchModel = nil
-	}
-	
-	private func captureSwitch(open: Bool) {
-		if open == false {
-			runAsynchronouslyOnVideoProcessingQueue {
-				HWCameraManager.shared().agora_capture = false
-				HWCameraManager.shared().opentok_capture = false
-			}
-			return
-		}
-		
-		guard let match = self.matchModel else { return }
-		if match.supportAgora() {
-			runAsynchronouslyOnVideoProcessingQueue {
-				HWCameraManager.shared().agora_capture = true
-			}
-		}else {
-			runAsynchronouslyOnVideoProcessingQueue {
-				HWCameraManager.shared().opentok_capture = true
-			}
-		}
 	}
 	
 	func sendResponse(type: MessageType) {
@@ -145,12 +152,12 @@ class OnepMatchManager {
 		guard let match = self.matchModel else { return }
 		
 		// send response
-		let socket_channel = /*isDialedCall ? "videocall_pos_request" : */"pos_match_request"
+		let socket_channel = SocketChannel.match_outroom
 		let time = Date().timeIntervalSince1970
-		if match.supportSocket() == true {
+		if match.supportSocket() == true && match.matched_pair() == false {
 			let messageJson = [
 				"data": [
-					"type": socket_channel,
+					"type": socket_channel.rawValue,
 					"attributes": [
 						"match_action": type.rawValue, // skip or ready
 						"chat_id": match.match_id, // chat_id
@@ -160,15 +167,15 @@ class OnepMatchManager {
 				]
 			]
 			
-			MessageCenter.shared.send(message: messageJson, to: .match_outroom)
+			MessageCenter.shared.send(message: messageJson, to: socket_channel)
 		}else {
 			self.sendMatchMessage(type: type)
 		}
 	}
 	
-	func sendMatchMessage(type: MessageType, body: String = "") {
+	func sendMatchMessage(type: MessageType, body: String = "", to target_user: MatchUser? = nil) {
 		self.handleSendMessage(type: type)
-		self.channelService.sendMessage(type: type, body: body)
+		self.channelService.sendMessage(type: type, body: body, target_user: target_user)
 	}
 	
 	func handleSendMessage(type: MessageType) {
@@ -238,8 +245,16 @@ extension OnepMatchManager {
 }
 
 extension OnepMatchManager: ChannelServiceProtocol {
+	func matchUser(with user_id: Int) -> MatchUser? {
+		return self.matchModel?.matchedUser(with: user_id)
+	}
+	
 	func joinChannelSuccess() {
-		
+		guard let match = self.matchModel else { return }
+		if match.matched_pair() {
+			match.left.joined = true
+			match.right?.joined = true
+		}
 	}
 	
 	func leaveChannelSuccess() {

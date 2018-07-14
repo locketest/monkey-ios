@@ -118,26 +118,19 @@ class MonkeyUser: MonkeyModel {
 	
 	// 是否是好友
 	func isFriend() -> Bool {
-		return false
-//		let isFriendMatched = NSPredicate(format: "user.user_id == \(user_id)")
-//		let friendsShips = FriendsViewModel.sharedFreindsViewModel.friendships
-//		let friendMatched = friendsShips?.filter(isFriendMatched).first
-//		return friendMatched != nil
+		let isFriendMatched = NSPredicate(format: "user.user_id == \"\(user_id)\"")
+		let friendsShips = FriendsViewModel.sharedFreindsViewModel.friendships
+		let friendMatched = friendsShips?.filter(isFriendMatched).first
+		return friendMatched != nil
 	}
 	
 	// 默认头像
-	var defaltAvatar: String {
+	var defaultAvatar: String {
 		if self.isFemale() {
 			return "ProfileImageDefaultFemale"
 		}else {
 			return "ProfileImageDefaultMale"
 		}
-	}
-	
-	override class func ignoredProperties() -> [String] {
-		return [
-			"defaltAvatar",
-		]
 	}
 	
 	required convenience init?(map: Map) {
@@ -352,10 +345,12 @@ class AdditionInfo: MonkeyModel {
 	var friendship: Bool = false
 	
 	// 是否和我的 pair 对象加成了好友
-	var addFriend: Bool = false
+	var addFriendRequest: Bool = false
+	var addFriendAccept: Bool = false
+	
 	// 是否和我的 pair 对象是好友
 	var isFriendWithPair: Bool {
-		return addFriend || friendship
+		return (addFriendRequest && addFriendAccept) || friendship
 	}
 	
 	required convenience init?(map: Map) {
@@ -617,13 +612,17 @@ class MatchModel: ChannelModel {
 
 	// 当前房间 mode
 	override var match_room_mode: MatchMode {
-		if let selectedMatchMode = Achievements.shared.selectMatchMode, selectedMatchMode.rawValue == match_mode {
+		if self.matched_pair() {
+			return .PairMode
+		}
+		
+		if let selectedMatchMode = Achievements.shared.selectMatchMode, selectedMatchMode.rawValue == "\(match_mode)" {
 			return selectedMatchMode
 		}
 		return .VideoMode
 	}
 	// 1 normal 2 text 3 event
-	var match_mode: String = MatchMode.VideoMode.rawValue
+	var match_mode: Int = Int(MatchMode.VideoMode.rawValue) ?? 1
 	// event_mode_id
 	var event_mode: String?
 	
@@ -771,23 +770,54 @@ class MatchModel: ChannelModel {
 }
 
 class FriendPairModel: ChannelModel {
-	var friendPair: MatchUser!
+	var friend: MatchUser!
+	var pair_id: String = ""
 
 	override var left: MatchUser! {
-		return friendPair
+		return friend
 	}
 	
 	// 我是否收到了 twop match
-	var myConfirmMatch = false
+	var myConfirmPair: String?
 	// 好友是否收到了 twop match
-	var friendConfirmMatch = false
+	var friendConfirmPair: String?
+	// 如果有 match_pair_id
 	func confirmMatch() -> Bool {
-		return myConfirmMatch && friendConfirmMatch
+		if let match_pair_id = myConfirmPair, match_pair_id == friendConfirmPair {
+			return true
+		}
+		return false
+	}
+	
+	func resetConfirm() {
+		self.myConfirmPair = nil
+		self.friendConfirmPair = nil
 	}
 
 	// 向好友发送 确认离开 消息(先确认完毕的人发送完不能直接离开房间，要等对方发送或者收到对方离开的回调；后确认完毕的人收到此消息后向对方发送此消息，然后直接离开房间)
-	var confirmLeave = false
 	func shouldConnectPair() -> Bool {
-		return shouldConnectPair() && (confirmLeave || friendPair.joined == false)
+		if let match_pair_id = self.myConfirmPair {
+			if match_pair_id == self.friendConfirmPair {
+				return true
+			}
+			if self.friend.joined == false {
+				return true
+			}
+		}
+		return false
+	}
+	
+	required init?(map: Map) {
+		// users 不存在
+		if (map["friend"].currentValue is [String: Any]) == false || map["pair_id"].currentValue == nil {
+			return nil
+		}
+		super.init(map: map)
+	}
+	
+	override func mapping(map: Map) {
+		super.mapping(map: map)
+		pair_id		<- map["pair_id"]
+		friend		<- map["friend"]
 	}
 }

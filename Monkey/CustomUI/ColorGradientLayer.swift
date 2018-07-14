@@ -26,11 +26,6 @@ import Foundation
 		self.configureApperance()
 	}
 	
-//	override func awakeFromNib() {
-//		super.awakeFromNib()
-//		self.configureApperance()
-//	}
-	
 	private func configureApperance() {
 		self.backgroundColor = UIColor.clear
 		(layer as! CAGradientLayer).colors = [topColor.cgColor, bottomColor.cgColor]

@@ -15,16 +15,12 @@ import ObjectMapper
 typealias MatchHandler = UIViewController & MatchServiceObserver
 
 protocol MatchMessageObserver {
-	func handleReceivedMessage(message: Message)
+	func handleReceivedMessage(message: MatchMessage)
 	func present(from matchHandler: MatchHandler, with matchModel: ChannelModel, complete: CompletionHandler?)
 	func dismiss(complete: CompletionHandler?)
 }
 
 class OnepMatchController: MonkeyViewController {
-	
-	internal func showAlert(alert: UIAlertController) {
-		self.present(alert, animated: true, completion: nil)
-	}
 	
 	// match manager
 	fileprivate let matchManager = OnepMatchManager.default
@@ -43,6 +39,14 @@ class OnepMatchController: MonkeyViewController {
 	// user info
 	@IBOutlet weak var commonTreeTip: UILabel!
 	@IBOutlet weak var matchUserPhoto: UIImageView!
+	
+	@IBOutlet weak var leftPhoto: UIImageView!
+	@IBOutlet weak var leftBio: UILabel!
+	
+	
+	@IBOutlet weak var rightPhoto: UIImageView!
+	@IBOutlet weak var rightBio: UILabel!
+	
 	// user bio
 	@IBOutlet weak var factTextBottom: NSLayoutConstraint!
 	@IBOutlet weak var factTextView: UILabel!
@@ -117,6 +121,20 @@ class OnepMatchController: MonkeyViewController {
 		self.matchUserPhoto.layer.masksToBounds = true
 		self.matchUserPhoto.layer.shadowRadius = 4
 		self.matchUserPhoto.layer.shadowColor = UIColor.init(white: 0, alpha: 0.25).cgColor
+		
+		// user icon
+		self.leftBio.isHidden = true
+		self.leftPhoto.isHidden = true
+		self.leftPhoto.layer.cornerRadius = 27
+		self.leftPhoto.layer.masksToBounds = true
+		self.leftPhoto.layer.shadowRadius = 4
+		
+		// user icon
+		self.rightBio.isHidden = true
+		self.rightPhoto.isHidden = true
+		self.rightPhoto.layer.cornerRadius = 27
+		self.rightPhoto.layer.masksToBounds = true
+		self.rightPhoto.layer.shadowRadius = 4
 		
 		// fact
 		self.acceptButton.isHidden = true
@@ -287,9 +305,14 @@ class OnepMatchController: MonkeyViewController {
 		
 		self.startView.isHidden = (newStatus != .WaitingStart)
 		self.exitButton.isHidden = (newStatus != .RequestMatch)
+		self.factTextView.isHidden = (newStatus == .WaitingStart || newStatus == .Chating)
 		self.loadingContentView.isHidden = (newStatus == .WaitingStart || newStatus == .Chating)
 		self.loadingTextLabel.isHidden = (newStatus != .RequestMatch)
 		self.matchModeContainer.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
+		self.leftPhoto.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
+		self.leftBio.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
+		self.rightPhoto.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
+		self.rightBio.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
 		self.matchUserPhoto.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
 		self.commonTreeTip.isHidden = (newStatus != .WaitingResponse && newStatus != .Connecting)
 		self.skippedText.isHidden = (newStatus == .WaitingStart || newStatus == .Chating)
@@ -393,7 +416,6 @@ class OnepMatchController: MonkeyViewController {
 			])
 		matchModel.accept = true
 		self.matchManager.accept(auto: false)
-		
 		self.update(tip: "Waiting...", duration: 0)
 		self.tryConnecting()
 	}
@@ -452,9 +474,9 @@ class OnepMatchController: MonkeyViewController {
 		
 		// 显示错误文案
 		if self.onepStatus == .Connecting, error.shouldShowTimeOut() {
-			self.update(tip: "Time out!!")
+			self.update(tip: "Time out!!", autoDismiss: true)
 		}else if self.onepStatus == .WaitingResponse, error.shouldShowSkip() {
-			self.update(tip: "Skipped!!")
+			self.update(tip: "Skipped!!", autoDismiss: true)
 		}else {
 			self.update(tip: nil)
 		}
@@ -475,19 +497,50 @@ class OnepMatchController: MonkeyViewController {
 	private func showMatchInfo() {
 		guard let matchModel = self.matchModel else { return }
 		
-		if let commonChannel = matchModel.left.commonChannel() {
-			self.commonTreeTip.text = commonChannel.emoji
-			self.commonTreeTip.isHidden = false
-		}else {
+		if matchModel.matched_pair() {
+			matchModel.left.accept = true
+			matchModel.right?.accept = true
+			
 			self.commonTreeTip.isHidden = true
+			self.matchUserPhoto.isHidden = true
+			self.factTextView.isHidden = true
+			
+			self.leftBio.isHidden = false
+			self.leftPhoto.isHidden = false
+			self.rightBio.isHidden = false
+			self.rightPhoto.isHidden = false
+			
+			let leftPlaceholder = UIImage.init(named: matchModel.left.defaultAvatar)
+			let left_profile_photo_url = URL.init(string: matchModel.left.photo_read_url ?? "")
+			self.leftPhoto.kf.setImage(with: left_profile_photo_url, placeholder: leftPlaceholder)
+			self.leftBio.text = matchModel.left.showedBio()
+			
+			if let right = matchModel.right {
+				let rightPlaceholder = UIImage.init(named: right.defaultAvatar)
+				let right_profile_photo_url = URL.init(string: right.photo_read_url ?? "")
+				self.rightPhoto.kf.setImage(with: right_profile_photo_url, placeholder: rightPlaceholder)
+				self.rightBio.text = right.showedBio()
+			}
+			
+		}else {
+			self.leftBio.isHidden = true
+			self.leftPhoto.isHidden = true
+			self.rightBio.isHidden = true
+			self.rightPhoto.isHidden = true
+			
+			if let commonChannel = matchModel.left.commonChannel() {
+				self.commonTreeTip.text = commonChannel.emoji
+				self.commonTreeTip.isHidden = false
+			}else {
+				self.commonTreeTip.isHidden = true
+			}
+			
+			self.matchUserPhoto.isHidden = false
+			let placeholder = UIImage.init(named: matchModel.left.defaultAvatar)
+			let profile_photo_url = URL.init(string: matchModel.left.photo_read_url ?? "")
+			self.matchUserPhoto.kf.setImage(with: profile_photo_url, placeholder: placeholder)
+			self.setFactText(matchModel.showedBio(for: matchModel.left.user_id))
 		}
-		
-		self.matchUserPhoto.isHidden = false
-		let placeholder = UIImage.init(named: matchModel.left.defaltAvatar)
-		let profile_photo_url = URL.init(string: matchModel.left.photo_read_url ?? "")
-		self.matchUserPhoto.kf.setImage(with: profile_photo_url, placeholder: placeholder)
-		
-		self.setFactText(matchModel.showedBio(for: matchModel.left.user_id))
 		
 		let matchMode = matchModel.match_room_mode
 		self.acceptButton.backgroundColor = matchMode.backgroundColor
@@ -510,6 +563,23 @@ class OnepMatchController: MonkeyViewController {
 			self.update(tip: "Connecting...", duration: 0)
 			self.matchManager.connect()
 			self.update(to: .Connecting)
+			if matchModel.matched_pair() {
+				self.matchUserPhoto.isHidden = true
+				self.commonTreeTip.isHidden = true
+				self.factTextView.isHidden = true
+			}else {
+				self.leftBio.isHidden = true
+				self.leftPhoto.isHidden = true
+				self.rightBio.isHidden = true
+				self.rightPhoto.isHidden = true
+				
+				if let commonChannel = matchModel.left.commonChannel() {
+					self.commonTreeTip.text = commonChannel.emoji
+					self.commonTreeTip.isHidden = false
+				}else {
+					self.commonTreeTip.isHidden = true
+				}
+			}
 		}
 	}
 	
@@ -534,7 +604,9 @@ class OnepMatchController: MonkeyViewController {
 		
 		Achievements.shared.totalChats += 1
 		var matchModeId = "callVC"
-		if (matchModel.match_room_mode == .TextMode) {
+		if matchModel.matched_pair() {
+			matchModeId = "OnepPair"
+		}else if (matchModel.match_room_mode == .TextMode) {
 			matchModeId = "textModeVC"
 		}
 		
@@ -558,16 +630,16 @@ class OnepMatchController: MonkeyViewController {
 		
 		// unfriend
 		if matchModel.isReportPeople(), matchModel.friendAdded() {
-			//			self.showAfterReportFriendAlert(userID: userID)
+//			self.showAfterReportFriendAlert(userID: userID)
 		}
 		
 		// screen shot when disconnect
 		if matchModel.match_room_mode == .VideoMode && matchModel.addTimeCount() == 0 {
-			//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
+//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}else if matchModel.match_room_mode == .TextMode && matchModel.isUnmuted() == false, matchModel.chatDuration > 30 {
-			//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
+//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}else if matchModel.chatDuration <= 30.0 {
-			//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
+//			self.matchViewController?.autoScreenShotUpload(source: .match_disconnec)
 		}
 		
 		// show rating
@@ -596,13 +668,16 @@ extension OnepMatchController {
 		self.setFactText(self.nextFact)
 	}
 	
-	fileprivate func update(tip: String?, duration: TimeInterval = 1.5) {
+	fileprivate func update(tip: String?, duration: TimeInterval = 1.5, autoDismiss: Bool = false) {
 		if let tip = tip {
-			self.skippedText.alpha = 0.0
+			self.skippedText.alpha = 1.0
 			self.skippedText.text = tip
-			UIView.animate(withDuration: duration, animations: {
-				self.skippedText.alpha = 1.0
-			})
+			self.skippedText.layer.opacity = 1.0
+			if autoDismiss {
+				UIView.animate(withDuration: 1.5, animations: {
+					self.skippedText.layer.opacity = 0.0
+				})
+			}
 		}else {
 			self.skippedText.alpha = 0.0
 		}
@@ -703,16 +778,16 @@ extension OnepMatchController {
 	
 	func revokePrevMatchRequest(completion: (() -> Swift.Void)? = nil) {
 		guard self.request_id == nil else {
-			AnalyticsCenter.log(event: .matchCancel)
 			
 			self.request_id = nil
 			self.cancelMatchRequest()
-			if let authorization = APIController.authorization {
-				JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/match_cancel", method: .post, options: [
-					.header("Authorization", authorization),
-					]).addCompletionHandler { (_) in
-						completion?()
-				}
+			AnalyticsCenter.log(event: .matchCancel)
+			guard let authorization = UserManager.authorization else { return }
+			
+			JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/match_cancel", method: .post, options: [
+				.header("Authorization", authorization),
+				]).addCompletionHandler { (_) in
+					completion?()
 			}
 			return
 		}
@@ -860,13 +935,17 @@ extension OnepMatchController {
 }
 
 extension OnepMatchController {
-	func handleReceivedMessage(message: Message) {
+	func handleReceivedMessage(message: MatchMessage) {
 		let type = MessageType.init(type: message.type)
 		switch type {
 		case .Skip:
 			self.receiveSkip()
 		case .Accept:
 			self.receiveAccept()
+		case .PceOut:
+			self.receivePceOut(message: message)
+		case .Report:
+			self.receiveReport(message: message)
 		default:
 			self.matchViewController?.handleReceivedMessage(message: message)
 		}
@@ -881,6 +960,16 @@ extension OnepMatchController {
 		self.matchModel?.left.accept = true
 		self.tryConnecting()
 	}
+	
+	fileprivate func receivePceOut(message: MatchMessage) {
+		if let sender = message.sender, self.matchModel?.matchedUser(with: sender) != nil {
+			self.handleMatchError(error: .OtherSkip)
+		}
+	}
+	
+	fileprivate func receiveReport(message: MatchMessage) {
+		
+	}
 }
 
 extension OnepMatchController: MatchServiceObserver {
@@ -893,7 +982,7 @@ extension OnepMatchController: MatchServiceObserver {
 		self.tryChating()
 	}
 	
-	func channelMessageReceived(message: Message) {
+	func channelMessageReceived(message: MatchMessage) {
 		self.handleReceivedMessage(message: message)
 	}
 }
@@ -923,8 +1012,14 @@ extension OnepMatchController: MatchObserver {
 		guard matchModel.match_id == chat else {
 			return
 		}
+		let messageJson = [
+			"type": type,
+			"match_id": chat,
+		]
 		
-		self.handleReceivedMessage(message: Message.init(type: type))
+		if let matchMessage = Mapper<MatchMessage>().map(JSON: messageJson) {
+			self.handleReceivedMessage(message: matchMessage)
+		}
 	}
 	
 	func matchTypeChanged(newType: MatchType) {

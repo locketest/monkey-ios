@@ -19,20 +19,16 @@ class OnepPairMatchViewController: MonkeyViewController {
 	@IBOutlet weak var publisherContainerViewHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var publisherContainerView: LocalPreviewContainer!
 	
-	@IBOutlet weak var colorGradient: ColorGradientView!
-	
 	@IBOutlet weak var remotePairView: RemotePairInfo!
 	// add time
 	@IBOutlet weak var addMinuteButton: BigYellowButton!
 	
 	// end call for friend
 	@IBOutlet weak var endCallButton: BigYellowButton!
-	
-	@IBOutlet weak var statusLabel: UILabel!
 	// match model
 	weak var matchModel: MatchModel!
 	// match matchHandler
-	fileprivate weak var matchHandler: MatchHandler!
+	weak var matchHandler: MatchHandler!
 	
 	// for click animate
 	var clockTime: Int = 15000
@@ -65,8 +61,8 @@ class OnepPairMatchViewController: MonkeyViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		self.configureRemotePreview()
 		self.configureLocalPreview()
+		self.configureRemotePreview()
 	}
 	
 	func switchClock(open: Bool) {
@@ -94,32 +90,26 @@ class OnepPairMatchViewController: MonkeyViewController {
 	
 	func configureLocalPreview() {
 		// add local preview
+		self.publisherContainerView.layer.cornerRadius = 0
 		self.publisherContainerView.addLocalPreview()
 		self.enlargedPublisherView(duration: 0)
 
 		self.clockLabelBackgroundView.layer.cornerRadius = 20
 		self.clockLabelBackgroundView.layer.masksToBounds = true
 
-		self.animator = UIDynamicAnimator(referenceView: self.colorGradient)
+		self.animator = UIDynamicAnimator(referenceView: self.view)
 	}
 	
 	func configureRemotePreview() {
 		self.remotePairView.alpha = 0
-//		let remotePreview = self.matchModel.left.renderContainer
-//		self.view.insertSubview(remotePreview, at: 0)
-//		remotePreview.frame = self.view.bounds
-//		remotePreview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+		self.remotePairView.actionDelegate = self
+		self.remotePairView.beginChat(with: self.matchModel)
 		
-		self.clockLabelBackgroundView.isHidden = true
-		
-		self.addMinuteButton.isEnabled = true
-		self.addMinuteButton.isHidden = false
-		
-		self.endCallButton.isEnabled = false
-		self.endCallButton.isHidden = true
+		self.checkFriendStatus()
 	}
 	
 	func refresh(with friendStatus: Bool) {
+		self.publisherContainerView.showSwitchCamera(show: friendStatus)
 		if friendStatus {
 			// hide addtime\clock
 			self.addMinuteButton.isEnabled = false
@@ -127,6 +117,7 @@ class OnepPairMatchViewController: MonkeyViewController {
 			
 			self.endCallButton.isEnabled = true
 			self.endCallButton.isHidden = false
+			
 		}else {
 			// 不是好友
 			self.addMinuteButton.isEnabled = true
@@ -152,6 +143,32 @@ class OnepPairMatchViewController: MonkeyViewController {
 	}
 }
 
+extension OnepPairMatchViewController: RemoteActionDelegate {
+	func friendTapped(to user: MatchUser) {
+		OnepMatchManager.default.sendMatchMessage(type: .AddFriend, to: user)
+		if user.friendRequested {
+			user.friendAccept = true
+			self.addFriendSuccess()
+			self.remotePairView.addFriend(user: user)
+		}else {
+			user.friendRequest = true
+		}
+	}
+	func reportTapped(to user: MatchUser) {
+		self.report(user: user)
+	}
+	func insgramTapped(to user: MatchUser) {
+		
+	}
+	func addTimeTapped() {
+		OnepMatchManager.default.sendMatchMessage(type: .AddTime)
+		self.matchModel.addTimeRequestCount += 1
+		if self.matchModel.addTimeRequestCount == self.matchModel.left.addTimeCount {
+			self.minuteAdded()
+		}
+	}
+}
+
 extension OnepPairMatchViewController: MatchMessageObserver {
 	func present(from matchHandler: MatchHandler, with matchModel: ChannelModel, complete: CompletionHandler?) {
 		self.matchModel = matchModel as! MatchModel
@@ -172,7 +189,7 @@ extension OnepPairMatchViewController: MatchMessageObserver {
 		self.enlargedPublisherView(enlarged: true) { [weak self] in
 			self?.dismiss(animated: false, completion: {
 				complete?()
-//				self?.matchHandler.disconnect(reason: .MyQuit)
+				self?.matchHandler.disconnect(reason: .MyQuit)
 			})
 		}
 	}
@@ -187,7 +204,7 @@ extension OnepPairMatchViewController: MatchMessageObserver {
 		}
 	}
 	
-	func handleReceivedMessage(message: Message) {
+	func handleReceivedMessage(message: MatchMessage) {
 		let type = MessageType.init(type: message.type)
 		switch type {
 		case .AddTime:
@@ -201,6 +218,5 @@ extension OnepPairMatchViewController: MatchMessageObserver {
 		default:
 			break
 		}
-
 	}
 }

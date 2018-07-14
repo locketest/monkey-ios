@@ -268,17 +268,19 @@ class RealmDataController {
 	*/
 	func migrateFromUserDefaults(completion: @escaping (_ error: APIError?) -> Void) {
 		
-		// 如果
+		// realm 初始化失败
 		guard let mainRealm = self.mainRealm else {
 			completion(.realmNotInitialized)
 			return
 		}
 		
-		// 如果已经更新过
-		if let authorization = UserManager.shared.currentAuthorization {
-			UserDefaults.standard.set(authorization.auth_token, forKey: "authorization")
-			UserDefaults.standard.set(authorization.user_id, forKey: "user_id")
-		}else if let authorizationToken = APIController.authorization, let user_id = APIController.user_id {
+		// 已经登录
+		guard UserManager.shared.isUserLogin() == false else {
+			return
+		}
+		
+		// 如果有老版本数据
+		if let authorizationToken = APIController.authorization, let user_id = APIController.user_id {
 			// transform old data to model
 			var token = authorizationToken
 			let prefix = Authorization.token_prefix
@@ -307,14 +309,6 @@ class RealmDataController {
 			if let authorization = Mapper<Authorization>().map(JSON: authorizationJson) {
 				try! mainRealm.write {
 					mainRealm.add(authorization, update: true)
-					// remove old data
-//					APIController.user_id = nil
-//					APIController.authorization = nil
-//					UserDefaults.standard.removeObject(forKey: "age")
-//					UserDefaults.standard.removeObject(forKey: "gender")
-//					UserDefaults.standard.removeObject(forKey: "apns_token")
-//					UserDefaults.standard.removeObject(forKey: "show_gender")
-//					UserDefaults.standard.removeObject(forKey: "snapchat_username")
 				}
 			}
 		}

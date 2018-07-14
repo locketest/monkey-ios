@@ -275,6 +275,47 @@
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cXS-Tn-qZl" customClass="MakeUIViewGreatAgain" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="65" y="250" width="245" height="177"/>
                                 <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="65" translatesAutoresizingMaskIntoConstraints="NO" id="UGe-dG-8mK">
+                                        <rect key="frame" x="38" y="50" width="169" height="82"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="Qwj-qO-8V6">
+                                                <rect key="frame" x="0.0" y="0.0" width="52" height="82"/>
+                                                <subviews>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="N3E-b4-bor">
+                                                        <rect key="frame" x="0.0" y="0.0" width="52" height="52"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="52" id="EuK-KM-9Mi"/>
+                                                            <constraint firstAttribute="height" constant="52" id="gvh-IO-91S"/>
+                                                        </constraints>
+                                                    </imageView>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SD6-zn-mRY">
+                                                        <rect key="frame" x="9.5" y="66" width="33" height="16"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="W6k-jA-tZD">
+                                                <rect key="frame" x="117" y="0.0" width="52" height="82"/>
+                                                <subviews>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="H4a-qC-9Kd">
+                                                        <rect key="frame" x="0.0" y="0.0" width="52" height="52"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="52" id="4Oi-TH-gGM"/>
+                                                            <constraint firstAttribute="width" constant="52" id="OHP-Cp-SR7"/>
+                                                        </constraints>
+                                                    </imageView>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7jR-JL-cl4">
+                                                        <rect key="frame" x="9.5" y="66" width="33" height="16"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="-88" translatesAutoresizingMaskIntoConstraints="NO" id="s3b-Pa-s7d">
                                         <rect key="frame" x="118.5" y="0.0" width="8" height="48"/>
                                         <subviews>
@@ -351,8 +392,10 @@ by 5 teenagers in NYC?</string>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="srJ-sk-ndc" firstAttribute="leading" secondItem="cXS-Tn-qZl" secondAttribute="leading" id="0iA-Kh-qpS"/>
+                                    <constraint firstItem="UGe-dG-8mK" firstAttribute="centerX" secondItem="cXS-Tn-qZl" secondAttribute="centerX" id="5Pg-KK-jLM"/>
                                     <constraint firstItem="s3b-Pa-s7d" firstAttribute="centerX" secondItem="cXS-Tn-qZl" secondAttribute="centerX" id="IPH-2x-lV5"/>
                                     <constraint firstItem="srJ-sk-ndc" firstAttribute="centerX" secondItem="cXS-Tn-qZl" secondAttribute="centerX" id="JdU-G7-WhW"/>
+                                    <constraint firstItem="UGe-dG-8mK" firstAttribute="top" secondItem="cXS-Tn-qZl" secondAttribute="top" constant="50" id="NmX-h8-tac"/>
                                     <constraint firstItem="srJ-sk-ndc" firstAttribute="top" secondItem="NAQ-YB-UnZ" secondAttribute="bottom" constant="5" id="TYV-GO-Zvz"/>
                                     <constraint firstItem="NAQ-YB-UnZ" firstAttribute="leading" secondItem="cXS-Tn-qZl" secondAttribute="leading" id="WOD-yG-ev5"/>
                                     <constraint firstItem="5vN-Az-BAD" firstAttribute="top" secondItem="srJ-sk-ndc" secondAttribute="bottom" constant="19" id="Who-TX-f0r"/>
@@ -579,6 +622,8 @@ by 5 teenagers in NYC?</string>
                         <outlet property="factTextBottom" destination="Who-TX-f0r" id="ZqX-Bc-I0w"/>
                         <outlet property="factTextView" destination="srJ-sk-ndc" id="q62-Bb-r7C"/>
                         <outlet property="fingerLabel" destination="zal-RF-PpW" id="onR-Ka-ug2"/>
+                        <outlet property="leftBio" destination="SD6-zn-mRY" id="g4G-gN-z2l"/>
+                        <outlet property="leftPhoto" destination="N3E-b4-bor" id="pK5-A7-9GU"/>
                         <outlet property="loadingContentView" destination="cXS-Tn-qZl" id="Aeo-XY-3mF"/>
                         <outlet property="loadingTextLabel" destination="NAQ-YB-UnZ" id="ji8-Cu-e1k"/>
                         <outlet property="matchModeContainer" destination="5vN-Az-BAD" id="hZM-Ig-kKk"/>
@@ -591,6 +636,8 @@ by 5 teenagers in NYC?</string>
                         <outlet property="matchModeTip" destination="Afo-kh-MBK" id="IWA-NS-HhE"/>
                         <outlet property="matchUserPhoto" destination="hrg-lG-jP8" id="5EY-Yh-Ou0"/>
                         <outlet property="rejectButton" destination="WDl-yK-KMf" id="B9S-Fs-o4B"/>
+                        <outlet property="rightBio" destination="7jR-JL-cl4" id="wDd-54-osK"/>
+                        <outlet property="rightPhoto" destination="H4a-qC-9Kd" id="CrX-MP-JoT"/>
                         <outlet property="skipButton" destination="ne3-Rb-fwS" id="roa-X7-TM6"/>
                         <outlet property="skippedText" destination="PFQ-Ky-nah" id="t5w-O3-0Fq"/>
                         <outlet property="startView" destination="mbw-PW-xM8" id="5b6-J2-x4G"/>
@@ -623,17 +670,54 @@ by 5 teenagers in NYC?</string>
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hiz-39-qxl">
+                                <rect key="frame" x="187" y="333" width="188" height="334"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iYZ-sT-ogg" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
+                                        <rect key="frame" x="11.5" y="27" width="40" height="40"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29801484169999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="mEw-Pm-qFZ"/>
+                                            <constraint firstAttribute="height" constant="40" id="vx0-uO-P3R"/>
+                                        </constraints>
+                                        <state key="normal" title="🌄"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="pairInstagramClick:" destination="bNr-5i-tA6" eventType="touchUpInside" id="Dw4-bu-Nit"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="188" id="0En-32-0mb"/>
+                                    <constraint firstAttribute="height" constant="334" id="453-vd-al3"/>
+                                    <constraint firstItem="iYZ-sT-ogg" firstAttribute="leading" secondItem="Hiz-39-qxl" secondAttribute="leading" constant="12" id="TlA-M1-SP2"/>
+                                    <constraint firstItem="iYZ-sT-ogg" firstAttribute="top" secondItem="Hiz-39-qxl" secondAttribute="top" constant="27" id="ZnL-Lf-93Z"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kHm-h8-Eve" customClass="LocalPreviewContainer" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="333.5" width="187.5" height="333.5"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hiz-39-qxl" customClass="RemoteUserInfo" customModule="Monkey" customModuleProvider="target">
-                                <rect key="frame" x="187.5" y="333.5" width="187.5" height="333.5"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="187.5" id="qPM-Ru-jgY"/>
+                                    <constraint firstAttribute="height" constant="333.5" id="zoS-OC-qOI"/>
+                                </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TF2-NQ-Tvv" customClass="ColorGradientView" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" red="0.3921568627" green="0.2901960784" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="topColor">
+                                        <color key="value" red="0.39215686274509803" green="0.015686274509803921" blue="0.94509803921568625" alpha="0.74547838184931503" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="bottomColor">
+                                        <color key="value" red="0.0" green="0.0" blue="0.0" alpha="0.29746361301369861" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yse-KQ-Wnc">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="333.5"/>
@@ -666,6 +750,9 @@ by 5 teenagers in NYC?</string>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="👈"/>
+                                        <connections>
+                                            <action selector="closeButtonClick:" destination="bNr-5i-tA6" eventType="touchUpInside" id="otm-ea-hiy"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -695,6 +782,9 @@ by 5 teenagers in NYC?</string>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="string" keyPath="emoji" value="👋"/>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="endCallClick:" destination="bNr-5i-tA6" eventType="touchUpInside" id="6q6-j1-2of"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1OM-I6-G4k" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="117" y="591" width="140" height="56"/>
@@ -714,6 +804,9 @@ by 5 teenagers in NYC?</string>
                                         <real key="value" value="0.0"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="addTimeClick:" destination="bNr-5i-tA6" eventType="touchUpInside" id="Tru-EC-A4P"/>
+                                </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AZy-9g-k6f">
                                 <rect key="frame" x="136" y="312" width="103" height="43"/>
@@ -763,23 +856,39 @@ by 5 teenagers in NYC?</string>
                             <constraint firstItem="TF2-NQ-Tvv" firstAttribute="top" secondItem="9wz-wY-wb4" secondAttribute="top" id="Kv4-vb-aBS"/>
                             <constraint firstItem="J6r-2Z-nx0" firstAttribute="bottom" secondItem="gTE-0Z-ZGO" secondAttribute="bottom" constant="30" id="LbR-tf-Hg4"/>
                             <constraint firstItem="qlS-cK-3R5" firstAttribute="centerX" secondItem="9wz-wY-wb4" secondAttribute="centerX" id="N8y-dl-TSQ"/>
-                            <constraint firstItem="kHm-h8-Eve" firstAttribute="height" secondItem="9wz-wY-wb4" secondAttribute="height" multiplier="0.5" id="PE0-wF-rHN"/>
                             <constraint firstItem="1OM-I6-G4k" firstAttribute="centerX" secondItem="9wz-wY-wb4" secondAttribute="centerX" id="QWC-5G-8Mi"/>
-                            <constraint firstItem="Hiz-39-qxl" firstAttribute="height" secondItem="9wz-wY-wb4" secondAttribute="height" multiplier="0.5" id="R9F-6r-g8c"/>
-                            <constraint firstItem="kHm-h8-Eve" firstAttribute="width" secondItem="9wz-wY-wb4" secondAttribute="width" multiplier="0.5" id="ROt-bb-1YL"/>
                             <constraint firstItem="TF2-NQ-Tvv" firstAttribute="bottom" secondItem="9wz-wY-wb4" secondAttribute="bottom" id="SkT-Pa-ymo"/>
-                            <constraint firstAttribute="trailing" secondItem="Hiz-39-qxl" secondAttribute="trailing" id="TnS-6y-aK6"/>
                             <constraint firstItem="kHm-h8-Eve" firstAttribute="leading" secondItem="9wz-wY-wb4" secondAttribute="leading" id="Vd9-5h-FNa"/>
                             <constraint firstItem="gTE-0Z-ZGO" firstAttribute="centerX" secondItem="9wz-wY-wb4" secondAttribute="centerX" id="Wv3-fl-EJh"/>
+                            <constraint firstAttribute="trailing" secondItem="Hiz-39-qxl" secondAttribute="trailing" id="ZEv-4a-i36"/>
                             <constraint firstItem="J6r-2Z-nx0" firstAttribute="bottom" secondItem="1OM-I6-G4k" secondAttribute="bottom" constant="20" id="aQl-32-uAl"/>
-                            <constraint firstItem="Hiz-39-qxl" firstAttribute="width" secondItem="9wz-wY-wb4" secondAttribute="width" multiplier="0.5" id="l0I-tY-6uv"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="Hiz-39-qxl" secondAttribute="bottom" id="l9k-q9-YP5"/>
+                            <constraint firstAttribute="bottom" secondItem="Hiz-39-qxl" secondAttribute="bottom" id="hdv-a1-Et3"/>
                             <constraint firstAttribute="bottom" secondItem="kHm-h8-Eve" secondAttribute="bottom" id="lJh-Af-z66"/>
                             <constraint firstItem="yse-KQ-Wnc" firstAttribute="leading" secondItem="9wz-wY-wb4" secondAttribute="leading" id="u8l-vD-QNj"/>
                             <constraint firstItem="TF2-NQ-Tvv" firstAttribute="trailing" secondItem="9wz-wY-wb4" secondAttribute="trailing" id="xId-NC-kIj"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="J6r-2Z-nx0"/>
                     </view>
+                    <connections>
+                        <outlet property="addTimeButton" destination="1OM-I6-G4k" id="8Tl-Ca-5uc"/>
+                        <outlet property="clockLabel" destination="ZQR-Nd-GRk" id="fzU-0g-0Sh"/>
+                        <outlet property="clockLabelBackgroundView" destination="AZy-9g-k6f" id="wk9-LH-uzN"/>
+                        <outlet property="clockTimeIcon" destination="Cyz-Jt-Nra" id="RSF-8j-JaR"/>
+                        <outlet property="closeButton" destination="76L-NW-n4X" id="Arn-Tv-q12"/>
+                        <outlet property="colorGradient" destination="TF2-NQ-Tvv" id="kTc-A6-Kmg"/>
+                        <outlet property="endCallButton" destination="qlS-cK-3R5" id="Cdx-v5-fPV"/>
+                        <outlet property="factTextView" destination="3dE-kZ-dKq" id="Sx6-QG-lfe"/>
+                        <outlet property="loadingTextLabel" destination="vme-CJ-dZ0" id="Hlw-Rq-x5t"/>
+                        <outlet property="localPreview" destination="kHm-h8-Eve" id="9dD-eO-QMp"/>
+                        <outlet property="localPreviewHeightConstraints" destination="zoS-OC-qOI" id="xkm-A4-feS"/>
+                        <outlet property="localPreviewWidthConstraints" destination="qPM-Ru-jgY" id="51b-Nc-OA5"/>
+                        <outlet property="pairInfoView" destination="Hiz-39-qxl" id="Vs8-kL-JCf"/>
+                        <outlet property="pairInstagramView" destination="iYZ-sT-ogg" id="HmC-2q-DGe"/>
+                        <outlet property="pairPreviewHeightConstraints" destination="453-vd-al3" id="zrY-mc-JUi"/>
+                        <outlet property="pairPreviewWidthConstaints" destination="0En-32-0mb" id="4Mz-Gi-5Wo"/>
+                        <outlet property="remoteContainer" destination="yse-KQ-Wnc" id="P3A-No-EDv"/>
+                        <outlet property="statusLabel" destination="gTE-0Z-ZGO" id="vK2-ex-6hh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mas-Ok-lez" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1402,7 +1511,7 @@ by 5 teenagers in NYC?</string>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UDb-vl-MQC" customClass="LocalPreviewContainer" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="667" id="16N-RR-uFS"/>
                                 </constraints>
@@ -1410,16 +1519,6 @@ by 5 teenagers in NYC?</string>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PvZ-1D-eNW" customClass="RemotePairInfo" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="333.5"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xJh-As-SQd" customClass="ColorGradientView" customModule="Monkey" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" red="0.3921568627" green="0.2901960784" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting…" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="166-Ce-AXG">
-                                <rect key="frame" x="131" y="616" width="112.5" height="21"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j78-pT-V3u" customClass="BigYellowButton" customModule="Monkey" customModuleProvider="target">
                                 <rect key="frame" x="117" y="591" width="140" height="56"/>
                                 <color key="backgroundColor" red="0.3921568627" green="0.2901960784" blue="0.94509803920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1494,25 +1593,19 @@ by 5 teenagers in NYC?</string>
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.3921568627" green="0.015686274510000001" blue="0.94509803920000002" alpha="0.74547838180000003" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="xJh-As-SQd" firstAttribute="top" secondItem="HFp-rw-7bE" secondAttribute="top" id="6rj-t7-HKU"/>
                             <constraint firstItem="PvZ-1D-eNW" firstAttribute="height" secondItem="HFp-rw-7bE" secondAttribute="height" multiplier="0.5" id="Dzs-fL-6aq"/>
                             <constraint firstItem="Hu4-UP-p0h" firstAttribute="trailing" secondItem="UDb-vl-MQC" secondAttribute="trailing" id="Ebf-WO-aPq"/>
                             <constraint firstItem="UDb-vl-MQC" firstAttribute="leading" secondItem="Hu4-UP-p0h" secondAttribute="leading" id="Hfh-lD-Wd5"/>
-                            <constraint firstItem="166-Ce-AXG" firstAttribute="centerX" secondItem="Hu4-UP-p0h" secondAttribute="centerX" id="IYg-gh-TbP"/>
                             <constraint firstItem="jUd-oM-Dap" firstAttribute="centerX" secondItem="Hu4-UP-p0h" secondAttribute="centerX" id="Ifs-vT-fpa"/>
                             <constraint firstItem="jUd-oM-Dap" firstAttribute="centerY" secondItem="HFp-rw-7bE" secondAttribute="centerY" id="NnR-Mu-I9H"/>
                             <constraint firstItem="mgH-2d-6Io" firstAttribute="centerX" secondItem="Hu4-UP-p0h" secondAttribute="centerX" id="OfB-1L-PJh"/>
-                            <constraint firstItem="xJh-As-SQd" firstAttribute="trailing" secondItem="Hu4-UP-p0h" secondAttribute="trailing" id="URE-Ls-kVX"/>
                             <constraint firstItem="j78-pT-V3u" firstAttribute="centerX" secondItem="Hu4-UP-p0h" secondAttribute="centerX" id="WFM-Uf-Obt"/>
                             <constraint firstItem="PvZ-1D-eNW" firstAttribute="top" secondItem="HFp-rw-7bE" secondAttribute="top" id="WuC-21-p9e"/>
-                            <constraint firstItem="xJh-As-SQd" firstAttribute="leading" secondItem="Hu4-UP-p0h" secondAttribute="leading" id="aZM-iE-C8d"/>
-                            <constraint firstItem="Hu4-UP-p0h" firstAttribute="bottom" secondItem="166-Ce-AXG" secondAttribute="bottom" constant="30" id="ePN-AQ-CRN"/>
                             <constraint firstItem="Hu4-UP-p0h" firstAttribute="trailing" secondItem="PvZ-1D-eNW" secondAttribute="trailing" id="ey7-QQ-p9Y"/>
                             <constraint firstItem="PvZ-1D-eNW" firstAttribute="leading" secondItem="Hu4-UP-p0h" secondAttribute="leading" id="j9Z-8d-y3u"/>
                             <constraint firstItem="Hu4-UP-p0h" firstAttribute="bottom" secondItem="j78-pT-V3u" secondAttribute="bottom" constant="20" id="ski-Zb-TSE"/>
-                            <constraint firstItem="xJh-As-SQd" firstAttribute="bottom" secondItem="HFp-rw-7bE" secondAttribute="bottom" id="ux6-qA-VjK"/>
                             <constraint firstAttribute="bottom" secondItem="UDb-vl-MQC" secondAttribute="bottom" id="vbc-hw-GE0"/>
                             <constraint firstItem="Hu4-UP-p0h" firstAttribute="bottom" secondItem="mgH-2d-6Io" secondAttribute="bottom" constant="20" id="zsq-hs-U8M"/>
                         </constraints>
@@ -1523,12 +1616,10 @@ by 5 teenagers in NYC?</string>
                         <outlet property="clockLabel" destination="R7X-Fj-7aI" id="aKv-8g-osX"/>
                         <outlet property="clockLabelBackgroundView" destination="jUd-oM-Dap" id="iym-Kk-KtB"/>
                         <outlet property="clockTimeIcon" destination="wxL-Yb-XT9" id="BmV-Jb-DSs"/>
-                        <outlet property="colorGradient" destination="xJh-As-SQd" id="Wcw-c5-vWc"/>
                         <outlet property="endCallButton" destination="j78-pT-V3u" id="aX4-FC-gth"/>
                         <outlet property="publisherContainerView" destination="UDb-vl-MQC" id="L2C-zF-Jlm"/>
                         <outlet property="publisherContainerViewHeightConstraint" destination="16N-RR-uFS" id="G7I-7d-1oy"/>
                         <outlet property="remotePairView" destination="PvZ-1D-eNW" id="qKd-7L-gvW"/>
-                        <outlet property="statusLabel" destination="166-Ce-AXG" id="5cm-Ih-ZhO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tQD-w5-qUS" userLabel="First Responder" sceneMemberID="firstResponder"/>

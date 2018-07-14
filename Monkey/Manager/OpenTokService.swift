@@ -24,31 +24,15 @@ class OpenTokService: NSObject {
 	weak var subscriberConnection: OTConnection?
 
 	static let shared = OpenTokService()
-	override init() {
-		super.init()
-		
-	}
+	override init() {}
 }
 
 extension OpenTokService: ChannelServiceManager {
 	
-	func joinChannel() {
-		self.currentSession = OTSession.init(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: kSessionId, delegate: self)
-		var maybeError : OTError?
-		self.currentSession?.connect(withToken: kToken, error: &maybeError)
-		print("opentok: connect session")
-		
-		guard self.currentSession != nil, maybeError == nil else {
-			// call back error
-			self.observer?.didReceiveChannelError(error: nil)
-			return
-		}
-	}
-	
 	func joinChannel(matchModel: ChannelModel) {
-		self.currentSession = OTSession.init(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: kSessionId, delegate: self)
+		self.currentSession = OTSession.init(apiKey: APIController.shared.currentExperiment?.opentok_api_key ?? "45702262", sessionId: matchModel.channel_name, delegate: self)
 		var maybeError : OTError?
-		self.currentSession?.connect(withToken: kToken, error: &maybeError)
+		self.currentSession?.connect(withToken: matchModel.channel_key, error: &maybeError)
 		print("opentok: connect session")
 
 		guard self.currentSession != nil, maybeError == nil else {
@@ -103,7 +87,6 @@ extension OpenTokService: OTSessionDelegate {
 		var maybeError : OTError?
 		if self.publisher == nil {
 			self.publisher = OTPublisher.init(delegate: nil, settings: OTPublisherSettings.init())
-//			let capture = TBExampleVideoCapture.init()
 			let capture = HWCameraManager.shared()
 			self.publisher?.videoCapture = capture
 		}
@@ -166,6 +149,9 @@ extension OpenTokService: OTSessionDelegate {
 
 	func session(_ session: OTSession, streamDestroyed stream: OTStream) {
 		print("opentok: did streamDestroyed")
+		if stream == self.subscriber?.stream {
+			self.observer?.remoteUserDidQuited(user: self.channelModel?.left.user_id ?? 0, droped: true)
+		}
 	}
 
 	func session(_ session: OTSession, connectionCreated connection: OTConnection) {
@@ -177,7 +163,6 @@ extension OpenTokService: OTSessionDelegate {
 			// allow us to peek in on different conversations
 			return
 		}
-		
 		guard self.subscriberConnection == nil else {
 			print("opentok: Duplicate subscription created")
 			return
@@ -216,7 +201,9 @@ extension OpenTokService: OTSubscriberKitDelegate {
 
 	func subscriberDidDisconnect(fromStream subscriber: OTSubscriberKit) {
 		print("opentok: subscriber did disconnect")
-//		self.observer?.remoteUserDidQuited(user: self.channelModel?.left.user_id ?? 0, droped: true)
+		if subscriber.stream == self.subscriber?.stream {
+			self.observer?.remoteUserDidQuited(user: self.channelModel?.left.user_id ?? 0, droped: true)
+		}
 	}
 
 	func subscriberDidReconnect(toStream subscriber: OTSubscriberKit) {
@@ -225,7 +212,6 @@ extension OpenTokService: OTSubscriberKitDelegate {
 
 	func subscriber(_ subscriber: OTSubscriberKit, didFailWithError error: OTError) {
 		print("opentok: Subscriber didFailWithError \(error)")
-		self.observer?.didReceiveChannelError(error: nil)
 	}
 	
 	func publisher(_ publisher: OTPublisherKit, streamCreated stream: OTStream) {
@@ -234,11 +220,9 @@ extension OpenTokService: OTSubscriberKitDelegate {
 	
 	func publisher(_ publisher: OTPublisherKit, streamDestroyed stream: OTStream) {
 		print("opentok: publisher streamDestroyed")
-		self.observer?.didReceiveChannelError(error: nil)
 	}
 	
 	func publisher(_ publisher: OTPublisherKit, didFailWithError error: OTError) {
 		print("opentok: Publisher didFailWithError \(error)")
-		self.observer?.didReceiveChannelError(error: nil)
 	}
 }

@@ -15,7 +15,7 @@ class RemoteConfigManager {
 	
 	let remoteConfig = RemoteConfig.remoteConfig()
 	func fetchLatestConfig() {
-		remoteConfig.fetch(withExpirationDuration: 60 * 60) { (status, maybeError) in
+		remoteConfig.fetch(withExpirationDuration: 60 * 15) { (status, maybeError) in
 			if maybeError == nil, status == .success {
 				self.remoteConfig.activateFetched()
 			}
@@ -70,7 +70,7 @@ class RemoteConfigManager {
 	}
 	var app_in_review: Bool {
 		if let app_review_version = remoteConfig.configValue(forKey: "app_review_version").stringValue {
-			return app_review_version.compare(Environment.appVersion) == ComparisonResult.orderedSame
+			return app_review_version == Environment.appVersion
 		}else {
 			return false
 		}

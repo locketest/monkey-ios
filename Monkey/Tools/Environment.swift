@@ -200,10 +200,15 @@ enum TwopStatus {
 	case DashboardReady
 	case PairConnecting
 	case RequestMatch
+	case WaitingConfirm
 	case WaitingResponse
 	case Connecting
 	case Chating
 	case Reconnecting
+	
+	func processMatch() -> Bool {
+		return self != .DashboardReady && self != .PairConnecting && self != .RequestMatch && self != .Reconnecting
+	}
 }
 
 // match type

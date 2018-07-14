@@ -18,82 +18,29 @@ protocol RemoteActionDelegate {
 }
 
 class RemoteUserInfo: MakeUIViewGreatAgain {
-	override init(frame: CGRect) {
-		super.init(frame: frame)
-		self.configureApperance()
-	}
-	
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-		self.configureApperance()
-	}
 	
 	private var user: MatchUser!
+	private var friend_stauts: Bool = false
 	var actionDelegate: RemoteActionDelegate?
 	
-	private var gradientShow: Bool = false
-	private var colorGradient: ColorGradientView = ColorGradientView()
-	private var reportButton: BigYellowButton = BigYellowButton()
-	private var friendButton: BigYellowButton = BigYellowButton()
-	private var instagramButton: BigYellowButton = BigYellowButton()
-	private weak var remoteRender: UIView?
+	var gradientShow: Bool = false
+	var shouldShowReport: Bool = true
+	@IBOutlet weak var colorGradient: ColorGradientView!
+	@IBOutlet weak var reportButton: SmallYellowButton!
+	@IBOutlet weak var friendButton: BigYellowButton!
+	@IBOutlet weak var instagramButton: BigYellowButton!
+	@IBOutlet weak var reportLabel: UILabel!
+	var remoteRender: UIView?
+	
+	static func remoteInfoView() -> RemoteUserInfo {
+		let view = UINib(nibName: "RemoteUserInfo", bundle: nil).instantiate(withOwner: nil, options: nil).first as! RemoteUserInfo
+		view.configureApperance()
+		return view
+	}
 	
 	private func configureApperance() {
-		self.addSubview(self.colorGradient)
-		self.colorGradient.frame = self.bounds
-//		self.colorGradient.isHidden = true
 		self.colorGradient.alpha = 0
-		self.colorGradient.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(showGradient)))
-		self.colorGradient.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		
-		self.colorGradient.addSubview(self.reportButton)
-		self.reportButton.roundedSquare = true
-		self.reportButton.backgroundColor = UIColor.init(red: 1, green: 51.0 / 255.0, blue: 102.0 / 255.0, alpha: 1)
-		self.reportButton.emoji = "👮"
-		self.reportButton.addTarget(self, action: #selector(reportTapped), for: .touchUpInside)
-		self.reportButton.snp.makeConstraints { (maker) in
-			maker.trailing.equalTo(12)
-			maker.width.height.equalTo(40)
-			
-			if Environment.isIphoneX {
-				maker.top.equalTo(51)
-			} else {
-				maker.top.equalTo(27)
-			}
-		}
-		
-		self.addSubview(self.friendButton)
-		self.friendButton.roundedSquare = true
-		self.friendButton.backgroundColor = UIColor.init(red: 1, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1)
-		self.friendButton.emoji = "🎉"
-		self.friendButton.addTarget(self, action: #selector(friendTapped), for: .touchUpInside)
-		self.friendButton.snp.makeConstraints { (maker) in
-			maker.leading.equalTo(12)
-			maker.width.height.equalTo(40)
-			
-			if Environment.isIphoneX {
-				maker.top.equalTo(51)
-			} else {
-				maker.top.equalTo(27)
-			}
-		}
-		
-		self.colorGradient.addSubview(self.instagramButton)
-		self.instagramButton.roundedSquare = true
-		self.instagramButton.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.3)
-		self.instagramButton.emoji = "🌄"
-		self.instagramButton.isHidden = true
-		self.instagramButton.addTarget(self, action: #selector(insgramTapped), for: .touchUpInside)
-		self.instagramButton.snp.makeConstraints { (maker) in
-			maker.leading.equalTo(12)
-			maker.width.height.equalTo(40)
-			
-			if Environment.isIphoneX {
-				maker.top.equalTo(51)
-			} else {
-				maker.top.equalTo(27)
-			}
-		}
+		self.reportLabel.isHidden = true
 	}
 	
 	func show(with user: MatchUser) {
@@ -103,28 +50,53 @@ class RemoteUserInfo: MakeUIViewGreatAgain {
 		remoteRender.frame = self.bounds
 		remoteRender.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		self.update(friendStatus: user.friendMatched)
-	}
-	
-	func update(friendStatus: Bool) {
-		if friendStatus {
-			self.instagramButton.isEnabled = true
-			self.instagramButton.isHidden = false
+		
+		if self.shouldShowReport {
+			let tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(showGradient))
+			self.addGestureRecognizer(tapGesture)
 		}else {
-			self.friendButton.isEnabled = false
-			self.friendButton.isHidden = true
+			self.colorGradient.isHidden = true
+			self.reportButton.isHidden = true
+			self.reportLabel.isHidden = true
 		}
 	}
 	
-	func friendTapped() {
+	func reported() {
+		self.reportButton.isEnabled = false
+		self.reportButton.emojiLabel?.text = "😳"
+		self.reportLabel.isHidden = false
+		self.colorGradient.isHidden = true
+	}
+	
+	func update(friendStatus: Bool) {
+		self.friend_stauts = friendStatus
+		if friendStatus {
+			self.friendButton.isEnabled = false
+			self.friendButton.isHidden = true
+			
+			if self.user.instagram_id != nil {
+				self.instagramButton.isEnabled = true
+				self.instagramButton.isHidden = false
+			}
+		}else {
+			self.friendButton.isEnabled = true
+			self.friendButton.isHidden = false
+			
+			self.instagramButton.isEnabled = false
+			self.instagramButton.isHidden = true
+		}
+	}
+	
+	@IBAction func friendTapped(_ sender: Any) {
 		self.friendButton.isEnabled = false
 		self.actionDelegate?.friendTapped(to: self.user)
 	}
 	
-	func reportTapped() {
+	@IBAction func reportTapped(_ sender: Any) {
 		self.actionDelegate?.reportTapped(to: self.user)
 	}
 	
-	func insgramTapped() {
+	@IBAction func insgramTapped(_ sender: Any) {
 		self.actionDelegate?.insgramTapped(to: self.user)
 	}
 	
@@ -132,11 +104,13 @@ class RemoteUserInfo: MakeUIViewGreatAgain {
 		self.gradientShow = !self.gradientShow
 		UIView.animate(withDuration: 0.25) {
 			self.colorGradient.alpha = self.gradientShow ? 1 : 0
-			self.friendButton.alpha = self.gradientShow ? 0 : 1
-			self.instagramButton.alpha = self.gradientShow ? 0 : 1
+			if self.friendButton.isEnabled {
+				self.friendButton.alpha = self.gradientShow ? 0 : 1
+			}
+			if self.instagramButton.isEnabled {
+				self.instagramButton.alpha = self.gradientShow ? 0 : 1
+			}
 		}
 	}
 }
-
-
 

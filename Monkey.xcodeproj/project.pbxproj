@@ -196,6 +196,11 @@
 		D10585F220A04F5B00E63ADC /* onboarding-3.gif in Resources */ = {isa = PBXBuildFile; fileRef = D10585EB20A04F5B00E63ADC /* onboarding-3.gif */; };
 		D10585F320A04F5B00E63ADC /* onboarding-1.gif in Resources */ = {isa = PBXBuildFile; fileRef = D10585EC20A04F5B00E63ADC /* onboarding-1.gif */; };
 		D10585F420A04F5B00E63ADC /* onboarding-1.gif in Resources */ = {isa = PBXBuildFile; fileRef = D10585EC20A04F5B00E63ADC /* onboarding-1.gif */; };
+		D10F820520F72C4100317424 /* PairMatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D161554020F7033E00145FC9 /* PairMatchViewController.swift */; };
+		D10F820720F7434800317424 /* PairMatchViewController+Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10F820620F7434800317424 /* PairMatchViewController+Action.swift */; };
+		D10F820820F7434800317424 /* PairMatchViewController+Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10F820620F7434800317424 /* PairMatchViewController+Action.swift */; };
+		D10F820C20F75ACF00317424 /* TwopMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10F820B20F75ACF00317424 /* TwopMatchManager.swift */; };
+		D10F820D20F75ACF00317424 /* TwopMatchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10F820B20F75ACF00317424 /* TwopMatchManager.swift */; };
 		D11FC18720EBAC05001F6B1F /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11FC18620EBAC05001F6B1F /* PushNotification.swift */; };
 		D11FC18820EBAC05001F6B1F /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11FC18620EBAC05001F6B1F /* PushNotification.swift */; };
 		D12E22942010747200703F9B /* RemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12E22932010747200703F9B /* RemoteConfig.swift */; };
@@ -230,6 +235,12 @@
 		D17CE989200A1186002F4F9D /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17CE988200A1185002F4F9D /* Analytics.swift */; };
 		D17E59A820AC2BA300B26501 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17E59A720AC2BA300B26501 /* SettingsViewController.swift */; };
 		D17E59A920AC2BA300B26501 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17E59A720AC2BA300B26501 /* SettingsViewController.swift */; };
+		D182C5FB20F7F7C100A96270 /* OnepPairMatchViewController+Reporting.swift in Sources */ = {isa = PBXBuildFile; fileRef = D182C5FA20F7F7C100A96270 /* OnepPairMatchViewController+Reporting.swift */; };
+		D182C5FC20F7F7C100A96270 /* OnepPairMatchViewController+Reporting.swift in Sources */ = {isa = PBXBuildFile; fileRef = D182C5FA20F7F7C100A96270 /* OnepPairMatchViewController+Reporting.swift */; };
+		D182C5FE20F7F8B100A96270 /* PairMatchViewController+Reporting.swift in Sources */ = {isa = PBXBuildFile; fileRef = D182C5FD20F7F8B100A96270 /* PairMatchViewController+Reporting.swift */; };
+		D182C5FF20F7F8B100A96270 /* PairMatchViewController+Reporting.swift in Sources */ = {isa = PBXBuildFile; fileRef = D182C5FD20F7F8B100A96270 /* PairMatchViewController+Reporting.swift */; };
+		D182C60120F8069000A96270 /* RemoteUserInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = D182C60020F8069000A96270 /* RemoteUserInfo.xib */; };
+		D182C60220F8069000A96270 /* RemoteUserInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = D182C60020F8069000A96270 /* RemoteUserInfo.xib */; };
 		D192A3DB20286E0600791002 /* TextChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DA20286E0600791002 /* TextChatViewController.swift */; };
 		D192A3DD2029966E00791002 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DC2029966E00791002 /* Message.swift */; };
 		D192A3DF2029AD8300791002 /* TextModeMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D192A3DE2029AD8300791002 /* TextModeMessageCell.swift */; };
@@ -648,6 +659,8 @@
 		D10585EA20A04F5B00E63ADC /* onboarding-2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "onboarding-2.gif"; sourceTree = "<group>"; };
 		D10585EB20A04F5B00E63ADC /* onboarding-3.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "onboarding-3.gif"; sourceTree = "<group>"; };
 		D10585EC20A04F5B00E63ADC /* onboarding-1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "onboarding-1.gif"; sourceTree = "<group>"; };
+		D10F820620F7434800317424 /* PairMatchViewController+Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PairMatchViewController+Action.swift"; sourceTree = "<group>"; };
+		D10F820B20F75ACF00317424 /* TwopMatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwopMatchManager.swift; sourceTree = "<group>"; };
 		D11FC18620EBAC05001F6B1F /* PushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
 		D12E22932010747200703F9B /* RemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfig.swift; sourceTree = "<group>"; };
 		D14478632058C5A300485D68 /* PushService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -672,6 +685,9 @@
 		D17CE9862009E47A002F4F9D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D17CE988200A1185002F4F9D /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		D17E59A720AC2BA300B26501 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		D182C5FA20F7F7C100A96270 /* OnepPairMatchViewController+Reporting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OnepPairMatchViewController+Reporting.swift"; sourceTree = "<group>"; };
+		D182C5FD20F7F8B100A96270 /* PairMatchViewController+Reporting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PairMatchViewController+Reporting.swift"; sourceTree = "<group>"; };
+		D182C60020F8069000A96270 /* RemoteUserInfo.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemoteUserInfo.xib; sourceTree = "<group>"; };
 		D192A3DA20286E0600791002 /* TextChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextChatViewController.swift; sourceTree = "<group>"; };
 		D192A3DC2029966E00791002 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		D192A3DE2029AD8300791002 /* TextModeMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextModeMessageCell.swift; sourceTree = "<group>"; };
@@ -1129,6 +1145,7 @@
 				D17B483E20E38A3F00183E9C /* MessageCenter.swift */,
 				D10490F220AEA57300381F9E /* MatchManager.swift */,
 				D17B483B20E3889400183E9C /* OnepMatchManager.swift */,
+				D10F820B20F75ACF00317424 /* TwopMatchManager.swift */,
 				D161553820F634E100145FC9 /* VideoCallManager.swift */,
 				D147128D20AD98080055516A /* ChannelService.swift */,
 				D10490EC20ADB02000381F9E /* AgoraService.swift */,
@@ -1393,6 +1410,8 @@
 			isa = PBXGroup;
 			children = (
 				D161554020F7033E00145FC9 /* PairMatchViewController.swift */,
+				D10F820620F7434800317424 /* PairMatchViewController+Action.swift */,
+				D182C5FD20F7F8B100A96270 /* PairMatchViewController+Reporting.swift */,
 			);
 			path = PairMatch;
 			sourceTree = "<group>";
@@ -1520,6 +1539,7 @@
 				D1E5300820F51F2500016858 /* UserBioView.swift */,
 				D1E5300E20F524D400016858 /* RemotePairInfo.swift */,
 				D1E5300B20F5242D00016858 /* RemoteUserInfo.swift */,
+				D182C60020F8069000A96270 /* RemoteUserInfo.xib */,
 			);
 			path = TwoP;
 			sourceTree = "<group>";
@@ -1529,6 +1549,7 @@
 			children = (
 				D1E5301220F5A32300016858 /* OnepPairMatchViewController.swift */,
 				D1E5301520F5A42200016858 /* OnepPairMatchViewController+Action.swift */,
+				D182C5FA20F7F7C100A96270 /* OnepPairMatchViewController+Reporting.swift */,
 			);
 			path = MatchPair;
 			sourceTree = "<group>";
@@ -1725,6 +1746,7 @@
 				8BE02A441EE9FB7E004CF000 /* Chat.storyboard in Resources */,
 				8BDFD97E1E6C47A7009E5EE4 /* message.wav in Resources */,
 				8B6EB5131DB0817F0051C8D2 /* Main.storyboard in Resources */,
+				D182C60120F8069000A96270 /* RemoteUserInfo.xib in Resources */,
 				D1025CCC20A1406400557B64 /* Setting.xib in Resources */,
 				8B7DC7461EF5C98C00A3F966 /* Channels.storyboard in Resources */,
 			);
@@ -1771,6 +1793,7 @@
 				D1A22B0C20A03F8A004F0F05 /* Chat.storyboard in Resources */,
 				D1A22B0D20A03F8A004F0F05 /* message.wav in Resources */,
 				D1A22B0E20A03F8A004F0F05 /* Main.storyboard in Resources */,
+				D182C60220F8069000A96270 /* RemoteUserInfo.xib in Resources */,
 				D1025CCD20A1406400557B64 /* Setting.xib in Resources */,
 				D1A22B0F20A03F8A004F0F05 /* Channels.storyboard in Resources */,
 			);
@@ -2090,6 +2113,7 @@
 				D1025CF020A2FD9900557B64 /* MonkeyModel.swift in Sources */,
 				D1B79D372060DACB00F209B4 /* IFToasterFilter.m in Sources */,
 				C06FBB521F3A559B00659489 /* RealmCall.swift in Sources */,
+				D10F820720F7434800317424 /* PairMatchViewController+Action.swift in Sources */,
 				D14FC9AF20E0969C00B40DD6 /* Authorization.swift in Sources */,
 				8BE35E251DB9BF97002049B5 /* Achievements.swift in Sources */,
 				1BD655492046B2A900CAA2D5 /* Configs.swift in Sources */,
@@ -2100,6 +2124,7 @@
 				84AA03DE1EBFAC1E00779C54 /* BirthdatePicker.swift in Sources */,
 				D43AD40F1F12B5A700DE6BBD /* CallViewController+Reporting.swift in Sources */,
 				D1B79D3E2060DACB00F209B4 /* IFHefeFilter.m in Sources */,
+				D182C5FB20F7F7C100A96270 /* OnepPairMatchViewController+Reporting.swift in Sources */,
 				D17E59A820AC2BA300B26501 /* SettingsViewController.swift in Sources */,
 				8BE9FE7F1DDF698400B55280 /* ChatSession.swift in Sources */,
 				D1E7CCF820D22BB800AF619A /* NSObject+Runtime.m in Sources */,
@@ -2115,6 +2140,7 @@
 				D10490F020ADB5F000381F9E /* OpenTokService.swift in Sources */,
 				D1025CE020A1406C00557B64 /* SettingHeadView.swift in Sources */,
 				34A0D3BD20D1367200D6EFED /* ImageTools.swift in Sources */,
+				D182C5FE20F7F8B100A96270 /* PairMatchViewController+Reporting.swift in Sources */,
 				D192A3DB20286E0600791002 /* TextChatViewController.swift in Sources */,
 				34FF0D3920D2312E00B1AC24 /* MyContactsCell.swift in Sources */,
 				C047D7C71F6C36160048286F /* CountingLabel.swift in Sources */,
@@ -2208,6 +2234,7 @@
 				D1B79D4C2060E1E600F209B4 /* GPUImageHelper.m in Sources */,
 				8B6FC3E31EADAB6E00429964 /* RealmExperiment.swift in Sources */,
 				D1FCDBAA20933C1000CF1BD9 /* RealmMatchInfo.swift in Sources */,
+				D10F820C20F75ACF00317424 /* TwopMatchManager.swift in Sources */,
 				D1B79D342060DACB00F209B4 /* IFImageFilter.m in Sources */,
 				D192A3DF2029AD8300791002 /* TextModeMessageCell.swift in Sources */,
 				D17B483F20E38A3F00183E9C /* MessageCenter.swift in Sources */,
@@ -2282,6 +2309,7 @@
 				D1025CF120A2FD9900557B64 /* MonkeyModel.swift in Sources */,
 				D1A22A6C20A03F8A004F0F05 /* IFToasterFilter.m in Sources */,
 				D1A22A6E20A03F8A004F0F05 /* RealmCall.swift in Sources */,
+				D10F820820F7434800317424 /* PairMatchViewController+Action.swift in Sources */,
 				D14FC9B020E0969C00B40DD6 /* Authorization.swift in Sources */,
 				D1A22A6F20A03F8A004F0F05 /* Achievements.swift in Sources */,
 				D1A22A7020A03F8A004F0F05 /* Configs.swift in Sources */,
@@ -2292,6 +2320,7 @@
 				D10490EE20ADB02000381F9E /* AgoraService.swift in Sources */,
 				D1A22A7320A03F8A004F0F05 /* BirthdatePicker.swift in Sources */,
 				D1A22A7420A03F8A004F0F05 /* CallViewController+Reporting.swift in Sources */,
+				D182C5FC20F7F7C100A96270 /* OnepPairMatchViewController+Reporting.swift in Sources */,
 				D1A22A7520A03F8A004F0F05 /* IFHefeFilter.m in Sources */,
 				D17E59A920AC2BA300B26501 /* SettingsViewController.swift in Sources */,
 				D1A22A7620A03F8A004F0F05 /* ChatSession.swift in Sources */,
@@ -2307,6 +2336,7 @@
 				D1A22A8120A03F8A004F0F05 /* IFNashvilleFilter.m in Sources */,
 				D10490F120ADB5F000381F9E /* OpenTokService.swift in Sources */,
 				D1025CE120A1406C00557B64 /* SettingHeadView.swift in Sources */,
+				D182C5FF20F7F8B100A96270 /* PairMatchViewController+Reporting.swift in Sources */,
 				34A0D3BE20D1367200D6EFED /* ImageTools.swift in Sources */,
 				D1A22A8220A03F8A004F0F05 /* TextChatViewController.swift in Sources */,
 				34FF0D3A20D2312E00B1AC24 /* MyContactsCell.swift in Sources */,
@@ -2334,6 +2364,7 @@
 				D1A22A9920A03F8A004F0F05 /* ChannelsTableViewCell.swift in Sources */,
 				D1F2712B20D8CE9B00F44C01 /* BlurEffectView.swift in Sources */,
 				D1A22A9B20A03F8A004F0F05 /* IFEarlybirdFilter.m in Sources */,
+				D10F820520F72C4100317424 /* PairMatchViewController.swift in Sources */,
 				34AEE41120D8AA3200DECF3A /* InviteFriendsViewController.swift in Sources */,
 				D1A22A9C20A03F8A004F0F05 /* UsernameTextField.swift in Sources */,
 				D1A22A9D20A03F8A004F0F05 /* IFAmaroFilter.m in Sources */,
@@ -2399,6 +2430,7 @@
 				D1A22ACB20A03F8A004F0F05 /* GPUImageHelper.m in Sources */,
 				D1A22ACE20A03F8A004F0F05 /* RealmExperiment.swift in Sources */,
 				D1A22AD020A03F8A004F0F05 /* RealmMatchInfo.swift in Sources */,
+				D10F820D20F75ACF00317424 /* TwopMatchManager.swift in Sources */,
 				D1A22AD120A03F8A004F0F05 /* IFImageFilter.m in Sources */,
 				D1A22AD220A03F8A004F0F05 /* TextModeMessageCell.swift in Sources */,
 				D17B484020E38A3F00183E9C /* MessageCenter.swift in Sources */,

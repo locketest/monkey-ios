@@ -139,7 +139,7 @@ class InstagramPopupViewController: MonkeyViewController, UIViewControllerTransi
         
         if let accountId = user?.instagram_account?.instagram_account_id {
             JSONAPIRequest(url: "\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/instagram_accounts/\(accountId)", options: [
-                .header("Authorization", APIController.authorization)
+                .header("Authorization", UserManager.authorization)
                 ]).addCompletionHandler { (response) in
                     switch response {
                     case .error(let error):

@@ -48,7 +48,6 @@ class ResumeMyAccountViewController: MonkeyViewController {
     }
     
     func signOutFunc() {
-        
         let rootVC = self.view.window?.rootViewController
         rootVC?.presentedViewController?.dismiss(animated: false, completion: {
             DispatchQueue.main.async {
@@ -80,13 +79,10 @@ class ResumeMyAccountViewController: MonkeyViewController {
         
         self.initLimitTimeLabelFunc()
         
-        self.tempAuthorization = APIController.authorization
+        self.tempAuthorization = UserManager.authorization
         
-        RealmDataController.shared.deleteAllData() { (error) in
-            APIController.authorization = nil
-//			Socket.shared.fetchCollection = false
-            UserDefaults.standard.removeObject(forKey: "user_id")
-			UserDefaults.standard.removeObject(forKey: "apns_token")
+        RealmDataController.shared.deleteAllData() { (_) in
+			
         }
     }
 }

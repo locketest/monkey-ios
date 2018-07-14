@@ -528,7 +528,7 @@ extension ChatViewController: MatchServiceObserver {
 		}
 	}
 	
-	func channelMessageReceived(message: Message) {
+	func channelMessageReceived(message: MatchMessage) {
 		
 	}
 	

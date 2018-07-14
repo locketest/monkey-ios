@@ -100,7 +100,7 @@ class AnalyticsCenter {
 
 	fileprivate class func prepereAmplitude() {
 		let isAuth = (APIController.authorization != nil)
-		let userId = UserDefaults.standard.string(forKey: "user_id")
+		let userId = APIController.user_id
 		Amplitude.shared.trackingSessionEvents = true
 
 		if (isAuth && userId != nil) {
@@ -118,7 +118,7 @@ class AnalyticsCenter {
     }
 
 	fileprivate class func setUserID() {
-		let isAuth = (APIController.authorization != nil)
+		let isAuth = (UserManager.authorization != nil)
 
 		if isAuth == true, let currentUser = UserManager.shared.currentUser {
 			let user_id: String = currentUser.user_id

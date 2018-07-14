@@ -85,8 +85,6 @@ extension OnepPairMatchViewController: CountingLabelDelegate {
 
 		if arc4random_uniform(2) == 0 {
 			clock.text = "🕑"
-//		} else if self.matchModel.left.friendMatched == true {
-//			clock.text = "✌️"
 		} else {
 			clock.text = "‼️"
 		}
@@ -122,14 +120,14 @@ extension OnepPairMatchViewController: CountingLabelDelegate {
 			clockLabel.text = "\(String(format: "%02d", (Int(clockTime / 1000) / 60))):\(String(format: "%02d", Int(clockTime / 1000) % 60))"
 		}
 		if clockTime <= 3900 && clockTime > 300 {
-//			if self.matchModel.isReportPeople() == false {
+			if self.matchModel.isReportPeople() == false {
 				dripClock()
-//			}
+			}
 		}
 		if clockTime == 3900 {
-//			if self.matchModel.isReportedPeople() == false {
+			if self.matchModel.isReportedPeople() == false {
 				self.soundPlayer.play(sound: .clock)
-//			}
+			}
 		} else if clockTime == 900 {
 			self.soundPlayer.play(sound: .fail)
 		} else if clockTime == 400 {
@@ -185,9 +183,16 @@ extension OnepPairMatchViewController: CountingLabelDelegate {
 			}
 		}
 
-		self.switchClock(open: false)
-		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) { [weak self] in
-			self?.refresh(with: true)
+		self.checkFriendStatus()
+	}
+	
+	func checkFriendStatus() {
+		guard let match = self.matchModel else { return }
+		
+		if match.left.friendMatched && match.right?.friendMatched == true {
+			self.refresh(with: true)
+		}else {
+			self.refresh(with: false)
 		}
 	}
 	
@@ -195,48 +200,9 @@ extension OnepPairMatchViewController: CountingLabelDelegate {
 		return CGFloat(arc4random()) / CGFloat(UINT32_MAX) * abs(firstNum - secondNum) + min(firstNum, secondNum)
 	}
 	
-	// MARK: Snapchat Button
-	@IBAction func addSnapchat(_ sender: BigYellowButton) {
-		if Achievements.shared.addFirstSnapchat == false {
-			Achievements.shared.addFirstSnapchat = true
-			let addFirstSnapchatAlert = UIAlertController(title: nil, message: "To successfully add friends, both users have to tap the button", preferredStyle: .alert)
-			addFirstSnapchatAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { [weak self] (UIAlertAction) in
-				guard let `self` = self else { return }
-				self.addSnapchat()
-			}))
-			self.present(addFirstSnapchatAlert, animated: true)
-		}else {
-			self.addSnapchat()
-		}
-	}
-	
 	// MARK: - Minute Button
 	@IBAction func addMinute(_ sender: BigYellowButton) {
-		if Achievements.shared.isOnboardingExplainAddTimePopupCompleted == false {
-			Achievements.shared.isOnboardingExplainAddTimePopupCompleted = true
-			let explainAddTimeAlert = UIAlertController(title: nil, message: "To successfully add time, both users have to tap the button", preferredStyle: .alert)
-			explainAddTimeAlert.addAction(UIAlertAction(title: "kk", style: .default, handler: { [weak self] (UIAlertAction) in
-				guard let `self` = self else { return }
-				self.addMinute()
-			}))
-			self.present(explainAddTimeAlert, animated: true, completion: nil)
-		}else {
-			self.addMinute()
-		}
-	}
-	
-	func addSnapchat() {
-		// request to add snapchat
-		self.disableAddSnapchat()
-		guard let match = self.matchModel else { return }
-		
-		if match.left.friendRequested {
-			match.left.friendAccept = true
-			self.addFriendSuccess()
-		}else {
-			match.left.friendRequest = true
-		}
-		OnepMatchManager.default.sendMatchMessage(type: .AddFriend)
+		self.addMinute()
 	}
 	
 	func addMinute() {
@@ -244,9 +210,13 @@ extension OnepPairMatchViewController: CountingLabelDelegate {
 		self.disableAddMinute()
 		guard let match = self.matchModel else { return }
 		
-		match.addTimeRequestCount += 1
-		if match.addTimeRequestCount == match.left.addTimeCount {
+		let addTimeRequestCount = match.addTimeRequestCount
+		let matchAddTimeRequestCount = match.left.addTimeCount
+		if addTimeRequestCount < matchAddTimeRequestCount {
 			self.minuteAdded()
+			match.addTimeRequestCount = matchAddTimeRequestCount
+		}else {
+			match.addTimeRequestCount = matchAddTimeRequestCount + 1
 		}
 		
 		OnepMatchManager.default.sendMatchMessage(type: .AddTime)
@@ -255,40 +225,44 @@ extension OnepPairMatchViewController: CountingLabelDelegate {
 	func receivedAddTime(message: Message) {
 		guard let match = self.matchModel else { return }
 		
-		match.left.addTimeCount += 1
-		if match.addTimeRequestCount == match.left.addTimeCount {
+		let addTimeRequestCount = match.addTimeRequestCount
+		let matchAddTimeRequestCount = match.left.addTimeCount
+		if matchAddTimeRequestCount < addTimeRequestCount {
 			self.minuteAdded()
+			match.left.addTimeCount = addTimeRequestCount
+			match.right?.addTimeCount = addTimeRequestCount
+		}else {
+			match.left.addTimeCount = addTimeRequestCount + 1
+			match.right?.addTimeCount = addTimeRequestCount + 1
 		}
 	}
 	
 	func receivedAddSnapchat(message: Message) {
 		guard let match = self.matchModel else { return }
+		guard let sender = message.sender, let user = match.matchedUser(with: sender) else { return }
 		
-		if match.left.friendRequest {
-			match.left.friendAccepted = true
+		if user.friendRequest {
+			user.friendAccepted = true
 			self.addFriendSuccess()
+			self.remotePairView.addFriend(user: user)
 		}else {
-			match.left.friendRequested = true
+			user.friendRequested = true
 		}
 	}
 	
 	func receivedTurnBackground(message: Message) {
-//		self.autoScreenShotUpload(source: .opponent_background)
+		self.autoScreenShotUpload(source: .opponent_background)
 	}
 	
 	func receivedReport(message: Message) {
 		self.matchModel.left.reported = true
 	}
 	
-	func disableAddSnapchat() {
-//		self.snapchatButton.isEnabled = false
-//		self.snapchatButton.layer.opacity = 0.5
-	}
-	
 	func enableAddMinute() {
 		self.addMinuteButton.isEnabled = true
 		self.addMinuteButton.layer.opacity = 1.0
 	}
+	
 	func disableAddMinute() {
 		self.addMinuteButton.isEnabled = false
 		self.addMinuteButton.layer.opacity = 0.5

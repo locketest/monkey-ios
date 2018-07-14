@@ -10,18 +10,18 @@ import Foundation
 import Alamofire
 
 class Apns {
-	class func update(token: String? = UserDefaults.standard.string(forKey: "apns_token"), callback: ((_ error: String?) -> Void)?) {
-//       print("<<<>>>\(String(describing: token))")
-        if token == nil || APIController.authorization == nil {
-            return
-        }
+	class func update(token: String? = Achievements.shared.apns_token) {
+		
+		guard let token = token, token.isEmpty == false else { return }
+        guard UserManager.shared.isUserLogin() else { return }
+		
         let badge = UserDefaults.standard.bool(forKey: "apns_badge") == true
         let sound = UserDefaults.standard.bool(forKey: "apns_sound") == true
         let alert = UserDefaults.standard.bool(forKey: "apns_alert") == true
         let paramaters: Parameters = [
             "data": [
                 "type": "apns",
-                "id": token!,
+                "id": token,
                 "attributes": [
                     "badge": badge,
                     "sound": sound,
@@ -29,28 +29,8 @@ class Apns {
                 ]
             ]
         ]
-
-        var headers: HTTPHeaders = [
-            "Accept": "application/json"
-        ]
-        if let authorization = APIController.authorization {
-            headers["Authorization"] = authorization
-        }
-		
-        Alamofire.request("\(Environment.baseURL)/api/v1.0/apns", method: .post, parameters: paramaters, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
-            if let error = response.result.error {
-                callback?(error.localizedDescription)
-                return
-            }
-            if response.response!.statusCode >= 400  {
-                if let reason = (response.result.value as? Dictionary<String, Array<Dictionary<String, Any>>>)?["errors"]?[0]["title"] as? String {
-                    callback?(reason)
-                } else {
-                    callback?("Unknown error")
-                }
-                return
-            }
-            callback?(nil)
-        }
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V10.rawValue)/\(ApiType.Apns.rawValue)", method: .post, parameters: paramaters) { (_) in
+			
+		}
     }
 }

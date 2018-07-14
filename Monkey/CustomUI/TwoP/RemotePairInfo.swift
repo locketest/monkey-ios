@@ -11,7 +11,7 @@ import SnapKit
 import UIKit
 
 @objc protocol MatchActionHandler {
-	func beginChat()
+	func beginChat(with match: MatchModel)
 	
 	@objc optional func receiveTyping(message: TextMessage)
 	@objc optional func receiveText(message: TextMessage)
@@ -65,58 +65,74 @@ class RemotePairInfo: MakeUIViewGreatAgain {
 	private func pairBioApperance() {
 		let leftUserBio = UserBioView.init(frame: self.bounds)
 		leftUserBio.frame.size.width = self.bounds.size.width / 2
-		leftUserBio.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleRightMargin]
 		self.addSubview(leftUserBio)
+		leftUserBio.snp.makeConstraints { (maker) in
+			maker.leading.top.bottom.equalTo(0)
+		}
 		leftUserBio.show(with: self.match.left)
 		self.leftUserBio = leftUserBio
 		
 		if let rightUser = self.match.right {
 			let rightUserBio = UserBioView.init(frame: self.bounds)
 			rightUserBio.frame.origin.x = self.bounds.size.width / 2
-			rightUserBio.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleLeftMargin]
 			self.addSubview(rightUserBio)
+			rightUserBio.snp.makeConstraints { (maker) in
+				maker.trailing.top.bottom.equalTo(0)
+				maker.leading.equalTo(leftUserBio.snp.trailing)
+				maker.width.equalTo(leftUserBio.snp.width)
+			}
 			rightUserBio.show(with: rightUser)
 			self.rightUserBio = rightUserBio
 		}
 	}
 	
 	private func onepInfoApperance() {
-		let leftRemoteInfo = RemoteUserInfo.init(frame: self.bounds)
+		let leftRemoteInfo = RemoteUserInfo.remoteInfoView()
+		leftRemoteInfo.frame = self.bounds
 		leftRemoteInfo.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		self.insertSubview(leftRemoteInfo, at: 0)
 		leftRemoteInfo.show(with: self.match.left)
+		leftRemoteInfo.actionDelegate = self
 		self.leftRemoteInfo = leftRemoteInfo
 	}
 	
 	private func pairInfoApperance() {
-		let leftRemoteInfo = RemoteUserInfo.init(frame: self.bounds)
+		let leftRemoteInfo = RemoteUserInfo.remoteInfoView()
 		leftRemoteInfo.frame.size.width = self.bounds.size.width / 2
-		leftRemoteInfo.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleRightMargin]
 		self.insertSubview(leftRemoteInfo, at: 0)
+		leftRemoteInfo.snp.makeConstraints { (maker) in
+			maker.leading.top.bottom.equalTo(0)
+		}
 		leftRemoteInfo.show(with: self.match.left)
+		leftRemoteInfo.actionDelegate = self
 		self.leftRemoteInfo = leftRemoteInfo
 		
 		if let rightUser = self.match.right {
-			let rightRemoteInfo = RemoteUserInfo.init(frame: self.bounds)
+			let rightRemoteInfo = RemoteUserInfo.remoteInfoView()
 			rightRemoteInfo.frame.origin.x = self.bounds.size.width / 2
-			rightRemoteInfo.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleLeftMargin]
-			self.insertSubview(leftRemoteInfo, at: 1)
+			self.insertSubview(rightRemoteInfo, at: 1)
+			rightRemoteInfo.snp.makeConstraints { (maker) in
+				maker.trailing.top.bottom.equalTo(0)
+				maker.leading.equalTo(leftRemoteInfo.snp.trailing)
+				maker.width.equalTo(leftRemoteInfo.snp.width)
+			}
 			rightRemoteInfo.show(with: rightUser)
+			rightRemoteInfo.actionDelegate = self
 			self.rightRemoteInfo = rightRemoteInfo
 		}
 	}
 	
-	func addRemoteInfo() {
+	fileprivate func addRemoteInfo() {
 		if self.match.matched_pair() {
 			// 如果是 pair
-			self.onepInfoApperance()
+			self.pairInfoApperance()
 		}else {
 			// 如果是一个人
-			self.pairInfoApperance()
+			self.onepInfoApperance()
 		}
 	}
 	
-	func removeRemoteBio() {
+	fileprivate func removeRemoteBio() {
 		UIView.animate(withDuration: 0.25, animations: {
 			self.leftUserBio?.alpha = 0
 			self.rightUserBio?.alpha = 0
@@ -132,16 +148,35 @@ class RemotePairInfo: MakeUIViewGreatAgain {
 		self.match = match
 		if match.matched_pair() {
 			// 如果是 pair
-			self.onepBioApperance()
+			self.pairBioApperance()
 		}else {
 			// 如果是一个人
-			self.pairBioApperance()
+			self.onepBioApperance()
+		}
+	}
+	
+	func reported(user: MatchUser) {
+		if user == match.left {
+			self.leftRemoteInfo?.reported()
+		}else if user == match.right {
+			self.rightRemoteInfo?.reported()
+		}
+	}
+	
+	func addFriend(user: MatchUser) {
+		if user == match.left {
+			self.leftRemoteInfo?.update(friendStatus: true)
+		}else if user == match.right {
+			self.rightRemoteInfo?.update(friendStatus: true)
 		}
 	}
 }
 
 extension RemotePairInfo: RemoteActionDelegate {
 	func friendTapped(to user: MatchUser) {
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/matches/\(match.match_id)/addfriend/\(user.user_id)", method: .post) { (_) in
+			
+		}
 		self.actionDelegate?.friendTapped(to: user)
 	}
 	
@@ -159,8 +194,9 @@ extension RemotePairInfo: RemoteActionDelegate {
 }
 
 extension RemotePairInfo: MatchActionHandler {
-	func beginChat() {
+	func beginChat(with match: MatchModel) {
 		guard self.showedRemoteInfo == false else { return }
+		self.match = match
 		
 		self.addRemoteInfo()
 		self.removeRemoteBio()

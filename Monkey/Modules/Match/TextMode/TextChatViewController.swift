@@ -429,10 +429,10 @@ extension TextChatViewController: UITextViewDelegate {
 		let body = messageText.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
 		if body.isEmpty == false {
 			OnepMatchManager.default.sendMatchMessage(type: .Text, body: body)
-			let messageInfo = [
+			let messageInfo: [String: Any] = [
 				"type": MessageType.Text.rawValue,
 				"body": messageText,
-				"sender": APIController.shared.currentUser?.user_id ?? ""
+				"sender": Int(UserManager.UserID ?? "0") ?? 0
 			]
 			if let textMessage = Mapper<TextMessage>().map(JSON: messageInfo) {
 				var typingMessage: TextMessage?
@@ -494,6 +494,9 @@ extension TextChatViewController {
 			match.left.friendRequest = true
 		}
 		OnepMatchManager.default.sendMatchMessage(type: .AddFriend)
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/matches/\(match.match_id)/addfriend/\(match.left.user_id)", method: .post) { (_) in
+			
+		}
 	}
 	
 	func receivedAddSnapchat(message: Message) {
@@ -676,7 +679,7 @@ extension TextChatViewController: MatchMessageObserver {
 		}
 	}
 	
-	func handleReceivedMessage(message: Message) {
+	func handleReceivedMessage(message: MatchMessage) {
 		let type = MessageType.init(type: message.type)
 		switch type {
 		case .AddFriend:
@@ -694,7 +697,6 @@ extension TextChatViewController: MatchMessageObserver {
 		default:
 			break
 		}
-		
 	}
 }
 

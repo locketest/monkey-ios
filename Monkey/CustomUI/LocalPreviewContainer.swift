@@ -38,9 +38,14 @@ class LocalPreviewContainer: UIView {
 //		self.hero.modifiers = [.cornerRadius(6), .ignoreSubviewModifiers]
 	}
 	
-	func addLocalPreview() {
+	func reset() {
+		self.showSwitchCamera(show: false)
 		HWCameraManager.shared().removePixellate()
 		HWCameraManager.shared().changeCameraPosition(to: .front)
+	}
+	
+	func addLocalPreview() {
+		self.reset()
 		let localPreview = HWCameraManager.shared().localPreviewView
 		if localPreview.superview != self {
 			self.addSubview(localPreview)
@@ -50,15 +55,21 @@ class LocalPreviewContainer: UIView {
 		localPreview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 	}
 	
-	func showSwitchCamera() {
-		let switchCamerButton = SmallYellowButton.init(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-		switchCamerButton.emoji = "🔄"
-		switchCamerButton.roundedSquare = true
-		switchCamerButton.layer.cornerRadius = 0
-		switchCamerButton.setBackgroundImage(UIImage.init(named: "switch_camera_back"), for: .normal)
-		switchCamerButton.addTarget(self, action: #selector(switchCamera), for: .touchUpInside)
-		self.addSubview(switchCamerButton)
-		self.switchCamerButton = switchCamerButton
+	func showSwitchCamera(show: Bool) {
+		if show {
+			guard self.switchCamerButton == nil else { return }
+			let switchCamerButton = SmallYellowButton.init(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
+			switchCamerButton.emoji = "🔄"
+			switchCamerButton.roundedSquare = true
+			switchCamerButton.layer.cornerRadius = 0
+			switchCamerButton.setBackgroundImage(UIImage.init(named: "switch_camera_back"), for: .normal)
+			switchCamerButton.addTarget(self, action: #selector(switchCamera), for: .touchUpInside)
+			self.addSubview(switchCamerButton)
+			self.switchCamerButton = switchCamerButton
+		}else {
+			self.switchCamerButton?.removeFromSuperview()
+			self.switchCamerButton = nil
+		}
 	}
 	
 	func togglePublisherEffects() {

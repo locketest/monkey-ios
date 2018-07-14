@@ -354,7 +354,7 @@ class SettingEditViewController: SwipeableViewController, UITextFieldDelegate {
     
     func loadEditBgViewDataFunc() {
         JSONAPIRequest(url: "\(Environment.baseURL)/api/\(UserOptions.api_version.rawValue)/\(UserOptions.requst_subfix)", options: [
-            .header("Authorization", APIController.authorization),
+            .header("Authorization", UserManager.authorization),
             ]).addCompletionHandler {[weak self] (response) in
                 switch response {
                 case .error( _): break

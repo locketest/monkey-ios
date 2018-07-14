@@ -9,12 +9,12 @@
 import UIKit
 
 class PairRequestAcceptModel: NSObject {
-	
+
 	var userIdInt : Int?
 	
 	var pairIdString : String?
 	
-	var inviteeIdString : String?
+	var inviteeIdString : Int?
 	
 	var nextInviteAtDouble : Double?
 	
@@ -30,7 +30,7 @@ class PairRequestAcceptModel: NSObject {
 		
 		pairRequestAcceptModel.userIdInt = dict["user_id"] as? Int
 		pairRequestAcceptModel.pairIdString = dict["pair_id"] as? String
-		pairRequestAcceptModel.inviteeIdString = dict["invitee_id"] as? String
+		pairRequestAcceptModel.inviteeIdString = dict["invitee_id"] as? Int
 		pairRequestAcceptModel.nextInviteAtDouble = dict["next_invite_at"] as? Double
 		pairRequestAcceptModel.channelKeyString = dict["channel_key"] as? String
 		pairRequestAcceptModel.channelNameString = dict["channel_name"] as? String

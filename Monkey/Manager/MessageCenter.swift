@@ -353,8 +353,8 @@ class MessageCenter {
 }
 
 extension MessageCenter: SocketMessageHandler {
-	public func receive(message: [String: Any], from channel: String) {
-		self.handle(messageDic: message, from: SocketChannel.init(channel: channel))
-		LogManager.shared.addLog(type: .ReceiveSocketMessage, subTitle: channel, info: message)
+	public func receive(message: [String: Any], from channel: SocketChannel) {
+		self.handle(messageDic: message, from: channel)
+		LogManager.shared.addLog(type: .ReceiveSocketMessage, subTitle: channel.rawValue, info: message)
 	}
 }

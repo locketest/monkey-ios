@@ -153,46 +153,26 @@ class DeleteAccountPopupViewController: MonkeyViewController, UITextFieldDelegat
             ]
         ]
         
-        guard APIController.shared.currentUser?.user_id != nil else {
-            print("error: user_id is nil")
-            return
-        }
-        
         JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/accounts/me", method: .delete, parameters: parameters, options: [
-            .header("Authorization", APIController.authorization),
+            .header("Authorization", UserManager.authorization),
             ]).addCompletionHandler {[weak self] (response) in
 				self?.stepThreeDeleteButton.isLoading = false
                 switch response {
                 case .error(_):
                     break
                 case .success(_):
-                    
-                    AnalyticsCenter.log(withEvent: .deleteAccount, andParameter: ["reason":self?.selectedReasonBtn.currentTitle ?? ""])
-                    
-                    RealmDataController.shared.deleteAllData() { (error) in
-                        guard error == nil else {
-                            error?.log()
-                            return
-                        }
-                        
-                        APIController.authorization = nil
-//						Socket.shared.fetchCollection = false
-                        UserDefaults.standard.removeObject(forKey: "user_id")
-						UserDefaults.standard.removeObject(forKey: "apns_token")
-                        
-                        let rootVC = self?.view.window?.rootViewController
-                        rootVC?.presentedViewController?.dismiss(animated: false, completion: {
-                            DispatchQueue.main.async {
-                                rootVC?.dismiss(animated: true, completion: nil)
-                            }
-                        })
-                    }
+                    AnalyticsCenter.log(withEvent: .deleteAccount, andParameter: [
+						"reason": self?.selectedReasonBtn.currentTitle ?? ""
+						])
+					UserManager.shared.logout(completion: { (_) in
+						
+					})
                 }
         }
     }
     
     func textFieldValueChangedFunc() {
-        
+
         if let string = self.stepThreeTextField.text {
             let textString = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             if textString == "DELETE" {

@@ -68,22 +68,32 @@ class JSONAPIRequest {
 	@discardableResult func addCompletionHandler(_ handler: @escaping JSONAPIRequestCompletionHandler) -> Self {
 		self.dataRequest?.responseJSON { (response) in
 			guard let responseJSON = response.result.value as? [String: Any], // Response format validation failed.
-				!response.result.isFailure else // Alamofire validation failed.
+				response.result.isSuccess else // Alamofire validation failed.
 			{
 				var status: String?
 				
 				if let statusCode = response.response?.statusCode {
 					status = String(statusCode)
 				}
+				
 				return handler(.error(APIError(code: String((response.result.error as NSError?)?.code ?? -1), status: status, message: response.result.error?.localizedDescription ?? "Unknown request error.")))
 			}
 			
 			self.responseJSON = responseJSON
 			let responseJSONAPIDocument = JSONAPIDocument(json: responseJSON)
 			self.responseJSONAPIDocument = responseJSONAPIDocument
-			if let jsonApiError = responseJSONAPIDocument.errors?[0] {
+			if let jsonApiError = responseJSONAPIDocument.errors?.first {
 				return handler(.error(APIError(jsonApiError: jsonApiError)))
 			}
+			if responseJSONAPIDocument.error_code != nil {
+				if let statusCode = response.response?.statusCode, statusCode == 401 || statusCode == 403 {
+					UserManager.shared.logout(completion: { (_) in
+						
+					})
+					return
+				}
+			}
+			
 			handler(.success(responseJSONAPIDocument))
 		}
 		return self
@@ -92,7 +102,7 @@ class JSONAPIRequest {
 	@discardableResult func addJsonCompletionHandler(_ handler: @escaping JSONCompletionHandler) -> Self {
 		self.dataRequest?.responseJSON { (response) in
 			guard let responseJSON = response.result.value as? [String: Any], // Response format validation failed.
-				!response.result.isFailure else // Alamofire validation failed.
+				response.result.isSuccess else // Alamofire validation failed.
 			{
 				var status: String?
 				
@@ -105,9 +115,18 @@ class JSONAPIRequest {
 			self.responseJSON = responseJSON
 			let responseJSONAPIDocument = JSONAPIDocument(json: responseJSON)
 			self.responseJSONAPIDocument = responseJSONAPIDocument
-			if let jsonApiError = responseJSONAPIDocument.errors?[0] {
+			if let jsonApiError = responseJSONAPIDocument.errors?.first {
 				return handler(.error(APIError(jsonApiError: jsonApiError)))
 			}
+			if responseJSONAPIDocument.error_code == nil {
+				if let statusCode = response.response?.statusCode, statusCode == 401 || statusCode == 403 {
+					UserManager.shared.logout(completion: { (_) in
+						
+					})
+					return
+				}
+			}
+			
 			handler(.success(responseJSON))
 		}
 		return self
@@ -168,13 +187,22 @@ class JSONAPIDocument {
 	var isResourceUndefined: Bool {
 		return json["data"] == nil
 	}
-	/// json.error
-	var error: JSONAPIError? {
-		guard let error = json["error"] as? [String: Any] else {
+	
+	/// there is a error code
+	var error_code: Int? {
+		guard let error_code = json["error_code"] as? Int else {
 			return nil // Top level errors object doesn't exist or is in the incorrect format.
 		}
-		return JSONAPIError(error: error)
+		return error_code
 	}
+	
+	/// json.error
+//	var error: JSONAPIError? {
+//		guard let error = json["error"] as? [String: Any] else {
+//			return nil // Top level errors object doesn't exist or is in the incorrect format.
+//		}
+//		return JSONAPIError(error: error)
+//	}
 	/// json.errors
 	var errors: [JSONAPIError]? {
 		guard let errors = json["errors"] as? [[String: Any]] else {

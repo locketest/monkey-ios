@@ -38,15 +38,12 @@ class VideoCallManager {
 		self.sendResponse(type: .Accept)
 		// add observer
 		self.channelService.channelDelegate = self
-		
 		// begin response timer
 		self.startConnectTimer()
-		
 		// join new channel
 		self.channelService.joinChannel(matchModel: callModel)
-		
 		// accept 时，发送 stream
-		self.captureSwitch(open: true)
+		self.channelService.captureSwitch(open: true)
 	}
 	
 	func beginChat() {
@@ -55,30 +52,9 @@ class VideoCallManager {
 	}
 	
 	func disconnect() {
-		self.stopAllTimer()
-		self.captureSwitch(open: false)
 		self.channelService.leaveChannel()
+		self.stopAllTimer()
 		self.videoCall = nil
-	}
-	
-	private func captureSwitch(open: Bool) {
-		if open == false {
-			runAsynchronouslyOnVideoProcessingQueue {
-				HWCameraManager.shared().agora_capture = false
-				HWCameraManager.shared().opentok_capture = false
-			}
-		}
-		
-		guard let match = self.videoCall else { return }
-		if match.supportAgora() {
-			runAsynchronouslyOnVideoProcessingQueue {
-				HWCameraManager.shared().agora_capture = true
-			}
-		}else {
-			runAsynchronouslyOnVideoProcessingQueue {
-				HWCameraManager.shared().opentok_capture = true
-			}
-		}
 	}
 	
 	func sendResponse(type: MessageType, to videoCall: VideoCallModel? = nil) {
@@ -146,6 +122,10 @@ extension VideoCallManager {
 }
 
 extension VideoCallManager: ChannelServiceProtocol {
+	func matchUser(with user_id: Int) -> MatchUser? {
+		return self.videoCall?.matchedUser(with: user_id)
+	}
+	
 	func joinChannelSuccess() {
 		
 	}

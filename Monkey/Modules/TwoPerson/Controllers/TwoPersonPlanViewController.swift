@@ -20,26 +20,16 @@ enum TwopChatRequestsStatusEnum : Int {
 	case ignore
 }
 
-typealias TwopClosureType = () -> Void
-
-typealias UpdateRedDotClosureType = (_ count:Int) -> Void
-
 class TwoPersonPlanViewController: MonkeyViewController {
 	
 	var layoutTagInt = 0
 	
 	let FootView = UIView()
 	
-	var redDotCountInt = 0
-	
 	let DurationTime = 0.25
 	
 	// 是否是x关闭的键盘标识，包括键盘上向下箭头关闭
 	var isBtnEndEditingBool = false
-	
-	var backClosure: TwopClosureType?
-	
-	var updateRedDotClosure: UpdateRedDotClosureType?
 	
 	var dataArray : [AnyObject] = [] // 总数据集合
 	
@@ -73,10 +63,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	
 	@IBOutlet weak var tableViewTopConstraint: NSLayoutConstraint!
 	
-	@IBOutlet weak var twoPersonButton: BigYellowButton! // 2p按钮
-	
-	@IBOutlet weak var redDotLabel: UILabel! // 红点数量提示
-	
 	@IBOutlet weak var unlockNextButton: BigYellowButton!
 	
 	@IBOutlet weak var userNotFoundLabel: UILabel!
@@ -93,19 +79,15 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		// 睿，临时，记得删除
 		UserDefaults.standard.setValue(false, forKey: IsUploadContactsTag)
 		
-		print("*** authorization = \(APIController.authorization), id = \(APIController.shared.currentUser?.user_id)")
-		
 		self.initView()
 		
 		self.initData()
 	}
 	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
 		
-		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
-			self.addKeyboardObserverFunc()
-		}
+		self.addKeyboardObserverFunc()
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -117,14 +99,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	@IBAction func tapGestureClickFunc(_ sender: UITapGestureRecognizer) {
 		self.isBtnEndEditingBool = false
 		self.view.endEditing(true)
-	}
-	
-	@IBAction func twoPersonBtnClickFunc(_ sender: BigYellowButton) {
-		self.dismiss(animated: true, completion: nil)
-		
-		if self.backClosure != nil {
-			self.backClosure!()
-		}
 	}
 	
 	@IBAction func endEditingBtnClickFunc(_ sender: UIButton) {
@@ -183,11 +157,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	}
 	
 	func pushToDashboardMainVcFunc() {
-		
-//		self.dismiss(animated: true, completion: nil)
-		
 		let vc = self.storyboard?.instantiateViewController(withIdentifier: "DashboardMainViewController") as! DashboardMainViewController
-		vc.modalPresentationStyle = .overFullScreen
 		self.present(vc, animated: true, completion: nil)
 	}
 	
@@ -249,8 +219,8 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	
 	func initCircleFunc() {
 		
-		if let currentUser = APIController.shared.currentUser {
-			self.planAMeImageView.kf.setImage(with: URL(string: currentUser.profile_photo_url ?? ""), placeholder: UIImage(named: currentUser.defaltAvatar)!)
+		if let currentUser = UserManager.shared.currentUser {
+			self.planAMeImageView.kf.setImage(with: URL(string: currentUser.profile_photo_url ?? ""), placeholder: UIImage(named: currentUser.defaultAvatar)!)
 		}
 		
 		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
@@ -286,7 +256,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		// 拿到friends list里的friendship_id跟后端返回的friendship_id对比，相等就拿头像和名字，跟模型一起传到model里填充完整模型
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
-			.header("Authorization", APIController.authorization),
+			.header("Authorization", UserManager.authorization),
 			]).addCompletionHandler { (response) in
 				switch response {
 				case .error(let error):
@@ -322,9 +292,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 							})
 							
 							if models.count > 0 {
-								
-								self.redDotCountInt = models.count
-								
 								self.dataArray.removeAll()
 								self.searchArray.removeAll()
 								self.friendsRequestArray.removeAll()
@@ -444,6 +411,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		self.unlockNextButton.layer.shadowColor = UIColor.black.withAlphaComponent(0.25).cgColor
 		self.unlockNextButton.layer.shadowOpacity = 0.7
 		self.unlockNextButton.layer.shadowRadius = 28
+		self.unlockNextButton.isHidden = false
 	}
 	
 	func initData() {
@@ -520,10 +488,6 @@ extension TwoPersonPlanViewController : MessageObserver {
 		
 		switch twopSocketModel.msgTypeInt {
 		case SocketDefaultMsgTypeEnum.unlock2p.rawValue: // unlock2p
-			self.dismiss(animated: true, completion: nil)
-			
-			self.pushToDashboardMainVcFunc()
-			
 			if let realm = try? Realm() {
 				do {
 					try realm.write {
@@ -533,15 +497,12 @@ extension TwoPersonPlanViewController : MessageObserver {
 					print("Error: ", error)
 				}
 			}
+			self.pushToDashboardMainVcFunc()
+			
 		case SocketDefaultMsgTypeEnum.friendInvite.rawValue: // friendInvite
 			
-			// 好友邀请不发socket消息，只发notification消息，故如下可以删除
 			self.initData() // 收到friends request刷新列表并更新main的红点值
 			
-			if self.updateRedDotClosure != nil {
-				self.redDotCountInt += 1
-				self.updateRedDotClosure!(self.redDotCountInt)
-			}
 		default:
 			break
 		}
@@ -830,11 +791,6 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 					
 					print("*** friendRequest拒绝、同意 jsonAPIDocument = \(jsonAPIDocument.json)") // 睿，上线时删除
 					print("*** friendRequest拒绝、同意 pathString = \(pathString)")
-					
-					if self.updateRedDotClosure != nil {
-						self.redDotCountInt -= 1
-						self.updateRedDotClosure!(self.redDotCountInt)
-					}
 					
 					self.friendsRequestArray.remove(model)
 					

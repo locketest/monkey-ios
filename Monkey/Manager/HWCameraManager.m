@@ -328,8 +328,7 @@
 		CVPixelBufferLockBaseAddress(pixelBuffer, 0);
 		[self.streamHandler newFrameBufferAvailable:pixelBuffer];
 		CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-	}else if (self.opentok_capture) {
-		NSLog(@"consume frame");
+	}else if (self.isCaptureOpentok) {
 		CVPixelBufferLockBaseAddress(pixelBuffer, 0);
 		self.videoFrame.format.estimatedCaptureDelay = 100;
 		[self.videoFrame clearPlanes];
@@ -379,6 +378,10 @@
  */
 - (BOOL)isCaptureStarted {
 	return self.capturing && [self.gpuImageCamera isRunning] && _opentok_capture;
+}
+
+- (BOOL)isCaptureOpentok {
+	return self.isCaptureStarted;
 }
 
 /**

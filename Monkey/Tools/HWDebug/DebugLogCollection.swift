@@ -17,6 +17,7 @@ enum MonkeyLogType: String {
 	case CustomLog = "Custom Action"
 	case EventTrack = "Event Track"
 	case ApiRequest = "Api Request"
+	case ChannelServiceCallback = "Channel Service Callback"
 }
 
 class MonkeyLog : NSObject {
