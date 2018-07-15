@@ -47,6 +47,10 @@ class InviteFriendsViewController: MonkeyViewController {
 		self.dismiss(animated: true, completion: nil)
 	}
 	
+	@IBAction func backBtnClickFunc(_ sender: BigYellowButton) {
+		self.dismiss(animated: true, completion: nil)
+	}
+	
 	@IBAction func endEditingBtnClickFunc(_ sender: UIButton) {
 		
 		self.searchTextField.text = ""
@@ -190,6 +194,7 @@ class InviteFriendsViewController: MonkeyViewController {
 	}
 	
 	func initView() {
+		
 		self.view.hero.modifiers = [.fade]
 		
 		let tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(dismissBtnClickFunc(_:)))

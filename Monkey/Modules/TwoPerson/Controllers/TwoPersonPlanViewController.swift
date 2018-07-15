@@ -217,11 +217,16 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		self.layoutTagInt += 1
 	}
 	
-	func initCircleFunc() {
+	func profileImageUpdateFunc() {
 		
 		if let currentUser = UserManager.shared.currentUser {
 			self.planAMeImageView.kf.setImage(with: URL(string: currentUser.profile_photo_url ?? ""), placeholder: UIImage(named: currentUser.defaultAvatar)!)
 		}
+	}
+	
+	func initCircleFunc() {
+		
+		self.profileImageUpdateFunc()
 		
 		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
 		self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planAMeImageView, lineWidth: 2, strokeColor: MeCircleColor, padding: 5))
@@ -248,6 +253,8 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		self.searchOutTableTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSForegroundColorAttributeName : UIColor.darkGray])
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(handleRemoteMsgFunc), name: NSNotification.Name(rawValue: GoToSettingTag), object: nil)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(profileImageUpdateFunc), name: NSNotification.Name(rawValue: ProfileImageUpdateTag), object: nil)
 	}
 	
 	func loadFriendsRequestFunc() {

@@ -16,6 +16,8 @@ class DashboardInviteListModel: NSObject {
 	
 	var pathString : String?
 	
+	var genderString : String?
+	
 	var friendshipIdString : String?
 	
 	var nextInviteAtDouble : Double?
@@ -29,6 +31,7 @@ class DashboardInviteListModel: NSObject {
 		dashboardInviteListModel.userIdInt = userInfo.userIdInt
 		dashboardInviteListModel.nameString = userInfo.usernameString
 		dashboardInviteListModel.pathString = userInfo.pathString
+		dashboardInviteListModel.genderString = userInfo.genderString
 		
 		dashboardInviteListModel.friendshipIdString = friendsRequestModel?.userIdInt?.description
 		dashboardInviteListModel.nextInviteAtDouble = friendsRequestModel?.nextInviteAtDouble

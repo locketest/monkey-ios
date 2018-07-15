@@ -10,6 +10,13 @@ import UIKit
 import SwiftyJSON
 import Hero
 
+enum SortWeight : Double {
+	case online = 1000
+	case paired = 100
+	case missed = 10
+	case others = 1
+}
+
 enum SocketDefaultMsgTypeEnum : Int {
 	case unlock2p = 0
 	case newFriend
@@ -283,7 +290,7 @@ class DashboardMainViewController: MonkeyViewController {
 		}
 	}
 	
-	func handleRequestFinishedFunc(models:[FriendshipModel], friendRequestArray:[FriendsRequestModel], userInfoArray:[UsersInfoModel], pairListArray:[PairListModel]) {
+	func handleRequestFinishedFunc(userInfoArray:[UsersInfoModel], pairListArray:[PairListModel], friendRequestArray:[FriendsRequestModel]) {
 		
 		if self.requestFinishCountInt != 3 { return }
 		
@@ -291,17 +298,19 @@ class DashboardMainViewController: MonkeyViewController {
 		print("*** userInfoArray = \(userInfoArray.count)")
 		print("*** pairListArray = \(pairListArray.count)")
 		
-//		self.dataArray.removeAll()
-//		self.searchArray.removeAll()
-//		self.inviteFriendArray.removeAll()
-//		self.twopChatFriendArray.removeAll()
+		var pairListArrayMap : [String:PairListModel] = [:]
 		
-		var onlineArray : [DashboardFriendsListModel] = []
-		var lastPairArray : [DashboardFriendsListModel] = []
-		var missedArray : [DashboardFriendsListModel] = []
-		var otherArray : [DashboardFriendsListModel] = []
+		var friendsRequestModelMap : [String:FriendsRequestModel] = [:]
 		
-		let userIdString = APIController.shared.currentUser!.user_id!
+		_ = pairListArray.compactMap {
+			pairListArrayMap[$0.userIdInt!.description] = $0
+		}
+		
+		_ = friendRequestArray.compactMap {
+			friendsRequestModelMap[$0.userIdInt!.description] = $0
+		}
+		
+		let userIdString = UserManager.shared.currentUser!.user_id
 		
 		userInfoArray.forEach({ (userInfo) in
 			
@@ -309,67 +318,38 @@ class DashboardMainViewController: MonkeyViewController {
 				
 				if unlock2pBool {
 					
-					if pairListArray.count > 0 {
-						
-						for pairModel in pairListArray {
-							
-							if userInfo.userIdInt == pairModel.userIdInt || userInfo.userIdInt == pairModel.inviteeIdInt {
-								if userInfo.onlineStatusBool! { // 1 online
-									if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired && pairModel.statusInt == TwopChatRequestsStatusEnum.unhandle.rawValue { // 后改，online里也有miss状态
-										onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
-									} else {
-										onlineArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
-									}
-								} else if pairModel.statusInt == 1 { // 1 pair接受过
-									lastPairArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
-								} else if Tools.timestampIsExpiredFunc(timestamp: pairModel.nextInviteAtDouble!).isExpired && pairModel.statusInt == TwopChatRequestsStatusEnum.unhandle.rawValue { // timestamp过期了就是missed
-									missedArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel, isMissedBool: true))
-								} else {
-									otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel))
-								}
-							} else {
-								let otherModel = DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairModel)
-								otherArray.forEach({ (model) in
-									if model.userIdInt != otherModel.userIdInt && model.inviteeIdInt != otherModel.userIdInt {
-										otherArray.append(otherModel)
-									}
-								})
-							}
+					var pairListModel : PairListModel?
+					
+					if let pairModel = pairListArrayMap[userInfo.userIdInt!.description] {
+						// pair里的userId或者inviteeIdInt等于userInfo的userId说明就是相互pair的数据
+						if userInfo.userIdInt == pairModel.userIdInt || userInfo.userIdInt == pairModel.inviteeIdInt {
+							pairListModel = pairModel
 						}
-					} else {
-						otherArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo))
 					}
+					
+					self.twopChatFriendArray.append(DashboardFriendsListModel.dashboardFriendsListModel(userInfo: userInfo, pairListModel: pairListModel))
+					
 				} else {
 					
 					var friendsRequestModel : FriendsRequestModel?
 					
-					friendRequestArray.forEach({ (friendModel) in
-						
-						// 1p好友列表里的userId等于planAB里2p好友列表里的userId 且 2p好友列表里的userId等于当前用户的id就说明是用户主动发起的邀请
-						if userInfo.userIdInt == friendModel.inviteeIdInt && Int(userIdString) == friendModel.userIdInt {
+					if let friendModel = friendsRequestModelMap[userInfo.userIdInt!.description] {
+						// 2p好友列表里的userId等于当前用户的id就说明是用户主动发起的邀请
+						if userIdString == friendModel.userIdInt?.description {
 							friendsRequestModel = friendModel
 						}
-					})
+					}
 					
 					self.inviteFriendArray.append(DashboardInviteListModel.dashboardInviteListModel(userInfo: userInfo, friendsRequestModel: friendsRequestModel))
 				}
 			}
 		})
 		
-		// 至此，数据装配完毕，接下来按timestamp排序四个临时集合然后放到twopChatFriendArray里,再将两个集合放到dataArray里
-		onlineArray = onlineArray.sorted { $0.nextInviteAtDouble! > $1.nextInviteAtDouble! }
-		lastPairArray = lastPairArray.sorted { $0.nextInviteAtDouble! > $1.nextInviteAtDouble! }
-		missedArray = missedArray.sorted { $0.nextInviteAtDouble! > $1.nextInviteAtDouble! }
-//		otherArray = otherArray.sorted { $0.nextInviteAtDouble! > $1.nextInviteAtDouble! }
+		self.twopChatFriendArray = self.twopChatFriendArray.sorted { $0.weightDouble! > $1.weightDouble! }
 		
-		self.twopChatFriendArray += onlineArray
-		self.twopChatFriendArray += lastPairArray
-		self.twopChatFriendArray += missedArray
-		self.twopChatFriendArray += otherArray
-//		self.twopChatFriendArray += noPairInfoArray
 		
 		self.twopChatFriendArray.forEach { (model) in
-//			print("*** model = \(model.userIdInt!)")
+			print("*** model = \(model.userIdInt!)")
 		}
 		
 		// 如果没有2p好友，加一个空的模型在数据源里，用以显示第一组的无数据cell
@@ -414,7 +394,7 @@ class DashboardMainViewController: MonkeyViewController {
 						})
 						
 						self.requestFinishCountInt += 1
-						self.handleRequestFinishedFunc(models: models, friendRequestArray: friendRequestArray, userInfoArray: userInfoArray, pairListArray: pairListArray)
+						self.handleRequestFinishedFunc(userInfoArray: userInfoArray, pairListArray: pairListArray, friendRequestArray: friendRequestArray)
 					}
 				}
 		}
@@ -435,7 +415,7 @@ class DashboardMainViewController: MonkeyViewController {
 						})
 						
 						self.requestFinishCountInt += 1
-						self.handleRequestFinishedFunc(models: models, friendRequestArray: friendRequestArray, userInfoArray: userInfoArray, pairListArray: pairListArray)
+						self.handleRequestFinishedFunc(userInfoArray: userInfoArray, pairListArray: pairListArray, friendRequestArray: friendRequestArray)
 					}
 				}
 		}
@@ -456,7 +436,7 @@ class DashboardMainViewController: MonkeyViewController {
 						})
 						
 						self.requestFinishCountInt += 1
-						self.handleRequestFinishedFunc(models: models, friendRequestArray: friendRequestArray, userInfoArray: userInfoArray, pairListArray: pairListArray)
+						self.handleRequestFinishedFunc(userInfoArray: userInfoArray, pairListArray: pairListArray, friendRequestArray: friendRequestArray)
 					}
 				}
 		}
@@ -521,6 +501,7 @@ class DashboardMainViewController: MonkeyViewController {
 	}
 	
 	func initView() {
+		
 		self.view.hero.modifiers = [.fade]
 		
 		self.initCircleFunc()
@@ -534,15 +515,20 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		self.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSForegroundColorAttributeName : UIColor.darkGray])
 		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideFunc), name: .UIKeyboardWillHide, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(initCircleFunc), name: NSNotification.Name(rawValue: ProfileImageUpdateTag), object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(acceptPairNotificationFunc), name: NSNotification.Name(rawValue: AcceptPairNotificationTag), object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(friendsPairNotificationFunc), name: NSNotification.Name(rawValue: FriendPairNotificationTag), object: nil)
 		
 		self.weAreTeamLabel.text = "Monkey Squad assembled,\nstarting 2P Chat"
+	}
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideFunc), name: .UIKeyboardWillHide, object: nil)
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
@@ -834,10 +820,17 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 				case .error(_): break
 				case .success(let jsonAPIDocument):
 					
-					print("*** json after click = \(jsonAPIDocument.json), pathString = \(pathString)")
+					print("*** json after click = \(JSON(jsonAPIDocument.json)), pathString = \(pathString)")
 					
 					// todo，睿，根据isInviteeBool和返回结果处理之后的逻辑
 					self.pairRequestAcceptModel = PairRequestAcceptModel.pairRequestAcceptModel(dict: jsonAPIDocument.json as [String: AnyObject])
+					
+					// 设置friendsId，如果inviteeIdInt不是自己就是inviteeIdInt，否则就是userId
+					let inviteeIdInt = self.pairRequestAcceptModel?.inviteeIdInt?.description == UserManager.UserID ? self.pairRequestAcceptModel?.userIdInt : self.pairRequestAcceptModel?.inviteeIdInt
+					
+					print("*** inviteeIdInt = \(String(describing: self.pairRequestAcceptModel?.inviteeIdInt)), my userId = \(String(describing: UserManager.UserID)), pair userId = \(String(describing: self.pairRequestAcceptModel?.userIdInt)), inviteeIdInt = \(String(describing: inviteeIdInt))")
+					
+					self.pairRequestAcceptModel?.friendIdInt = inviteeIdInt
 					
 					if !isPair {
 						if let delegate = self.delegate, let model = self.pairRequestAcceptModel {
