@@ -79,6 +79,8 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		// 睿，临时，记得删除
 		UserDefaults.standard.setValue(false, forKey: IsUploadContactsTag)
 		
+		print("*** authorization = \(APIController.authorization), id = \(APIController.shared.currentUser?.user_id)")
+		
 		self.initView()
 		
 		self.initData()
@@ -543,7 +545,9 @@ extension TwoPersonPlanViewController {
 		if !self.isPlanBIsUnLockedTuple.isPlanB {
 			self.handleHeadViewFunc(isShow: false)
 		} else {
-			self.endEditOutTableButton.isHidden = false
+			if self.searchOutTableTextField.text!.isEmpty {
+				self.endEditOutTableButton.isHidden = false
+			}
 		}
 	}
 	
@@ -585,7 +589,8 @@ extension TwoPersonPlanViewController : UITableViewDataSource, UITableViewDelega
 				return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isContactCell: true)
 			}
 		} else {
-			return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isContactCell: true)
+			let isContactsBool = (self.searchArray[indexPath.section] as? [MyContactsModel]) == nil ? false : true
+			return self.handleCellForRowFunc(tableView: tableView, indexPath: indexPath, isContactCell: isContactsBool)
 		}
 	}
 	

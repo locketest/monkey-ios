@@ -22,7 +22,9 @@ class DashboardFriendsListModel: NSObject {
 	
 	var inviteeIdInt : Int?
 	
-	var isMissedBool: Bool?
+	var isMissedBool: Bool = false
+	
+	var inviteAtDouble : Double?
 	
 	var nextInviteAtDouble : Double?
 	
@@ -42,30 +44,32 @@ class DashboardFriendsListModel: NSObject {
 
 		dashboardFriendsListModel.inviteeIdInt = pairListModel?.inviteeIdInt
 		dashboardFriendsListModel.nextInviteAtDouble = pairListModel?.nextInviteAtDouble
+		dashboardFriendsListModel.inviteAtDouble = pairListModel?.inviteAtDouble
 		dashboardFriendsListModel.statusInt = pairListModel?.statusInt
 		
+//		print("*** userInfo = \(userInfo.usernameString), online = \(userInfo.onlineStatusBool), nextInviteAt = \(dashboardFriendsListModel.nextInviteAtDouble), statusInt = \(dashboardFriendsListModel.statusInt)")
+		
 		// 设置online状态、权重
-		if let online = userInfo.onlineStatusBool, let nextInviteAt = dashboardFriendsListModel.nextInviteAtDouble, let statusInt = dashboardFriendsListModel.statusInt {
+		let online = userInfo.onlineStatusBool ?? false
+		
+		let nextInviteAt = dashboardFriendsListModel.nextInviteAtDouble ?? 1
+		
+		let statusInt = dashboardFriendsListModel.statusInt
+		
+		if online { // 1 online
 			
-			dashboardFriendsListModel.isMissedBool = false
+			dashboardFriendsListModel.weightDouble = nextInviteAt * SortWeight.online.rawValue
 			
-			if online { // 1 online
-				
-				dashboardFriendsListModel.weightDouble = nextInviteAt * SortWeight.online.rawValue
-				
-				if Tools.timestampIsExpiredFunc(timestamp: nextInviteAt).isExpired && statusInt == TwopChatRequestsStatusEnum.unhandle.rawValue {
-					dashboardFriendsListModel.isMissedBool = true
-				}
-			} else if statusInt == 1 { // 1 pair接受过
-				dashboardFriendsListModel.weightDouble = nextInviteAt * SortWeight.paired.rawValue
-			} else if Tools.timestampIsExpiredFunc(timestamp: nextInviteAt).isExpired && statusInt == TwopChatRequestsStatusEnum.unhandle.rawValue { // timestamp过期了并且未操作就是missed，此处有漏洞，如果时间过期了就是负数，负数乘以miss的权重后会比other还小，如果有遇到，把other的系数改成负数负100即可。
-				dashboardFriendsListModel.weightDouble = nextInviteAt * SortWeight.missed.rawValue
+			if Tools.timestampIsExpiredFunc(timestamp: nextInviteAt).isExpired && statusInt == TwopChatRequestsStatusEnum.unhandle.rawValue {
 				dashboardFriendsListModel.isMissedBool = true
-			} else {
-				dashboardFriendsListModel.weightDouble = nextInviteAt * SortWeight.others.rawValue
 			}
+		} else if statusInt == 1 { // 1 pair接受过
+			dashboardFriendsListModel.weightDouble = nextInviteAt * SortWeight.paired.rawValue
+		} else if Tools.timestampIsExpiredFunc(timestamp: nextInviteAt).isExpired && statusInt == TwopChatRequestsStatusEnum.unhandle.rawValue { // timestamp过期了并且未操作就是missed，此处有漏洞，如果时间过期了就是负数，负数乘以miss的权重后会比other还小，如果有遇到，把other的系数改成负数负100即可。
+			dashboardFriendsListModel.weightDouble = nextInviteAt * SortWeight.missed.rawValue
+			dashboardFriendsListModel.isMissedBool = true
 		} else {
-			dashboardFriendsListModel.weightDouble = 0
+			dashboardFriendsListModel.weightDouble = nextInviteAt * SortWeight.others.rawValue
 		}
 		
 		return dashboardFriendsListModel

@@ -183,7 +183,7 @@ extension TwopMatchController: MatchServiceObserver {
 		if self.pairSuccess == false {
 			self.pairSuccess = true
 			if let dashboard = self.initialPanel as? DashboardMainViewController {
-				dashboard.endConnectingFunc()
+				dashboard.connectingSuccessFunc()
 			}
 			self.beginPairMatch()
 		}

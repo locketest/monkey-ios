@@ -294,9 +294,9 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		if self.requestFinishCountInt != 3 { return }
 		
-		print("*** friendRequestArray = \(friendRequestArray.count)")
-		print("*** userInfoArray = \(userInfoArray.count)")
-		print("*** pairListArray = \(pairListArray.count)")
+//		print("*** friendRequestArray = \(friendRequestArray.count)")
+//		print("*** userInfoArray = \(userInfoArray.count)")
+//		print("*** pairListArray = \(pairListArray.count)")
 		
 		var pairListArrayMap : [String:PairListModel] = [:]
 		
@@ -347,9 +347,8 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		self.twopChatFriendArray = self.twopChatFriendArray.sorted { $0.weightDouble! > $1.weightDouble! }
 		
-		
 		self.twopChatFriendArray.forEach { (model) in
-			print("*** model = \(model.userIdInt!)")
+//			print("*** model = \(model.userIdInt!)")
 		}
 		
 		// 如果没有2p好友，加一个空的模型在数据源里，用以显示第一组的无数据cell
@@ -713,7 +712,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 		
 		if self.pairTimerTuple.current == 0 {
 			
-			self.endConnectingFunc()
+			self.connectingTimeoutFunc()
 			
 			if let delegate = self.delegate {
 				delegate.twopTimeoutConnectingFunc!()
@@ -737,7 +736,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 		}
 	}
 	
-	func endConnectingFunc() {
+	func connectingTimeoutFunc() {
 		
 		self.stopPairTimerFunc()
 		
@@ -762,6 +761,29 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			
 			self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
 		})
+	}
+	
+	func connectingSuccessFunc() {
+		
+		self.stopPairTimerFunc()
+		
+		self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
+		self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
+		self.weAreTeamLabel.alpha = 0
+		self.view.layoutIfNeeded()
+		
+		self.someoneImageView.image = UIImage(named: "monkeyDef")
+		self.someoneLabel.text = "2P Chat Buddy"
+		
+		let inviteeIdInt = APIController.shared.currentUser!.user_id == self.tempModel?.userIdInt?.description ? self.tempModel?.inviteeIdInt : self.tempModel?.userIdInt
+		self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].inviteeIdInt = inviteeIdInt
+		
+		// 接受成功后改变status状态，0未操作
+		self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].isMissedBool = false
+		self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].statusInt = self.pairRequestAcceptModel?.statusInt
+		self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].nextInviteAtDouble = self.pairRequestAcceptModel?.nextInviteAtDouble
+		
+		self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
 	}
 	
 	func closeFunc() {

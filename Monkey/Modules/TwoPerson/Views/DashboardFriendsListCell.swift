@@ -16,7 +16,7 @@ class DashboardFriendsListCell: UITableViewCell {
 	
 	var timer : Timer!
 	
-	var timeTuple : (CGFloat, CGFloat) = (300, 300)
+	var timeTuple : (current: CGFloat, total:CGFloat) = (300, 300)
 	
 	let shapeLayer = CAShapeLayer()
 	
@@ -43,6 +43,8 @@ class DashboardFriendsListCell: UITableViewCell {
 			return DashboardFriendsListModel()
 		}
 		set(newDashboardFriendsListModel){
+			
+//			print("*** weight = \(newDashboardFriendsListModel.weightDouble!)")
 			
 			self.tempDashboardFriendsListModel = newDashboardFriendsListModel
 			
@@ -83,15 +85,14 @@ class DashboardFriendsListCell: UITableViewCell {
 				}
 			}
 			
+//			print("*** isMissedBool = \(newDashboardFriendsListModel.isMissedBool)")
 			// 根据miss的状态处理missedLabel显示与隐藏状态、nameLabel的距离约束
-			if let isMissedBool = newDashboardFriendsListModel.isMissedBool {
-				if isMissedBool {
-					self.nameLabelCenterYConstraint.constant = -8
-					self.missedLabel.isHidden = false
-				} else {
-					self.nameLabelCenterYConstraint.constant = 0
-					self.missedLabel.isHidden = true
-				}
+			if newDashboardFriendsListModel.isMissedBool {
+				self.nameLabelCenterYConstraint.constant = -8
+				self.missedLabel.isHidden = false
+			} else {
+				self.nameLabelCenterYConstraint.constant = 0
+				self.missedLabel.isHidden = true
 			}
 		}
 	}
@@ -143,18 +144,18 @@ class DashboardFriendsListCell: UITableViewCell {
 	
 	func progressUpdateFunc() {
 		
-		if self.timeTuple.0 < 0 {
+		if self.timeTuple.current < 0 {
 			self.timer.invalidate()
-			self.timeTuple.0 = self.timeTuple.1
+			self.timeTuple.current = self.timeTuple.total
 			self.shapeLayer.removeFromSuperlayer()
 			self.emojiLabel.text = "🙌"
 			self.actionButton.isUserInteractionEnabled = true
 			return
 		}
 		
-		self.layer.addSublayer(self.addProgressViewFunc(progress: self.timeTuple.0 / self.timeTuple.1))
+		self.layer.addSublayer(self.addProgressViewFunc(progress: self.timeTuple.current / self.timeTuple.total))
 		
-		self.timeTuple.0 -= 1
+		self.timeTuple.current -= 1
 	}
 	
 	func addTimerFunc() {
@@ -164,6 +165,7 @@ class DashboardFriendsListCell: UITableViewCell {
 	
 	func stopJigglingFunc() {
 		self.actionButton.backgroundColor = UIColor.yellow
+		self.actionButton.isJiggling = false
 	}
 	
 	func stopTimerFunc() {
