@@ -15,6 +15,15 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 		case PairRequest
 		case TwopInvite
 		
+		var lifeTime: TimeInterval {
+			switch self {
+			case .VideoCall:
+				return 30
+			default:
+				return 5
+			}
+		}
+		
 		static func random() -> Style {
 			let index = abs(Int.arc4random() % 3)
 			return allValues[index]
@@ -36,7 +45,9 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 	
 	/// Closure that will be executed if the notification banner accept is tapped
 	var onAccept: (() -> Void)!
+	var didAccept: (() -> Void)!
 	var willDismiss: (() -> Void)!
+	var didDismiss: (() -> Void)!
 	var onDismiss: (() -> Void)!
 	
 	// audo dismiss delay
@@ -44,8 +55,9 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 	private var isDismissed = false
 	
 	private var lifeTime: TimeInterval = 5.0
-	private var barStyle: Style! {
+	var barStyle: Style! {
 		didSet(oldStyle) {
+			self.lifeTime = barStyle.lifeTime
 			switch barStyle {
 			case .PairRequest:
 				self.notificationDescriptionLabel.text = "wants to pair with you now"
@@ -141,15 +153,18 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 	@IBAction func ignore(_ sender: UIButton) {
 		self.acceptButton.isEnabled = false
 		self.notifyDismiss()
+		self.didDismiss()
 	}
 	
 	@IBAction func accept(_ sender: UIButton) {
 		self.rejectButton.isEnabled = false
+		self.acceptButton.isEnabled = false
 		self.acceptActivity.isHidden = false
 		self.acceptActivity.startAnimating()
 		self.acceptLabel.removeFromSuperview()
 		self.stopTimer()
 		self.onAccept()
+		self.didAccept()
 	}
 	
 	@objc private func notifyDismiss() {

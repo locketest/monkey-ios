@@ -19,6 +19,7 @@ import Alamofire
 import RealmSwift
 import ObjectMapper
 import UserNotifications
+import Hero
 
 /**
 *	user_id: UserAvatarTag
@@ -54,6 +55,10 @@ typealias MatchContainer = MatchObserver & MonkeyViewController & TransationDele
 	@objc optional func didReceiveOnepMatch(match: MatchModel)
 	
 	@objc optional func didReceiveTwopMatch(match: MatchModel)
+	
+	@objc optional func willPresentVideoCall(call: VideoCallModel)
+	
+	@objc optional func didDismissVideoCall(call: VideoCallModel)
 	
 	func didReceiveMessage(type: String, in chat: String)
 	
@@ -374,7 +379,9 @@ class MainViewController: SwipeableViewController {
 		}
 	}
 	
-	var matchViewController: UIViewController?
+	fileprivate var matchViewController: MatchMessageObserver?
+	fileprivate var videoCall: VideoCallModel?
+	fileprivate var videoCallManager: VideoCallManager = VideoCallManager.default
 	@IBAction func presentVideoMode(_ sender: Any) {
 		let matchViewController = self.storyboard?.instantiateViewController(withIdentifier: "OnepPair")
 		self.present(matchViewController!, animated: false, completion: nil)
@@ -443,7 +450,7 @@ class MainViewController: SwipeableViewController {
 					matchType = MatchType.Twop
 				}
 			}else {
-//				self.matchModeSwitch.isHidden = true
+				self.matchModeSwitch.isHidden = true
 			}
 		}
 		
@@ -686,7 +693,7 @@ extension MainViewController {
 	func refreshBananas() {
 		let numberFormatter = NumberFormatter()
 		numberFormatter.numberStyle = .decimal
-		let bananaCount = APIController.shared.currentUser?.bananas ?? 0
+		let bananaCount = UserManager.shared.currentUser?.bananas ?? 0
 		let formattedNumber = numberFormatter.string(from: NSNumber(value:bananaCount))
 		self.bananaCountLabel.text = formattedNumber
 	}
@@ -697,6 +704,7 @@ extension MainViewController: MatchObserver {
 	fileprivate func addObserver() {
 		UserManager.shared.addMessageObserver(observer: self)
 		MessageCenter.shared.addMessageObserver(observer: self)
+		NotificationManager.shared.actionDelegate = self
 		
 		NotificationCenter.default.addObserver(
 			self,
@@ -722,19 +730,27 @@ extension MainViewController: MatchObserver {
 	}
 	
 	func appMovedToBackground() {
-		
+		self.topMatchDiscovery.appMovedToBackground?()
 	}
 	
 	func appMovedToForeground() {
-		
+		self.topMatchDiscovery.appMovedToForeground?()
 	}
 	
 	func appWillTerminate() {
-		
+		self.topMatchDiscovery.appWillTerminate?()
+	}
+	
+	func willPresentVideoCall(call: VideoCallModel) {
+		self.topMatchDiscovery.willPresentVideoCall?(call: call)
+	}
+	
+	func didDismissVideoCall(call: VideoCallModel) {
+		self.topMatchDiscovery.didDismissVideoCall?(call: call)
 	}
 	
 	func didReceiveMessage(type: String, in chat: String) {
-		
+		self.topMatchDiscovery.didReceiveMessage(type: type, in: chat)
 	}
 	
 	func matchTypeChanged(newType: MatchType) {
@@ -829,35 +845,11 @@ extension MainViewController {
 extension MainViewController: MessageObserver {
 	
 	// 收到对 match 的操作
-	func didReceiveSkip(in chat: String) {
+	func didReceiveMatchSkip(in chat: String) {
 		self.topMatchDiscovery.didReceiveMessage(type: MessageType.Skip.rawValue, in: chat)
 	}
-	func didReceiveAccept(in chat: String) {
+	func didReceiveMatchAccept(in chat: String) {
 		self.topMatchDiscovery.didReceiveMessage(type: MessageType.Accept.rawValue, in: chat)
-	}
-	
-	func webSocketDidRecieveVideoCall(videoCall: Any, data: [String : Any]) {
-		// present call view controller
-//		if let chatsession = IncomingCallManager.shared.createChatSession(fromVideoCall: videoc) {
-//			let callnoti = NotificationManager.shared.showCallNotification(chatSession: chatsession, completion: { (callResponse) in
-//				switch callResponse {
-//				case .accepted:
-//					if self.chatSession != nil {
-//						self.chatSession?.disconnect(.consumed)
-//					}
-//					self.chatSession = chatsession
-//					chatsession.loadingDelegate = self
-//					chatsession.accept()
-//				case .declined:
-//					//					IncomingCallManager.shared.cancelVideoCall(chatsession: chatsession)
-//					chatsession.disconnect(.consumed)
-//				}
-//			})
-//
-//			chatsession.didReceiveAccept()
-//			IncomingCallManager.shared.showingNotification = callnoti
-//			self.callNotification = callnoti
-//		}
 	}
 	
 	func didReceiveOnepMatch(match: MatchModel) {
@@ -874,8 +866,13 @@ extension MainViewController: MessageObserver {
 }
 
 extension MainViewController: UserObserver {
-	
-	//	var bananaNotificationToken: NotificationToken?
+	func currentUserInfomationChanged() {
+		self.refreshBananas()
+		
+		if self.isMatchStart == false, self.matchModeSwitch.isHidden == true, self.matchType == .Onep, UserManager.shared.currentUser?.cached_enable_two_p == true {
+			self.matchModeSwitch.isHidden = false
+		}
+	}
 }
 
 extension UIViewController {
@@ -884,7 +881,7 @@ extension UIViewController {
 		if let rootViewController = UIApplication.shared.delegate?.window??.rootViewController {
 			if rootViewController is MainViewController {
 				return (rootViewController as? MainViewController)
-			}else if let presentingVC = rootViewController as? MainViewController {
+			}else if let presentingVC = rootViewController.presentedViewController as? MainViewController {
 				return presentingVC
 			}
 		}
@@ -913,3 +910,133 @@ extension MainViewController {
 	}
 }
 
+extension MainViewController: MatchServiceObserver {
+	fileprivate func handleMatchError(error: MatchError) {
+		guard self.videoCall != nil else { return }
+		
+		// 服务器上报配对结果，必须在上一步记录检测结果之后
+		self.reportCallEnd()
+		
+		// dismiss chat controller
+		self.dismissVideoCall()
+		
+		// 断开连接
+		self.videoCallManager.disconnect()
+	}
+	
+	fileprivate func reportCallEnd() {
+		
+	}
+	
+	fileprivate func tryChating() {
+		guard let videoCall = self.videoCall else { return }
+		
+		// 如果已经收到所有人的流
+		if videoCall.allUserConnected() {
+			// dismiss all bar
+			NotificationManager.shared.dismissAllNotificationBar()
+			// didmiss other
+			self.willPresentVideoCall(call: videoCall)
+			// stop timer
+			self.videoCallManager.beginChat()
+			// present
+			self.showVideoCall()
+		}
+	}
+	
+	func disconnect(reason: MatchError) {
+		self.handleMatchError(error: reason)
+	}
+	
+	func remoteVideoReceived(user user_id: Int) {
+		// 收到对方的视频流
+		self.tryChating()
+	}
+	
+	// match message
+	func handleReceivedMessage(message: MatchMessage) {
+		let type = MessageType.init(type: message.type)
+		switch type {
+		case .PceOut:
+			self.receivePceOut(message: message)
+		default:
+			self.matchViewController?.handleReceivedMessage(message: message)
+		}
+	}
+	
+	fileprivate func receivePceOut(message: MatchMessage) {
+		if let sender = message.sender, self.videoCall?.matchedUser(with: sender) != nil {
+			self.handleMatchError(error: .OtherSkip)
+		}
+	}
+	
+	func channelMessageReceived(message: MatchMessage) {
+		self.handleReceivedMessage(message: message)
+	}
+	
+	func showVideoCall() {
+		guard let videoCall = self.videoCall else { return }
+		
+		let matchViewController = self.storyboard?.instantiateViewController(withIdentifier: "callVC") as! CallViewController
+		self.matchViewController = matchViewController
+		
+		var presentingVC: UIViewController = self
+		while let presentedVC = presentingVC.presentedViewController {
+			presentingVC = presentedVC
+		}
+		matchViewController.present(from: presentingVC, from: self, with: videoCall, complete: nil)
+	}
+	
+	func dismissVideoCall() {
+		guard let videoCall = self.videoCall else { return }
+		self.videoCall = nil
+		
+		guard let matchViewController = self.matchViewController else {
+			self.videoCallManager.sendResponse(type: .Skip)
+			NotificationManager.shared.dismissAllNotificationBar()
+			return
+		}
+		
+		self.matchViewController = nil
+		matchViewController.dismiss(complete: { [weak self] in
+			self?.didDismissVideoCall(call: videoCall)
+			self?.localPreview.addLocalPreview()
+		})
+	}
+}
+
+extension MainViewController: InAppNotificationActionDelegate {
+	func videoCallDidAccept(videoCall: VideoCallModel, from bar: InAppNotificationBar?) {
+		videoCall.accept = true
+		self.videoCall = videoCall
+		self.videoCallManager.delegate = self
+		self.videoCallManager.connect(with: videoCall)
+		if videoCall.call_out == false {
+			self.videoCallManager.sendResponse(type: .Accept)
+		}
+	}
+	
+	func videoCallDidReject(videoCall: VideoCallModel, from bar: InAppNotificationBar?) {
+		self.videoCallManager.sendResponse(type: .Skip, to: videoCall)
+	}
+	
+	func twopInviteDidAccept(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/2pinvitations/accept/\(notification.sender_id)", method: .post) { (_) in
+			
+		}
+	}
+	
+	func twopInviteDidReject(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/2pinvitations/ignore/\(notification.sender_id)", method: .post) { (_) in
+			
+		}
+	}
+	
+	func pairRequestDidAccept(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+		
+	}
+	
+	func pairRequestDidReject(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+		
+	}
+}

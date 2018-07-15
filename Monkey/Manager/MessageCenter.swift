@@ -11,22 +11,35 @@ import RealmSwift
 import ObjectMapper
 
 @objc protocol MessageObserver: class, NSObjectProtocol {
-	// 在状态 2 收到的 match
+	// 收到的 match
 	@objc optional func didReceiveOnepMatch(match: MatchModel)
 	@objc optional func didReceiveTwopMatch(match: MatchModel)
 	
+	// 收到对方的 video call
+	@objc optional func didReceiveVideoCall(call: VideoCallModel)
+	
 	// 收到对 match 的操作
-	@objc optional func didReceiveSkip(in chat: String)
-	@objc optional func didReceiveAccept(in chat: String)
+	@objc optional func didReceiveMatchSkip(in chat: String)
+	@objc optional func didReceiveMatchAccept(in chat: String)
+	@objc optional func didReceiveCallCancel(in chat: String)
 	
 	// friend 发生改变
 	@objc optional func didReceiveFriendAdded()
 	@objc optional func didReceiveFriendRemoved()
-	@objc optional func didReceiveFriendInvite()
 	
-	// 收到对方的 video call
-	@objc optional func didReceiveVideoCall(call: VideoCallModel)
-	@objc optional func didReceiveCallCancel(call: String)
+	// twop invite
+	@objc optional func didReceiveTwopInvite(message: NotificationMessage)
+	@objc optional func didReceiveTwopAccept(message: NotificationMessage)
+	
+	// twop pair
+	@objc optional func didReceivePairRequest(message: NotificationMessage)
+	@objc optional func didReceivePairAccept(message: NotificationMessage)
+	
+	// friend status change
+	@objc optional func didReceiveOnlineStatusChanged()
+	
+	// 收到用户信息更新
+	@objc optional func didReceiveInfoChanged()
 	
 	// 收到 pair 消息
 	@objc optional func didReceiveTwopDefault(message: [String: Any])
@@ -37,7 +50,7 @@ import ObjectMapper
 	@objc optional func didReceiveReportedMessage(url: String)
 	
 	// 未知消息类型
-	@objc optional func didReceiveUnknowMessage(message: [String: Any], channel: String)
+	@objc optional func didReceiveUnknowMessage(message: [String: Any])
 }
 
 class MessageCenter {
@@ -67,13 +80,18 @@ class MessageCenter {
 	}
 	
 	func handle(messageDic: [String: Any], from channel: SocketChannel) {
+		
+		if channel == .new_default {
+			self.handleNewSocket(messageDic: messageDic)
+			return
+		}
+		
 		var messageDoc = JSONAPIDocument.init(json: messageDic)
 		var messageObject: Any? = nil
 
 		// handle some message data
 		switch channel {
 		case .match_receive:
-			
 			var matchJson = messageDic
 			// 老的数据
 			if messageDoc.dataResource?.id != nil {
@@ -89,57 +107,6 @@ class MessageCenter {
 			if let matchModel = Mapper<MatchModel>().map(JSON: matchJson) {
 				// 构造 match model
 				messageObject = matchModel
-			}
-			break
-		case .call_receive:
-			// call_id
-			var call_info = messageDoc.dataResource?.attributes
-			if let call_data = messageDoc.dataResource?.json, let match_id = call_data["id"] as? String {
-				call_info?["id"] = match_id
-			}
-			
-			// call_relationships
-			if let call_relationships = messageDoc.dataResource?.relationships {
-				// 构造新的 json 和 document
-				var new_message_info = messageDoc.json
-				var new_call_relationships = call_relationships
-				
-				// 设置 match 到的 user_id
-				if let user_info = call_relationships["user"] as? [String: Any], let user_id = user_info["id"] as? String {
-					call_info?["user_id"] = user_id
-					new_call_relationships["user"] = [
-						"id": user_id,
-						"type": RealmUser.type,
-					]
-				}
-				
-				// 设置 match 到的 initiator
-				if let initiator_info = call_relationships["initiator"] as? [String: Any], let initiator_id = initiator_info["id"] as? String {
-					call_info?["initiator_id"] = initiator_id
-					new_call_relationships["initiator"] = [
-						"id": initiator_id,
-						"type": RealmUser.type,
-					]
-				}
-				
-				// 设置 match 到的 friendship_id
-				if let friendship_id = call_relationships["friendship_id"] as? String {
-					call_info?["friendship_id"] = friendship_id
-					new_call_relationships["friendship"] = [
-						"id": friendship_id,
-						"type": RealmFriendship.type,
-					]
-				}
-				
-				new_message_info["relationships"] = new_call_relationships
-				messageDoc = JSONAPIDocument.init(json: new_message_info)
-			}
-			
-			// 根据 call attributes 构造 match 对象
-			if let call_info = call_info, let callModel = Mapper<VideoCallModel>().map(JSON: call_info) {
-				messageObject = callModel
-				// 设置 user 属性
-				
 			}
 			break
 		case .reported:
@@ -158,8 +125,6 @@ class MessageCenter {
 			fallthrough
 		case .json_api:
 			fallthrough
-		case .twop_default:
-			fallthrough
 		default:
 			break
 		}
@@ -172,9 +137,53 @@ class MessageCenter {
 		}
 	}
 	
+	func handleNewSocket(messageDic: [String: Any]) {
+		
+		var object: Any? = nil
+		var selector = #selector(MessageObserver.didReceiveUnknowMessage(message:))
+		
+		if let socketMessage = Mapper<NotificationMessage>().map(JSON: messageDic) {
+			switch socketMessage.socketType {
+			case .unlockInPlanA:
+				fallthrough
+			case .userInfoChanged:
+				selector = #selector(MessageObserver.didReceiveInfoChanged)
+			case .newfriendAdded:
+				selector = #selector(MessageObserver.didReceiveFriendAdded)
+			case .friendOnlineStatusChanged:
+				fallthrough
+			case .pairAcceptReceived:
+				fallthrough
+			case .pairRequestReceived:
+				fallthrough
+			case .twopInviteAcceptReceived:
+				object = messageDic
+				selector = #selector(MessageObserver.didReceiveTwopDefault(message:))
+			case .twopInviteReceived:
+				object = socketMessage
+				selector = #selector(MessageObserver.didReceiveTwopInvite(message:))
+//			case .pairRequestReceived:
+//				object = socketMessage
+//				selector = #selector(MessageObserver.didReceivePairRequest(message:))
+			case .videoCallReceived:
+				object = socketMessage.receivedCall()
+				selector = #selector(MessageObserver.didReceiveVideoCall(call:))
+			case .videoCallCancel:
+				object = socketMessage.cancelCallID()
+				selector = #selector(MessageObserver.didReceiveCallCancel(in:))
+			default:
+				break
+			}
+		}
+		
+		// dispatch message data to observer(on main queue)
+		self.dispatch(selector: selector, with: object)
+	}
+	
+	
 	func dispatch(object: Any?, message: [String: Any], from channel: SocketChannel) {
 		// dispatch message data to observer(on main queue)
-		var selector = #selector(MessageObserver.didReceiveUnknowMessage(message:channel:))
+		var selector = #selector(MessageObserver.didReceiveUnknowMessage(message:))
 		// perform selector with objects
 		var object1: Any?
 		
@@ -199,9 +208,9 @@ class MessageCenter {
 				object1 = chat_id
 				
 				if action == MessageType.Accept.rawValue {
-					selector = #selector(MessageObserver.didReceiveAccept(in:))
+					selector = #selector(MessageObserver.didReceiveMatchAccept(in:))
 				}else {
-					selector = #selector(MessageObserver.didReceiveSkip(in:))
+					selector = #selector(MessageObserver.didReceiveMatchSkip(in:))
 				}
 			}
 			break
@@ -220,7 +229,7 @@ class MessageCenter {
 			selector = #selector(MessageObserver.didReceiveVideoCall(call:))
 			break
 		case .call_cancel:
-			selector = #selector(MessageObserver.didReceiveCallCancel(call:))
+			selector = #selector(MessageObserver.didReceiveCallCancel(in:))
 			if let objectDocument = object as? JSONAPIDocument, let chat_id = objectDocument.dataResource?.id {
 				object1 = chat_id
 			}else {
@@ -246,26 +255,28 @@ class MessageCenter {
 			break
 		case .json_api:
 			break
-		case .twop_default:
-			object1 = message
-			selector = #selector(MessageObserver.didReceiveTwopDefault(message:))
+		case .new_default:
 			break
 		default:
 			break
 		}
 		
+		self.dispatch(selector: selector, with: object1)
+	}
+	
+	private func dispatch(selector: Selector, with object: Any?) {
 		let observers = self.observers
-		observers.forEach({ (observer) in
-			if observer.responds(to: selector) {
-				if selector == #selector(MessageObserver.didReceiveUnknowMessage(message:channel:)) {
-					observer.didReceiveUnknowMessage?(message: message, channel: channel.rawValue)
-				}else if object1 == nil {
-					let _ = observer.perform(selector)
-				}else {
-					let _ = observer.perform(selector, with: object1)
+		DispatchQueue.main.async {
+			observers.forEach({ (observer) in
+				if observer.responds(to: selector) {
+					if object == nil {
+						let _ = observer.perform(selector)
+					}else {
+						let _ = observer.perform(selector, with: object)
+					}
 				}
-			}
-		})
+			})
+		}
 	}
 	
 	private func parseMatch(old messageInfo: JSONAPIDocument) -> [String: Any] {

@@ -157,8 +157,21 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	}
 	
 	func pushToDashboardMainVcFunc() {
-		let vc = self.storyboard?.instantiateViewController(withIdentifier: "DashboardMainViewController") as! DashboardMainViewController
-		self.present(vc, animated: true, completion: nil)
+		guard let user = UserManager.shared.currentUser else { return }
+		
+		if user.cached_enable_two_p == false, let realm = try? Realm() {
+			do {
+				try realm.write {
+					user.cached_unlocked_two_p = true
+				}
+			} catch(let error) {
+				print("Error: ", error)
+			}
+		}
+		
+		if let twopMatchVC = self.parent as? TwopMatchController {
+			twopMatchVC.refreshInitialVC()
+		}
 	}
 	
 	func handleSearchContactsFunc(sender:UITextField) {
@@ -418,7 +431,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		self.unlockNextButton.layer.shadowColor = UIColor.black.withAlphaComponent(0.25).cgColor
 		self.unlockNextButton.layer.shadowOpacity = 0.7
 		self.unlockNextButton.layer.shadowRadius = 28
-		self.unlockNextButton.isHidden = false
 	}
 	
 	func initData() {
@@ -446,18 +458,11 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		self.initInviteFriendsNotificationFunc()
 		
-		MessageCenter.shared.addMessageObserver(observer: self)
-	}
-	
-	override func viewDidDisappear(_ animated: Bool) {
-		super.viewDidDisappear(animated)
-		
-		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
-		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+		UserManager.shared.addMessageObserver(observer: self)
 	}
 	
 	deinit {
-//		MessageCenter.shared.delMessageObserver(observer: self)
+		UserManager.shared.delMessageObserver(observer: self)
 	}
 }
 
@@ -483,36 +488,10 @@ extension TwoPersonPlanViewController {
 /**
  socket消息相关
 */
-extension TwoPersonPlanViewController : MessageObserver {
-	
+extension TwoPersonPlanViewController : UserObserver {
 	// 收到planA主动发起的联系人邀请后，联系人下载安装后unlock2p消息，关闭plan页，进入dashboard页，刷新me接口信息
-	func didReceiveTwopDefault(message: [String : Any]) {
-		print("*** message = \(message)")
+	func currentUserInfomationChanged() {
 		
-		let twopSocketModel = TwopSocketModel.twopSocketModel(dict: message as [String : AnyObject])
-		
-		print("*** twopSocketModel = \(twopSocketModel.msgIdString?.description), model = \(twopSocketModel.extDictModel?.friendIdInt)")
-		
-		switch twopSocketModel.msgTypeInt {
-		case SocketDefaultMsgTypeEnum.unlock2p.rawValue: // unlock2p
-			if let realm = try? Realm() {
-				do {
-					try realm.write {
-						UserManager.shared.currentUser!.cached_unlocked_two_p = true
-					}
-				} catch(let error) {
-					print("Error: ", error)
-				}
-			}
-			self.pushToDashboardMainVcFunc()
-			
-		case SocketDefaultMsgTypeEnum.friendInvite.rawValue: // friendInvite
-			
-			self.initData() // 收到friends request刷新列表并更新main的红点值
-			
-		default:
-			break
-		}
 	}
 }
 

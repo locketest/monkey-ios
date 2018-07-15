@@ -34,8 +34,6 @@ class VideoCallManager {
 		self.disconnect()
 		// video call model
 		self.videoCall = callModel
-		// send accept message
-		self.sendResponse(type: .Accept)
 		// add observer
 		self.channelService.channelDelegate = self
 		// begin response timer

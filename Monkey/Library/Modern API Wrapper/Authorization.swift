@@ -65,10 +65,6 @@ class Authorization: MonkeyModel {
 		return Authorization.token_prefix + token
 	}
 	
-	override static func ignoredProperties() -> [String] {
-		return ["auth_token"]
-	}
-	
 	dynamic var user_id: String!
 	dynamic var environment: String! = Environment.environment.rawValue
 	dynamic var deep_link: DeepLinkInfo?

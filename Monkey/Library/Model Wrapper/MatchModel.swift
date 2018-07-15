@@ -509,24 +509,23 @@ class ChannelModel: NSObject, Mappable, VideoCallProtocol {
 }
 
 class VideoCallModel: ChannelModel {
-	// chat_id 每个 match 的 chat_id
-	var chat_id: String!
 	/**
 	*  the other user
 	*/
-	var user: MatchUser!
+	var friend: MatchUser!
 	// 是否是主动拨打出去的
 	var call_out = true
 	
 	/**
 	*  friendship for this call
 	*/
-	var friendship: RealmFriendship?
+	var friendship: RealmUser? {
+		let threadSafeRealm = try? Realm()
+		return threadSafeRealm?.object(ofType: RealmUser.self, forPrimaryKey: String.init(friend.user_id))
+	}
 
 	// create at
-	var created_at: Date?
-	// status for match model
-	var status: String?
+	var expire_time: Date?
 
 	// 开始连接的时间
 	override var connectTime: Date? {
@@ -558,7 +557,7 @@ class VideoCallModel: ChannelModel {
 	}
 	// video call 对象
 	override var left: MatchUser! {
-		return self.user
+		return self.friend
 	}
 	// 是否是 dialedCall
 	override var isVideoCall: Bool {
@@ -566,7 +565,7 @@ class VideoCallModel: ChannelModel {
 	}
 
 	required init?(map: Map) {
-		if map["id"].currentValue == nil || map["user"].currentValue == nil {
+		if map["friend"].currentValue == nil {
 			return nil
 		}
 		super.init(map: map)
@@ -574,11 +573,9 @@ class VideoCallModel: ChannelModel {
 
 	override func mapping(map: Map) {
 		super.mapping(map: map)
-		user			<- map["user"]
+		friend			<- map["friend"]
 
-		chat_id			<- map["id"]
-		created_at		<- map["created_at"]
-		status			<- map["status"]
+		expire_time		<- map["expire_time"]
 	}
 }
 

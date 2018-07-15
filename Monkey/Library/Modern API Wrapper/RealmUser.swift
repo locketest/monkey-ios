@@ -277,12 +277,12 @@ extension RealmUser {
 				
 			case .channels(let channels):
 				relationshipsJSON["channels"] = [
-					"data": channels.map({ (channel) -> [String: String] in
+					"data": Array(channels).map { (channel) in
 						return [
 							"type": "channels",
 							"id": channel.channel_id!,
 						]
-					})
+					}
 				]
 			}
 		}

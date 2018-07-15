@@ -38,10 +38,53 @@ public enum SocketChannel: String {
 	// just receive json
 	case json_api = "json_api_data"
 	
-	case twop_default = "default"
+	// 新版本消息类型
+	case new_default = "default"
 	
 	init(channel: String) {
 		self = SocketChannel.init(rawValue: channel) ?? .json_api
+	}
+}
+
+public enum SocketMessageType: Int {
+	// plan A 解锁
+	case unlockInPlanA = 0
+	// 添加了新好友
+	case newfriendAdded = 1
+	// 收到 twop invite
+	case twopInviteReceived = 2
+	// 收到 pair request
+	case pairRequestReceived = 3
+	// 收到 pair accept
+	case pairAcceptReceived = 4
+	// 对方 accept 了 twop invite
+	case twopInviteAcceptReceived = 5
+	// 好友在线状态更新
+	case friendOnlineStatusChanged = 6
+	// 收到 video call
+	case videoCallReceived = 7
+	// 收到 video cancel
+	case videoCallCancel = 8
+	// 资料更新
+	case userInfoChanged = 9
+	
+	// 未知类型
+	case unKnown = 999
+	
+	init(type: Int) {
+		switch type {
+		case 0: self = .unlockInPlanA
+		case 1: self = .newfriendAdded
+		case 2: self = .twopInviteReceived
+		case 3: self = .pairRequestReceived
+		case 4: self = .pairAcceptReceived
+		case 5: self = .twopInviteAcceptReceived
+		case 6: self = .friendOnlineStatusChanged
+		case 7: self = .videoCallReceived
+		case 8: self = .videoCallCancel
+		case 9: self = .userInfoChanged
+		default: self = .unKnown
+		}
 	}
 }
 
@@ -160,13 +203,13 @@ class Socket {
 	// 向 websocket server 发送消息
 	fileprivate func write(string: String, completion: (() -> ())? = nil) {
 		if self.isAuthorized {
-			print("Queuing message: \(string.trunc(length: 100))")
-			self.pendingSocketWrites.append(SocketWrite(string: string))
-		} else {
 			print("Writing message: \(string.trunc(length: 100))")
 			self.webSocket.write(string: string, completion: completion)
 			// record send time
 			self.lastResponseTime = Date().timeIntervalSince1970
+		} else {
+			print("Queuing message: \(string.trunc(length: 100))")
+			self.pendingSocketWrites.append(SocketWrite(string: string))
 		}
 	}
 	// 一次性发送所有 pedding messages

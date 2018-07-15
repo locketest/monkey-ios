@@ -69,7 +69,7 @@ class ChannelsViewController: SwipeableViewController, UITableViewDelegate, UITa
 			"title": title,
 			])
 		
-		if self.selectedChannels.first?.channel_id != APIController.shared.currentUser?.channels.first?.channel_id {
+		if self.selectedChannels.first?.channel_id != UserManager.shared.currentUser?.channels.first?.channel_id {
 			let list = List<RealmChannel>()
 			list.append(objectsIn: self.selectedChannels)
 			

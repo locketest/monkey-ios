@@ -9,6 +9,7 @@
 import UIKit
 import Foundation
 import RealmSwift
+import ObjectMapper
 
 protocol ChatViewModelDelegate: class {
 	func reloadData()
@@ -199,11 +200,29 @@ class ChatViewModel {
 				error.log(context: "Create (POST) on an initiated call")
 				self.delegate?.callFailed()
 			case .success(let responseJSON):
-				
-				break
-//				self.delegate?.processRecievedRealmCallFromServer(realmVideoCall: videoCall)
+				if let videoCall = self.parsed(response: responseJSON) {
+					self.delegate?.callSuccess(videoCall: videoCall)
+				}
 			}
 		}
+	}
+	
+	func parsed(response: [String: Any]) -> VideoCallModel? {
+		
+		var callDic: [String: Any] = response
+		let friend_id = callDic["friend_id"] as? Int
+		let friend: [String: Any] = [
+			"id": friend_id as Any
+		]
+		callDic["friend"] = friend
+		callDic["match_id"] = friend_id
+		
+		var videoCall: VideoCallModel?
+		if let parsedCall = Mapper<VideoCallModel>().map(JSON: callDic) {
+			videoCall = parsedCall
+			videoCall?.call_out = true
+		}
+		return videoCall
 	}
 	
 	/// Makes the API request and returns the parameters necessary for initializing a chat session.

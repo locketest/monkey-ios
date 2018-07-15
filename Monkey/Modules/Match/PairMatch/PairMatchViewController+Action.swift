@@ -13,6 +13,12 @@ extension PairMatchViewController: CountingLabelDelegate {
 	func minuteAdded() {
 		self.enableAddMinute()
 		
+		if let matchModel = self.matchModel, matchModel.addTimeCount() == 1 {
+			MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2)/matches/\(matchModel.match_id)/addtime", method: .post) { (_) in
+				
+			}
+		}
+		
 		clockLabel.formatBlock = {
 			(value) in
 			let seconds = Int(value / 1000)

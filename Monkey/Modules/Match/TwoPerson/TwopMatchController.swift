@@ -139,7 +139,7 @@ extension TwopMatchController: DashboardMainViewControllerDelegate {
 	
 	func twopStartConnectingFunc(pairRequestAcceptModel: PairRequestAcceptModel) {
 		
-		if /*let friend_id = pairRequestAcceptModel.userIdString,*/
+		if let friend_id = pairRequestAcceptModel.friendIdInt,
 			let pair_id = pairRequestAcceptModel.pairIdString,
 			let channel_name = pairRequestAcceptModel.channelNameString,
 			let channel_key = pairRequestAcceptModel.channelKeyString {
@@ -149,9 +149,9 @@ extension TwopMatchController: DashboardMainViewControllerDelegate {
 				"pair_id": pair_id,
 				"channel_name": channel_name,
 				"channel_key": channel_key,
-//				"friend": [
-//					"id": friend_id,
-//				],
+				"friend": [
+					"id": friend_id,
+				],
 			]
 			// 构造 pair model
 			if let friendPairModel = Mapper<FriendPairModel>().map(JSON: pairJson) {
@@ -182,6 +182,9 @@ extension TwopMatchController: MatchServiceObserver {
 	func remoteVideoReceived(user user_id: Int) {
 		if self.pairSuccess == false {
 			self.pairSuccess = true
+			if let dashboard = self.initialPanel as? DashboardMainViewController {
+				dashboard.endConnectingFunc()
+			}
 			self.beginPairMatch()
 		}
 	}

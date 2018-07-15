@@ -43,10 +43,6 @@ class RealmMessage: MonkeyModel {
         return Data(base64Encoded: base64EncodedString)
     }
 	
-	override static func ignoredProperties() -> [String] {
-		return ["parsedData"]
-	}
-	
 	required convenience init?(map: Map) {
 		if map["id"].currentValue == nil {
 			return nil

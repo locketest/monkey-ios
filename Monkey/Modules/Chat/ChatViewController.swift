@@ -120,21 +120,26 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
             } else {
                 self.profileActiveLabel.text = viewModel.userLastOnlineAtString
             }
-        } else{
+        } else {
             self.profileActiveLabel.isHidden = true
         }
     }
 	
 	func callCanceled() {
-		self.callFailed()
+		self.resetCallStatus()
 		self.sendCancelCallMessage()
 	}
 	
 	func callFailed() {
+		self.resetCallStatus()
+		self.videoCallManager.closeCall()
+		self.videoCall = nil
+	}
+	
+	func resetCallStatus() {
 		self.callButton.isJiggling = false
 		self.callButton.isSpinning = false
 		self.callButton.backgroundColor = Colors.white(0.06)
-		self.videoCallManager.closeCall()
 	}
 	
 	/// This method is a callback for the API request to create a RealmCall object. It is only called when user initiates a call.
@@ -148,8 +153,8 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     override func viewDidLoad() {
         super.viewDidLoad()
         self.viewModel.delegate = self
-		self.videoCallManager.delegate = self
 		MessageCenter.shared.addMessageObserver(observer: self)
+		NotificationManager.shared.prePresentDelegate = self
 
         self.chatTableView.delegate = self
         self.chatTableView.dataSource = self
@@ -460,6 +465,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     func sendCancelCallMessage() {
 		self.viewModel.cancelCall()
 		self.videoCallManager.closeCall()
+		self.videoCallManager.delegate = nil
 		self.viewModel.sendText("Call canceled")
 		self.videoCall = nil
 		self.view.layoutIfNeeded()
@@ -484,12 +490,14 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 		
         if let videoCall = self.videoCall {
 			// video call from my self
-			if videoCall.accept == true {
+			if videoCall.call_out {
 				self.callCanceled()
 			}else {
 				// accept other video call
 				videoCall.accept = true
+				self.videoCallManager.delegate = self
 				self.videoCallManager.connect(with: videoCall)
+				self.videoCallManager.sendResponse(type: .Accept)
 				self.callButton.isSpinning = true
 				self.profileActiveLabel.text = "connecting..."
 			}
@@ -504,19 +512,33 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.viewModel.sendText(nil)
         sender.isEnabled = false
     }
+	
+	deinit {
+		MessageCenter.shared.delMessageObserver(observer: self)
+		NotificationCenter.default.removeObserver(self)
+	}
 }
 
 extension ChatViewController: MatchServiceObserver {
-	func disconnect(reason: MatchError) {
-		switch reason {
-		case .WaitingTimeOut:
-			fallthrough
-		case .ConnectTimeOut:
-			self.callCanceled()
-		default:
-			break
-		}
+	func handleMatchError(error: MatchError) {
+		guard self.videoCall != nil else { return }
+		
+		// 服务器上报配对结果，必须在上一步记录检测结果之后
+		self.reportCallEnd()
+		
+		// dismiss chat controller
 		self.endVideoCall()
+		
+		// 断开连接
+		self.videoCallManager.disconnect()
+	}
+	
+	fileprivate func reportCallEnd() {
+		
+	}
+	
+	func disconnect(reason: MatchError) {
+		self.handleMatchError(error: reason)
 	}
 	
 	func remoteVideoReceived(user user_id: Int) {
@@ -524,27 +546,65 @@ extension ChatViewController: MatchServiceObserver {
 		
 		// 如果已经收到所有人的流
 		if videoCall.allUserConnected() {
+			self.videoCallManager.beginChat()
+			self.resetCallStatus()
 			self.startVideoCall()
 		}
 	}
 	
+	// match message
+	func handleReceivedMessage(message: MatchMessage) {
+		let type = MessageType.init(type: message.type)
+		switch type {
+		case .PceOut:
+			self.receivePceOut(message: message)
+		default:
+			self.callViewController?.handleReceivedMessage(message: message)
+		}
+	}
+	
+	fileprivate func receivePceOut(message: MatchMessage) {
+		if let sender = message.sender, self.videoCall?.matchedUser(with: sender) != nil {
+			self.handleMatchError(error: .OtherSkip)
+		}
+	}
+	
 	func channelMessageReceived(message: MatchMessage) {
-		
+		self.handleReceivedMessage(message: message)
 	}
 	
 	func startVideoCall() {
 		guard let videoCall = self.videoCall else { return }
 		
-		Achievements.shared.totalChats += 1
-		let callViewController = self.storyboard?.instantiateViewController(withIdentifier: "callVC") as! MatchMessageObserver
+		let callViewController = UIStoryboard.init(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "callVC") as! MatchMessageObserver
 		self.callViewController = callViewController
 		callViewController.present(from: self, with: videoCall, complete: nil)
 	}
 	
 	func endVideoCall() {
-		self.callViewController?.dismiss(complete: nil)
+		guard self.videoCall != nil else { return }
+		self.videoCall = nil
+		self.resetCallStatus()
+		
+		guard let callViewController = self.callViewController else {
+			self.videoCallManager.sendResponse(type: .Skip)
+			NotificationManager.shared.dismissAllNotificationBar()
+			return
+		}
+		
 		self.callViewController = nil
-		self.callFailed()
+		callViewController.dismiss {
+			self.mainViewController?.localPreview.addLocalPreview()
+		}
+	}
+}
+
+extension ChatViewController: InAppNotificationPreActionDelegate {
+	func shouldPresentVideoCallNotification(videoCall: VideoCallModel) -> Bool {
+		if "\(videoCall.left.user_id)" == self.viewModel.friendship?.user?.user_id {
+			return false
+		}
+		return true
 	}
 }
 
@@ -552,14 +612,15 @@ extension ChatViewController: MatchServiceObserver {
 extension ChatViewController: MessageObserver {
 	
 	// 收到对 match 的操作
-	func didReceiveSkip(in chat: String) {
-		if chat == self.videoCall?.chat_id {
+	func didReceiveMatchSkip(in chat: String) {
+		if chat == self.videoCall?.match_id {
 			self.callFailed()
 		}
 	}
 	
-	func didReceiveAccept(in chat: String) {
-		if let videoCall = self.videoCall, chat == videoCall.chat_id {
+	func didReceiveMatchAccept(in chat: String) {
+		if let videoCall = self.videoCall, chat == videoCall.match_id, videoCall.call_out {
+			self.videoCallManager.delegate = self
 			self.videoCallManager.connect(with: videoCall)
 			self.callButton.isSpinning = true
 			self.profileActiveLabel.text = "connecting..."
@@ -571,12 +632,13 @@ extension ChatViewController: MessageObserver {
 		if "\(call.left.user_id)" == self.viewModel.friendship?.user?.user_id {
 			self.callButton.backgroundColor = Colors.purple
 			self.callButton.isJiggling = true
+			call.left.accept = true
 			self.videoCall = call
 		}
 	}
 	
-	func didReceiveCallCancel(call: String) {
-		if call == self.videoCall?.chat_id {
+	func didReceiveCallCancel(in call: String) {
+		if call == self.videoCall?.match_id {
 			self.callFailed()
 		}
 	}
@@ -601,7 +663,7 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
         }
 
         /// 8 pixels on top and bottom of text
-        let textInset:CGFloat = 16
+        let textInset: CGFloat = 16
         let stringSize = text.boundingRect(forFont: .systemFont(ofSize: 17), constrainedTo: CGSize(width: 244, height: CGFloat.greatestFiniteMagnitude))
 
         /// Minimum cell height, lowercase a is shorter than capital A, keep consistent 1 line height

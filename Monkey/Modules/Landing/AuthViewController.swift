@@ -107,12 +107,10 @@ class AuthViewController: MonkeyViewController {
 					self.reloadUser(user: user, completion: completion)
 				}
 			}else {
-				
 				// set user_id for some analytics
 				AnalyticsCenter.loginAccount()
-				
-				// refresh cache data
-				user.refreshCache()
+				// refresh user data
+				UserManager.shared.refreshUserData()
 				completion()
 			}
 		}

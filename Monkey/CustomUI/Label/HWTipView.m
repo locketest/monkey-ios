@@ -47,6 +47,7 @@
 	self.layer.shadowOffset = CGSizeMake(0, 1);
 	self.layer.shadowOpacity = 1;
 	
+	self.userInteractionEnabled = false;
 	self.contentLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 	self.contentLabel.textColor = [UIColor whiteColor];
 	self.contentLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightMedium];

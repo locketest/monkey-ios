@@ -112,11 +112,6 @@ public enum MatchMode: String {
 	}
 }
 
-enum MatchingMode: String {
-	case discover = "discover"
-	case friends = "friends"
-}
-
 class Achievements {
 	static let shared = Achievements()
 	private init() {}

@@ -294,6 +294,14 @@ extension CallViewController: MatchMessageObserver {
 		matchHandler.present(self, animated: false, completion: complete)
 	}
 	
+	func present(from vc: UIViewController? = nil, from matchHandler: MatchHandler, with matchModel: ChannelModel, complete: CompletionHandler?) {
+		self.matchModel = matchModel
+		self.matchHandler = matchHandler
+		
+		let presentedVC = vc ?? matchHandler
+		presentedVC.present(self, animated: false, completion: complete)
+	}
+	
 	func dismiss(complete: CompletionHandler? = nil) {
 		guard self.isAnimatingDismiss == false else {
 			complete?()

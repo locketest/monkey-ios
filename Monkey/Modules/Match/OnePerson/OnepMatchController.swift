@@ -756,43 +756,31 @@ extension OnepMatchController {
 		
 		self.generateNewRequestID()
 		AnalyticsCenter.log(event: AnalyticEvent.matchRequestTotal)
-		
+		let matchMode: MatchMode = Achievements.shared.selectMatchMode ?? MatchMode.VideoMode
 		let parameters: [String: Any] = [
-			"data": [
-				"type": "chats",
-				"attributes": [
-					"matching_mode": MatchingMode.discover.rawValue,
-					"match_mode": Achievements.shared.selectMatchMode?.rawValue ?? MatchMode.VideoMode.rawValue,
-					"request_id": self.request_id!,
-					"match_nearby": Achievements.shared.nearbyMatch,
-				]
+			"match_mode": matchMode.rawValue,
+			"request_id": self.request_id!,
+			"enable_nearby": Achievements.shared.nearbyMatch,
 			]
-		]
 		
-		self.chatRequest = RealmCall.request(url: RealmCall.common_request_path, method: .post, parameters: parameters) { (error) in
-			print("Chat request completed with error = \(String(describing: error))")
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/matches/request/onep", parameters: parameters) { (_) in
 			self.cancelMatchRequest()
 			self.trackMatchRequest()
 		}
 	}
 	
 	func revokePrevMatchRequest(completion: (() -> Swift.Void)? = nil) {
-		guard self.request_id == nil else {
-			
+		if self.request_id != nil {
 			self.request_id = nil
 			self.cancelMatchRequest()
 			AnalyticsCenter.log(event: .matchCancel)
-			guard let authorization = UserManager.authorization else { return }
 			
-			JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/match_cancel", method: .post, options: [
-				.header("Authorization", authorization),
-				]).addCompletionHandler { (_) in
-					completion?()
+			MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/matches/cancel/onep", method: .post) { (_) in
+				completion?()
 			}
-			return
+		}else {
+			completion?()
 		}
-		
-		completion?()
 	}
 	
 	func cancelMatchRequest() {
@@ -1041,6 +1029,15 @@ extension OnepMatchController: MatchObserver {
 	
 	func appWillTerminate() {
 		self.stopFindingChats(forReason: "application-status")
+	}
+	
+	func willPresentVideoCall(call: VideoCallModel) {
+		self.stopFindingChats(forReason: "receive-videocall")
+		self.disconnect(reason: .MyQuit)
+	}
+	
+	func didDismissVideoCall(call: VideoCallModel) {
+		self.startFindingChats(forReason: "receive-videocall")
 		
 	}
 }

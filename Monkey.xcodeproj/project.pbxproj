@@ -204,6 +204,8 @@
 		D11FC18720EBAC05001F6B1F /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11FC18620EBAC05001F6B1F /* PushNotification.swift */; };
 		D11FC18820EBAC05001F6B1F /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11FC18620EBAC05001F6B1F /* PushNotification.swift */; };
 		D12E22942010747200703F9B /* RemoteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12E22932010747200703F9B /* RemoteConfig.swift */; };
+		D130F2ED20FA51550004D5E4 /* NotificationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D130F2EC20FA51550004D5E4 /* NotificationMessage.swift */; };
+		D130F2EE20FA51550004D5E4 /* NotificationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D130F2EC20FA51550004D5E4 /* NotificationMessage.swift */; };
 		D14478672058C5A400485D68 /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = D14478662058C5A400485D68 /* NotificationService.m */; };
 		D144786B2058C5A400485D68 /* PushService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D14478632058C5A300485D68 /* PushService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D147127820AD65870055516A /* MatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147127720AD65870055516A /* MatchModel.swift */; };
@@ -663,6 +665,7 @@
 		D10F820B20F75ACF00317424 /* TwopMatchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwopMatchManager.swift; sourceTree = "<group>"; };
 		D11FC18620EBAC05001F6B1F /* PushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
 		D12E22932010747200703F9B /* RemoteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfig.swift; sourceTree = "<group>"; };
+		D130F2EC20FA51550004D5E4 /* NotificationMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMessage.swift; sourceTree = "<group>"; };
 		D14478632058C5A300485D68 /* PushService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D14478652058C5A400485D68 /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
 		D14478662058C5A400485D68 /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
@@ -998,6 +1001,7 @@
 				D192A3DC2029966E00791002 /* Message.swift */,
 				D147127720AD65870055516A /* MatchModel.swift */,
 				D1B79CF3205FA80800F209B4 /* UserOptions.swift */,
+				D130F2EC20FA51550004D5E4 /* NotificationMessage.swift */,
 			);
 			path = "Model Wrapper";
 			sourceTree = "<group>";
@@ -2089,6 +2093,7 @@
 				D192A3E5202ACE5E00791002 /* TextChatViewController+Reporting.swift in Sources */,
 				D1B79D382060DACB00F209B4 /* IFInkwellFilter.m in Sources */,
 				8435C2EA1F14018100C80AC6 /* FriendsViewModel.swift in Sources */,
+				D130F2ED20FA51550004D5E4 /* NotificationMessage.swift in Sources */,
 				3470157220ECFD3000D3C101 /* PairRequestAcceptModel.swift in Sources */,
 				D161553920F634E100145FC9 /* VideoCallManager.swift in Sources */,
 				8B8B2D741EC52B910086547C /* CachedImageView.swift in Sources */,
@@ -2285,6 +2290,7 @@
 				D1A22A5820A03F8A004F0F05 /* TextChatViewController+Reporting.swift in Sources */,
 				D1A22A5920A03F8A004F0F05 /* IFInkwellFilter.m in Sources */,
 				D1A22A5C20A03F8A004F0F05 /* FriendsViewModel.swift in Sources */,
+				D130F2EE20FA51550004D5E4 /* NotificationMessage.swift in Sources */,
 				3470157320ECFD3000D3C101 /* PairRequestAcceptModel.swift in Sources */,
 				D161553A20F634E100145FC9 /* VideoCallManager.swift in Sources */,
 				D1A22A5D20A03F8A004F0F05 /* CachedImageView.swift in Sources */,

@@ -17,10 +17,10 @@ import ObjectMapper
 	@objc optional func currentUserInfomationChanged()
 }
 
-class UserManager {
+class UserManager: NSObject {
 	
 	static let shared = UserManager()
-	private init() {}
+	override private init() {}
 	
 	static var authorization: String? {
 		return shared.currentAuthorization?.auth_token
@@ -42,6 +42,12 @@ class UserManager {
 		}
 		let threadSafeRealm = try? Realm()
 		return threadSafeRealm?.object(ofType: RealmUser.self, forPrimaryKey: userId)
+	}
+	
+	/// cached user
+	static func cachedUser(with user_id: Int) -> RealmUser? {
+		let threadSafeRealm = try? Realm()
+		return threadSafeRealm?.object(ofType: RealmUser.self, forPrimaryKey: "\(user_id)")
 	}
 	
 	var currentExperiment: RealmExperiment? {
@@ -170,6 +176,9 @@ class UserManager {
 		// refresh friends
 		FriendsViewModel.sharedFreindsViewModel.setup()
 		
+		// add observer
+		MessageCenter.shared.addMessageObserver(observer: self)
+		
 		// dispatch
 		self.dispatch(selector: #selector(UserObserver.currentUserDidLogin))
 	}
@@ -183,6 +192,9 @@ class UserManager {
 		
 		// clear friends
 		FriendsViewModel.sharedFreindsViewModel.reset()
+		
+		// del observer
+		MessageCenter.shared.delMessageObserver(observer: self)
 		
 		// dispatch
 		self.dispatch(selector: #selector(UserObserver.currentUserDidLogout))
@@ -218,7 +230,7 @@ class UserManager {
 			])
 	}
 	
-	private func dispatch(selector: Selector) {
+	fileprivate func dispatch(selector: Selector) {
 		// always in main queue
 		let observers = self.observers
 		observers.forEach({ (observer) in
@@ -228,3 +240,23 @@ class UserManager {
 		})
 	}
 }
+
+extension UserManager: MessageObserver {
+	func refreshUserData() {
+		guard let currentUser = self.currentUser else { return }
+		currentUser.refreshCache()
+		self.dispatch(selector: #selector(UserObserver.currentUserInfomationChanged))
+	}
+	
+	func didReceiveInfoChanged() {
+		guard let currentUser = self.currentUser else { return }
+		currentUser.reload { (error) in
+			if error != nil {
+				return
+			}
+			currentUser.refreshCache()
+			self.dispatch(selector: #selector(UserObserver.currentUserInfomationChanged))
+		}
+	}
+}
+

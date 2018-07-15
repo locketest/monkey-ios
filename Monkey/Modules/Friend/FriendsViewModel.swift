@@ -13,22 +13,24 @@ protocol FriendsViewModelDelegate: class {
 	func reloadFriendships()
 }
 
-class FriendsViewModel {
+class FriendsViewModel: NSObject {
 	
 	static var sharedFreindsViewModel = FriendsViewModel()
 	weak var delegate: FriendsViewModelDelegate?
 	private var friendshipsNotificationToken: NotificationToken?
 	
-	private init() {}
+	override private init() {}
 	
 	func setup() {
 		self.friendshipsNotificationToken = self.friendships?.observe { (change) in
 			self.delegate?.reloadFriendships()
 		}
 		self.refreshFriendships()
+		MessageCenter.shared.addMessageObserver(observer: self)
 	}
 	
 	func reset() {
+		MessageCenter.shared.delMessageObserver(observer: self)
 		self.currentMessagesJSONAPIRequest?.cancel()
 		self.currentFriendshipsJSONAPIRequest?.cancel()
 		self.friendshipsNotificationToken?.invalidate()
@@ -48,7 +50,7 @@ class FriendsViewModel {
 		}
 	}
 	
-	private func refreshFriendships() {
+	fileprivate func refreshFriendships() {
 		self.currentFriendshipsJSONAPIRequest?.cancel()
 		self.currentFriendshipsJSONAPIRequest = RealmFriendship.fetchAll { (result: JSONAPIResult<[RealmFriendship]>) in
 			switch result {
@@ -101,3 +103,15 @@ class FriendsViewModel {
 		self.friendshipsNotificationToken?.invalidate()
 	}
 }
+
+extension FriendsViewModel: MessageObserver {
+	
+	func didReceiveFriendAdded() {
+		self.refreshFriendships()
+	}
+	
+	func didReceiveFriendRemoved() {
+		self.refreshFriendships()
+	}
+}
+

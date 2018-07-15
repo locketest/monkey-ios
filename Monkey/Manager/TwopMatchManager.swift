@@ -226,7 +226,18 @@ extension TwopMatchManager: ChannelServiceProtocol {
 	}
 	
 	func channelKeyInvalid() {
-		
+		// if no friend, return
+		guard let friendPair = self.friendPair else { return }
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/matches/renew/\(friendPair.channel_name)", method: .post) { (result: JSONAPIResult<[String: Any]>) in
+			switch result {
+			case .error(let error):
+				// revert fade animation back to screen
+				// notify user call failed
+				error.log(context: "Create (POST) on an initiated call")
+			case .success(let responseJSON):
+				break
+			}
+		}
 	}
 	
 	func remoteUserDidQuited(user user_id: Int, droped: Bool) {
