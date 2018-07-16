@@ -290,7 +290,7 @@ class TextChatViewController: MonkeyViewController {
     
     @IBAction func alertInstagramPopupVcFunc(_ sender: SmallYellowButton) {
         let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as! InstagramPopupViewController
-//		instagramVC.userId = self.chatSession?.videoCall?.user?.user_id ?? self.chatSession?.videoCall?.initiator?.user_id
+		instagramVC.userId = String(self.matchModel.left.user_id)
         instagramVC.followMyIGTagBool = false
         self.present(instagramVC, animated: true)
     }

@@ -28,6 +28,8 @@ enum MessageType: String {
 			self = .Skip
 		case MessageType.Match.rawValue:
 			self = .Match
+		case MessageType.Confirm.rawValue:
+			self = .Confirm
 		case MessageType.Text.rawValue:
 			self = .Text
 		case MessageType.Background.rawValue:

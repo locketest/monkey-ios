@@ -14,7 +14,7 @@ class VideoCallManager {
 	private init() {}
 	
 	fileprivate let channelService = ChannelService.shared
-	var delegate: MatchServiceObserver?
+	weak var delegate: MatchServiceObserver?
 	fileprivate var videoCall: VideoCallModel?
 	
 	fileprivate var waitingTimer: Timer?
@@ -50,7 +50,11 @@ class VideoCallManager {
 	}
 	
 	func disconnect() {
-		self.channelService.leaveChannel()
+		if self.channelService.matchModel == self.videoCall {
+			self.channelService.leaveChannel()
+			// disable video capture
+			self.channelService.captureSwitch(open: false)
+		}
 		self.stopAllTimer()
 		self.videoCall = nil
 	}

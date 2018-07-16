@@ -207,7 +207,11 @@ enum TwopStatus {
 	case Reconnecting
 	
 	func processMatch() -> Bool {
-		return self != .DashboardReady && self != .PairConnecting && self != .RequestMatch && self != .Reconnecting
+		return self != .DashboardReady && self != .PairConnecting && self != .RequestMatch
+	}
+	
+	func connectMatch() -> Bool {
+		return self == .Connecting || self == .Chating
 	}
 }
 

@@ -136,6 +136,7 @@ extension OpenTokService: OTSessionDelegate {
 
 		let videoRender = MonkeyVideoRender(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
 		subscriber.videoRender = videoRender
+		subscriber.subscribeToAudio = false
 		self.channelModel?.left.container = videoRender
 		self.subscriber = subscriber
 

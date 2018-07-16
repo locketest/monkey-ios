@@ -664,31 +664,12 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 							self.unlockNextButton.isHidden = false
 							self.topTitleLabel.text = "🎉 UNLOCKED 🎉"
 							self.topTitleLabel.font = UIFont.boldSystemFont(ofSize: 28)
-							
-							if let realm = try? Realm() {
-								do {
-									try realm.write {
-										UserManager.shared.currentUser!.cached_unlocked_two_p = true
-									}
-								} catch(let error) {
-									print("Error: ", error)
-								}
-							}
 						} else {
 							
 							if self.isPlanBIsUnLockedTuple.isPlanB {
 								self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " \(remainTimes) ", textThree:"Friends to try your first 2P mode!", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
 							}
-							
-							if let realm = try? Realm() {
-								do {
-									try realm.write {
-										UserManager.shared.currentUser!.cached_contact_invite_remain_times = remainTimes
-									}
-								} catch(let error) {
-									print("Error: ", error)
-								}
-							}
+							UserManager.shared.refreshUserData()
 						}
 					} else {
 						print("error: value is nil")

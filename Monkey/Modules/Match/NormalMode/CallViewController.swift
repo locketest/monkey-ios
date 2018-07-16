@@ -153,15 +153,16 @@ class CallViewController: MonkeyViewController {
 		self.publisherContainerView.addLocalPreview()
 		self.publisherContainerView.pixellateable = true
 		self.enlargedPublisherView(duration: 0)
+		self.setupCommonTree()
 		
 		self.clockLabelBackgroundView.layer.cornerRadius = 20
 		self.clockLabelBackgroundView.layer.masksToBounds = true
-		self.commonTreeContainV.isHidden = true
 		
 		self.animator = UIDynamicAnimator(referenceView: self.containerView)
 	}
 	
 	func configureRemotePreview() {
+		self.setupCommonTree()
 		let remotePreview = self.matchModel.left.renderContainer
 		self.view.insertSubview(remotePreview, at: 0)
 		remotePreview.frame = self.view.bounds
@@ -178,6 +179,10 @@ class CallViewController: MonkeyViewController {
 			// hide skip\addtime\addfriend
 			self.snapchatButton.isEnabled = false
 			self.snapchatButton.isHidden = true
+			
+			let linkedInstagram = (self.matchModel.left.instagram_id != nil)
+			self.instagramPopupButton.isEnabled = linkedInstagram
+			self.instagramPopupButton.isHidden = !linkedInstagram
 			
 			self.addMinuteButton.isEnabled = false
 			self.addMinuteButton.isHidden = true
@@ -280,7 +285,7 @@ class CallViewController: MonkeyViewController {
 	
 	@IBAction func alertInstagramPopupVcFunc(_ sender: BigYellowButton) {
 		let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as! InstagramPopupViewController
-//		instagramVC.userId = self.chatSession?.videoCall?.user?.user_id ?? self.chatSession?.videoCall?.initiator?.user_id
+		instagramVC.userId = String(self.matchModel.left.user_id)
 		instagramVC.followMyIGTagBool = false
 		self.present(instagramVC, animated: true)
 	}

@@ -67,7 +67,7 @@ class ChannelService {
 	*/
 	var channelDelegate: ChannelServiceProtocol?
 	// 当前匹配到的 match
-	fileprivate var matchModel: ChannelModel?
+	var matchModel: ChannelModel?
 	
 	// agora service
 	fileprivate var agoraService = AgoraService.shared
@@ -90,6 +90,10 @@ class ChannelService {
 extension ChannelService: ChannelServiceManager {
 	
 	func joinChannel(matchModel: ChannelModel) {
+		if self.matchModel != nil {
+			self.leaveChannel()
+		}
+		
 		self.matchModel = matchModel
 		self.channelService(for: matchModel).joinChannel(matchModel: matchModel)
 	}
@@ -124,7 +128,7 @@ extension ChannelService: ChannelServiceManager {
 		self.channelService(for: match).mute(user: user_id, mute: mute)
 	}
 	
-	func sendMessage(type: MessageType, body: String, target_user: MatchUser? = nil) {
+	func sendMessage(type: MessageType, body: String, target_match: String? = nil, target_user: MatchUser? = nil) {
 		guard let match = self.matchModel else { return }
 		
 		var target = [Int]()
@@ -137,10 +141,20 @@ extension ChannelService: ChannelServiceManager {
 			}
 		}
 		
+		var matchMessageBody = body
+		if type == .AddTime {
+			matchMessageBody = "minute"
+		}
+		
+		var current_match = match.match_id
+		if let target_match = target_match {
+			current_match = target_match
+		}
+		
 		let dic: [String: Any] = [
 			"type": type.rawValue,
-			"body": body,
-			"match_id": match.match_id,
+			"body": matchMessageBody,
+			"match_id": current_match,
 			"target": target,
 			]
 		

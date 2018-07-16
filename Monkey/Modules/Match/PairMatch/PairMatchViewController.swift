@@ -44,6 +44,7 @@ class PairMatchViewController: MonkeyViewController {
 	@IBOutlet weak var clockLabel: CountingLabel!
 	@IBOutlet weak var clockTimeIcon: UILabel!
 	
+	@IBOutlet weak var transationView: MatchPairTransation!
 	@IBOutlet weak var statusLabel: UILabel!
 	
 	var remoteInfo: RemotePairInfo?
@@ -88,6 +89,7 @@ class PairMatchViewController: MonkeyViewController {
 		
 		self.matchManager.delegate = self
 		self.view.backgroundColor = UIColor.clear
+		self.transationView.backgroundColor = UIColor.init(red: 100.0 / 255.0, green: 74.0 / 255.0, blue: 241.0 / 255.0, alpha: 1)
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -193,10 +195,14 @@ class PairMatchViewController: MonkeyViewController {
 		let oldStatus = self.twopStatus
 		self.twopStatus = newStatus
 		
-		self.statusLabel.isHidden = (newStatus != .Connecting)
-		self.closeButton.isHidden = (newStatus != .RequestMatch)
-		self.factTextView.isHidden = (newStatus != .RequestMatch)
-		self.loadingTextLabel.isHidden = (newStatus != .RequestMatch)
+		self.statusLabel.isHidden = (newStatus != .Connecting && newStatus != .Reconnecting)
+		self.transationView.isHidden = (newStatus != .Connecting && newStatus != .Reconnecting)
+		self.remoteContainer.isHidden = (newStatus == .Reconnecting)
+		self.localPreview.isHidden = (newStatus == .Reconnecting)
+		self.pairInfoView.isHidden = (newStatus == .Reconnecting)
+		self.closeButton.isHidden = (newStatus != .RequestMatch && newStatus != .WaitingConfirm)
+		self.factTextView.isHidden = (newStatus != .RequestMatch && newStatus != .WaitingConfirm)
+		self.loadingTextLabel.isHidden = (newStatus != .RequestMatch && newStatus != .WaitingConfirm)
 		self.colorGradient.isHidden = (newStatus == .Chating)
 		self.pairInstagramView.isHidden = (newStatus != .Chating)
 		
@@ -221,6 +227,7 @@ class PairMatchViewController: MonkeyViewController {
 		case .Connecting:
 			break
 		case .Chating:
+//			self.disMiss
 			break
 		case .Reconnecting:
 			break
@@ -308,13 +315,11 @@ class PairMatchViewController: MonkeyViewController {
 		self.friendPairModel.resetConfirm()
 		// dismiss chat controller
 		self.dismissMatchedView()
-		// 服务器上报配对结果，必须在上一步记录检测结果之后
-		self.reportMatchEnd()
-		// reset local preview
-		self.localPreview.reset()
 		//
 		
 		switch error {
+		case .ReConnectTimeOut:
+			fallthrough
 		case .PairQuit:
 			fallthrough
 		case .MyQuit:
@@ -326,12 +331,22 @@ class PairMatchViewController: MonkeyViewController {
 			self.matchManager.sendMatchMessage(type: .PceOut)
 			fallthrough
 		default:
-			if self.twopStatus.processMatch() {
-				// 断开连接
-				self.matchManager.endChat()
+			// 断开连接
+			self.matchManager.endChat()
+			if self.matchModel?.matched_pair() == true && self.twopStatus.connectMatch() {
+				// 与好友重连
+				self.matchManager.reconnect(with: self.friendPairModel)
+				self.update(tip: "Connecting...")
+				self.update(to: .Reconnecting)
+			}else if self.twopStatus.processMatch() {
+				// 请求新的配对
 				self.update(to: .RequestMatch)
 			}
 		}
+		// reset local preview
+		self.localPreview.reset()
+		// 服务器上报配对结果，必须在上一步记录检测结果之后
+		self.reportMatchEnd()
 	}
 	
 	private func showOneMatchInfo() {
@@ -368,28 +383,33 @@ class PairMatchViewController: MonkeyViewController {
 		if match.matched_pair() {
 			guard self.twopStatus == .WaitingConfirm else { return }
 			self.showPairMatchInfo()
+			self.remoteContainer.isHidden = true
+			self.localPreview.isHidden = true
+			self.pairInfoView.isHidden = true
 		}else {
+			self.transationView.isHidden = true
 			guard self.twopStatus == .WaitingResponse else { return }
 		}
-		self.update(tip: "Connecting...", duration: 0)
+		self.update(tip: "Connecting...")
 		self.matchManager.connect(with: match)
 		self.update(to: .Connecting)
 	}
 	
 	fileprivate func tryChating() {
-		self.update(tip: nil)
-		
-		guard self.twopStatus == .Connecting else { return }
-		guard let match = self.matchModel else { return }
-		
-		// 如果已经收到所有人的流
-		if match.allUserConnected() && friendPairModel.left.connected {
-			// present
-			self.showMatchedView()
-			// stop timer
-			self.matchManager.beginChat()
-			// update status
-			self.update(to: .Chating)
+		if self.twopStatus == .Connecting, let match = self.matchModel {
+			// 如果已经收到所有人的流
+			if match.allUserConnected() && friendPairModel.left.connected {
+				// present
+				self.showMatchedView()
+				// stop timer
+				self.matchManager.beginChat()
+				// update status
+				self.update(to: .Chating)
+			}
+		}else if self.twopStatus == .Reconnecting, friendPairModel.left.connected {
+			// reconnect success
+			self.matchManager.pairSuccess(with: self.friendPairModel)
+			self.update(to: .RequestMatch)
 		}
 	}
 	
@@ -413,6 +433,8 @@ class PairMatchViewController: MonkeyViewController {
 	func refreshChating() {
 		if self.friendPairModel.left.instagram_id != nil {
 			self.pairInstagramView.isHidden = false
+		}else {
+			self.pairInstagramView.isHidden = true
 		}
 	}
 	
@@ -462,7 +484,7 @@ extension PairMatchViewController {
 		self.friendPairModel.resetConfirm()
 	}
 	
-	fileprivate func update(tip: String?, duration: TimeInterval = 1.5, autoDismiss: Bool = false) {
+	fileprivate func update(tip: String?, autoDismiss: Bool = false) {
 		if let tip = tip {
 			self.statusLabel.alpha = 1.0
 			self.statusLabel.text = tip
@@ -635,7 +657,10 @@ extension PairMatchViewController: RemoteActionDelegate {
 		self.report(user: user)
 	}
 	func insgramTapped(to user: MatchUser) {
-		
+		let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as! InstagramPopupViewController
+		instagramVC.userId = String(user.user_id)
+		instagramVC.followMyIGTagBool = false
+		self.present(instagramVC, animated: true)
 	}
 	func addTimeTapped() {
 		guard let match = self.matchModel else { return }
@@ -735,6 +760,16 @@ extension PairMatchViewController: MatchServiceObserver {
 }
 
 extension PairMatchViewController: MatchObserver {
+	func presentVideoCall(after completion: @escaping () -> Void) {
+		self.stopFindingChats(forReason: "receive-videocall")
+		self.disconnect(reason: .MySkip)
+		self.dismiss(complete: completion)
+	}
+	
+	func didDismissVideoCall(call: VideoCallModel) {
+		self.startFindingChats(forReason: "receive-videocall")
+	}
+	
 	func didReceiveMessage(type: String, in chat: String) {
 		
 	}
@@ -752,7 +787,8 @@ extension PairMatchViewController: MatchObserver {
 	}
 	
 	func appWillTerminate() {
-		
+		self.startFindingChats(forReason: "app-die")
+		self.disconnect(reason: .MyQuit)
 	}
 }
 

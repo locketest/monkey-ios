@@ -216,7 +216,20 @@ class SwipeableViewController: MonkeyViewController, UIGestureRecognizerDelegate
 	}
 }
 
-extension MainViewController: HeroViewControllerDelegate {
+extension SwipeableViewController: HeroViewControllerDelegate {
+	func heroDidEndAnimatingTo(viewController: UIViewController) {
+		if let window = UIApplication.shared.delegate?.window, let subViews = window?.subviews {
+			for subView in subViews {
+				if subView is UIStackView {
+					window?.bringSubview(toFront: subView)
+					break
+				}
+			}
+		}
+	}
+}
+
+extension MainViewController {
 	func heroWillStartAnimatingFrom(viewController: UIViewController) {
 		if viewController is FilterViewController {
 			self.colorGradientView.hero.modifiers = [.opacity(0)]
@@ -294,7 +307,7 @@ extension MainViewController {
 }
 
 
-extension FriendsViewController: HeroViewControllerDelegate {
+extension FriendsViewController {
 	func heroWillStartAnimatingFrom(viewController: UIViewController) {
 		if let fromVC = viewController as? ChatViewController {
 			let fromView: UIView = fromVC.view

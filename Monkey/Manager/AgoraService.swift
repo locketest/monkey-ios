@@ -80,7 +80,6 @@ extension AgoraService: AgoraRtcEngineDelegate {
 	*  Event of the user joined the channel.
 	*/
 	func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinChannel channel: String, withUid uid: UInt, elapsed: Int) {
-		self.remoteUsers.append(Int(uid))
 		self.didJoinChannel(channel: channel, user_id: uid)
 	}
 	
@@ -88,7 +87,7 @@ extension AgoraService: AgoraRtcEngineDelegate {
 	*  Event of the user rejoined the channel
 	*/
 	func rtcEngine(_ engine: AgoraRtcEngineKit, didRejoinChannel channel: String, withUid uid: UInt, elapsed: Int) {
-		self.didJoinChannel(channel: channel, user_id: uid)
+//		self.didJoinChannel(channel: channel, user_id: uid)
 	}
 	
 	// 加入房间后，创建消息数据流通道
@@ -105,11 +104,14 @@ extension AgoraService: AgoraRtcEngineDelegate {
 	}
 	
 	func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinedOfUid uid: UInt, elapsed: Int) {
-		self.observer?.remoteUserDidJoined(user: Int(uid))
+		let user_id = Int(uid)
+		self.remoteUsers.append(user_id)
+		self.observer?.remoteUserDidJoined(user: user_id)
 	}
 
 	func rtcEngine(_ engine: AgoraRtcEngineKit, didOfflineOfUid uid: UInt, reason: AgoraUserOfflineReason) {
 		let droped = (reason == .dropped)
+		self.remoteUsers.remove(Int(uid))
 		self.observer?.remoteUserDidQuited(user: Int(uid), droped: droped)
 	}
 

@@ -158,7 +158,10 @@ extension OnepPairMatchViewController: RemoteActionDelegate {
 		self.report(user: user)
 	}
 	func insgramTapped(to user: MatchUser) {
-		
+		let instagramVC = UIStoryboard(name: "Instagram", bundle: nil).instantiateInitialViewController() as! InstagramPopupViewController
+		instagramVC.userId = String(user.user_id)
+		instagramVC.followMyIGTagBool = false
+		self.present(instagramVC, animated: true)
 	}
 	func addTimeTapped() {
 		OnepMatchManager.default.sendMatchMessage(type: .AddTime)

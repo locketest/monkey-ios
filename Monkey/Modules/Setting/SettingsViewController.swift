@@ -295,14 +295,14 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		}
 	}
 
-//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        if self.editStatus {
-//            self.editCancelButtonClick()
-//            self.editStatus = false
-//        }
-//
-//        self.view.endEditing(true)
-//    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if self.editStatus {
+            self.editCancelButtonClick()
+            self.editStatus = false
+        }
+
+        self.view.endEditing(true)
+    }
 
     func profilePhotoButtonView(_ profilePhotoButtonView: ProfilePhotoButtonView, selectedImage: UIImage) {
         self.profilePhoto.profileImage = selectedImage
@@ -919,25 +919,16 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
 		let profileHeight: CGFloat = self.profileView.frame.size.height
 		let currentWidth = self.view.frame.size.width
 
-        let  settingRect:CGRect = CGRect(x:-currentWidth,y:containerY,width:containerWidth,height:containerHeight);
+        let settingRect: CGRect = CGRect(x: -currentWidth, y: containerY, width: containerWidth, height: containerHeight);
         self.containerView.frame = settingRect
         self.stuffView.frame.origin.x = -currentWidth
-
+		
         self.view.layoutIfNeeded()
-            UIView.animate(
-                withDuration: 0.25,
-                delay: 0.0,
-                options: .curveEaseInOut,
-                animations: {
-
-                    self.pickerContainerView.frame = CGRect(x:0.0,y:screenHeight,width:screenWidth,height:220.0);
-                    self.editProfileView.frame = CGRect(x:5.0,y:contentY+profileHeight+5.0,width:self.editProfileView.frame.size.width,height:screenWidth-contentY-profileHeight-31.0)
-
-            },
-                completion: { Void in()
-             print("editCancelButtonClick self.editprofileframe\(self.editProfileView.frame)")
-            }
-            )
+		UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveEaseInOut, animations: {
+			self.pickerContainerView.frame = CGRect(x:0, y: screenHeight, width: screenWidth, height: 220.0);
+//			self.editProfileView.frame = CGRect(x:5.0, y:contentY+profileHeight+5.0,width:self.editProfileView.frame.size.width,height:screenWidth-contentY-profileHeight-31.0)
+		}, completion: nil)
+		
         self.cancelBtn.isHidden = true
         self.saveBtn.isHidden = true
 
@@ -945,7 +936,7 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.containerView.isHidden = false
         self.stuffView.isHidden = false
     }
-    func dateChanged(datePicker : BirthdatePicker){
+    func dateChanged(datePicker: BirthdatePicker) {
         self.birthdayField.text = datePicker.formattedDate
 
         self.saveBtn.isUserInteractionEnabled = true

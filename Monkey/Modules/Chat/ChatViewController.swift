@@ -153,8 +153,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
     override func viewDidLoad() {
         super.viewDidLoad()
         self.viewModel.delegate = self
-		MessageCenter.shared.addMessageObserver(observer: self)
-		NotificationManager.shared.prePresentDelegate = self
 
         self.chatTableView.delegate = self
         self.chatTableView.dataSource = self
@@ -227,6 +225,8 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
+		MessageCenter.shared.addMessageObserver(observer: self)
+		NotificationManager.shared.prePresentDelegate = self
 		// enter forground
 		NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
 		// notifications for keyboard hide/show
@@ -251,7 +251,9 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+		NotificationManager.shared.prePresentDelegate = nil
 		NotificationCenter.default.removeObserver(self)
+		MessageCenter.shared.delMessageObserver(observer: self)
     }
 
     @IBAction func aboutUsBtnClickFunc(_ sender: BigYellowButton) {
@@ -512,11 +514,6 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
         self.viewModel.sendText(nil)
         sender.isEnabled = false
     }
-	
-	deinit {
-		MessageCenter.shared.delMessageObserver(observer: self)
-		NotificationCenter.default.removeObserver(self)
-	}
 }
 
 extension ChatViewController: MatchServiceObserver {

@@ -416,7 +416,7 @@ class OnepMatchController: MonkeyViewController {
 			])
 		matchModel.accept = true
 		self.matchManager.accept(auto: false)
-		self.update(tip: "Waiting...", duration: 0)
+		self.update(tip: "Waiting...")
 		self.tryConnecting()
 	}
 	
@@ -560,7 +560,7 @@ class OnepMatchController: MonkeyViewController {
 		
 		// 如果都 accept 了
 		if matchModel.accept && matchModel.allUserAccepted() {
-			self.update(tip: "Connecting...", duration: 0)
+			self.update(tip: "Connecting...")
 			self.matchManager.connect()
 			self.update(to: .Connecting)
 			if matchModel.matched_pair() {
@@ -615,14 +615,22 @@ class OnepMatchController: MonkeyViewController {
 		matchViewController.present(from: self, with: matchModel, complete: nil)
 	}
 	
-	func dismissMatchedView() {
-		self.matchViewController?.dismiss(complete: { [weak self] in
+	func dismissMatchedView(complete: (() -> Void)? = nil) {
+		guard let matchViewController = self.matchViewController else {
+			complete?()
+			return
+		}
+		
+		self.matchViewController = nil
+		matchViewController.dismiss(complete: { [weak self] in
+			if let complete = complete {
+				complete()
+				return
+			}
 			guard self?.onepStatus == .RequestMatch else { return }
-			
 			// should show unfriend
 			self?.processEndMatch()
 		})
-		self.matchViewController = nil
 	}
 	
 	func processEndMatch() {
@@ -668,7 +676,7 @@ extension OnepMatchController {
 		self.setFactText(self.nextFact)
 	}
 	
-	fileprivate func update(tip: String?, duration: TimeInterval = 1.5, autoDismiss: Bool = false) {
+	fileprivate func update(tip: String?, autoDismiss: Bool = false) {
 		if let tip = tip {
 			self.skippedText.alpha = 1.0
 			self.skippedText.text = tip
@@ -1029,16 +1037,23 @@ extension OnepMatchController: MatchObserver {
 	
 	func appWillTerminate() {
 		self.stopFindingChats(forReason: "application-status")
+		self.disconnect(reason: .MyQuit)
+	}
+	
+	func presentVideoCall(after completion: @escaping () -> Void) {
+		self.stopFindingChats(forReason: "receive-videocall")
+		self.dismissMatchedView {
+			self.disconnect(reason: .MyQuit)
+			completion()
+		}
 	}
 	
 	func willPresentVideoCall(call: VideoCallModel) {
-		self.stopFindingChats(forReason: "receive-videocall")
 		self.disconnect(reason: .MyQuit)
 	}
 	
 	func didDismissVideoCall(call: VideoCallModel) {
 		self.startFindingChats(forReason: "receive-videocall")
-		
 	}
 }
 

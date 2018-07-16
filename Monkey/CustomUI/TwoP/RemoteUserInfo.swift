@@ -77,6 +77,9 @@ class RemoteUserInfo: MakeUIViewGreatAgain {
 			if self.user.instagram_id != nil {
 				self.instagramButton.isEnabled = true
 				self.instagramButton.isHidden = false
+			}else {
+				self.instagramButton.isEnabled = false
+				self.instagramButton.isHidden = true
 			}
 		}else {
 			self.friendButton.isEnabled = true

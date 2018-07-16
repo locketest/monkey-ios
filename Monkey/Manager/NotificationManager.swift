@@ -87,12 +87,14 @@ class NotificationManager: NSObject {
 				make.leading.equalTo(5)
 				make.trailing.equalTo(-5)
 				
-				if #available(iOS 11, *) {
+				if #available(iOS 11, *), Environment.isIphoneX {
 					make.top.equalTo(topWindow.safeAreaLayoutGuide.snp.topMargin)
 				} else {
 					make.top.equalTo(20)
 				}
 			}
+		}else {
+			topWindow?.bringSubview(toFront: stackBackground)
 		}
 		
 		let notificationBar = InAppNotificationBar.instanceFromNib(user: user, style: style)

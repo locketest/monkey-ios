@@ -837,6 +837,9 @@ by 5 teenagers in NYC?</string>
                                     <constraint firstAttribute="width" constant="103" id="zhf-9T-eih"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Iu-Ed-hNO" customClass="MatchPairTransation" customModule="Monkey" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting…" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gTE-0Z-ZGO">
                                 <rect key="frame" x="131" y="615.5" width="112.5" height="21.5"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
@@ -850,7 +853,9 @@ by 5 teenagers in NYC?</string>
                             <constraint firstItem="AZy-9g-k6f" firstAttribute="centerX" secondItem="9wz-wY-wb4" secondAttribute="centerX" id="4sZ-zN-CGt"/>
                             <constraint firstItem="TF2-NQ-Tvv" firstAttribute="leading" secondItem="9wz-wY-wb4" secondAttribute="leading" id="6ow-xp-VQw"/>
                             <constraint firstItem="yse-KQ-Wnc" firstAttribute="height" secondItem="9wz-wY-wb4" secondAttribute="height" multiplier="0.5" id="7iC-4d-KiW"/>
+                            <constraint firstItem="4Iu-Ed-hNO" firstAttribute="leading" secondItem="9wz-wY-wb4" secondAttribute="leading" id="Di7-fG-P3o"/>
                             <constraint firstItem="J6r-2Z-nx0" firstAttribute="bottom" secondItem="qlS-cK-3R5" secondAttribute="bottom" constant="20" id="Ect-b8-Wey"/>
+                            <constraint firstItem="4Iu-Ed-hNO" firstAttribute="bottom" secondItem="9wz-wY-wb4" secondAttribute="bottom" id="FVB-JT-uOg"/>
                             <constraint firstItem="yse-KQ-Wnc" firstAttribute="top" secondItem="9wz-wY-wb4" secondAttribute="top" id="Guu-NU-6Uu"/>
                             <constraint firstItem="AZy-9g-k6f" firstAttribute="centerY" secondItem="9wz-wY-wb4" secondAttribute="centerY" id="JpX-Dx-E9w"/>
                             <constraint firstItem="TF2-NQ-Tvv" firstAttribute="top" secondItem="9wz-wY-wb4" secondAttribute="top" id="Kv4-vb-aBS"/>
@@ -858,12 +863,14 @@ by 5 teenagers in NYC?</string>
                             <constraint firstItem="qlS-cK-3R5" firstAttribute="centerX" secondItem="9wz-wY-wb4" secondAttribute="centerX" id="N8y-dl-TSQ"/>
                             <constraint firstItem="1OM-I6-G4k" firstAttribute="centerX" secondItem="9wz-wY-wb4" secondAttribute="centerX" id="QWC-5G-8Mi"/>
                             <constraint firstItem="TF2-NQ-Tvv" firstAttribute="bottom" secondItem="9wz-wY-wb4" secondAttribute="bottom" id="SkT-Pa-ymo"/>
+                            <constraint firstItem="4Iu-Ed-hNO" firstAttribute="trailing" secondItem="9wz-wY-wb4" secondAttribute="trailing" id="Syd-BK-wX5"/>
                             <constraint firstItem="kHm-h8-Eve" firstAttribute="leading" secondItem="9wz-wY-wb4" secondAttribute="leading" id="Vd9-5h-FNa"/>
                             <constraint firstItem="gTE-0Z-ZGO" firstAttribute="centerX" secondItem="9wz-wY-wb4" secondAttribute="centerX" id="Wv3-fl-EJh"/>
                             <constraint firstAttribute="trailing" secondItem="Hiz-39-qxl" secondAttribute="trailing" id="ZEv-4a-i36"/>
                             <constraint firstItem="J6r-2Z-nx0" firstAttribute="bottom" secondItem="1OM-I6-G4k" secondAttribute="bottom" constant="20" id="aQl-32-uAl"/>
                             <constraint firstAttribute="bottom" secondItem="Hiz-39-qxl" secondAttribute="bottom" id="hdv-a1-Et3"/>
                             <constraint firstAttribute="bottom" secondItem="kHm-h8-Eve" secondAttribute="bottom" id="lJh-Af-z66"/>
+                            <constraint firstItem="4Iu-Ed-hNO" firstAttribute="top" secondItem="9wz-wY-wb4" secondAttribute="top" id="sxb-zC-F2W"/>
                             <constraint firstItem="yse-KQ-Wnc" firstAttribute="leading" secondItem="9wz-wY-wb4" secondAttribute="leading" id="u8l-vD-QNj"/>
                             <constraint firstItem="TF2-NQ-Tvv" firstAttribute="trailing" secondItem="9wz-wY-wb4" secondAttribute="trailing" id="xId-NC-kIj"/>
                         </constraints>
@@ -888,6 +895,7 @@ by 5 teenagers in NYC?</string>
                         <outlet property="pairPreviewWidthConstaints" destination="0En-32-0mb" id="4Mz-Gi-5Wo"/>
                         <outlet property="remoteContainer" destination="yse-KQ-Wnc" id="P3A-No-EDv"/>
                         <outlet property="statusLabel" destination="gTE-0Z-ZGO" id="vK2-ex-6hh"/>
+                        <outlet property="transationView" destination="4Iu-Ed-hNO" id="hUR-V4-F8g"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mas-Ok-lez" userLabel="First Responder" sceneMemberID="firstResponder"/>

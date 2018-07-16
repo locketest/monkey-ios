@@ -62,7 +62,7 @@ enum MatchError {
 	}
 }
 
-protocol MatchServiceObserver {
+protocol MatchServiceObserver: NSObjectProtocol {
 	func disconnect(reason: MatchError)
 	func remoteVideoReceived(user user_id: Int)
 	func channelMessageReceived(message: MatchMessage)
@@ -74,7 +74,7 @@ class OnepMatchManager {
 	private init() {}
 	
 	fileprivate let channelService = ChannelService.shared
-	var delegate: MatchServiceObserver?
+	weak var delegate: MatchServiceObserver?
 	fileprivate var matchModel: MatchModel?
 	
 	fileprivate var responseTimer: Timer?
@@ -141,7 +141,11 @@ class OnepMatchManager {
 	}
 	
 	func disconnect() {
-		self.channelService.leaveChannel()
+		if self.channelService.matchModel == self.matchModel {
+			self.channelService.leaveChannel()
+			// disable video capture
+			self.channelService.captureSwitch(open: false)
+		}
 		self.stopAllTimer()
 		self.matchModel = nil
 	}

@@ -56,7 +56,7 @@ typealias MatchContainer = MatchObserver & MonkeyViewController & TransationDele
 	
 	@objc optional func didReceiveTwopMatch(match: MatchModel)
 	
-	@objc optional func willPresentVideoCall(call: VideoCallModel)
+	func presentVideoCall(after completion: @escaping () -> Void)
 	
 	@objc optional func didDismissVideoCall(call: VideoCallModel)
 	
@@ -741,8 +741,8 @@ extension MainViewController: MatchObserver {
 		self.topMatchDiscovery.appWillTerminate?()
 	}
 	
-	func willPresentVideoCall(call: VideoCallModel) {
-		self.topMatchDiscovery.willPresentVideoCall?(call: call)
+	func presentVideoCall(after completion: @escaping () -> Void) {
+		self.topMatchDiscovery.presentVideoCall(after: completion)
 	}
 	
 	func didDismissVideoCall(call: VideoCallModel) {
@@ -901,7 +901,8 @@ extension UIViewController {
 }
 
 extension MainViewController {
-	func heroDidEndAnimatingTo(viewController: UIViewController) {
+	override func heroDidEndAnimatingTo(viewController: UIViewController) {
+		super.heroDidEndAnimatingTo(viewController: viewController)
 		self.topMatchDiscovery.didMoveTo(screen: viewController)
 		
 	}
@@ -935,8 +936,6 @@ extension MainViewController: MatchServiceObserver {
 		if videoCall.allUserConnected() {
 			// dismiss all bar
 			NotificationManager.shared.dismissAllNotificationBar()
-			// didmiss other
-			self.willPresentVideoCall(call: videoCall)
 			// stop timer
 			self.videoCallManager.beginChat()
 			// present
@@ -992,8 +991,9 @@ extension MainViewController: MatchServiceObserver {
 		self.videoCall = nil
 		
 		guard let matchViewController = self.matchViewController else {
-			self.videoCallManager.sendResponse(type: .Skip)
+			self.videoCallManager.sendResponse(type: .Skip, to: videoCall)
 			NotificationManager.shared.dismissAllNotificationBar()
+			self.didDismissVideoCall(call: videoCall)
 			return
 		}
 		
@@ -1007,12 +1007,16 @@ extension MainViewController: MatchServiceObserver {
 
 extension MainViewController: InAppNotificationActionDelegate {
 	func videoCallDidAccept(videoCall: VideoCallModel, from bar: InAppNotificationBar?) {
+		// didmiss other
 		videoCall.accept = true
 		self.videoCall = videoCall
 		self.videoCallManager.delegate = self
-		self.videoCallManager.connect(with: videoCall)
 		if videoCall.call_out == false {
-			self.videoCallManager.sendResponse(type: .Accept)
+			self.videoCallManager.sendResponse(type: .Accept, to: videoCall)
+		}
+		
+		self.presentVideoCall {
+			self.videoCallManager.connect(with: videoCall)
 		}
 	}
 	

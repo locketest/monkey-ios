@@ -392,6 +392,8 @@
 		D1A22B0F20A03F8A004F0F05 /* Channels.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B7DC7451EF5C98C00A3F966 /* Channels.storyboard */; };
 		D1A22B1720A03F8A004F0F05 /* PushService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D14478632058C5A300485D68 /* PushService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D1A7DC2B2049506800B061F9 /* MonkeySwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */; };
+		D1B0953D20FBD0B6008D0FB3 /* MatchPairTransation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B0953C20FBD0B6008D0FB3 /* MatchPairTransation.swift */; };
+		D1B0953E20FBD0B6008D0FB3 /* MatchPairTransation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B0953C20FBD0B6008D0FB3 /* MatchPairTransation.swift */; };
 		D1B79CF4205FA80800F209B4 /* UserOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CF3205FA80800F209B4 /* UserOptions.swift */; };
 		D1B79CF7205FDD0500F209B4 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CF6205FDD0500F209B4 /* FilterViewController.swift */; };
 		D1B79CFD2060243700F209B4 /* FilterCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B79CFC2060243700F209B4 /* FilterCollectionView.swift */; };
@@ -701,6 +703,7 @@
 		D192A3EB202B015A00791002 /* KeyboardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardManager.m; sourceTree = "<group>"; };
 		D1A22B1E20A03F8A004F0F05 /* Sandbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sandbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1A7DC2A2049506800B061F9 /* MonkeySwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonkeySwitch.swift; sourceTree = "<group>"; };
+		D1B0953C20FBD0B6008D0FB3 /* MatchPairTransation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchPairTransation.swift; sourceTree = "<group>"; };
 		D1B79CF3205FA80800F209B4 /* UserOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserOptions.swift; sourceTree = "<group>"; };
 		D1B79CF6205FDD0500F209B4 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		D1B79CFC2060243700F209B4 /* FilterCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionView.swift; sourceTree = "<group>"; };
@@ -1544,6 +1547,7 @@
 				D1E5300E20F524D400016858 /* RemotePairInfo.swift */,
 				D1E5300B20F5242D00016858 /* RemoteUserInfo.swift */,
 				D182C60020F8069000A96270 /* RemoteUserInfo.xib */,
+				D1B0953C20FBD0B6008D0FB3 /* MatchPairTransation.swift */,
 			);
 			path = TwoP;
 			sourceTree = "<group>";
@@ -2206,6 +2210,7 @@
 				8BC4E2DC1DB121240018F2C3 /* Extensions.swift in Sources */,
 				D1E7CD0020D25C0E00AF619A /* NSString+JKSize.m in Sources */,
 				8BC64B9E1E88A83A00120777 /* SelectableButton.swift in Sources */,
+				D1B0953D20FBD0B6008D0FB3 /* MatchPairTransation.swift in Sources */,
 				D1E5300F20F524D400016858 /* RemotePairInfo.swift in Sources */,
 				D105079F20034D5B0018A14F /* DateHelper.swift in Sources */,
 				D49796021F36304E00E5382E /* CallViewController.swift in Sources */,
@@ -2403,6 +2408,7 @@
 				D1A22AB220A03F8A004F0F05 /* Extensions.swift in Sources */,
 				D1E7CD0120D25C0E00AF619A /* NSString+JKSize.m in Sources */,
 				D1A22AB320A03F8A004F0F05 /* SelectableButton.swift in Sources */,
+				D1B0953E20FBD0B6008D0FB3 /* MatchPairTransation.swift in Sources */,
 				D1E5301020F524D400016858 /* RemotePairInfo.swift in Sources */,
 				D1A22AB420A03F8A004F0F05 /* DateHelper.swift in Sources */,
 				D1A22AB520A03F8A004F0F05 /* CallViewController.swift in Sources */,

@@ -15,7 +15,7 @@ PODS:
   - Bolts/AppLinks (1.9.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
-  - Crashlytics (3.10.4):
+  - Crashlytics (3.10.5):
     - Fabric (~> 1.7.9)
   - CropViewController (2.3.6)
   - DeviceKit (1.7.0)
@@ -169,7 +169,7 @@ SPEC CHECKSUMS:
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   Amplitude-iOS: 84da24ca8557fa3741888502c30c0b8b365acd7d
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  Crashlytics: 915a7787b84f635fb2a81f92a90e265c2c413f76
+  Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
   CropViewController: e6d4bd512d15a1709e9ddf71fe7d98ffd05dda0f
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
   Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661

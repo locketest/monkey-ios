@@ -102,6 +102,7 @@ extension TwopMatchController {
 	func beginPairMatch() {
 		guard let friendPairModel = self.friendPairModel else { return }
 		
+		self.matchManager.pairSuccess(with: friendPairModel)
 		self.hideInitialContent { [weak self] in
 			self?.showPairMatch(with: friendPairModel)
 		}
@@ -201,6 +202,18 @@ extension TwopMatchController: MessageObserver {
 }
 
 extension TwopMatchController: MatchObserver {
+	func presentVideoCall(after completion: @escaping () -> Void) {
+		guard let pairMatchViewController = self.pairMatchViewController else {
+			completion()
+			return
+		}
+		pairMatchViewController.presentVideoCall(after: completion)
+	}
+	
+	func didDismissVideoCall(call: VideoCallModel) {
+		self.pairMatchViewController?.didDismissVideoCall(call: call)
+	}
+	
 	func didReceiveMessage(type: String, in chat: String) {
 		self.pairMatchViewController?.didReceiveMessage(type: type, in: chat)
 	}
