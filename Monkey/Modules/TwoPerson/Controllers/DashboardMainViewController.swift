@@ -125,6 +125,7 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		if self.isTapEndEditingBool { // 点击空白处关闭键盘时再点end按钮不会触发键盘关闭事件，但是还是需要调整view的位置，Q1
 			self.endEditButton.isHidden = true
+			self.showStatusBarFunc(isHidden: false)
 			self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
 			self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
 		}
@@ -283,6 +284,17 @@ class DashboardMainViewController: MonkeyViewController {
 		self.invitingAnimLayer.position = CGPoint(x: self.someoneImageView.width / 2, y: self.someoneImageView.height / 2)
 	}
 	
+	func showStatusBarFunc(isHidden:Bool) {
+		
+		UIApplication.shared.isStatusBarHidden = isHidden
+		
+		if isHidden {
+			self.mainViewController?.beginTwopSearchProcess()
+		} else {
+			self.mainViewController?.endTwopSearchProcess()
+		}
+	}
+	
 	func initCircleFunc() {
 		
 		if let currentUser = APIController.shared.currentUser {
@@ -345,7 +357,7 @@ class DashboardMainViewController: MonkeyViewController {
 			}
 		})
 		
-		self.twopChatFriendArray = self.twopChatFriendArray.sorted { $0.weightDouble! > $1.weightDouble! }
+		self.twopChatFriendArray = self.twopChatFriendArray.sorted { $0.weightDouble > $1.weightDouble }
 		
 		self.twopChatFriendArray.forEach { (model) in
 //			print("*** model = \(model.userIdInt!)")
@@ -533,6 +545,8 @@ class DashboardMainViewController: MonkeyViewController {
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		
+		self.showStatusBarFunc(isHidden: false)
+		
 		self.stopTimerFunc()
 		
 		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
@@ -684,6 +698,8 @@ extension DashboardMainViewController {
 		
 		self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
 		self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam * 2 - self.InitialTopConstraintTuple.friends)
+		
+		self.showStatusBarFunc(isHidden: true)
 	}
 	
 	func keyboardWillHideFunc(notification:NSNotification) {
@@ -696,6 +712,8 @@ extension DashboardMainViewController {
 		
 		self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
 		self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
+		
+		self.showStatusBarFunc(isHidden: false)
 	}
 }
 

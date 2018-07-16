@@ -153,38 +153,8 @@ class MainViewController: SwipeableViewController {
 		
 		// red point
 		self.handleRedPointStatus()
-	}
-	
-	private func handleRedPointStatus(){
 		
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
-			.header("Authorization", UserManager.authorization),
-			]).addCompletionHandler { (response) in
-				switch response {
-				case .error(let error):
-					print("*** error : = \(error.message)")
-				case .success(let jsonAPIDocument):
-					
-					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
-						
-						var models : [FriendsRequestModel] = []
-						
-						array.forEach({ (dict) in
-							
-							let userId = APIController.shared.currentUser!.user_id
-							
-							let friendsRequestModel = FriendsRequestModel.friendsRequestModel(dict: dict)
-							
-							// 被邀请人为自己，并且未操作
-							if userId == friendsRequestModel.inviteeIdInt?.description && TwopChatRequestsStatusEnum.unhandle.rawValue == friendsRequestModel.statusInt {
-								models.append(friendsRequestModel)
-							}
-						})
-						
-						self.refreshRemindTip(count: models.count)
-					}
-				}
-		}
+		print("*** authorization = \(APIController.authorization), id = \(APIController.shared.currentUser?.user_id)")
 	}
 	
 	private func configureApperance() {
@@ -238,6 +208,21 @@ class MainViewController: SwipeableViewController {
 		self.pageViewIndicator.isHidden = true
 		self.channelsButton.isHidden = true
 		self.isSwipingEnabled = false
+	}
+	
+	func beginTwopSearchProcess() {
+		self.beginMatchProcess()
+		self.matchModeSwitch.isHidden = true
+	}
+	
+	func endTwopSearchProcess() {
+		self.bananaView.isHidden = false
+		self.friendsButton.isHidden = false
+		self.settingsButton.isHidden = false
+		self.pageViewIndicator.isHidden = false
+		self.matchModeSwitch.isHidden = false
+		self.channelsButton.isHidden = false
+		self.isSwipingEnabled = true
 	}
 	
 	func endMatchProcess() {
@@ -548,6 +533,38 @@ class MainViewController: SwipeableViewController {
 			DispatchQueue.main.async {
 				self.present(alertController, animated: true, completion: nil)
 			}
+		}
+	}
+	
+	private func handleRedPointStatus(){
+		
+		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
+			.header("Authorization", UserManager.authorization),
+			]).addCompletionHandler { (response) in
+				switch response {
+				case .error(let error):
+					print("*** error : = \(error.message)")
+				case .success(let jsonAPIDocument):
+					
+					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
+						
+						var models : [FriendsRequestModel] = []
+						
+						array.forEach({ (dict) in
+							
+							let userId = APIController.shared.currentUser!.user_id
+							
+							let friendsRequestModel = FriendsRequestModel.friendsRequestModel(dict: dict)
+							
+							// 被邀请人为自己，并且未操作
+							if userId == friendsRequestModel.inviteeIdInt?.description && TwopChatRequestsStatusEnum.unhandle.rawValue == friendsRequestModel.statusInt {
+								models.append(friendsRequestModel)
+							}
+						})
+						
+						self.refreshRemindTip(count: models.count)
+					}
+				}
 		}
 	}
 	
