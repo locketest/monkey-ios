@@ -79,9 +79,7 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	@IBOutlet weak var myTeamTopConstraint: NSLayoutConstraint!
 	
-	@IBOutlet weak var twoPersonButton: BigYellowButton! // 2p按钮
-	
-	@IBOutlet weak var redDotLabel: UILabel! // 红点数量提示
+	@IBOutlet weak var invitingAnimLayerBgView: UIView!
 	
 	@IBOutlet weak var noAccessContactsBgView: UIView!
 	
@@ -262,16 +260,17 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	func initInvitingLayerFunc() {
 		
-		self.invitingAnimLayer = InvitingProgressLayer(layer: self.someoneImageView.layer)
+		self.invitingAnimLayer = InvitingProgressLayer(layer: self.invitingAnimLayerBgView.layer)
 		
-		self.invitingAnimLayer.frame = CGRect(x: 0, y: 0, width: self.someoneImageView.width + 5, height: self.someoneImageView.height + 5)
+		self.invitingAnimLayer.frame = CGRect(x: 0, y: 0, width: self.invitingAnimLayerBgView.width, height: self.invitingAnimLayerBgView.height)
 		
-		self.invitingAnimLayer.position = CGPoint(x: self.someoneImageView.width / 2, y: self.someoneImageView.height / 2)
+		self.invitingAnimLayer.position = CGPoint(x: self.invitingAnimLayerBgView.width / 2, y: self.invitingAnimLayerBgView.height / 2)
 	}
 	
 	override var prefersStatusBarHidden: Bool {
 		return self.showKeyboardInSmallScreen
 	}
+	
 	var showKeyboardInSmallScreen: Bool = false {
 		didSet {
 			if showKeyboardInSmallScreen {
@@ -642,11 +641,6 @@ extension DashboardMainViewController : MessageObserver {
 				self.twopChatFriendArray.insert(temp, at: 0)
 			}
 		}
-		
-		if self.twopChatFriendArray.count > 0 {
-			
-		}
-
 		
 		if self.dataArray.count > 0 {
 			self.tableView.reloadSections(IndexSet(integer: 0), with: .none)

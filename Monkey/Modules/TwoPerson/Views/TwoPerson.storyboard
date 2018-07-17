@@ -1019,6 +1019,10 @@
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
                                             </imageView>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dLZ-yb-yR2">
+                                                <rect key="frame" x="216.66666666666666" y="20.666666666666671" width="54.999999999999972" height="55"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </view>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="monkeyDef" translatesAutoresizingMaskIntoConstraints="NO" id="f46-D4-9a5">
                                                 <rect key="frame" x="218.66666666666666" y="22.666666666666671" width="49.999999999999972" height="50"/>
                                                 <constraints>
@@ -1028,7 +1032,7 @@
                                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                         <integer key="value" value="24"/>
                                                     </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="NO"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2P Chat Buddy" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bmb-3z-ECc">
@@ -1047,9 +1051,11 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="ieb-0H-cFo" firstAttribute="centerX" secondItem="zf5-ip-QpJ" secondAttribute="centerX" id="0sR-OJ-3hD"/>
+                                            <constraint firstItem="f46-D4-9a5" firstAttribute="width" secondItem="dLZ-yb-yR2" secondAttribute="width" constant="-5" id="71g-bd-j35"/>
                                             <constraint firstItem="f46-D4-9a5" firstAttribute="leading" secondItem="T4s-WJ-F2g" secondAttribute="trailing" constant="25" id="EGT-Ms-tPa"/>
                                             <constraint firstItem="ieb-0H-cFo" firstAttribute="top" secondItem="zf5-ip-QpJ" secondAttribute="bottom" constant="9" id="KqU-dK-QKU"/>
                                             <constraint firstItem="T4s-WJ-F2g" firstAttribute="centerX" secondItem="FYr-zr-xJL" secondAttribute="centerX" id="U5Y-2P-Uv5"/>
+                                            <constraint firstItem="f46-D4-9a5" firstAttribute="centerY" secondItem="dLZ-yb-yR2" secondAttribute="centerY" id="VOW-Zg-42j"/>
                                             <constraint firstItem="zf5-ip-QpJ" firstAttribute="width" secondItem="zf5-ip-QpJ" secondAttribute="height" multiplier="1:1" id="amp-Yy-b1W"/>
                                             <constraint firstItem="bmb-3z-ECc" firstAttribute="centerY" secondItem="ieb-0H-cFo" secondAttribute="centerY" id="cYE-US-muB"/>
                                             <constraint firstItem="f46-D4-9a5" firstAttribute="width" secondItem="f46-D4-9a5" secondAttribute="height" multiplier="1:1" id="dsL-M3-vGK"/>
@@ -1058,6 +1064,8 @@
                                             <constraint firstItem="T4s-WJ-F2g" firstAttribute="centerY" secondItem="FYr-zr-xJL" secondAttribute="centerY" constant="-8" id="rxu-qX-3aO"/>
                                             <constraint firstItem="T4s-WJ-F2g" firstAttribute="centerY" secondItem="zf5-ip-QpJ" secondAttribute="centerY" id="s1F-lx-7Nc"/>
                                             <constraint firstItem="bmb-3z-ECc" firstAttribute="centerX" secondItem="f46-D4-9a5" secondAttribute="centerX" id="z4a-Lc-aup"/>
+                                            <constraint firstItem="f46-D4-9a5" firstAttribute="centerX" secondItem="dLZ-yb-yR2" secondAttribute="centerX" id="zRs-cR-x2H"/>
+                                            <constraint firstItem="f46-D4-9a5" firstAttribute="height" secondItem="dLZ-yb-yR2" secondAttribute="height" constant="-5" id="zyu-ze-GrR"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -1576,6 +1584,7 @@
                         <outlet property="endEditButton" destination="mAm-dF-OLI" id="lPP-lJ-NIv"/>
                         <outlet property="friendsBottomConstraint" destination="Afr-1F-m3M" id="UdM-k9-Ix5"/>
                         <outlet property="friendsTopConstraint" destination="xft-FA-ahS" id="eYY-bA-EPZ"/>
+                        <outlet property="invitingAnimLayerBgView" destination="dLZ-yb-yR2" id="RPk-qL-he8"/>
                         <outlet property="meAndSomeoneBgView" destination="FYr-zr-xJL" id="6C7-aD-g33"/>
                         <outlet property="meImageView" destination="zf5-ip-QpJ" id="8vD-We-JHN"/>
                         <outlet property="myTeamTopConstraint" destination="Rgs-Ce-0Zy" id="mPV-ZZ-aFf"/>
