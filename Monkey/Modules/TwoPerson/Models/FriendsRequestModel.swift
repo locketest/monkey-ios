@@ -14,6 +14,8 @@ class FriendsRequestModel: NSObject {
 	
 	var pathString : String?
 	
+	var genderString : String?
+	
 	// 非手动拼接字段
 	var userIdInt : Int?
 	
@@ -25,12 +27,15 @@ class FriendsRequestModel: NSObject {
 	
 	var statusInt : Int?
 	
-	class func friendsRequestModel(dict:[String:AnyObject], nameString:String? = nil, pathString:String? = nil) -> FriendsRequestModel {
+	class func friendsRequestModel(dict:[String:AnyObject], user: RealmUser? = nil) -> FriendsRequestModel {
 		
 		let friendsRequestModel = FriendsRequestModel()
 		
-		friendsRequestModel.nameString = nameString
-		friendsRequestModel.pathString = pathString
+		if user != nil {
+			friendsRequestModel.genderString = user!.gender
+			friendsRequestModel.nameString = user!.first_name
+			friendsRequestModel.pathString = user!.profile_photo_url
+		}
 		
 		friendsRequestModel.userIdInt = dict["user_id"] as? Int
 		friendsRequestModel.inviteeIdInt = dict["invitee_id"] as? Int

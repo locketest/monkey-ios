@@ -32,8 +32,8 @@ class FriendsRequestCell: UITableViewCell {
 			
 			self.nameLabel.text = newFriendsRequestModel.nameString
 			
-			self.headImageView.placeholder = ProfileImageDefault
 			self.headImageView.url = newFriendsRequestModel.pathString
+			self.headImageView.placeholder = Tools.getGenderDefaultImageFunc(genderString: newFriendsRequestModel.genderString ?? "")
 		}
 	}
 

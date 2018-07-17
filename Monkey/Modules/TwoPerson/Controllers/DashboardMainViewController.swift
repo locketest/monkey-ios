@@ -441,7 +441,7 @@ class DashboardMainViewController: MonkeyViewController {
 					
 					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 						array.forEach({ (friendModel) in
-							friendRequestArray.append(FriendsRequestModel.friendsRequestModel(dict: friendModel, nameString: nil, pathString: nil))
+							friendRequestArray.append(FriendsRequestModel.friendsRequestModel(dict: friendModel))
 						})
 						
 						self.requestFinishCountInt += 1

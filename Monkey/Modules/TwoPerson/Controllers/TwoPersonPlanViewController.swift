@@ -301,7 +301,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 									// inviteeId为自己才表示是被邀请的数据，status为0未操作显示
 									if friendModelUserId == contactUserId && currentUserId == contactInviteeId {
 										if TwopChatRequestsStatusEnum.unhandle.rawValue == contactStatus {
-											models.append(FriendsRequestModel.friendsRequestModel(dict: contact, nameString: friendModel.user!.first_name, pathString: friendModel.user!.profile_photo_url))
+											models.append(FriendsRequestModel.friendsRequestModel(dict: contact, user: friendModel.user!))
 										}
 									}
 								})
@@ -537,6 +537,9 @@ extension TwoPersonPlanViewController {
 		if !self.isPlanBIsUnLockedTuple.isPlanB {
 			self.handleHeadViewFunc(isShow: false)
 		} else {
+			
+			self.mainViewController?.beginTwopSearchProcess()
+			
 			if self.searchOutTableTextField.text!.isEmpty {
 				self.endEditOutTableButton.isHidden = false
 			}
@@ -552,6 +555,7 @@ extension TwoPersonPlanViewController {
 		if !self.isPlanBIsUnLockedTuple.isPlanB {
 			self.handleHeadViewFunc(isShow: true)
 		} else {
+			self.mainViewController?.endTwopSearchProcess()
 			self.endEditOutTableButton.isHidden = true
 			self.view.endEditing(true)
 		}
