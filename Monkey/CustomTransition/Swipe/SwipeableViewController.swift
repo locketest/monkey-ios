@@ -217,16 +217,7 @@ class SwipeableViewController: MonkeyViewController, UIGestureRecognizerDelegate
 }
 
 extension SwipeableViewController: HeroViewControllerDelegate {
-	func heroDidEndAnimatingTo(viewController: UIViewController) {
-		if let window = UIApplication.shared.delegate?.window, let subViews = window?.subviews {
-			for subView in subViews {
-				if subView is UIStackView {
-					window?.bringSubview(toFront: subView)
-					break
-				}
-			}
-		}
-	}
+	
 }
 
 extension MainViewController {

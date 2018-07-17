@@ -79,11 +79,15 @@ struct Environment {
 	}
 	
 	#if REALM_SYNC
-	// connect to realm://realm-object-server.monkey.cool:9080
 	static let RealmSyncHost = "192.168.200.60:9080"
 	static let RealmSyncServerUrl = "http://" + RealmSyncHost
 	static let MonkeySyncRealmUrl = "realm://" + RealmSyncHost + "/~/monkey-realm"
+	#else
+	static let RealmSyncHost = ""
+	static let RealmSyncServerUrl = "http://"
+	static let MonkeySyncRealmUrl = "realm://"
 	#endif
+	
 	
 	static let ScreenSize: CGSize = UIScreen.main.bounds.size
 	static let ScreenBounds: CGRect = UIScreen.main.bounds
@@ -92,8 +96,10 @@ struct Environment {
 	static let ScreenAspectRadio: CGFloat = ScreenWidth / ScreenHeight
 	
 	static let adjustToken = "w8wlqq6li0w0"
-	static let MonkeyAppStoreUrl = "itms-apps://itunes.apple.com/app/id1165924249"
-	static let MonkeyAppRateURL = "https://itunes.apple.com/us/app/id1165924249?action=write-review"
+	static let MonkeyAppStoreID = "id1165924249"
+	static let MonkeyAppStoreUrl = "itms-apps://itunes.apple.com/app/\(MonkeyAppStoreID)"
+	static let MonkeyAppRateURL = "https://itunes.apple.com/us/app/\(MonkeyAppStoreID)?action=write-review"
+	
 	static let MonkeyAppTermsURL = "http://monkey.cool/terms"
 	static let MonkeyAppPrivacyURL = "http://monkey.cool/privacy"
 

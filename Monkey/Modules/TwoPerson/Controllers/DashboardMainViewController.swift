@@ -558,7 +558,7 @@ class DashboardMainViewController: MonkeyViewController {
 	}
 }
 
-extension DashboardMainViewController: HeroViewControllerDelegate {
+extension DashboardMainViewController {
 	func heroWillStartAnimatingTo(viewController: UIViewController) {
 		self.removeKeyboardObserver()
 	}

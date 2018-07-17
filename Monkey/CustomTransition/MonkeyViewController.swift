@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Hero
 
 class MonkeyViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -42,6 +43,14 @@ class MonkeyViewController: UIViewController {
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
+		if let window = UIApplication.shared.delegate?.window, let subViews = window?.subviews {
+			for subView in subViews {
+				if subView is UIStackView {
+					window?.bringSubview(toFront: subView)
+					break
+				}
+			}
+		}
 		print("\(self) \(#function)")
 	}
 	

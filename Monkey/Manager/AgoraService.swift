@@ -41,6 +41,24 @@ extension AgoraService: ChannelServiceManager {
 	func joinChannel(matchModel: ChannelModel) {
 		// 当前用户 id
 		let current_user = UInt(UserManager.UserID ?? "0") ?? 0
+		
+		if let match = matchModel as? MatchModel {
+			if match.pair() == true {
+				self.videoProfile = .landscape360P
+				if match.matched_pair() {
+					self.videoProfile = .landscape240P_4
+				}
+			} else if match.matched_pair() {
+				self.videoProfile = .landscape360P
+			} else {
+				self.videoProfile = .landscape480P_3
+			}
+		}else if matchModel is FriendPairModel {
+			self.videoProfile = .landscape360P
+		}else {
+			self.videoProfile = .landscape480P_3
+		}
+		
 		// channel profile
 		self.engine.setVideoProfile(videoProfile, swapWidthAndHeight: true)
 		// join agora channel

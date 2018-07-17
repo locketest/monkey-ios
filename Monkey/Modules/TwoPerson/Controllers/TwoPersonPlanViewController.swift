@@ -537,9 +537,6 @@ extension TwoPersonPlanViewController {
 		if !self.isPlanBIsUnLockedTuple.isPlanB {
 			self.handleHeadViewFunc(isShow: false)
 		} else {
-			
-			self.mainViewController?.beginTwopSearchProcess()
-			
 			if self.searchOutTableTextField.text!.isEmpty {
 				self.endEditOutTableButton.isHidden = false
 			}
@@ -555,7 +552,6 @@ extension TwoPersonPlanViewController {
 		if !self.isPlanBIsUnLockedTuple.isPlanB {
 			self.handleHeadViewFunc(isShow: true)
 		} else {
-			self.mainViewController?.endTwopSearchProcess()
 			self.endEditOutTableButton.isHidden = true
 			self.view.endEditing(true)
 		}

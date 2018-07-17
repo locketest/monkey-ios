@@ -114,7 +114,6 @@ class Socket {
 	fileprivate static var messageId = 1
 	// 是否有写入权限
 	fileprivate var isAuthorized = false
-	fileprivate var isReconnecting = false
 	// 是否可用
 	var isEnabled = false {
 		didSet {
@@ -158,9 +157,10 @@ class Socket {
 		// 授权状态重置
 		self.isAuthorized = false
 		
+		// cancel send ping
+		self.cancelSendPing()
+		
 		if self.webSocket.isConnected {
-			// cancel send ping
-			self.cancelSendPing()
 			// 清空回调和未发送消息
 			self.clearPeddingMessages()
 			// 主动断开连接
@@ -174,7 +174,7 @@ class Socket {
 	}
 	
 	fileprivate func scheduleSendPing() {
-		self.pingTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(sendPing), userInfo: nil, repeats: true)
+		self.pingTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(sendPing), userInfo: nil, repeats: true)
 	}
 	
 	fileprivate func cancelSendPing() {
@@ -187,6 +187,7 @@ class Socket {
 			return
 		}
 		
+		// 30s 以上无沟通才会发送 ping 消息
 		let currentTime = Date().timeIntervalSince1970
 		guard currentTime - lastResponseTime < 30  else { return }
 		self.lastResponseTime = currentTime
@@ -268,12 +269,10 @@ class Socket {
 		guard self.isEnabled else {
 			return
 		}
-		// 需要重连
-		guard self.isReconnecting else {
+		// 正在重连
+		guard self.webSocket.isConnected == false else {
 			return
 		}
-		// 先断连重置 flag
-		self.disconnect()
 		// 收到错误重连
 		self.connect()
 		
@@ -292,8 +291,6 @@ extension Socket: WebSocketDelegate {
 		guard let authorization = UserManager.authorization else {
 			return // Signed out.
 		}
-		// 取消重连状态
-		self.isReconnecting = false
 		// 连接成功时，先发送授权消息
 		self.webSocket.write(string: [0, SocketChannel.authorization.rawValue, [
 			"authorization": authorization,
@@ -304,8 +301,8 @@ extension Socket: WebSocketDelegate {
 	// 断开连接
 	func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
 		print("websocketDidDisconnect \(String(describing: error))")
-		// 重连状态初始化
-		self.isReconnecting = true
+		// 先断连重置 flag
+		self.disconnect()
 		// 如果断连，需要重连
 		self.didReceive(error: error)
 	}

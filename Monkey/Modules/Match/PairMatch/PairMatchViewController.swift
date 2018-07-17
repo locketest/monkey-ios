@@ -375,7 +375,7 @@ class PairMatchViewController: MonkeyViewController {
 		
 		if matchModel.matched_pair() {
 			let remoteInfo = RemotePairInfo.init(frame: self.view.bounds)
-			self.view.insertSubview(remoteInfo, belowSubview: self.statusLabel)
+			self.view.insertSubview(remoteInfo, belowSubview: self.transationView)
 			remoteInfo.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 			remoteInfo.actionDelegate = self
 			remoteInfo.show(with: matchModel)

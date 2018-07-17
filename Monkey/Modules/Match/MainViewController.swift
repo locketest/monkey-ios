@@ -896,8 +896,7 @@ extension UIViewController {
 }
 
 extension MainViewController {
-	override func heroDidEndAnimatingTo(viewController: UIViewController) {
-		super.heroDidEndAnimatingTo(viewController: viewController)
+	func heroDidEndAnimatingTo(viewController: UIViewController) {
 		self.topMatchDiscovery.didMoveTo(screen: viewController)
 		
 	}

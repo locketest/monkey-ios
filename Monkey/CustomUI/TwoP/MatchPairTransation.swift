@@ -34,12 +34,14 @@ class MatchPairTransation: MakeUIViewGreatAgain {
 		self.rightCircle.layer.masksToBounds = true
 		self.leftCircle.isHidden = true
 		self.rightCircle.isHidden = true
+		self.isUserInteractionEnabled = false
 	}
 	
 	func startConnect() {
 		self.leftCircle.isHidden = false
 		self.rightCircle.isHidden = false
 		self.isHidden = false
+		self.transform = CGAffineTransform.identity
 		
 		self.leftCircle.center = CGPoint.init(x: -390, y: 0)
 		self.leftCircle.frame.size = CGSize.init(width: 780, height: 780)
@@ -49,11 +51,11 @@ class MatchPairTransation: MakeUIViewGreatAgain {
 		self.rightCircle.frame.size = CGSize.init(width: 780, height: 780)
 		self.rightCircle.layer.cornerRadius = 390
 		
-		UIView.animate(withDuration: 0.1, animations: {
+		UIView.animate(withDuration: 0.15, animations: {
 			self.leftCircle.center = CGPoint.init(x: -100, y: 0)
 			self.rightCircle.center = CGPoint.init(x: ScreenWidth + 390 - 290, y: ScreenHeight)
 		}) { (_) in
-			UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveLinear, animations: {
+			UIView.animate(withDuration: 0.3, delay: 0.1, options: .curveLinear, animations: {
 				self.leftCircle.frame.size = CGSize.init(width: 1200, height: 1200)
 				self.leftCircle.center = CGPoint.init(x: -100, y: 0)
 				self.leftCircle.layer.cornerRadius = 600
@@ -69,12 +71,15 @@ class MatchPairTransation: MakeUIViewGreatAgain {
 		self.leftCircle.isHidden = false
 		self.rightCircle.isHidden = false
 		self.isHidden = false
+		self.transform = CGAffineTransform.identity
+		self.leftCircle.layer.cornerRadius = 600
+		self.rightCircle.layer.cornerRadius = 600
 		self.leftCircle.frame.size = CGSize.init(width: 1200, height: 1200)
 		self.rightCircle.frame.size = CGSize.init(width: 1200, height: 1200)
 		self.leftCircle.center = CGPoint.init(x: ScreenWidth / 2, y: ScreenHeight / 2)
 		self.rightCircle.center = CGPoint.init(x: ScreenWidth / 2, y: ScreenHeight / 2)
 		
-		UIView.animate(withDuration: 0.2, delay: 0, options: .curveLinear, animations: {
+		UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
 			self.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
 		}) { (_) in
 			self.transform = CGAffineTransform.identity
@@ -88,13 +93,19 @@ class MatchPairTransation: MakeUIViewGreatAgain {
 		self.leftCircle.isHidden = false
 		self.rightCircle.isHidden = false
 		self.isHidden = false
+		self.leftCircle.layer.cornerRadius = 600
+		self.rightCircle.layer.cornerRadius = 600
+		self.leftCircle.frame.size = CGSize.init(width: 1200, height: 1200)
+		self.rightCircle.frame.size = CGSize.init(width: 1200, height: 1200)
 		self.leftCircle.center = CGPoint.init(x: ScreenWidth / 2, y: ScreenHeight / 2)
 		self.rightCircle.center = CGPoint.init(x: ScreenWidth / 2, y: ScreenHeight / 2)
 		self.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
 		
-		UIView.animate(withDuration: 0.2, delay: 0, options: .curveLinear, animations: {
+		UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
 			self.leftCircle.frame.size = CGSize.init(width: 1200, height: 1200)
 			self.rightCircle.frame.size = CGSize.init(width: 1200, height: 1200)
+			self.leftCircle.center = CGPoint.init(x: ScreenWidth / 2, y: ScreenHeight / 2)
+			self.rightCircle.center = CGPoint.init(x: ScreenWidth / 2, y: ScreenHeight / 2)
 			self.transform = CGAffineTransform.identity
 		}) { (_) in
 			
@@ -113,11 +124,11 @@ class MatchPairTransation: MakeUIViewGreatAgain {
 		self.rightCircle.center = CGPoint.init(x: ScreenWidth + 390 - 290, y: ScreenHeight)
 		self.rightCircle.layer.cornerRadius = 600
 		
-		UIView.animate(withDuration: 0.1, animations: {
+		UIView.animate(withDuration: 0.15, animations: {
 			self.leftCircle.center = CGPoint.init(x: -390, y: 0)
 			self.rightCircle.center = CGPoint.init(x: ScreenWidth + 390, y: ScreenHeight)
 		}) { (_) in
-			UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveLinear, animations: {
+			UIView.animate(withDuration: 0.3, delay: 0.1, options: .curveLinear, animations: {
 				self.leftCircle.frame.size = CGSize.init(width: 780, height: 780)
 				self.leftCircle.center = CGPoint.init(x: -390, y: 0)
 				self.leftCircle.layer.cornerRadius = 390

@@ -49,7 +49,7 @@ extension CallViewController {
 		MonkeyModel.request(url: url, method: .post) { (_) in
 			
 		}
-		if let match = self.matchModel as? MatchModel, match.addTimeCount() == 0, match.match_room_mode == .VideoMode || match.matched_pair() {
+		if let match = self.matchModel as? MatchModel, (match.addTimeCount() == 0 && match.left.friendMatched == false && match.match_room_mode == .VideoMode) {
 			//  open pixel effect and cant close anymore
 			HWCameraManager.shared().addPixellate()
 			
