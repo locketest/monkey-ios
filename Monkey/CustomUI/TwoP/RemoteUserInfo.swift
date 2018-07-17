@@ -109,6 +109,8 @@ class RemoteUserInfo: MakeUIViewGreatAgain {
 			self.colorGradient.alpha = self.gradientShow ? 1 : 0
 			if self.friendButton.isEnabled {
 				self.friendButton.alpha = self.gradientShow ? 0 : 1
+			}else {
+				self.friendButton.alpha = self.gradientShow ? 0 : 1.5
 			}
 			if self.instagramButton.isEnabled {
 				self.instagramButton.alpha = self.gradientShow ? 0 : 1

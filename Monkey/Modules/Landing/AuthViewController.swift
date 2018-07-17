@@ -180,7 +180,7 @@ class AuthViewController: MonkeyViewController {
 		}
 		
 		// 如果不是，先 dismiss, 然后 present
-		presentedViewController.dismiss(animated: true, completion: showWelcome)
+		self.dismiss(animated: true, completion: showWelcome)
 	}
 	
 	/**

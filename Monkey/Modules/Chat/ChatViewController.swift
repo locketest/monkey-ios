@@ -147,6 +147,7 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 		self.videoCall = videoCall
 		// we accept before setting it because didSet checks to see if it's been accepted to differientiate bw initiated and incoming calls
 		videoCall.accept = true
+		self.videoCallManager.delegate = self
 		self.videoCallManager.startCall()
 	}
 
@@ -255,6 +256,16 @@ class ChatViewController: SwipeableViewController, ChatViewModelDelegate, UIText
 		NotificationCenter.default.removeObserver(self)
 		MessageCenter.shared.delMessageObserver(observer: self)
     }
+	
+	deinit {
+		if let videoCall = self.videoCall {
+			if videoCall.call_out == true {
+				self.videoCallManager.sendResponse(type: .Skip, to: videoCall)
+			}else {
+				self.callCanceled()
+			}
+		}
+	}
 
     @IBAction func aboutUsBtnClickFunc(_ sender: BigYellowButton) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -617,7 +628,6 @@ extension ChatViewController: MessageObserver {
 	
 	func didReceiveMatchAccept(in chat: String) {
 		if let videoCall = self.videoCall, chat == videoCall.match_id, videoCall.call_out {
-			self.videoCallManager.delegate = self
 			self.videoCallManager.connect(with: videoCall)
 			self.callButton.isSpinning = true
 			self.profileActiveLabel.text = "connecting..."

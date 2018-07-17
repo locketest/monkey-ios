@@ -49,9 +49,6 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	var requestFinishCountInt = 0
 	
-	// 是否是通过手势关闭的键盘标识
-	var isTapEndEditingBool = false
-	
 	var someoneCircle : CAShapeLayer!
 	
 	var tempCell: DashboardFriendsListCell?
@@ -109,29 +106,17 @@ class DashboardMainViewController: MonkeyViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		print("*** authorization = \(APIController.authorization), id = \(APIController.shared.currentUser?.user_id)")
-
         self.initView()
 		
 		self.initData()
     }
 	
 	@IBAction func tapGestureClickFunc(_ sender: UITapGestureRecognizer) {
-		self.isTapEndEditingBool = true
 		self.view.endEditing(true)
 	}
 	
 	@IBAction func endEditingBtnClickFunc(_ sender: UIButton) {
-		
-		if self.isTapEndEditingBool { // 点击空白处关闭键盘时再点end按钮不会触发键盘关闭事件，但是还是需要调整view的位置，Q1
-			self.endEditButton.isHidden = true
-			self.showStatusBarFunc(isHidden: false)
-			self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
-			self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
-		}
-		
 		self.userNotFoundLabel.isHidden = true
-		self.isTapEndEditingBool = false
 		self.searchTextField.text = ""
 		self.view.endEditing(true)
 		
@@ -284,14 +269,27 @@ class DashboardMainViewController: MonkeyViewController {
 		self.invitingAnimLayer.position = CGPoint(x: self.someoneImageView.width / 2, y: self.someoneImageView.height / 2)
 	}
 	
-	func showStatusBarFunc(isHidden:Bool) {
-		
-		UIApplication.shared.isStatusBarHidden = isHidden
-		
-		if isHidden {
-			self.mainViewController?.beginTwopSearchProcess()
-		} else {
-			self.mainViewController?.endTwopSearchProcess()
+	override var prefersStatusBarHidden: Bool {
+		return self.showKeyboardInSmallScreen
+	}
+	var showKeyboardInSmallScreen: Bool = false {
+		didSet {
+			if showKeyboardInSmallScreen {
+				self.mainViewController?.beginMatchProcess()
+				self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
+				self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam * 2 - self.InitialTopConstraintTuple.friends)
+			} else {
+				self.mainViewController?.endMatchProcess()
+				self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
+				self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
+			}
+			
+			UIView.animate(withDuration: 0.25, animations: {
+				self.view.layoutIfNeeded()
+			}) { (_) in
+				
+			}
+			self.setNeedsStatusBarAppearanceUpdate()
 		}
 	}
 	
@@ -519,17 +517,14 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		self.initInvitingLayerFunc()
 		
-		MessageCenter.shared.addMessageObserver(observer: self)
-		
 		let cleanButton = self.searchTextField.value(forKey: "_clearButton") as! UIButton
 		cleanButton.setImage(UIImage(named: "clearButton")!, for: .normal)
 		
 		self.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSForegroundColorAttributeName : UIColor.darkGray])
 		
+		MessageCenter.shared.addMessageObserver(observer: self)
 		NotificationCenter.default.addObserver(self, selector: #selector(initCircleFunc), name: NSNotification.Name(rawValue: ProfileImageUpdateTag), object: nil)
-		
 		NotificationCenter.default.addObserver(self, selector: #selector(acceptPairNotificationFunc), name: NSNotification.Name(rawValue: AcceptPairNotificationTag), object: nil)
-		
 		NotificationCenter.default.addObserver(self, selector: #selector(friendsPairNotificationFunc), name: NSNotification.Name(rawValue: FriendPairNotificationTag), object: nil)
 		
 		self.weAreTeamLabel.text = "Monkey Squad assembled,\nstarting 2P Chat"
@@ -537,24 +532,39 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideFunc), name: .UIKeyboardWillHide, object: nil)
+		self.addKeyboardObserver()
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
-		
-		self.showStatusBarFunc(isHidden: false)
+		self.removeKeyboardObserver()
 		
 		self.stopTimerFunc()
-		
+	}
+	
+	func addKeyboardObserver() {
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowFunc), name: .UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideFunc), name: .UIKeyboardWillHide, object: nil)
+	}
+	
+	func removeKeyboardObserver() {
 		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
 		NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
 	}
 	
 	deinit {
-//		MessageCenter.shared.delMessageObserver(observer: self)
+		MessageCenter.shared.delMessageObserver(observer: self)
+		NotificationCenter.default.removeObserver(self)
+	}
+}
+
+extension DashboardMainViewController: HeroViewControllerDelegate {
+	func heroWillStartAnimatingTo(viewController: UIViewController) {
+		self.removeKeyboardObserver()
+	}
+	
+	func heroDidEndAnimatingFrom(viewController: UIViewController) {
+		self.addKeyboardObserver()
 	}
 }
 
@@ -646,7 +656,6 @@ extension DashboardMainViewController : MessageObserver {
 	func handleFriendPairSocketMsgFunc(twopSocketModel:TwopSocketModel) {
 		
 		for dashboardFriendsListModel in self.twopChatFriendArray {
-			print("*** = \(twopSocketModel.extDictModel?.friendIdInt), = \(dashboardFriendsListModel.userIdInt)")
 			if twopSocketModel.extDictModel?.friendIdInt == dashboardFriendsListModel.userIdInt {
 				
 				dashboardFriendsListModel.nextInviteAtDouble = twopSocketModel.extDictModel?.expireTimeDouble
@@ -690,30 +699,23 @@ extension DashboardMainViewController {
 	
 	func keyboardWillShowFunc(notification:NSNotification) {
 		
-		self.isTapEndEditingBool = false // Q1
-		
-		self.endEditButton.isHidden = false
+		if self.searchTextField.text?.isEmpty == true {
+			self.endEditButton.isHidden = false
+		}
 		
 		if Environment.isIphoneX { return }
 		
-		self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
-		self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam * 2 - self.InitialTopConstraintTuple.friends)
-		
-		self.showStatusBarFunc(isHidden: true)
+		self.showKeyboardInSmallScreen = true
 	}
 	
 	func keyboardWillHideFunc(notification:NSNotification) {
 		
-		if !self.isTapEndEditingBool {
+		if self.searchTextField.text?.isEmpty == true {
 			self.endEditButton.isHidden = true
-		} else { return } // Q1
-		
+		}
 		if Environment.isIphoneX { return }
 		
-		self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
-		self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
-		
-		self.showStatusBarFunc(isHidden: false)
+		self.showKeyboardInSmallScreen = false
 	}
 }
 

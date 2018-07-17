@@ -67,8 +67,8 @@ typealias MatchContainer = MatchObserver & MonkeyViewController & TransationDele
 
 class MainViewController: SwipeableViewController {
 	
-	private var onepMatchDiscovery: MatchContainer?
-	private var twopMatchDiscovery: MatchContainer?
+	fileprivate var onepMatchDiscovery: MatchContainer?
+	fileprivate var twopMatchDiscovery: MatchContainer?
 	fileprivate var topMatchDiscovery: MatchContainer!
 	fileprivate var matchType: MatchType? {
 		didSet(oldValue) {
@@ -113,12 +113,13 @@ class MainViewController: SwipeableViewController {
 	
 	@IBOutlet weak var matchModeSwitch: BigYellowButton! // 2p按钮
 	@IBOutlet weak var twoPTipLabel: UILabel! // 红点数量提示
+	var tipNumber = 0
 	
 	@IBOutlet weak var bananaView: BigYellowButton!
 	@IBOutlet weak var bananaCountLabel: UILabel!
 	
 	@IBOutlet weak var channelUpdateRemindV: UIView!
-	var isMatchStart: Bool = false
+	fileprivate var isMatchStart: Bool = false
 	
 	var yesterdayString: Int?
 	var addTimeString: Int?
@@ -153,8 +154,6 @@ class MainViewController: SwipeableViewController {
 		
 		// red point
 		self.handleRedPointStatus()
-		
-		print("*** authorization = \(APIController.authorization), id = \(APIController.shared.currentUser?.user_id)")
 	}
 	
 	private func configureApperance() {
@@ -179,7 +178,22 @@ class MainViewController: SwipeableViewController {
 		// check user avatar
 		self.handleAccessUserAvatar()
 		// refresh match type
-		self.refreshMatchTypeStatus()
+		self.initialMatchTypeStatus()
+	}
+	
+	private func initialMatchTypeStatus() {
+		var matchType = MatchType.Onep
+		if let currentUser = UserManager.shared.currentUser {
+			// if user enable twop
+			if currentUser.cached_enable_two_p {
+				// if user has select twop
+				if currentUser.cached_match_type == MatchType.Twop.rawValue {
+					matchType = MatchType.Twop
+				}
+			}
+		}
+		
+		self.matchType = matchType
 	}
 	
 	private func configureSwipableVC() {
@@ -194,70 +208,71 @@ class MainViewController: SwipeableViewController {
 		self.swipableViewControllerPresentFromTop?.modalPresentationStyle = .overFullScreen
 	}
 	
-	func startMatch() {
-		self.isMatchStart = true
-		self.twoPTipLabel.isHidden = true
-		self.filtersButton.isHidden = true
-		self.matchModeSwitch.isHidden = true
-	}
-	
 	func beginMatchProcess() {
-		self.bananaView.isHidden = true
-		self.friendsButton.isHidden = true
-		self.settingsButton.isHidden = true
-		self.pageViewIndicator.isHidden = true
-		self.channelsButton.isHidden = true
-		self.isSwipingEnabled = false
-	}
-	
-	func beginTwopSearchProcess() {
-		self.beginMatchProcess()
-		self.matchModeSwitch.isHidden = true
-	}
-	
-	func endTwopSearchProcess() {
-		self.bananaView.isHidden = false
-		self.friendsButton.isHidden = false
-		self.settingsButton.isHidden = false
-		self.pageViewIndicator.isHidden = false
-		self.matchModeSwitch.isHidden = false
-		self.channelsButton.isHidden = false
-		self.isSwipingEnabled = true
+		self.isMatchStart = true
+		self.refreshIcon()
 	}
 	
 	func endMatchProcess() {
-		self.bananaView.isHidden = false
-		if self.matchType == .Onep {
-			self.friendsButton.isHidden = false
-			self.settingsButton.isHidden = false
-			self.pageViewIndicator.isHidden = false
-			self.channelsButton.isHidden = false
-			self.isSwipingEnabled = true
-		}
-	}
-	
-	func endMatch() {
 		self.isMatchStart = false
-		if UserManager.shared.currentUser?.cached_enable_two_p == true {
-			self.matchModeSwitch.isHidden = false
-		}
-		if self.matchType == .Onep {
-			self.filtersButton.isHidden = false
-			self.refreshRemindTip()
-		}
+		self.refreshIcon()
 	}
 	
-	func reloadIcon() {
-		var hideButton = false
-		if self.matchType == .Twop {
-			hideButton = true
+	func refreshIcon() {
+		if self.isMatchStart {
+			self.isSwipingEnabled = false
+			
+			self.bananaView.isHidden = true
+			self.pageViewIndicator.isHidden = true
+			
+			self.filtersButton.isHidden = true
+			self.friendsButton.isHidden = true
+			self.settingsButton.isHidden = true
+			self.channelsButton.isHidden = true
+		}else {
+			self.bananaView.isHidden = false
+			self.pageViewIndicator.isHidden = false
+			
+			if self.matchType == .Onep {
+				self.isSwipingEnabled = true
+				
+				self.filtersButton.isHidden = false
+				self.friendsButton.isHidden = false
+				self.settingsButton.isHidden = false
+				self.channelsButton.isHidden = false
+			}else {
+				self.isSwipingEnabled = false
+				
+				self.filtersButton.isHidden = true
+				self.friendsButton.isHidden = true
+				self.settingsButton.isHidden = true
+				self.channelsButton.isHidden = true
+			}
 		}
 		
-		self.twoPTipLabel.isHidden = hideButton
-		self.filtersButton.isHidden = hideButton
-		self.friendsButton.isHidden = hideButton
-		self.settingsButton.isHidden = hideButton
-		self.channelsButton.isHidden = hideButton
+		self.refreshModeSwitch()
+	}
+	
+	private func refreshModeSwitch() {
+		guard let currentUser = UserManager.shared.currentUser, currentUser.cached_enable_two_p == true, self.isMatchStart == false else {
+			self.twoPTipLabel.isHidden = true
+			self.matchModeSwitch.isHidden = true
+			return
+		}
+		
+		self.matchModeSwitch.isHidden = false
+		if self.matchType == .Onep {
+			self.matchModeSwitch.backgroundColor = UIColor.init(red: 1, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1)
+			if self.tipNumber > 0 {
+				self.twoPTipLabel.isHidden = false
+				self.twoPTipLabel.text = String(self.tipNumber)
+			}else {
+				self.twoPTipLabel.isHidden = true
+			}
+		}else {
+			self.matchModeSwitch.backgroundColor = UIColor.white
+			self.twoPTipLabel.isHidden = true
+		}
 	}
 	
 	private func switchTo(mode: MatchType) {
@@ -424,35 +439,6 @@ class MainViewController: SwipeableViewController {
 		self.show(new: self.topMatchDiscovery)
 	}
 	
-	private func refreshMatchTypeStatus() {
-		var matchType = MatchType.Onep
-		if let currentUser = UserManager.shared.currentUser, self.matchType == nil {
-			// if user enable twop
-			if currentUser.cached_enable_two_p {
-				self.matchModeSwitch.isHidden = false
-				// if user has select twop
-				if currentUser.cached_match_type == MatchType.Twop.rawValue {
-					matchType = MatchType.Twop
-				}
-			}else {
-				self.matchModeSwitch.isHidden = true
-			}
-		}
-		
-		self.matchType = matchType
-	}
-	
-	fileprivate func refreshRemindTip(count: Int = 0) {
-		let currentUser = APIController.shared.currentUser
-		if self.matchModeSwitch.isHidden == false, currentUser?.cached_unlocked_two_p == true, self.isMatchStart == false, count > 0 {
-			// refresh count
-			self.twoPTipLabel.isHidden = false
-			self.twoPTipLabel.text = count.description
-		}else {
-			self.twoPTipLabel.isHidden = true
-		}
-	}
-	
 	private func loadChannels() {
 		RealmChannel.fetchAll { (result: JSONAPIResult<[RealmChannel]>, hadUpdate: Bool) in
 			switch result {
@@ -536,7 +522,7 @@ class MainViewController: SwipeableViewController {
 		}
 	}
 	
-	private func handleRedPointStatus(){
+	private func handleRedPointStatus() {
 		
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
 			.header("Authorization", UserManager.authorization),
@@ -561,8 +547,8 @@ class MainViewController: SwipeableViewController {
 								models.append(friendsRequestModel)
 							}
 						})
-						
-						self.refreshRemindTip(count: models.count)
+						self.tipNumber = models.count
+						self.refreshIcon()
 					}
 				}
 		}
@@ -771,19 +757,9 @@ extension MainViewController: MatchObserver {
 	}
 	
 	func matchTypeChanged(newType: MatchType) {
-		if self.matchModeSwitch.isHidden == false {
-			if newType == .Onep {
-				self.matchModeSwitch.backgroundColor = UIColor.init(red: 1, green: 252.0 / 255.0, blue: 1.0 / 255.0, alpha: 1)
-				self.isSwipingEnabled = true
-			}else {
-				self.matchModeSwitch.backgroundColor = UIColor.white
-				self.isSwipingEnabled = false
-			}
-			self.reloadIcon()
-			self.refreshRemindTip()
-		}
-		
-		self.topMatchDiscovery.matchTypeChanged(newType: newType)
+		self.refreshIcon()
+		self.onepMatchDiscovery?.matchTypeChanged(newType: newType)
+		self.twopMatchDiscovery?.matchTypeChanged(newType: newType)
 	}
 }
 
@@ -875,6 +851,11 @@ extension MainViewController: MessageObserver {
 		}
 	}
 	
+	func didReceiveTwopInvite(message: NotificationMessage) {
+		self.tipNumber += 1
+		self.refreshIcon()
+	}
+	
 	func didReceiveTwopMatch(match: MatchModel) {
 		if self.topMatchDiscovery is TwopMatchController {
 			self.topMatchDiscovery.didReceiveTwopMatch!(match: match)
@@ -885,10 +866,7 @@ extension MainViewController: MessageObserver {
 extension MainViewController: UserObserver {
 	func currentUserInfomationChanged() {
 		self.refreshBananas()
-		
-		if self.isMatchStart == false, self.matchModeSwitch.isHidden == true, self.matchType == .Onep, UserManager.shared.currentUser?.cached_enable_two_p == true {
-			self.matchModeSwitch.isHidden = false
-		}
+		self.refreshIcon()
 	}
 }
 
@@ -948,6 +926,9 @@ extension MainViewController: MatchServiceObserver {
 	
 	fileprivate func tryChating() {
 		guard let videoCall = self.videoCall else { return }
+		guard self.matchViewController == nil else {
+			return
+		}
 		
 		// 如果已经收到所有人的流
 		if videoCall.allUserConnected() {
@@ -1042,12 +1023,16 @@ extension MainViewController: InAppNotificationActionDelegate {
 	}
 	
 	func twopInviteDidAccept(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+		self.tipNumber -= 1
+		self.refreshIcon()
 		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/2pinvitations/accept/\(notification.sender_id)", method: .post) { (_) in
 			
 		}
 	}
 	
 	func twopInviteDidReject(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+		self.tipNumber -= 1
+		self.refreshIcon()
 		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/2pinvitations/ignore/\(notification.sender_id)", method: .post) { (_) in
 			
 		}

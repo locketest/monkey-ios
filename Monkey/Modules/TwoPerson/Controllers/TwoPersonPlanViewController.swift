@@ -79,8 +79,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		// 睿，临时，记得删除
 		UserDefaults.standard.setValue(false, forKey: IsUploadContactsTag)
 		
-		print("*** authorization = \(APIController.authorization), id = \(APIController.shared.currentUser?.user_id)")
-		
 		self.initView()
 		
 		self.initData()
@@ -274,8 +272,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	
 	func loadFriendsRequestFunc() {
 		
-		print("*** = \(APIController.authorization)")
-		
 		// 拿到friends list里的friendship_id跟后端返回的friendship_id对比，相等就拿头像和名字，跟模型一起传到model里填充完整模型
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
 			.header("Authorization", UserManager.authorization),
@@ -284,8 +280,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 				case .error(let error):
 					print("*** error : = \(error.message)")
 				case .success(let jsonAPIDocument):
-					
-					print("*** 2p jsonAPIDocument = \(jsonAPIDocument.json["data"])")
 					
 					if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 						
@@ -379,8 +373,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 					switch response {
 					case .error(_): break
 					case .success(let jsonAPIDocument):
-						
-						print("*** jsonAPIDocument = \(jsonAPIDocument.json["data"] as? [[String: AnyObject]])")
 						
 						if let array = jsonAPIDocument.json["data"] as? [[String: AnyObject]] {
 							
@@ -752,6 +744,7 @@ extension TwoPersonPlanViewController : FriendsRequestCellDelegate, MyContactsCe
 		print("*** isCancel = \(isCancel), userId = \(model.userIdInt!)")
 		
 		let pathString = isCancel ? "ignore/\(model.userIdInt!)" : "accept/\(model.userIdInt!)"
+		self.mainViewController?.tipNumber -= 1
 		
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/\(pathString)", method: .post, options: [
 			.header("Authorization", APIController.authorization),

@@ -36,10 +36,6 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 	@IBOutlet var profileNameLabel: UILabel!
 	@IBOutlet var notificationDescriptionLabel: UILabel!
 	
-	@IBOutlet weak var rejectLabel: EmojiLabel!
-	@IBOutlet weak var acceptLabel: EmojiLabel!
-	@IBOutlet weak var acceptActivity: UIActivityIndicatorView!
-	
 	@IBOutlet weak var rejectButton: BigYellowButton!
 	@IBOutlet weak var acceptButton: JigglyButton!
 	
@@ -66,8 +62,8 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 			case .VideoCall:
 				self.notificationDescriptionLabel.text = "video call"
 				self.acceptButton.backgroundColor = UIColor.init(red: 107.0 / 255.0, green: 68.0 / 255.0, blue: 1.0, alpha: 0.07)
-				self.rejectLabel.text = "❌"
-				self.acceptLabel.text = "📞"
+				self.rejectButton.emoji = "❌"
+				self.acceptButton.emoji = "📞"
 			default:
 				break
 			}
@@ -93,6 +89,10 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 		view.frame = CGRect.init(x: 0, y: 0, width: Environment.ScreenWidth - 10, height: 76)
 		view.user = user
 		view.barStyle = style
+		view.rejectButton.emojiLabel?.font = UIFont.systemFont(ofSize: 24)
+		view.acceptButton.emojiLabel?.font = UIFont.systemFont(ofSize: 24)
+		view.rejectButton.emojiLabel?.frame.size = CGSize.init(width: 48, height: 48)
+		view.acceptButton.emojiLabel?.frame.size = CGSize.init(width: 48, height: 48)
 		return view
 	}
 	
@@ -115,7 +115,6 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 		self.layer.cornerRadius = 13
 		self.layer.masksToBounds = true
 		self.backgroundColor = UIColor.white
-		self.acceptActivity.isHidden = true
 	}
 	
 	override func willMove(toWindow newWindow: UIWindow?) {
@@ -133,6 +132,7 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 			return
 		}
 		
+		self.acceptButton.isJiggling = true
 		dismissTimer = Timer.scheduledTimer(timeInterval: self.lifeTime,
 											target: self,
 											selector: #selector(notifyDismiss),
@@ -145,6 +145,7 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 			return
 		}
 		
+		self.acceptButton.isJiggling = false
 		dismissTimer.invalidate()
 		self.dismissTimer = nil
 	}
@@ -159,9 +160,8 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 	@IBAction func accept(_ sender: UIButton) {
 		self.rejectButton.isEnabled = false
 		self.acceptButton.isEnabled = false
-		self.acceptActivity.isHidden = false
-		self.acceptActivity.startAnimating()
-		self.acceptLabel.removeFromSuperview()
+		self.acceptButton.isLoading = true
+		self.acceptButton.loadingStyleIsWhite = false
 		self.stopTimer()
 		self.onAccept()
 		self.didAccept()

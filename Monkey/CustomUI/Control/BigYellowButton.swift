@@ -24,24 +24,24 @@ import UIKit
     }
         
     private let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
-    private var oldBackgroundColor: UIColor?
+//	private var oldBackgroundColor: UIColor?
     /// Toggles the button opacity and touch down animations.
-    @IBInspectable var isLoading: Bool = false {
-        didSet {
-            if isLoading {
-                self.activityIndicatorView.startAnimating()
-                self.titleLabel?.removeFromSuperview()
-                self.emojiLabel?.isHidden = true
-                self.oldBackgroundColor = self.backgroundColor
-                self.backgroundColor = .clear
-            } else {
-                self.activityIndicatorView.stopAnimating()
-                self.titleLabel.then { self.addSubview($0) }
-                self.emojiLabel?.isHidden = false
-                self.backgroundColor = self.oldBackgroundColor
-            }
-        }
-    }
+	@IBInspectable var isLoading: Bool = false {
+		didSet {
+			if isLoading {
+				self.activityIndicatorView.startAnimating()
+				self.titleLabel?.removeFromSuperview()
+				self.emojiLabel?.isHidden = true
+//				self.oldBackgroundColor = self.backgroundColor
+//				self.backgroundColor = .clear
+			} else {
+				self.activityIndicatorView.stopAnimating()
+				self.titleLabel.then { self.addSubview($0) }
+//				self.emojiLabel?.isHidden = false
+//				self.backgroundColor = self.oldBackgroundColor
+			}
+		}
+	}
     @IBInspectable var loadingStyleIsWhite = true {
         didSet {
             if loadingStyleIsWhite {
@@ -81,7 +81,7 @@ import UIKit
                 if self.titleLabel?.text == nil {
                     emojiLabel?.font = UIFont(name: "Apple Color Emoji", size: 32)
                     emojiLabel?.frame = self.bounds
-                    emojiLabel?.frame.size = CGSize(width: 57, height: 57)
+					emojiLabel?.frame.size = CGSize(width: 57, height: 57)
                     self.addSubview(emojiLabel!)
                 } else {
                     emojiLabel!.frame = CGRect(x: -29, y: -3, width: 25, height: 25)

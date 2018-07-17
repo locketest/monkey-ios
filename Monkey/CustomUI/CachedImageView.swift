@@ -14,15 +14,12 @@ class CachedImageView: MakeUIViewGreatAgain {
         didSet {
             // Hide all the views.
             self.imageView.isHidden = true
-            self.errorView.isHidden = true
             self.loadingView.stopAnimating()
             
             // Unhide the view we need to show.
             switch status {
             case .image:
                 self.imageView.isHidden = false
-            case .error:
-                self.errorView.isHidden = false
             case .loading:
                 self.loadingView.startAnimating()
             case .none:
@@ -52,13 +49,11 @@ class CachedImageView: MakeUIViewGreatAgain {
                     switch result {
                     case .success(let cachedImage):
                         guard let image = cachedImage.image else {
-                            self?.status = .error
                             return
                         }
                         self?.status = .image
                         self?.imageView.image = image
                     case .error(let error):
-                        self?.status = .error
                         error.log()
                     }
                 }
@@ -70,8 +65,7 @@ class CachedImageView: MakeUIViewGreatAgain {
         self.status = .image
         self.imageView.image = UIImage(named: placeholder ?? "ProfileImageDefault", in: .main, compatibleWith: self.traitCollection)
     }
-    
-    private let errorView = UILabel()
+	
     private let imageView = UIImageView()
     private let loadingView = UIActivityIndicatorView()
     init(url: String) {
@@ -92,7 +86,6 @@ class CachedImageView: MakeUIViewGreatAgain {
     }
     func afterInit() {
         self.loadingView.hidesWhenStopped = true
-        self.addSubview(self.errorView)
         self.addSubview(self.loadingView)
         self.addSubview(self.imageView)
         self.showDefaultImage()
@@ -101,16 +94,11 @@ class CachedImageView: MakeUIViewGreatAgain {
     override func layoutSubviews() {
         super.layoutSubviews()
         self.imageView.frame = self.bounds
-        self.errorView.frame = self.bounds
         self.loadingView.center = self.convert(self.center, from: self.superview)
         self.loadingView.activityIndicatorViewStyle = self.backgroundColor?.readableInverse == .white ? .white : .gray
-        self.errorView.textColor = self.backgroundColor?.readableInverse
-        self.errorView.text = "?"
-        self.errorView.textAlignment = .center
     }
     enum Status {
         case loading
-        case error
         case image
         case none
     }

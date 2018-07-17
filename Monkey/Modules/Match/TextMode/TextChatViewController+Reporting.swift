@@ -42,9 +42,10 @@ extension TextChatViewController {
 		self.present(alert, animated: true, completion: nil)
 	}
 	
-	
 	func sendReport(reason: ReportType) {
 		self.matchModel.left.reportReason = reason
+		self.friendButton.isEnabled = false
+		
 		OnepMatchManager.default.sendMatchMessage(type: .Report, to: self.matchModel.left)
 		let url = "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/reports/\(self.matchModel.left.user_id)"
 		MonkeyModel.request(url: url, method: .post) { (_) in

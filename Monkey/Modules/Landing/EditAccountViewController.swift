@@ -83,9 +83,11 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
     override func viewDidLoad() {
      //   self.nextButton.isEnabled = self.isValid == true
         super.viewDidLoad()
-        if let currentUser = APIController.shared.currentUser {
-            currentUser.gender.then { self.selectedGender = Gender(rawValue: $0) }
-        }
+		
+		guard let currentUser = UserManager.shared.currentUser else {
+			return
+		}
+		currentUser.gender.then { self.selectedGender = Gender(rawValue: $0) }
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
         
@@ -121,10 +123,6 @@ class EditAccountViewController: MonkeyViewController, UITextFieldDelegate {
                 self.pickerContainerView.layer.opacity = 1
                 self.view.layoutIfNeeded()
         })
-        
-        guard let currentUser = APIController.shared.currentUser else {
-            return
-        }
 
         self.prefillFields(with: currentUser)
     }

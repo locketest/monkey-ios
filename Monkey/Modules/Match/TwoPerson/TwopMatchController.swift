@@ -95,7 +95,6 @@ class TwopMatchController: MonkeyViewController {
 
 extension TwopMatchController {
 	func beginPairConnect() {
-		self.mainViewController?.startMatch()
 		self.mainViewController?.beginMatchProcess()
 	}
 	
@@ -129,7 +128,6 @@ extension TwopMatchController {
 	
 	func endPairConnect() {
 		self.mainViewController?.endMatchProcess()
-		self.mainViewController?.endMatch()
 	}
 }
 

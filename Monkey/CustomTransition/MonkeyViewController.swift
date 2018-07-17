@@ -13,6 +13,13 @@ class MonkeyViewController: UIViewController {
         return .lightContent
     }
 	
+	override var prefersStatusBarHidden: Bool {
+		if let childVC = self.childViewControllers.first {
+			return childVC.prefersStatusBarHidden
+		}
+		return super.prefersStatusBarHidden
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		print("\(self) \(#function)")

@@ -84,9 +84,8 @@ class OnepMatchController: MonkeyViewController {
 //		Step 1: apperance
 		self.configureApperance()
 		
-//		Step 2: tap to start
-		let startGesture = UITapGestureRecognizer.init(target: self, action: #selector(startFindingMatch))
-		self.startView.addGestureRecognizer(startGesture)
+//		Step 2: if show state 1
+		self.configureTapToStart()
 	}
 	
 	private func configureApperance() {
@@ -143,6 +142,18 @@ class OnepMatchController: MonkeyViewController {
 		
 		// tip
 		self.update(tip: nil)
+	}
+	
+	private func configureTapToStart() {
+		let showStateReady = (2 < 1)
+		if showStateReady {
+			let startGesture = UITapGestureRecognizer.init(target: self, action: #selector(startFindingMatch))
+			self.startView.addGestureRecognizer(startGesture)
+		}else {
+			self.exitButton.isHidden = true
+			self.startView.isHidden = true
+			self.startFindingMatch()
+		}
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -303,8 +314,8 @@ class OnepMatchController: MonkeyViewController {
 		let oldStatus = self.onepStatus
 		self.onepStatus = newStatus
 		
-		self.startView.isHidden = (newStatus != .WaitingStart)
-		self.exitButton.isHidden = (newStatus != .RequestMatch)
+//		self.startView.isHidden = (newStatus != .WaitingStart)
+//		self.exitButton.isHidden = (newStatus != .RequestMatch)
 		self.factTextView.isHidden = (newStatus == .WaitingStart || newStatus == .Chating)
 		self.loadingContentView.isHidden = (newStatus == .WaitingStart || newStatus == .Chating)
 		self.loadingTextLabel.isHidden = (newStatus != .RequestMatch)
@@ -338,11 +349,9 @@ class OnepMatchController: MonkeyViewController {
 		case .WaitingStart:
 			// 回到状态1
 			self.stopFindingChats(forReason: "tap-to-start")
-			mainVC.endMatch()
 		case .RequestMatch:
 			if oldStatus == .WaitingStart {
 				// 从状态1过来
-				mainVC.startMatch()
 				self.startFindingChats(forReason: "tap-to-start")
 			}else {
 				// 从其他状态过来
@@ -1021,8 +1030,10 @@ extension OnepMatchController: MatchObserver {
 	func matchTypeChanged(newType: MatchType) {
 		if newType == .Onep {
 			self.matchManager.delegate = self
+			self.startFindingChats(forReason: "switch-twop")
 		}else {
 			self.matchManager.delegate = nil
+			self.stopFindingChats(forReason: "switch-twop")
 		}
 	}
 	

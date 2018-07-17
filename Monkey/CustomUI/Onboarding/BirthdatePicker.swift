@@ -33,7 +33,4 @@ class BirthdatePicker: UIDatePicker {
         
         self.backgroundColor = .white
     }
-    
-    
-
 }

@@ -19,7 +19,7 @@ class AgoraService: NSObject {
 	var observer: ChannelServiceProtocol?
 	fileprivate var engine: AgoraRtcEngineKit!
 	
-	fileprivate var remoteUsers = [Int]()
+	fileprivate var remoteUsers = Set<Int>.init()
 	fileprivate var networkQuality = [AgoraNetworkQuality]()
 	fileprivate var videoProfile = AgoraVideoProfile.landscape480P_4
 	
@@ -105,14 +105,15 @@ extension AgoraService: AgoraRtcEngineDelegate {
 	
 	func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinedOfUid uid: UInt, elapsed: Int) {
 		let user_id = Int(uid)
-		self.remoteUsers.append(user_id)
+		self.remoteUsers.insert(user_id)
 		self.observer?.remoteUserDidJoined(user: user_id)
 	}
 
 	func rtcEngine(_ engine: AgoraRtcEngineKit, didOfflineOfUid uid: UInt, reason: AgoraUserOfflineReason) {
 		let droped = (reason == .dropped)
-		self.remoteUsers.remove(Int(uid))
-		self.observer?.remoteUserDidQuited(user: Int(uid), droped: droped)
+		let user_id = Int(uid)
+		self.remoteUsers.remove(user_id)
+		self.observer?.remoteUserDidQuited(user: user_id, droped: droped)
 	}
 
 	func rtcEngine(_ engine: AgoraRtcEngineKit, firstRemoteVideoFrameOfUid uid: UInt, size: CGSize, elapsed: Int) {

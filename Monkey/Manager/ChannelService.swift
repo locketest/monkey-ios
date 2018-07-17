@@ -265,7 +265,7 @@ extension ChannelService: ChannelServiceProtocol {
 			"user_id": user_id,
 			])
 		// 如果收到的流，不是当前匹配到的用户的流
-		guard let user = self.matchUser(with: user_id) else { return }
+		guard let user = self.matchUser(with: user_id), user.connected == false else { return }
 		
 		user.joined = true
 		if user.accept == false {

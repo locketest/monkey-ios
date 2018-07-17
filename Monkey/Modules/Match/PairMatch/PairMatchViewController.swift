@@ -89,7 +89,6 @@ class PairMatchViewController: MonkeyViewController {
 		
 		self.matchManager.delegate = self
 		self.view.backgroundColor = UIColor.clear
-		self.transationView.backgroundColor = UIColor.init(red: 100.0 / 255.0, green: 74.0 / 255.0, blue: 241.0 / 255.0, alpha: 1)
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -196,7 +195,7 @@ class PairMatchViewController: MonkeyViewController {
 		self.twopStatus = newStatus
 		
 		self.statusLabel.isHidden = (newStatus != .Connecting && newStatus != .Reconnecting)
-		self.transationView.isHidden = (newStatus != .Connecting && newStatus != .Reconnecting)
+//		self.transationView.isHidden = (newStatus != .Connecting && newStatus != .Reconnecting)
 		self.remoteContainer.isHidden = (newStatus == .Reconnecting)
 		self.localPreview.isHidden = (newStatus == .Reconnecting)
 		self.pairInfoView.isHidden = (newStatus == .Reconnecting)
@@ -289,24 +288,30 @@ class PairMatchViewController: MonkeyViewController {
 	}
 	
 	fileprivate func handleMatchError(error: MatchError) {
-		if error == .PairQuit, self.twopStatus == .WaitingConfirm {
-			let confirmJson: [String: Any] = [
-				"type": MessageType.Confirm.rawValue,
-				"sender": self.friendPairModel.left.user_id,
-				"match_id": self.matchModel?.match_id ?? "",
-			]
-			
-			// json to model
-			if let message = Mapper<MatchMessage>().map(JSON: confirmJson) {
-				self.receiveConfirm(message: message)
+		var convertError = error
+		if error == .PairQuit {
+			if self.twopStatus == .WaitingConfirm {
+				let confirmJson: [String: Any] = [
+					"type": MessageType.Confirm.rawValue,
+					"sender": self.friendPairModel.left.user_id,
+					"match_id": self.matchModel?.match_id ?? "",
+					]
+				
+				// json to model
+				if let message = Mapper<MatchMessage>().map(JSON: confirmJson) {
+					self.receiveConfirm(message: message)
+				}
+				return
+			}else if self.twopStatus == .Connecting || self.twopStatus == .Chating {
+				convertError = .PairSkip
+				return
 			}
-			return
 		}
 		
 		// 显示错误文案
-		if self.twopStatus == .WaitingResponse, error.shouldShowTimeOut() {
+		if self.twopStatus == .WaitingResponse, convertError.shouldShowTimeOut() {
 			self.update(tip: "Time out!!", autoDismiss: true)
-		}else if self.twopStatus == .WaitingResponse, error.shouldShowSkip() {
+		}else if self.twopStatus == .WaitingResponse, convertError.shouldShowSkip() {
 			self.update(tip: "Skipped!!", autoDismiss: true)
 		}else {
 			self.update(tip: nil)
@@ -317,7 +322,7 @@ class PairMatchViewController: MonkeyViewController {
 		self.dismissMatchedView()
 		//
 		
-		switch error {
+		switch convertError {
 		case .ReConnectTimeOut:
 			fallthrough
 		case .PairQuit:
@@ -335,6 +340,7 @@ class PairMatchViewController: MonkeyViewController {
 			self.matchManager.endChat()
 			if self.matchModel?.matched_pair() == true && self.twopStatus.connectMatch() {
 				// 与好友重连
+				self.transationView.startReconnect()
 				self.matchManager.reconnect(with: self.friendPairModel)
 				self.update(tip: "Connecting...")
 				self.update(to: .Reconnecting)
@@ -386,6 +392,7 @@ class PairMatchViewController: MonkeyViewController {
 			self.remoteContainer.isHidden = true
 			self.localPreview.isHidden = true
 			self.pairInfoView.isHidden = true
+			self.transationView.startConnect()
 		}else {
 			self.transationView.isHidden = true
 			guard self.twopStatus == .WaitingResponse else { return }
@@ -409,6 +416,7 @@ class PairMatchViewController: MonkeyViewController {
 		}else if self.twopStatus == .Reconnecting, friendPairModel.left.connected {
 			// reconnect success
 			self.matchManager.pairSuccess(with: self.friendPairModel)
+			self.transationView.reconnectSuccess()
 			self.update(to: .RequestMatch)
 		}
 	}
@@ -419,6 +427,7 @@ class PairMatchViewController: MonkeyViewController {
 		
 		remoteInfo.beginChat(with: match)
 		if match.matched_pair() {
+			self.transationView.connectSuccess()
 			UIView.animate(withDuration: 0.25, animations: {
 				remoteInfo.frame = self.remoteContainer.bounds
 			}) { (_) in
@@ -815,6 +824,7 @@ extension PairMatchViewController: MatchMessageObserver {
 			return
 		}
 		
+		self.revokePrevMatchRequest()
 		self.stopClockTimer()
 		self.isAnimatingDismiss = true
 		self.view.isUserInteractionEnabled = false

@@ -41,6 +41,9 @@ extension CallViewController {
 	
 	func sendReport(reason: ReportType) {
 		self.matchModel.left.reportReason = reason
+		self.disableAddMinute()
+		self.disableAddSnapchat()
+		
 		OnepMatchManager.default.sendMatchMessage(type: .Report, to: self.matchModel.left)
 		let url = "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/reports/\(self.matchModel.left.user_id)"
 		MonkeyModel.request(url: url, method: .post) { (_) in

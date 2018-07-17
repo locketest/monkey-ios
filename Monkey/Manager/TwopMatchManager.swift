@@ -46,6 +46,8 @@ class TwopMatchManager {
 		self.stopAllTimer()
 		
 		// save friend pair
+		friendPair.left.joined = false
+		friendPair.left.connected = false
 		self.friendPair = friendPair
 		
 		// reconnecting
@@ -114,10 +116,10 @@ class TwopMatchManager {
 		self.startConnectTimer()
 		// 如果是 pair，先退出当前 pair 房间，再加入新的 match 房间
 		if match.matched_pair() {
-			self.friendPair?.left.joined = false
-			self.friendPair?.left.connected = false
 			// leave old channel
 			self.channelService.leaveChannel()
+			self.friendPair?.left.joined = false
+			self.friendPair?.left.connected = false
 			// join new room
 			self.channelService.joinChannel(matchModel: match)
 			// reopen video capture
