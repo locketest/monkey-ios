@@ -113,5 +113,9 @@ extension FriendsViewModel: MessageObserver {
 	func didReceiveFriendRemoved() {
 		self.refreshFriendships()
 	}
+	
+	func didReceiveConversationMessage() {
+		self.delegate?.reloadFriendships()
+	}
 }
 

@@ -30,11 +30,6 @@ public let AccessUserAvatarArrayTag = "AccessUserAvatarArray"
 */
 typealias UserAvatarTag = [String: Bool]
 
-public let RemoteNotificationTag = "RemoteNotification" // 推送消息通知key
-public let KillAppBananaNotificationTag = "KillAppBananaNotificationTag"
-public let BananaAlertDataTag = "BananaAlertData" // Adjust promotion link下载，Bananas提醒tag
-
-
 typealias MatchContainer = MatchObserver & MonkeyViewController & TransationDelegate
 
 @objc protocol TransationDelegate: NSObjectProtocol {
@@ -119,13 +114,9 @@ class MainViewController: SwipeableViewController {
 	@IBOutlet weak var bananaCountLabel: UILabel!
 	
 	@IBOutlet weak var channelUpdateRemindV: UIView!
-	fileprivate var isMatchStart: Bool = false
 	
-	var yesterdayString: Int?
-	var addTimeString: Int?
-	var addFriendString: Int?
-	var equivalentString: String?
-	var alertTextFieldString: String = ""
+	var bananas = Bananas()
+	fileprivate var isMatchStart: Bool = false
 	
 	// MARK: UIViewController
 	override func viewDidLoad() {
@@ -150,7 +141,7 @@ class MainViewController: SwipeableViewController {
 		self.loadChannels()
 		
 		// load bananas
-		self.loadBananaData(isNotificationBool: false)
+		self.loadBananas()
 		
 		// red point
 		self.handleRedPointStatus()
@@ -392,11 +383,6 @@ class MainViewController: SwipeableViewController {
 		self.present(matchViewController!, animated: false, completion: nil)
 	}
 	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		
-	}
-	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
@@ -413,11 +399,13 @@ class MainViewController: SwipeableViewController {
 		self.showCurrentDiscovery()
 		
 		// check first name
-		self.handleFirstNameExistFunc()
+		self.checkEmptyName()
+		
+		// if should show banana tip
+		self.notifyBananaTip()
 		
 		// should present banana
 		self.refreshBananas()
-		self.handleBananaAlertFunc()
 		
 		// add local preview
 		self.localPreview.addLocalPreview()
@@ -431,12 +419,23 @@ class MainViewController: SwipeableViewController {
 		UIView.animate(withDuration: 0.3) {
 			self.contentView.alpha = 1.0
 		}
+		
+		// mainview controller 已经显示
+		NotificationCenter.default.post(name: .MonkeyMatchDidReady, object: nil)
 	}
 	
 	private func showCurrentDiscovery() {
 		guard self.topMatchDiscovery.parent == nil else { return }
 		
 		self.show(new: self.topMatchDiscovery)
+	}
+	
+	fileprivate func refreshBananas() {
+		let numberFormatter = NumberFormatter()
+		numberFormatter.numberStyle = .decimal
+		let bananaCount = UserManager.shared.currentUser?.bananas ?? 0
+		let formattedNumber = numberFormatter.string(from: NSNumber(value:bananaCount))
+		self.bananaCountLabel.text = formattedNumber
 	}
 	
 	private func loadChannels() {
@@ -474,54 +473,6 @@ class MainViewController: SwipeableViewController {
 		self.settingsButton.setImage(UIImage(named: state ? "ArrowButtonSel" : "ArrowButton"), for: .normal)
 	}
 	
-	private func handleFirstNameExistFunc() {
-		guard let currentUser = UserManager.shared.currentUser else { return }
-		if currentUser.hasName() { return }
-		
-		let alertController = UIAlertController(title: "⚠️ Name Change ⚠️", message: "yo keep it pg this time", preferredStyle: .alert)
-		alertController.addTextField { (textField) in
-			textField.placeholder = "Input"
-			NotificationCenter.default.addObserver(self, selector: #selector(self.alertTextDidChanged), name: NSNotification.Name.UITextFieldTextDidChange, object: textField)
-		}
-		
-		let doneAction = UIAlertAction(title: "kk", style: .default, handler: { (alertAction) in
-			currentUser.update(attributes: [.first_name(self.alertTextFieldString)], completion: { (error) in
-				if let error = error {
-					if error.status == "400" {
-						return self.present(error.toAlert(onOK: { (UIAlertAction) in
-							self.handleFirstNameExistFunc()
-						}, title:"yo keep it pg", text:"try again"), animated: true, completion: nil)
-					}
-				}
-			})
-		})
-		
-		doneAction.isEnabled = false
-		alertController.addAction(doneAction)
-		self.present(alertController, animated: true, completion: nil)
-	}
-	
-	func alertTextDidChanged(notification: NSNotification) {
-		if let alertController = self.presentedViewController as? UIAlertController,
-			let textField = alertController.textFields?.first,
-			let doneAction = alertController.actions.first
-		{
-			doneAction.isEnabled = textField.charactersCount > 2
-			self.alertTextFieldString = textField.text ?? ""
-		}
-	}
-	
-	private func handleBananaAlertFunc() {
-		if let bananaAlertData = UserDefaults.standard.dictionary(forKey: BananaAlertDataTag), let is_used = bananaAlertData["is_used"] as? Bool, is_used == true {
-			let alertController = UIAlertController(title: bananaAlertData["text"] as? String ?? "", message: nil, preferredStyle: .alert)
-			alertController.addAction(UIAlertAction(title: "kk", style: .default, handler: nil))
-			
-			DispatchQueue.main.async {
-				self.present(alertController, animated: true, completion: nil)
-			}
-		}
-	}
-	
 	private func handleRedPointStatus() {
 		
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2pinvitations/", method: .get, options: [
@@ -549,35 +500,6 @@ class MainViewController: SwipeableViewController {
 						})
 						self.tipNumber = models.count
 						self.refreshIcon()
-					}
-				}
-		}
-	}
-	
-	private func loadBananaData(isNotificationBool: Bool) {
-		JSONAPIRequest(url: "\(Environment.baseURL)/api/v1.3/bananas", options: [
-			.header("Authorization", UserManager.authorization),
-			]).addCompletionHandler { (result) in
-				switch result {
-				case .error(let error):
-					error.log()
-				case .success(let jsonAPIDocument):
-					
-					let json = jsonAPIDocument.dataResource?.json
-					if let me = json?["me"] as? [String: Int] {
-						self.yesterdayString = me["yesterday"]
-					}
-					
-					if let redeem = json?["redeem"] as? [String: Int] {
-						self.addTimeString = redeem["add_time"]
-						self.addFriendString = redeem["add_friend"]
-					}
-					
-					self.equivalentString = json?["promotion"] as? String
-					
-					let savedBananaNotificationTag = UserDefaults.standard.string(forKey: KillAppBananaNotificationTag) ?? ""
-					if isNotificationBool || savedBananaNotificationTag.count > 0 {
-						self.showBananaDescription(isNotificationBool: isNotificationBool)
 					}
 				}
 		}
@@ -626,79 +548,11 @@ class MainViewController: SwipeableViewController {
 	}
 	
 	@IBAction func bananaButtonTapped(_ sender: Any) {
-		self.showBananaDescription(isNotificationBool: false)
-	}
-	
-	private func showBananaDescription(isNotificationBool: Bool) {
-		guard let yesterdayString = self.yesterdayString, let addTimeString = self.addTimeString, let addFriendString = self.addFriendString, let equivalentString = self.equivalentString else {
-			return
-		}
-		if isNotificationBool == false {
-			UserDefaults.standard.setValue("", forKey: KillAppBananaNotificationTag)
-		}
-		
-		AnalyticsCenter.log(withEvent: .bananaPopupEnter, andParameter: ["source": isNotificationBool ? "push" : "discovery"])
-		let alert = UIAlertController(title: nil, message: "", preferredStyle: .alert)
-		
-		let paragraph = NSMutableParagraphStyle()
-		paragraph.lineSpacing = 9
-		paragraph.alignment = .center
-		
-		let string = "📲Yesterday: 🍌\(yesterdayString) \n 🕑 Time added = 🍌\(addTimeString) \n 🎉 Friend added = 🍌\(addFriendString) \n\n \(equivalentString)"
-		
-		let attributedString = NSAttributedString(
-			string: string,
-			attributes: [
-				NSParagraphStyleAttributeName: paragraph,
-				NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17)
-			]
-		)
-		
-		alert.setValue(attributedString, forKey: "attributedMessage")
-		alert.addAction(UIAlertAction(title: "Cool", style: .cancel, handler: nil))
-		
-		self.present(alert, animated: true, completion: nil)
+		self.showBananaDescription()
 	}
 	
 	deinit {
 		self.removeObserver()
-	}
-}
-
-// MARK: - loading view logic
-extension MainViewController {
-	
-	func setupFriendships() {
-		// Predicates restricting which users come back (we don't want friendships as a result from blocks)
-		let userId = UserManager.UserID ?? ""
-		let isNotCurrentUser = NSPredicate(format: "user.user_id != \"\(userId)\"")
-		let isInConversation = NSPredicate(format: "last_message_at != nil")
-		let isNotBlocker = NSPredicate(format: "is_blocker == NO")
-		let isNotBlocking = NSPredicate(format: "is_blocking == NO")
-		let isUnreadConversation = NSPredicate(format: "last_message_read_at < last_message_received_at")
-		
-		let realm = try? Realm()
-		let friendships = realm?.objects(RealmFriendship.self).filter(NSCompoundPredicate(andPredicateWithSubpredicates: [
-			isNotBlocker,
-			isNotBlocking,
-			isNotCurrentUser,
-			isInConversation,
-			isUnreadConversation
-			]))
-		
-		if friendships.count > 0 {
-			self.friendsButton.imageView?.image = #imageLiteral(resourceName: "FriendsButtonNotification")
-		} else {
-			self.friendsButton.imageView?.image = #imageLiteral(resourceName: "FriendsButton")
-		}
-	}
-	
-	func refreshBananas() {
-		let numberFormatter = NumberFormatter()
-		numberFormatter.numberStyle = .decimal
-		let bananaCount = UserManager.shared.currentUser?.bananas ?? 0
-		let formattedNumber = numberFormatter.string(from: NSNumber(value:bananaCount))
-		self.bananaCountLabel.text = formattedNumber
 	}
 }
 
@@ -730,6 +584,7 @@ extension MainViewController: MatchObserver {
 		NotificationCenter.default.removeObserver(self)
 		UserManager.shared.delMessageObserver(observer: self)
 		MessageCenter.shared.delMessageObserver(observer: self)
+		NotificationManager.shared.actionDelegate = nil
 	}
 	
 	func appMovedToBackground() {
@@ -851,15 +706,33 @@ extension MainViewController: MessageObserver {
 		}
 	}
 	
-	func didReceiveTwopInvite(message: NotificationMessage) {
+	func didReceiveTwopInvite(from friend: String) {
 		self.tipNumber += 1
 		self.refreshIcon()
+	}
+	
+	func didClickBananaNotification() {
+		self.loadBananas(isNotificationBool: true)
 	}
 	
 	func didReceiveTwopMatch(match: MatchModel) {
 		if self.topMatchDiscovery is TwopMatchController {
 			self.topMatchDiscovery.didReceiveTwopMatch!(match: match)
 		}
+	}
+	
+	func didReceiveFriendAdded() {
+		guard self.presentedViewController is FriendsViewController else {
+			return
+		}
+		self.friendsButton.imageView?.image = #imageLiteral(resourceName: "FriendsButtonNotification")
+	}
+	
+	func didReceiveConversationMessage() {
+		guard self.presentedViewController is FriendsViewController else {
+			return
+		}
+		self.friendsButton.imageView?.image = #imageLiteral(resourceName: "FriendsButtonNotification")
 	}
 }
 
@@ -1003,6 +876,7 @@ extension MainViewController: MatchServiceObserver {
 }
 
 extension MainViewController: InAppNotificationActionDelegate {
+	
 	func videoCallDidAccept(videoCall: VideoCallModel, from bar: InAppNotificationBar?) {
 		// didmiss other
 		videoCall.accept = true
@@ -1021,27 +895,27 @@ extension MainViewController: InAppNotificationActionDelegate {
 		self.videoCallManager.sendResponse(type: .Skip, to: videoCall)
 	}
 	
-	func twopInviteDidAccept(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+	func twopInviteDidAccept(from friend: Int) {
 		self.tipNumber -= 1
 		self.refreshIcon()
-		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/2pinvitations/accept/\(notification.sender_id)", method: .post) { (_) in
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/2pinvitations/accept/\(friend)", method: .post) { (_) in
 			
 		}
 	}
 	
-	func twopInviteDidReject(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+	func twopInviteDidReject(from friend: Int) {
 		self.tipNumber -= 1
 		self.refreshIcon()
-		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/2pinvitations/ignore/\(notification.sender_id)", method: .post) { (_) in
+		MonkeyModel.request(url: "\(Environment.baseURL)/api/\(ApiVersion.V2.rawValue)/2pinvitations/ignore/\(friend)", method: .post) { (_) in
 			
 		}
 	}
 	
-	func pairRequestDidAccept(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+	func pairRequestDidAccept(invitePair: InvitedPair, from bar: InAppNotificationBar?) {
 		
 	}
 	
-	func pairRequestDidReject(notification: NotificationMessage, from bar: InAppNotificationBar?) {
+	func pairRequestDidReject(invitePair: InvitedPair, from bar: InAppNotificationBar?) {
 		
 	}
 }

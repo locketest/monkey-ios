@@ -23,7 +23,7 @@ class UserOptions: NSObject, MonkeyApiObject, Mappable {
 		return "user_id"
 	}
 	
-	var user_id = APIController.shared.currentUser?.user_id
+	var user_id = UserManager.shared.currentUser?.user_id
 	var update_birth_date = false
 	var update_username = Date.init()
 	

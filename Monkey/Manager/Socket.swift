@@ -58,7 +58,7 @@ public enum SocketMessageType: Int {
 	// 收到 pair accept
 	case pairAcceptReceived = 4
 	// 对方 accept 了 twop invite
-	case twopInviteAcceptReceived = 5
+	case twopInviteResponseReceived = 5
 	// 好友在线状态更新
 	case friendOnlineStatusChanged = 6
 	// 收到 video call
@@ -78,7 +78,7 @@ public enum SocketMessageType: Int {
 		case 2: self = .twopInviteReceived
 		case 3: self = .pairRequestReceived
 		case 4: self = .pairAcceptReceived
-		case 5: self = .twopInviteAcceptReceived
+		case 5: self = .twopInviteResponseReceived
 		case 6: self = .friendOnlineStatusChanged
 		case 7: self = .videoCallReceived
 		case 8: self = .videoCallCancel

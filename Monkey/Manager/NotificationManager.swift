@@ -15,19 +15,19 @@ import SnapKit
 	func videoCallDidAccept(videoCall: VideoCallModel, from bar: InAppNotificationBar?)
 	func videoCallDidReject(videoCall: VideoCallModel, from bar: InAppNotificationBar?)
 	
-	func twopInviteDidAccept(notification: NotificationMessage, from bar: InAppNotificationBar?)
-	func twopInviteDidReject(notification: NotificationMessage, from bar: InAppNotificationBar?)
+	func twopInviteDidAccept(from friend: Int)
+	func twopInviteDidReject(from friend: Int)
 	
-	func pairRequestDidAccept(notification: NotificationMessage, from bar: InAppNotificationBar?)
-	func pairRequestDidReject(notification: NotificationMessage, from bar: InAppNotificationBar?)
+	func pairRequestDidAccept(invitePair: InvitedPair, from bar: InAppNotificationBar?)
+	func pairRequestDidReject(invitePair: InvitedPair, from bar: InAppNotificationBar?)
 }
 
 @objc protocol InAppNotificationPreActionDelegate: NSObjectProtocol {
 	@objc optional func shouldPresentVideoCallNotification(videoCall: VideoCallModel) -> Bool
 	
-	@objc optional func shouldPresentPairRequestNotification(message: NotificationMessage) -> Bool
+	@objc optional func shouldPresentPairRequestNotification(invitePair: InvitedPair) -> Bool
 	
-	@objc optional func shouldPresentTwopInviteNotification(message: NotificationMessage) -> Bool
+	@objc optional func shouldPresentTwopInviteNotification(from friend: Int) -> Bool
 }
 
 class NotificationManager: NSObject {
@@ -164,33 +164,34 @@ extension NotificationManager: MessageObserver {
 		}
 	}
 	
-	func didReceivePairRequest(message: NotificationMessage) {
-		if self.prePresentDelegate?.shouldPresentTwopInviteNotification?(message: message) == false {
+	func didReceiveTwopInvite(from: String) {
+		guard let friend = Int(from) else { return }
+		if self.prePresentDelegate?.shouldPresentTwopInviteNotification?(from: friend) == false {
 			return
 		}
 		
-		guard let friendship = UserManager.cachedUser(with: message.sender_id) else { return }
-		let bar = self.showInAppNotificationBar(user: friendship, style: .PairRequest)
+		guard let friendship = UserManager.cachedUser(with: friend) else { return }
+		let bar = self.showInAppNotificationBar(user: friendship, style: .TwopInvite)
 		bar.didAccept = {
-			self.actionDelegate?.pairRequestDidAccept(notification: message, from: bar)
+			self.actionDelegate?.twopInviteDidAccept(from: friend)
 		}
 		bar.didDismiss = {
-			self.actionDelegate?.pairRequestDidReject(notification: message, from: bar)
+			self.actionDelegate?.twopInviteDidReject(from: friend)
 		}
 	}
 	
-	func didReceiveTwopInvite(message: NotificationMessage) {
-		if self.prePresentDelegate?.shouldPresentTwopInviteNotification?(message: message) == false {
+	func didReceivePairRequest(invitedPair: InvitedPair) {
+		if self.prePresentDelegate?.shouldPresentPairRequestNotification?(invitePair: invitedPair) == false {
 			return
 		}
 		
-		guard let friendship = UserManager.cachedUser(with: message.sender_id) else { return }
-		let bar = self.showInAppNotificationBar(user: friendship, style: .TwopInvite)
+		guard let friendship = UserManager.cachedUser(with: invitedPair.friend_id) else { return }
+		let bar = self.showInAppNotificationBar(user: friendship, style: .PairRequest)
 		bar.didAccept = {
-			self.actionDelegate?.twopInviteDidAccept(notification: message, from: bar)
+			self.actionDelegate?.pairRequestDidAccept(invitePair: invitedPair, from: bar)
 		}
 		bar.didDismiss = {
-			self.actionDelegate?.twopInviteDidReject(notification: message, from: bar)
+			self.actionDelegate?.pairRequestDidReject(invitePair: invitedPair, from: bar)
 		}
 	}
 }

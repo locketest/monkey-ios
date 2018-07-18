@@ -33,6 +33,8 @@ class NotificationMessage: MonkeyModel {
 	}
 	
 	var ext: [String: Any] = [String: Any]()
+	
+	// 收到的 video call
 	func receivedCall() -> VideoCallModel? {
 		var videoCall: VideoCallModel?
 		
@@ -51,10 +53,31 @@ class NotificationMessage: MonkeyModel {
 		return videoCall
 	}
 	
+	// 取消 video call 的好友 id
 	func cancelCallID() -> String {
 		let friend_id = ext["friend_id"] as? Int
 		
 		return String.init(friend_id ?? sender_id)
+	}
+	
+	// 收到的同意 pair 消息
+	func receivedPairGroup() -> PairGroup? {
+		var pairGroup: PairGroup?
+		
+		if let parsedPair = Mapper<PairGroup>().map(JSON: ext) {
+			pairGroup = parsedPair
+		}
+		return pairGroup
+	}
+	
+	// 收到的 pair 邀请
+	func receivedPairInvite() -> InvitedPair? {
+		var invitedPair: InvitedPair?
+		
+		if let parsedInvite = Mapper<InvitedPair>().map(JSON: ext) {
+			invitedPair = parsedInvite
+		}
+		return invitedPair
 	}
 	
 	required convenience init?(map: Map) {

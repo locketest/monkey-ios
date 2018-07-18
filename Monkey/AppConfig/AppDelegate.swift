@@ -12,11 +12,12 @@ import UIKit
 import Fabric
 import Crashlytics
 
+import Adjust
 import Firebase
+import FirebaseMessaging
 import FBSDKCoreKit
 import FBNotifications
 import FirebaseMessaging
-import Adjust
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,50 +25,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-
-		// This migration works because prior to promptedNotifications being introduced in 2.0.2, all users were prompted on the permissions page.
-		if Achievements.shared.grantedPermissionsV1 {
-			Achievements.shared.grantedPermissionsV2 = true
-			Achievements.shared.promptedNotifications = true
-		}
 		
-		if let options = launchOptions, let url = options[UIApplicationLaunchOptionsKey.url] as? URL{
-			self.openWithDeeplinkURL(url: url.absoluteString)
-		}
-		application.applicationIconBadgeNumber = 0
-
 		FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 		FirebaseApp.configure()
+		Messaging.messaging().delegate = self
 		Fabric.with([Crashlytics.self])
 		RemoteConfigManager.shared.fetchLatestConfig()
 		AnalyticsCenter.logLaunchApp()
+		
+		// open from deep link
+		if let options = launchOptions, let url = options[UIApplicationLaunchOptionsKey.url] as? URL {
+			self.openWithDeeplinkURL(url: url.absoluteString)
+		}
 		self.checkIfAppUpdated()
 
 		return true
 	}
 
-	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-		self.openWithDeeplinkURL(url: userActivity.webpageURL?.absoluteString)
-		return true
-	}
-
-    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        self.openWithDeeplinkURL(url: url.absoluteString)
-        return true
-    }
-
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		FBSDKAppEvents.activateApp()
-
-	}
-
-	func applicationWillEnterForeground(_ application: UIApplication) {
 		application.applicationIconBadgeNumber = 0
 	}
 
+	// refresh device token
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 		let thisToken = deviceToken.base64EncodedString()
-		let prevToken = Achievements.shared.apns_token ?? ""
+		let prevToken = Achievements.shared.apns_token
 		if prevToken != thisToken {
 			Messaging.messaging().apnsToken = deviceToken
 			FBSDKAppEvents.setPushNotificationsDeviceToken(deviceToken)
@@ -75,19 +58,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			Apns.update(token: thisToken)
 		}
 	}
-
-	// receive remote notification
-	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-		self.logNotificationClick(userInfo: userInfo)
-		FBSDKAppEvents.logPushNotificationOpen(userInfo)
-
-		self.handleRemoteNotificationFunc(userInfo: userInfo, application: application)
-		
-		let _ = TwopNotificationCenter(userInfo: userInfo["default"] as? [String: Any], isBackgrounded: true)
-	}
 	
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+		self.handleRemoteNotification(userInfo: userInfo, application: application)
+		
+		FBSDKAppEvents.logPushNotificationOpen(userInfo)
+	}
+
+	// app 在运行的时候收到推送通知
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-		self.logNotificationClick(userInfo: userInfo)
+		self.handleRemoteNotification(userInfo: userInfo, application: application)
+		
 		FBSDKAppEvents.logPushNotificationOpen(userInfo)
 		FBNotificationsManager.shared().presentPushCard(forRemoteNotificationPayload: userInfo, from: nil) { (viewController, error) in
 			if error != nil {
@@ -96,34 +77,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				completionHandler(.newData)
 			}
         }
-		
-        self.handleRemoteNotificationFunc(userInfo: userInfo, application: application)
-    }
-
-    func handleRemoteNotificationFunc(userInfo: [AnyHashable : Any], application: UIApplication) {
-		if let notiInfoData = userInfo["data"] as? [String: Any], let link = notiInfoData["link"] as? String, link.contains("banana_recap_popup") {
-			UserDefaults.standard.setValue(link, forKey: KillAppBananaNotificationTag)
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object:link)
-		}
-		
-		let _ = TwopNotificationCenter(userInfo: userInfo["default"] as? [String: Any], isBackgrounded: false)
     }
 
 	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
-		self.logNotificationClick(userInfo: userInfo)
+		self.handleRemoteNotification(userInfo: userInfo, application: application)
+		
 		FBSDKAppEvents.logPushNotificationOpen(userInfo, action: identifier)
 		completionHandler()
 	}
-
-	// log notification click
-	private func logNotificationClick(userInfo: [AnyHashable: Any]) {
+	
+	// handle notification click and receive
+	func handleRemoteNotification(userInfo: [AnyHashable : Any], application: UIApplication) {
 		let notificationUserInfo = NotificationUserInfo(userInfo: userInfo)
-		AnalyticsCenter.log(withEvent: .notifyClick, andParameter: ["source": notificationUserInfo.source])
+		AnalyticsCenter.log(withEvent: .notifyClick, andParameter: [
+			"source": notificationUserInfo.source,
+			])
 		
-		// banana
-		if notificationUserInfo.link?.contains("banana_recap_popup") == true {
-			UserDefaults.standard.setValue(link, forKey: KillAppBananaNotificationTag)
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: RemoteNotificationTag), object:link)
+		if application.applicationState == .inactive {
+			MessageCenter.shared.click(from: notificationUserInfo)
+		}else {
+			MessageCenter.shared.receive(push: notificationUserInfo)
 		}
 	}
 
@@ -136,7 +109,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			UserDefaults.standard.set(false, forKey: "kHadRateBefore")
 		}
 	}
-
+	
+	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+		self.openWithDeeplinkURL(url: userActivity.webpageURL?.absoluteString)
+		return true
+	}
+	
+	func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+		self.openWithDeeplinkURL(url: url.absoluteString)
+		return true
+	}
+	
 	private func openWithDeeplinkURL(url: String?) {
 		if let urlStr = url, let urlCom = NSURLComponents.init(string: urlStr) {
 			let queryDict = urlCom.queryDict()
@@ -150,5 +133,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			}
 		}
 	}
+}
+
+extension AppDelegate: MessagingDelegate {
+	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+		
+	}
+	
+	func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
+		
+	}
+}
+
+extension NSNotification.Name {
+	public static let MonkeyMatchDidReady: NSNotification.Name = NSNotification.Name(rawValue: "MonkeyMatchDidReady")
 }
 

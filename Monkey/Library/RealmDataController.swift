@@ -28,6 +28,7 @@ class RealmDataController {
 		RealmMatchEvent.self,
 		Authorization.self,
 		DeepLinkInfo.self,
+		NotificationMessage.self,
 	]
 	
 	/**
@@ -40,7 +41,7 @@ class RealmDataController {
 			defaultConfig.objectTypes = self.realmObjectClasses
 		}else {
 			defaultConfig = Realm.Configuration(
-				schemaVersion: 25,
+				schemaVersion: 26,
 				migrationBlock: { migration, oldSchemaVersion in
 					if oldSchemaVersion < 1 {
 						// Nothing to do!
@@ -198,8 +199,9 @@ class RealmDataController {
 						/*
 						- Class 'RealmCall' has been deleted
 						- Class 'RealmVideoCall' has been deleted
-						- Class 'Authorization' has been deleted
-						- Class 'DeepLinkInfo' has been deleted
+						- Class 'Authorization' has been added
+						- Class 'DeepLinkInfo' has been added
+						- Class 'NotificationMessage' has been added
 						*/
 					}
 			}, objectTypes: self.realmObjectClasses)
@@ -215,7 +217,8 @@ class RealmDataController {
 	Called once durring app start. Continues to try and create RealmDataController.realm and calls completion after that succeeds.
 	*/
 	func setupRealm(completion: @escaping (_ error: APIError?) -> Void) {
-//		self.logInToSyncServer { (syncUser) in
+		#if REALM_SYNC
+		self.logInToSyncServer { (syncUser) in
 			// get main Realm
 			DispatchQueue.main.async {
 				guard self.mainRealm == nil else {
@@ -235,7 +238,28 @@ class RealmDataController {
 					completion(apiError)
 				}
 			}
-//		}
+		}
+		#else
+		// get main Realm
+		DispatchQueue.main.async {
+			guard self.mainRealm == nil else {
+				completion(nil)
+				return
+			}
+			
+			self.configureRealm()
+			
+			do {
+				self.mainRealm = try Realm()
+				self.migrateFromUserDefaults(completion: completion)
+			} catch let error {
+				self.mainRealm = nil
+				let apiError = RealmDataController.parse(error: error)
+				apiError.log()
+				completion(apiError)
+			}
+		}
+		#endif
 	}
 	
 	/**
@@ -276,6 +300,12 @@ class RealmDataController {
 		
 		// 已经登录
 		guard UserManager.shared.isUserLogin() == false else {
+			completion(nil)
+			return
+		}
+		
+		guard UserManager.shared.currentAuthorization == nil else {
+			completion(nil)
 			return
 		}
 		
@@ -328,7 +358,7 @@ class RealmDataController {
 			callback()
 		}else {
 			// This async login request will happen without any indication on the frontent. Ideally, we get a UIActivityindicator somehow.
-			SyncUser.logIn(with: SyncCredentials.nickname("wei", isAdmin: true), server: URL(string: Environment.RealmSyncServerUrl)!, onCompletion: { (syncUser, error) in
+			SyncUser.logIn(with: SyncCredentials.anonymous(), server: URL(string: Environment.RealmSyncServerUrl)!, onCompletion: { (syncUser, error) in
 				print("Attemped to sign into Sync Server.", syncUser.debugDescription, error.debugDescription)
 				callback()
 			})
@@ -447,7 +477,16 @@ class RealmDataController {
 				throw APIError(code: "-1", status: nil, message: "Unrecognized data type for relationship.")
 			}
 			if let dataResource = relationship.dataResource {
-				value[relationshipKey] = try self.getOrCreateRealmObjectForResourceIdentifier(dataResource)
+				if let relationshipObject = try self.getOrCreateRealmObjectForResourceIdentifier(dataResource) {
+					value[relationshipKey] = relationshipObject
+					if resourceRealmObjectClass == RealmMessage.self, let friendship = relationshipObject as? RealmFriendship {
+						var last_message_at: Date = Date()
+						if let message_at = value["created_at"] as? String {
+							last_message_at = self.parseDate(message_at)
+						}
+						friendship.last_message_at = last_message_at
+					}
+				}
 			} else if let dataResourceCollection = relationship.dataResourceCollection, dataResourceCollection.count > 0 {
 				value[relationshipKey] = try dataResourceCollection.map { try self.getOrCreateRealmObjectForResourceIdentifier($0) }
 			} else if relationship.isResourceNull {

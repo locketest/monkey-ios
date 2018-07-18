@@ -28,6 +28,17 @@ class NotificationUserInfo {
 		}
 		return attachInfo as? [AnyHashable: Any]
 	}
+	var addition: [String: Any]? {
+		var addition: [String: Any]? = nil
+		if let additionStr = userInfo["default"] as? String, let additionData = additionStr.data(using: .utf8) {
+			
+			let convertInfo = try? JSONSerialization.jsonObject(with: additionData, options: JSONSerialization.ReadingOptions.mutableContainers)
+			if let convertDic = convertInfo as? [String: Any] {
+				addition = convertDic
+			}
+		}
+		return addition
+	}
 	var emoji: String? {
 		return userInfo["e"] as? String
 	}

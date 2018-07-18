@@ -44,12 +44,6 @@ class UserManager: NSObject {
 		return threadSafeRealm?.object(ofType: RealmUser.self, forPrimaryKey: userId)
 	}
 	
-	/// cached user
-	static func cachedUser(with user_id: Int) -> RealmUser? {
-		let threadSafeRealm = try? Realm()
-		return threadSafeRealm?.object(ofType: RealmUser.self, forPrimaryKey: "\(user_id)")
-	}
-	
 	var currentExperiment: RealmExperiment? {
 		let threadSafeRealm = try? Realm()
 		// Experiement IDs directly corolate to app versions
@@ -60,6 +54,12 @@ class UserManager: NSObject {
 		let threadSafeRealm = try? Realm()
 		// Experiement IDs directly corolate to app versions
 		return threadSafeRealm?.object(ofType: RealmMatchInfo.self, forPrimaryKey: RealmMatchInfo.type)
+	}
+	
+	/// cached user
+	static func cachedUser(with user_id: Int) -> RealmUser? {
+		let threadSafeRealm = try? Realm()
+		return threadSafeRealm?.object(ofType: RealmUser.self, forPrimaryKey: "\(user_id)")
 	}
 	
 	// 消息回调处理
@@ -124,9 +124,13 @@ class UserManager: NSObject {
 		APIController.user_id = auth.user_id
 	}
 	
-	func logout(completion: @escaping (_ error: APIError?) -> Void) {
+	func clearData(completion: @escaping (_ error: APIError?) -> Void) {
 		self.clearUserDefaultsData()
-		RealmDataController.shared.deleteAllData { (error) in
+		RealmDataController.shared.deleteAllData(completion: completion)
+	}
+	
+	func logout(completion: @escaping (_ error: APIError?) -> Void) {
+		self.clearData { (error) in
 			// 如果已经是登出状态
 			if self.InitialLogin == false {
 				completion(nil)

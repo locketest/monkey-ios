@@ -10,6 +10,14 @@ import Foundation
 import RealmSwift
 import ObjectMapper
 
+// socket message call back(main queue)
+
+protocol PushNotificationHandler: class {
+	func receive(push notification: NotificationUserInfo)
+	
+	func click(from notification: NotificationUserInfo)
+}
+
 @objc protocol MessageObserver: class, NSObjectProtocol {
 	// 收到的 match
 	@objc optional func didReceiveOnepMatch(match: MatchModel)
@@ -28,12 +36,12 @@ import ObjectMapper
 	@objc optional func didReceiveFriendRemoved()
 	
 	// twop invite
-	@objc optional func didReceiveTwopInvite(message: NotificationMessage)
-	@objc optional func didReceiveTwopAccept(message: NotificationMessage)
+	@objc optional func didReceiveTwopInvite(from friend: String)
+	@objc optional func didReceiveTwopInviteResponse(from friend: String)
 	
 	// twop pair
-	@objc optional func didReceivePairRequest(message: NotificationMessage)
-	@objc optional func didReceivePairAccept(message: NotificationMessage)
+	@objc optional func didReceivePairRequest(invitedPair: InvitedPair)
+	@objc optional func didReceivePairAccept(acceptedPair: PairGroup)
 	
 	// friend status change
 	@objc optional func didReceiveOnlineStatusChanged()
@@ -51,6 +59,9 @@ import ObjectMapper
 	
 	// 未知消息类型
 	@objc optional func didReceiveUnknowMessage(message: [String: Any])
+	
+	// 点击 banana push
+	@objc optional func didClickBananaNotification()
 }
 
 class MessageCenter {
@@ -61,6 +72,7 @@ class MessageCenter {
 	// 消息回调处理
 	private let safe_queue = DispatchQueue(label: "com.monkey.cool.SafeMessageObserverQueue", attributes: .concurrent)
 	private var observers: WeakSet<MessageObserver> = WeakSet<MessageObserver>()
+	fileprivate var peddingMessage: [NotificationUserInfo] = [NotificationUserInfo]()
 	
 	func addMessageObserver(observer: MessageObserver) {
 		safe_queue.async {
@@ -81,6 +93,7 @@ class MessageCenter {
 	
 	func handle(messageDic: [String: Any], from channel: SocketChannel) {
 		
+		// 如果是新通道的消息
 		if channel == .new_default {
 			self.handleNewSocket(messageDic: messageDic)
 			return
@@ -129,6 +142,7 @@ class MessageCenter {
 			break
 		}
 		
+		// 解析并存储到数据库
 		RealmDataController.shared.apply(messageDoc) { (_) in
 			if messageObject == nil {
 				messageObject = messageDoc
@@ -138,42 +152,55 @@ class MessageCenter {
 	}
 	
 	func handleNewSocket(messageDic: [String: Any]) {
+		guard let socketMessage = Mapper<NotificationMessage>().map(JSON: messageDic) else { return }
+		
+		let threadSafeRealm = try? Realm()
+		// 如果是已经处理过的消息不再处理
+		if threadSafeRealm?.object(ofType: NotificationMessage.self, forPrimaryKey: socketMessage.msg_id) != nil {
+			return
+		}
+		
+		// 将消息写入数据库
+		do {
+			try threadSafeRealm?.write {
+				threadSafeRealm?.add(socketMessage)
+			}
+		} catch(let error) {
+			print("Error: ", error)
+		}
 		
 		var object: Any? = nil
 		var selector = #selector(MessageObserver.didReceiveUnknowMessage(message:))
 		
-		if let socketMessage = Mapper<NotificationMessage>().map(JSON: messageDic) {
-			switch socketMessage.socketType {
-			case .unlockInPlanA:
-				fallthrough
-			case .userInfoChanged:
-				selector = #selector(MessageObserver.didReceiveInfoChanged)
-			case .newfriendAdded:
-				selector = #selector(MessageObserver.didReceiveFriendAdded)
-			case .friendOnlineStatusChanged:
-				fallthrough
-			case .pairAcceptReceived:
-				fallthrough
-			case .pairRequestReceived:
-				fallthrough
-			case .twopInviteAcceptReceived:
-				object = messageDic
-				selector = #selector(MessageObserver.didReceiveTwopDefault(message:))
-			case .twopInviteReceived:
-				object = socketMessage
-				selector = #selector(MessageObserver.didReceiveTwopInvite(message:))
-//			case .pairRequestReceived:
-//				object = socketMessage
-//				selector = #selector(MessageObserver.didReceivePairRequest(message:))
-			case .videoCallReceived:
-				object = socketMessage.receivedCall()
-				selector = #selector(MessageObserver.didReceiveVideoCall(call:))
-			case .videoCallCancel:
-				object = socketMessage.cancelCallID()
-				selector = #selector(MessageObserver.didReceiveCallCancel(in:))
-			default:
-				break
-			}
+		switch socketMessage.socketType {
+		case .unlockInPlanA:
+			fallthrough
+		case .userInfoChanged:
+			selector = #selector(MessageObserver.didReceiveInfoChanged)
+		case .newfriendAdded:
+			selector = #selector(MessageObserver.didReceiveFriendAdded)
+		case .friendOnlineStatusChanged:
+			selector = #selector(MessageObserver.didReceiveOnlineStatusChanged)
+		case .pairAcceptReceived:
+			object = socketMessage.receivedPairGroup()
+			selector = #selector(MessageObserver.didReceivePairAccept(acceptedPair:))
+		case .pairRequestReceived:
+			object = socketMessage.receivedPairInvite()
+			selector = #selector(MessageObserver.didReceivePairRequest(invitedPair:))
+		case .twopInviteResponseReceived:
+			object = String(socketMessage.sender_id)
+			selector = #selector(MessageObserver.didReceiveTwopInviteResponse(from:))
+		case .twopInviteReceived:
+			object = String(socketMessage.sender_id)
+			selector = #selector(MessageObserver.didReceiveTwopInvite(from:))
+		case .videoCallReceived:
+			object = socketMessage.receivedCall()
+			selector = #selector(MessageObserver.didReceiveVideoCall(call:))
+		case .videoCallCancel:
+			object = socketMessage.cancelCallID()
+			selector = #selector(MessageObserver.didReceiveCallCancel(in:))
+		default:
+			break
 		}
 		
 		// dispatch message data to observer(on main queue)
@@ -264,7 +291,7 @@ class MessageCenter {
 		self.dispatch(selector: selector, with: object1)
 	}
 	
-	private func dispatch(selector: Selector, with object: Any?) {
+	fileprivate func dispatch(selector: Selector, with object: Any?) {
 		let observers = self.observers
 		DispatchQueue.main.async {
 			observers.forEach({ (observer) in
@@ -278,8 +305,43 @@ class MessageCenter {
 			})
 		}
 	}
+}
+
+extension MessageCenter: SocketMessageHandler {
+	public func receive(message: [String: Any], from channel: SocketChannel) {
+		self.handle(messageDic: message, from: channel)
+		LogManager.shared.addLog(type: .ReceiveSocketMessage, subTitle: channel.rawValue, info: message)
+	}
+}
+
+extension MessageCenter: PushNotificationHandler {
+	func click(from notification: NotificationUserInfo) {
+		self.peddingMessage.append(notification)
+		NotificationCenter.default.addObserver(self, selector: #selector(dispatchNotifyClick), name: .MonkeyMatchDidReady, object: nil)
+	}
 	
-	private func parseMatch(old messageInfo: JSONAPIDocument) -> [String: Any] {
+	func receive(push notification: NotificationUserInfo) {
+		guard let addition = notification.addition else { return }
+		self.handleNewSocket(messageDic: addition)
+	}
+	
+	@objc func dispatchNotifyClick() {
+		let peddingMessages = self.peddingMessage
+		self.peddingMessage.removeAll()
+		NotificationCenter.default.removeObserver(self, name: .MonkeyMatchDidReady, object: nil)
+		
+		for message in peddingMessages {
+			// banana notify
+			if message.link?.contains("banana_recap_popup") == true {
+				self.dispatch(selector: #selector(MessageObserver.didClickBananaNotification), with: nil)
+			}
+		}
+	}
+}
+
+
+extension MessageCenter {
+	fileprivate func parseMatch(old messageInfo: JSONAPIDocument) -> [String: Any] {
 		var matchDic = messageInfo.dataResource?.attributes ?? [String: Any]()
 		// 设置 match 属性
 		if let meta = messageInfo.meta, let next_fact = meta["next_fact"] as? String {
@@ -333,7 +395,7 @@ class MessageCenter {
 		return matchDic
 	}
 	
-	private func parseMatch(new messageJson: [String: Any]) -> [String: Any] {
+	fileprivate func parseMatch(new messageJson: [String: Any]) -> [String: Any] {
 		var matchDic = messageJson
 		if let users = messageJson["users"] as? [[String: Any]] {
 			var new_users = [[String: Any]]()
@@ -363,9 +425,3 @@ class MessageCenter {
 	}
 }
 
-extension MessageCenter: SocketMessageHandler {
-	public func receive(message: [String: Any], from channel: SocketChannel) {
-		self.handle(messageDic: message, from: channel)
-		LogManager.shared.addLog(type: .ReceiveSocketMessage, subTitle: channel.rawValue, info: message)
-	}
-}
