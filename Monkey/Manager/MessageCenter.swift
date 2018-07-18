@@ -44,7 +44,7 @@ protocol PushNotificationHandler: class {
 	@objc optional func didReceivePairAccept(acceptedPair: PairGroup)
 	
 	// friend status change
-	@objc optional func didReceiveOnlineStatusChanged()
+	@objc optional func didReceiveOnlineStatusChanged(status: OnlineStatus)
 	
 	// 收到用户信息更新
 	@objc optional func didReceiveInfoChanged()
@@ -180,13 +180,20 @@ class MessageCenter {
 		case .newfriendAdded:
 			selector = #selector(MessageObserver.didReceiveFriendAdded)
 		case .friendOnlineStatusChanged:
-			selector = #selector(MessageObserver.didReceiveOnlineStatusChanged)
+			object = socketMessage.receivedOnlineStatus()
+			if object != nil {
+				selector = #selector(MessageObserver.didReceiveOnlineStatusChanged(status:))
+			}
 		case .pairAcceptReceived:
 			object = socketMessage.receivedPairGroup()
-			selector = #selector(MessageObserver.didReceivePairAccept(acceptedPair:))
+			if object != nil {
+				selector = #selector(MessageObserver.didReceivePairAccept(acceptedPair:))
+			}
 		case .pairRequestReceived:
 			object = socketMessage.receivedPairInvite()
-			selector = #selector(MessageObserver.didReceivePairRequest(invitedPair:))
+			if object != nil {
+				selector = #selector(MessageObserver.didReceivePairRequest(invitedPair:))
+			}
 		case .twopInviteResponseReceived:
 			object = String(socketMessage.sender_id)
 			selector = #selector(MessageObserver.didReceiveTwopInviteResponse(from:))
@@ -195,7 +202,9 @@ class MessageCenter {
 			selector = #selector(MessageObserver.didReceiveTwopInvite(from:))
 		case .videoCallReceived:
 			object = socketMessage.receivedCall()
-			selector = #selector(MessageObserver.didReceiveVideoCall(call:))
+			if object != nil {
+				selector = #selector(MessageObserver.didReceiveVideoCall(call:))
+			}
 		case .videoCallCancel:
 			object = socketMessage.cancelCallID()
 			selector = #selector(MessageObserver.didReceiveCallCancel(in:))

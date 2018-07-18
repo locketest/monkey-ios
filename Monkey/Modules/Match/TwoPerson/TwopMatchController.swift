@@ -132,33 +132,29 @@ extension TwopMatchController {
 }
 
 extension TwopMatchController: DashboardMainViewControllerDelegate {
-	func twopPreConnectingFunc() {
-		self.beginPairConnect()
+	
+	func twopStartConnectingFunc(pairGroup: PairGroup) {
+		let pairJson: [String: Any] = [
+			"match_id": pairGroup.pair_id,
+			"pair_id": pairGroup.pair_id,
+			"channel_name": pairGroup.channel_name,
+			"channel_key": pairGroup.channel_key,
+			"friend": [
+				"id": pairGroup.friend_id,
+			],
+		]
+		
+		// 构造 pair model
+		if let friendPairModel = Mapper<FriendPairModel>().map(JSON: pairJson) {
+			self.friendPairModel = friendPairModel
+			self.matchManager.delegate = self
+			self.matchManager.connect(with: friendPairModel)
+		}
 	}
 	
-	func twopStartConnectingFunc(pairRequestAcceptModel: PairRequestAcceptModel) {
-		
-		if let friend_id = pairRequestAcceptModel.friendIdInt,
-			let pair_id = pairRequestAcceptModel.pairIdString,
-			let channel_name = pairRequestAcceptModel.channelNameString,
-			let channel_key = pairRequestAcceptModel.channelKeyString {
-			
-			let pairJson: [String: Any] = [
-				"match_id": pair_id,
-				"pair_id": pair_id,
-				"channel_name": channel_name,
-				"channel_key": channel_key,
-				"friend": [
-					"id": friend_id,
-				],
-			]
-			// 构造 pair model
-			if let friendPairModel = Mapper<FriendPairModel>().map(JSON: pairJson) {
-				self.friendPairModel = friendPairModel
-				self.matchManager.delegate = self
-				self.matchManager.connect(with: friendPairModel)
-			}
-		}
+	func twopPreConnectingFunc() {
+		NotificationManager.shared.dismissAllNotificationBar()
+		self.beginPairConnect()
 	}
 	
 	func twopTimeoutConnectingFunc() {
@@ -194,6 +190,18 @@ extension TwopMatchController: MatchServiceObserver {
 }
 
 extension TwopMatchController: MessageObserver {
+	func didReceivePairAccept(acceptedPair: PairGroup) {
+		if let dashboard = self.initialPanel as? DashboardMainViewController {
+			dashboard.startConnectingFunc(pairGroup: acceptedPair)
+		}
+	}
+	
+	func didAcceptPairInvite(friend: Int) {
+		if let dashboard = self.initialPanel as? DashboardMainViewController {
+			dashboard.requestPair(with: friend)
+		}
+	}
+	
 	func didReceiveTwopMatch(match: MatchModel) {
 		self.pairMatchViewController?.didReceiveTwopMatch(match: match)
 	}

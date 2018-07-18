@@ -414,10 +414,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		}
 	}
 	
-	func initInviteFriendsNotificationFunc() {
-		NotificationCenter.default.addObserver(self, selector: #selector(handleNotificationMsgFunc), name: NSNotification.Name(rawValue: InviteFriendsNotificationTag), object: nil)
-	}
-	
 	func initUnlockNextBtnFunc() {
 		self.unlockNextButton.layer.shadowColor = UIColor.black.withAlphaComponent(0.25).cgColor
 		self.unlockNextButton.layer.shadowOpacity = 0.7
@@ -447,32 +443,11 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		
 		self.initUnlockNextBtnFunc()
 		
-		self.initInviteFriendsNotificationFunc()
-		
 		UserManager.shared.addMessageObserver(observer: self)
 	}
 	
 	deinit {
 		UserManager.shared.delMessageObserver(observer: self)
-	}
-}
-
-/**
- notification相关
-*/
-extension TwoPersonPlanViewController {
-	
-	func handleNotificationMsgFunc(notification:NSNotification) {
-		
-		let array = notification.object as! Array<Any>
-		
-		let twopSocketModel = array.first as! TwopSocketModel
-		print("*** = \(twopSocketModel.msgIdString!)")
-		
-		let isBackgrounded = array.last as! Bool
-		print("*** = \(isBackgrounded)")
-		
-		self.initData() // 收到friends request刷新列表并更新main的红点值
 	}
 }
 

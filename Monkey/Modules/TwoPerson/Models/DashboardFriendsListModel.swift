@@ -32,6 +32,14 @@ class DashboardFriendsListModel: NSObject {
 	
 	var statusInt : Int?
 	
+	var friend_id: Int {
+		if userIdInt == Int(UserManager.UserID ?? "0") {
+			return inviteeIdInt!
+		}else {
+			return userIdInt!
+		}
+	}
+	
 	class func dashboardFriendsListModel(userInfo:UsersInfoModel, pairListModel:PairListModel? = nil) -> DashboardFriendsListModel {
 		
 		let dashboardFriendsListModel = DashboardFriendsListModel()

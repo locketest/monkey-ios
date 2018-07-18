@@ -54,8 +54,6 @@
 		34AEE4E320DA445700DECF3A /* DashboardInviteListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E120DA445700DECF3A /* DashboardInviteListModel.swift */; };
 		34AEE4E520DA453200DECF3A /* DashboardInviteListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */; };
 		34AEE4E620DA453200DECF3A /* DashboardInviteListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */; };
-		34E3BFB220F4ADC600EEED11 /* TwopNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E3BFB120F4ADC600EEED11 /* TwopNotificationCenter.swift */; };
-		34E3BFB320F4ADC600EEED11 /* TwopNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E3BFB120F4ADC600EEED11 /* TwopNotificationCenter.swift */; };
 		34FF0D2620D154AF00B1AC24 /* FriendsRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */; };
 		34FF0D2720D154AF00B1AC24 /* FriendsRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */; };
 		34FF0D2A20D1560000B1AC24 /* MyContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF0D2920D1560000B1AC24 /* MyContactsModel.swift */; };
@@ -443,6 +441,8 @@
 		D1E7954920FF769E00FC2102 /* PairAccept.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E7954720FF769E00FC2102 /* PairAccept.swift */; };
 		D1E7954B20FF7AEB00FC2102 /* PairGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E7954A20FF7AEB00FC2102 /* PairGroup.swift */; };
 		D1E7954C20FF7AEB00FC2102 /* PairGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E7954A20FF7AEB00FC2102 /* PairGroup.swift */; };
+		D1E7954E20FF9FC800FC2102 /* OnlineStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E7954D20FF9FC800FC2102 /* OnlineStatus.swift */; };
+		D1E7954F20FF9FC800FC2102 /* OnlineStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E7954D20FF9FC800FC2102 /* OnlineStatus.swift */; };
 		D1E7CCEF20D141F800AF619A /* DebugLogDisplayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D1E7CCEB20D141F800AF619A /* DebugLogDisplayer.m */; };
 		D1E7CCF020D141F800AF619A /* DebugLogDisplayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D1E7CCEB20D141F800AF619A /* DebugLogDisplayer.m */; };
 		D1E7CCF420D20D1E00AF619A /* DebugLogCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E7CCF320D20D1E00AF619A /* DebugLogCollection.swift */; };
@@ -543,7 +543,6 @@
 		34AEE4BE20DA29FB00DECF3A /* DashboardFriendsListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardFriendsListCell.swift; sourceTree = "<group>"; };
 		34AEE4E120DA445700DECF3A /* DashboardInviteListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardInviteListModel.swift; sourceTree = "<group>"; };
 		34AEE4E420DA453200DECF3A /* DashboardInviteListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardInviteListCell.swift; sourceTree = "<group>"; };
-		34E3BFB120F4ADC600EEED11 /* TwopNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwopNotificationCenter.swift; sourceTree = "<group>"; };
 		34FF0D2520D154AF00B1AC24 /* FriendsRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsRequestModel.swift; sourceTree = "<group>"; };
 		34FF0D2920D1560000B1AC24 /* MyContactsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyContactsModel.swift; sourceTree = "<group>"; };
 		34FF0D2E20D2163900B1AC24 /* TwoPerson.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoPerson.xib; sourceTree = "<group>"; };
@@ -770,6 +769,7 @@
 		D1E7954420FF75E700FC2102 /* PairInvite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairInvite.swift; sourceTree = "<group>"; };
 		D1E7954720FF769E00FC2102 /* PairAccept.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairAccept.swift; sourceTree = "<group>"; };
 		D1E7954A20FF7AEB00FC2102 /* PairGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairGroup.swift; sourceTree = "<group>"; };
+		D1E7954D20FF9FC800FC2102 /* OnlineStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineStatus.swift; sourceTree = "<group>"; };
 		D1E7CCE820D141F800AF619A /* DebugLogDisplayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DebugLogDisplayer.h; sourceTree = "<group>"; };
 		D1E7CCEB20D141F800AF619A /* DebugLogDisplayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DebugLogDisplayer.m; sourceTree = "<group>"; };
 		D1E7CCF320D20D1E00AF619A /* DebugLogCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogCollection.swift; sourceTree = "<group>"; };
@@ -891,7 +891,6 @@
 				34A0D3B720D1162F00D6EFED /* TwoPersonPlanViewController.swift */,
 				34AEE40F20D8AA3200DECF3A /* InviteFriendsViewController.swift */,
 				34AEE44320D9F54E00DECF3A /* DashboardMainViewController.swift */,
-				34E3BFB120F4ADC600EEED11 /* TwopNotificationCenter.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1009,6 +1008,7 @@
 				D1B79CF3205FA80800F209B4 /* UserOptions.swift */,
 				D130F2EC20FA51550004D5E4 /* NotificationMessage.swift */,
 				D1E7952C20FF0A1400FC2102 /* Bananas.swift */,
+				D1E7954D20FF9FC800FC2102 /* OnlineStatus.swift */,
 				D1E7954420FF75E700FC2102 /* PairInvite.swift */,
 				D1E7954720FF769E00FC2102 /* PairAccept.swift */,
 				D1E7954A20FF7AEB00FC2102 /* PairGroup.swift */,
@@ -2165,6 +2165,7 @@
 				34A0D3B820D1162F00D6EFED /* TwoPersonPlanViewController.swift in Sources */,
 				C0AD96BA1F6721A9007932AF /* RealmFriendship.swift in Sources */,
 				8B3A787D1DB32CB000FA68A7 /* SoundPlayer.swift in Sources */,
+				D1E7954E20FF9FC800FC2102 /* OnlineStatus.swift in Sources */,
 				D1B79D3A2060DACB00F209B4 /* IFXproIIFilter.m in Sources */,
 				D4656C4D1F49F98700966C6D /* PermissionViewController.swift in Sources */,
 				D192A3DD2029966E00791002 /* Message.swift in Sources */,
@@ -2196,7 +2197,6 @@
 				8435C2F01F144DA800C80AC6 /* FriendTableViewCell.swift in Sources */,
 				341E735F20BBEF34001B8D55 /* SettingEditViewController.swift in Sources */,
 				D17B484220E5010300183E9C /* UserManager.swift in Sources */,
-				34E3BFB220F4ADC600EEED11 /* TwopNotificationCenter.swift in Sources */,
 				848727B11E86B1AD00F13501 /* ConfettiView.swift in Sources */,
 				BF8C38B51E9A0B620089B313 /* MainViewController+Location.swift in Sources */,
 				D1B79D022060C94800F209B4 /* MonkeyFilterCell.swift in Sources */,
@@ -2364,6 +2364,7 @@
 				D1025CE720A1406C00557B64 /* SettingMainViewController.swift in Sources */,
 				34A0D3B920D1162F00D6EFED /* TwoPersonPlanViewController.swift in Sources */,
 				D1A22A8620A03F8A004F0F05 /* RealmFriendship.swift in Sources */,
+				D1E7954F20FF9FC800FC2102 /* OnlineStatus.swift in Sources */,
 				D1A22A8720A03F8A004F0F05 /* SoundPlayer.swift in Sources */,
 				D1A22A8A20A03F8A004F0F05 /* IFXproIIFilter.m in Sources */,
 				D1A22A8B20A03F8A004F0F05 /* PermissionViewController.swift in Sources */,
@@ -2396,7 +2397,6 @@
 				D1A22AA720A03F8A004F0F05 /* FriendTableViewCell.swift in Sources */,
 				341E736020BBEF34001B8D55 /* SettingEditViewController.swift in Sources */,
 				D17B484320E5010300183E9C /* UserManager.swift in Sources */,
-				34E3BFB320F4ADC600EEED11 /* TwopNotificationCenter.swift in Sources */,
 				D1A22AA820A03F8A004F0F05 /* ConfettiView.swift in Sources */,
 				D1A22AA920A03F8A004F0F05 /* MainViewController+Location.swift in Sources */,
 				D1A22AAA20A03F8A004F0F05 /* MonkeyFilterCell.swift in Sources */,

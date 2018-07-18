@@ -7,8 +7,9 @@
 //  Dashboard主页
 
 import UIKit
-import SwiftyJSON
 import Hero
+import SwiftyJSON
+import ObjectMapper
 
 enum SortWeight : Double {
 	case online = 1000
@@ -27,10 +28,10 @@ enum SocketDefaultMsgTypeEnum : Int {
 	case friendOnlineStatus
 }
 
-@objc protocol DashboardMainViewControllerDelegate : NSObjectProtocol {
-	@objc optional func twopPreConnectingFunc()
-	@objc optional func twopStartConnectingFunc(pairRequestAcceptModel:PairRequestAcceptModel)
-	@objc optional func twopTimeoutConnectingFunc()
+protocol DashboardMainViewControllerDelegate : NSObjectProtocol {
+	func twopPreConnectingFunc()
+	func twopStartConnectingFunc(pairGroup: PairGroup)
+	func twopTimeoutConnectingFunc()
 }
 
 class DashboardMainViewController: MonkeyViewController {
@@ -62,8 +63,6 @@ class DashboardMainViewController: MonkeyViewController {
 	var searchArray : [AnyObject] = [] // search集合
 	
 	var delegate : DashboardMainViewControllerDelegate?
-	
-	var pairRequestAcceptModel : PairRequestAcceptModel?
 	
 	var twopChatFriendArray : [DashboardFriendsListModel] = []
 	
@@ -103,8 +102,6 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-		
-		print("*** userId = \(UserManager.shared.currentUser?.user_id), authorization = \(UserManager.authorization)")
 		
         self.initView()
 		
@@ -358,10 +355,6 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		self.twopChatFriendArray = self.twopChatFriendArray.sorted { $0.weightDouble > $1.weightDouble }
 		
-		self.twopChatFriendArray.forEach { (model) in
-//			print("*** model = \(model.userIdInt!)")
-		}
-		
 		// 如果没有2p好友，加一个空的模型在数据源里，用以显示第一组的无数据cell
 		if self.twopChatFriendArray.isEmpty { self.twopChatFriendArray.append(DashboardFriendsListModel()) }
 
@@ -508,6 +501,8 @@ class DashboardMainViewController: MonkeyViewController {
 	func initData() {
 		
 		self.loadFriendsListFunc()
+		
+		MessageCenter.shared.addMessageObserver(observer: self)
 	}
 	
 	func initView() {
@@ -520,11 +515,6 @@ class DashboardMainViewController: MonkeyViewController {
 		cleanButton.setImage(UIImage(named: "clearButton")!, for: .normal)
 		
 		self.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSForegroundColorAttributeName : UIColor.darkGray])
-		
-		MessageCenter.shared.addMessageObserver(observer: self)
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(acceptPairNotificationFunc), name: NSNotification.Name(rawValue: AcceptPairNotificationTag), object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(friendsPairNotificationFunc), name: NSNotification.Name(rawValue: FriendPairNotificationTag), object: nil)
 		
 		self.weAreTeamLabel.text = "Monkey Squad assembled,\nstarting 2P Chat"
 	}
@@ -584,75 +574,16 @@ extension DashboardMainViewController {
 }
 
 /**
- notification相关
-*/
-extension DashboardMainViewController {
-	
-	func friendsPairNotificationFunc(notification:NSNotification) {
-		
-		let array = notification.object as! Array<Any>
-		
-		let twopSocketModel = array.first as! TwopSocketModel
-		
-		if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
-			self.handleFriendPairSocketMsgFunc(twopSocketModel: twopSocketModel)
-		}
-	}
-	
-	func acceptPairNotificationFunc(notification:NSNotification) {
-		
-		let array = notification.object as! Array<Any>
-		
-		let twopSocketModel = array.first as! TwopSocketModel
-		print("*** = \(twopSocketModel.msgIdString!)")
-		
-		if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
-			if let friendIdInt = twopSocketModel.extDictModel?.friendIdInt {
-				self.startConnectingFunc(friendIdInt: friendIdInt, twopSocketModel: twopSocketModel)
-			}
-		}
-	}
-}
-
-/**
  socket消息相关
 */
-extension DashboardMainViewController : MessageObserver {
+extension DashboardMainViewController: MessageObserver {
 	
-	func didReceiveTwopDefault(message: [String : Any]) {
-		
-		print("*** message = \(JSON(message))")
-		
-		let twopSocketModel = TwopSocketModel.twopSocketModel(dict: message as [String : AnyObject])
-		
-		switch twopSocketModel.msgTypeInt {
-		case SocketDefaultMsgTypeEnum.friendOnlineStatus.rawValue:
-			self.updateOnlineStatusFunc(friendInt: twopSocketModel.senderIdInt!, onlineBool: twopSocketModel.extDictModel!.onlineBool!)
-		case SocketDefaultMsgTypeEnum.friendPair.rawValue: // friendPair
-			if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
-				self.handleFriendPairSocketMsgFunc(twopSocketModel: twopSocketModel)
-			}
-		case  SocketDefaultMsgTypeEnum.acceptFriendPair.rawValue: // acceptFriendPair
-			if self.handleTwoChannelMsgSendFunc(msgIdString: twopSocketModel.msgIdString) {
-				if let friendIdInt = twopSocketModel.extDictModel?.friendIdInt {
-					self.startConnectingFunc(friendIdInt: friendIdInt, twopSocketModel: twopSocketModel)
-				}
-			}
-		default:
-			break
-		}
-	}
-	
-	func updateOnlineStatusFunc(friendInt: Int, onlineBool: Bool) {
-		
+	func didReceiveOnlineStatusChanged(status: OnlineStatus) {
 		for (index, value) in self.twopChatFriendArray.enumerated() {
-			
-			if value.userIdInt == friendInt {
-				
-				value.onlineStatusBool = onlineBool
+			if value.userIdInt == status.friend_id {
+				value.onlineStatusBool = status.online
 				
 				let temp = value
-				
 				self.twopChatFriendArray.remove(at: index)
 				self.twopChatFriendArray.insert(temp, at: 0)
 			}
@@ -663,42 +594,26 @@ extension DashboardMainViewController : MessageObserver {
 		}
 	}
 	
-	func handleFriendPairSocketMsgFunc(twopSocketModel:TwopSocketModel) {
-		
+	func didReceivePairRequest(invitedPair: InvitedPair) {
 		for dashboardFriendsListModel in self.twopChatFriendArray {
-			if twopSocketModel.extDictModel?.friendIdInt == dashboardFriendsListModel.userIdInt {
-				
-				dashboardFriendsListModel.nextInviteAtDouble = twopSocketModel.extDictModel?.expireTimeDouble
-				dashboardFriendsListModel.inviteeIdInt = Int(APIController.shared.currentUser!.user_id!)
-				
+			if invitedPair.friend_id == dashboardFriendsListModel.userIdInt {
+				dashboardFriendsListModel.nextInviteAtDouble = invitedPair.expire_time
+				dashboardFriendsListModel.inviteeIdInt = Int(UserManager.UserID!)
 				self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
 			}
 		}
 	}
 	
-	// 判断集合里有没有该消息id，有就说明socket已经处理过
-	func handleTwoChannelMsgSendFunc(msgIdString:String?) -> Bool {
+	func didReceivePairAccept(acceptedPair: PairGroup) {
 		
-		if msgIdString == nil { return false }
-		
-		let userDefault = UserDefaults.standard
-		
-		let array = userDefault.array(forKey: MessageIdArrayTag)
-		
-		if array == nil {
-			userDefault.setValue([msgIdString], forKey: MessageIdArrayTag)
-		} else {
-			var msgIdArray = array as! [String]
-			
-			if !msgIdArray.contains(msgIdString!) {
-				msgIdArray.append(msgIdString!)
-				userDefault.setValue(msgIdArray, forKey: MessageIdArrayTag)
-			} else {
-				return false
-			}
-		}
-		
-		return true
+	}
+	
+	func didReceiveFriendAdded() {
+		self.loadFriendsListFunc()
+	}
+	
+	func didReceiveFriendRemoved() {
+		self.loadFriendsListFunc()
 	}
 }
 
@@ -745,33 +660,24 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			self.connectingTimeoutFunc()
 			
 			if let delegate = self.delegate {
-				delegate.twopTimeoutConnectingFunc!()
+				delegate.twopTimeoutConnectingFunc()
 			}
 		}
 	}
 	
-	func startConnectingFunc(friendIdInt:Int, twopSocketModel:TwopSocketModel) {
-		
-		self.pairRequestAcceptModel?.channelKeyString = twopSocketModel.extDictModel?.channelKeyString
-		self.pairRequestAcceptModel?.channelNameString = twopSocketModel.extDictModel?.channelNameString
-		
+	func startConnectingFunc(pairGroup: PairGroup) {
 		self.handleConnectinStatusFunc()
 		self.tempCell?.stopTimerFunc()
 		self.stopWaittingFunc()
 		
 		self.addPairTimerFunc()
-		
-		if let delegate = self.delegate, let model = self.pairRequestAcceptModel {
-			delegate.twopStartConnectingFunc!(pairRequestAcceptModel: model)
-		}
+		self.delegate?.twopStartConnectingFunc(pairGroup: pairGroup)
 	}
 	
 	func connectingTimeoutFunc() {
-		
 		self.stopPairTimerFunc()
 		
 		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-			
 			self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
 			self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
 			self.weAreTeamLabel.alpha = 0
@@ -781,42 +687,15 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			self.someoneImageView.image = UIImage(named: "monkeyDef")
 			self.someoneLabel.text = "2P Chat Buddy"
 			
-			let inviteeIdInt = APIController.shared.currentUser!.user_id == self.tempModel?.userIdInt?.description ? self.tempModel?.inviteeIdInt : self.tempModel?.userIdInt
-			
-			if let tempModel = self.tempModel {
-				
-				self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].inviteeIdInt = inviteeIdInt
-				
-				// 接受成功后改变status状态，0未操作
-				self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].isMissedBool = false
-				self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].statusInt = self.pairRequestAcceptModel?.statusInt
-				self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].nextInviteAtDouble = self.pairRequestAcceptModel?.nextInviteAtDouble
-				
-				self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
-			}
+			self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
 		})
 	}
 	
 	func connectingSuccessFunc() {
-		
 		self.stopPairTimerFunc()
 		
 		self.someoneImageView.image = UIImage(named: "monkeyDef")
 		self.someoneLabel.text = "2P Chat Buddy"
-		
-		let inviteeIdInt = APIController.shared.currentUser!.user_id == self.tempModel?.userIdInt?.description ? self.tempModel?.inviteeIdInt : self.tempModel?.userIdInt
-		
-		if let tempModel = self.tempModel {
-			
-			self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].inviteeIdInt = inviteeIdInt
-			
-			// 接受成功后改变status状态，0未操作
-			self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].isMissedBool = false
-			self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].statusInt = self.pairRequestAcceptModel?.statusInt
-			self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].nextInviteAtDouble = self.pairRequestAcceptModel?.nextInviteAtDouble
-			
-			self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
-		}
 	}
 	
 	func closeFunc() {
@@ -824,10 +703,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 	}
 	
 	func handleConnectinStatusFunc() {
-		
-		if let delegate = self.delegate {
-			delegate.twopPreConnectingFunc!()
-		}
+		self.delegate?.twopPreConnectingFunc()
 		
 		// 改变页面状态，10秒后返回dashboard初始页
 		UIView.animate(withDuration: 0.3, animations: {
@@ -847,10 +723,15 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 	
 	// 2P CHAT FRIEND LIST
 	func dashboardFriendsListCellBtnClickFunc(model: DashboardFriendsListModel, cell: DashboardFriendsListCell, isPair: Bool) {
-		self.view.endEditing(true)
+		if isPair == false { // 发起pair
+			cell.stopJigglingFunc()
+		}
 		
-		self.tempCell = cell
-		self.tempModel = model
+		self.requestPair(isPair: isPair, with: model.userIdInt!)
+	}
+	
+	func requestPair(isPair: Bool = false, with friend: Int) {
+		self.view.endEditing(true)
 		
 		// 如果是主动邀请，有三十秒倒计时
 		// 无论点多少个邀请，都是关闭定时器之后再开启定时器，按最后一个的点击算事件30s
@@ -863,11 +744,9 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 		} else { // 接受邀请
 			self.handleConnectinStatusFunc()
 			self.addPairTimerFunc()
-			cell.stopJigglingFunc()
 		}
 		
-		let pathString = isPair ? "request/\(model.userIdInt!)" : "accept/\(model.userIdInt!)"
-		
+		let pathString = isPair ? "request/\(friend)" : "accept/\(friend)"
 		JSONAPIRequest(url: "\(Environment.baseURL)/api/v2/2ppairs/\(pathString)", method: .post, options: [
 			.header("Authorization", APIController.authorization),
 			]).addCompletionHandler { (response) in
@@ -875,22 +754,25 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 				case .error(_): break
 				case .success(let jsonAPIDocument):
 					
-					print("*** json after click = \(JSON(jsonAPIDocument.json)), pathString = \(pathString)")
-					
-					// todo，睿，根据isInviteeBool和返回结果处理之后的逻辑
-					self.pairRequestAcceptModel = PairRequestAcceptModel.pairRequestAcceptModel(dict: jsonAPIDocument.json as [String: AnyObject])
-					
-					// 设置friendsId，如果inviteeIdInt不是自己就是inviteeIdInt，否则就是userId
-					let inviteeIdInt = self.pairRequestAcceptModel?.inviteeIdInt?.description == UserManager.UserID ? self.pairRequestAcceptModel?.userIdInt : self.pairRequestAcceptModel?.inviteeIdInt
-					
-					print("*** inviteeIdInt = \(String(describing: self.pairRequestAcceptModel?.inviteeIdInt)), my userId = \(String(describing: UserManager.UserID)), pair userId = \(String(describing: self.pairRequestAcceptModel?.userIdInt)), inviteeIdInt = \(String(describing: inviteeIdInt))")
-					
-					self.pairRequestAcceptModel?.friendIdInt = inviteeIdInt
-					
-					if !isPair {
-						if let delegate = self.delegate, let model = self.pairRequestAcceptModel {
-							delegate.twopStartConnectingFunc!(pairRequestAcceptModel: model)
+					guard let pairInvite = Mapper<PairInvite>().map(JSON: jsonAPIDocument.json) else { return }
+					let twopChatFriendArray = self.twopChatFriendArray
+					for chatFriendModel in twopChatFriendArray {
+						if chatFriendModel.friend_id == friend {
+							
+							// 接受成功后改变status状态，0未操作
+							chatFriendModel.inviteeIdInt = friend
+							chatFriendModel.isMissedBool = false
+							chatFriendModel.statusInt = pairInvite.status
+							chatFriendModel.nextInviteAtDouble = pairInvite.next_invite_at
+							break
 						}
+					}
+					
+					if isPair == false {
+						var pairGroupDic = jsonAPIDocument.json
+						pairGroupDic["friend_id"] = friend
+						guard let pairGroup = Mapper<PairGroup>().map(JSON: pairGroupDic) else { return }
+						self.delegate?.twopStartConnectingFunc(pairGroup: pairGroup)
 					}
 				}
 		}

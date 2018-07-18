@@ -62,20 +62,20 @@ typealias MatchContainer = MatchObserver & MonkeyViewController & TransationDele
 
 class MainViewController: SwipeableViewController {
 	
-	fileprivate var onepMatchDiscovery: MatchContainer?
-	fileprivate var twopMatchDiscovery: MatchContainer?
+	fileprivate var onepMatchDiscovery: OnepMatchController?
+	fileprivate var twopMatchDiscovery: TwopMatchController?
 	fileprivate var topMatchDiscovery: MatchContainer!
 	fileprivate var matchType: MatchType? {
 		didSet(oldValue) {
 			if oldValue == nil {
 				if self.matchType == .Onep {
 					if self.twopMatchDiscovery == nil {
-						self.onepMatchDiscovery = (UIStoryboard.init(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "oneP") as! MatchContainer)
+						self.onepMatchDiscovery = (UIStoryboard.init(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "oneP") as! OnepMatchController)
 					}
 					self.topMatchDiscovery = self.onepMatchDiscovery
 				}else if self.matchType == .Twop {
 					if self.twopMatchDiscovery == nil {
-						self.twopMatchDiscovery = (UIStoryboard.init(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "twoP") as! MatchContainer)
+						self.twopMatchDiscovery = (UIStoryboard.init(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "twoP") as! TwopMatchController)
 					}
 					self.topMatchDiscovery = self.twopMatchDiscovery
 				}
@@ -266,15 +266,15 @@ class MainViewController: SwipeableViewController {
 		}
 	}
 	
-	private func switchTo(mode: MatchType) {
+	fileprivate func switchTo(mode: MatchType, completion: (() -> Void)? = nil) {
 		if mode == self.matchType {
 			return
 		}
 		
 		if mode == .Onep {
-			self.switchToOnep()
+			self.switchToOnep(completion: completion)
 		}else {
-			self.switchToTwop()
+			self.switchToTwop(completion: completion)
 		}
 		self.matchType = mode
 		
@@ -296,21 +296,21 @@ class MainViewController: SwipeableViewController {
 		})
 	}
 	
-	private func switchToOnep() {
+	private func switchToOnep(completion: (() -> Void)? = nil) {
 		if self.onepMatchDiscovery == nil {
-			self.onepMatchDiscovery = (UIStoryboard.init(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "oneP") as! MatchContainer)
+			self.onepMatchDiscovery = (UIStoryboard.init(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "oneP") as! OnepMatchController)
 		}
-		self.exchange(topMatchVC: self.onepMatchDiscovery!)
+		self.exchange(topMatchVC: self.onepMatchDiscovery!, completion: completion)
 	}
 	
-	private func switchToTwop() {
+	private func switchToTwop(completion: (() -> Void)? = nil) {
 		if self.twopMatchDiscovery == nil {
-			self.twopMatchDiscovery = (UIStoryboard.init(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "twoP") as! MatchContainer)
+			self.twopMatchDiscovery = (UIStoryboard.init(name: "Match", bundle: nil).instantiateViewController(withIdentifier: "twoP") as! TwopMatchController)
 		}
-		self.exchange(topMatchVC: self.twopMatchDiscovery!)
+		self.exchange(topMatchVC: self.twopMatchDiscovery!, completion: completion)
 	}
 	
-	private func exchange(topMatchVC: MatchContainer) {
+	private func exchange(topMatchVC: MatchContainer, completion: (() -> Void)? = nil) {
 		var oldTopVC: MatchContainer? = nil
 		if self.matchType == .Onep {
 			oldTopVC = self.onepMatchDiscovery
@@ -319,7 +319,7 @@ class MainViewController: SwipeableViewController {
 		}
 		self.hide(old: oldTopVC)
 		
-		self.show(new: topMatchVC, from: oldTopVC)
+		self.show(new: topMatchVC, from: oldTopVC, completion: completion)
 		self.topMatchDiscovery = topMatchVC
 	}
 	
@@ -721,6 +721,16 @@ extension MainViewController: MessageObserver {
 		}
 	}
 	
+	func didReceivePairAccept(acceptedPair: PairGroup) {
+		if self.isMatchStart {
+			return
+		}
+		
+		if self.matchType == MatchType.Twop {
+	 		self.twopMatchDiscovery?.didReceivePairAccept(acceptedPair: acceptedPair)
+		}
+	}
+	
 	func didReceiveFriendAdded() {
 		guard self.presentedViewController is FriendsViewController else {
 			return
@@ -912,7 +922,13 @@ extension MainViewController: InAppNotificationActionDelegate {
 	}
 	
 	func pairRequestDidAccept(invitePair: InvitedPair, from bar: InAppNotificationBar?) {
-		
+		if self.matchType == .Onep {
+			self.switchTo(mode: .Twop) {
+				self.twopMatchDiscovery?.didAcceptPairInvite(friend: invitePair.friend_id)
+			}
+		}else {
+			self.twopMatchDiscovery?.didAcceptPairInvite(friend: invitePair.friend_id)
+		}
 	}
 	
 	func pairRequestDidReject(invitePair: InvitedPair, from bar: InAppNotificationBar?) {

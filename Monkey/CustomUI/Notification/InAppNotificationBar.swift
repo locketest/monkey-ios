@@ -57,8 +57,10 @@ class InAppNotificationBar: MakeUIViewGreatAgain {
 			switch barStyle {
 			case .PairRequest:
 				self.notificationDescriptionLabel.text = "wants to pair with you now"
+				self.acceptButton.emoji = "🙌"
 			case .TwopInvite:
 				self.notificationDescriptionLabel.text = "wants to invite you on 2P mode"
+				self.acceptButton.emoji = "🙌"
 			case .VideoCall:
 				self.notificationDescriptionLabel.text = "video call"
 				self.acceptButton.backgroundColor = UIColor.init(red: 107.0 / 255.0, green: 68.0 / 255.0, blue: 1.0, alpha: 0.07)

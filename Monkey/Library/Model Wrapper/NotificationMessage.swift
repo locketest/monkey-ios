@@ -60,6 +60,18 @@ class NotificationMessage: MonkeyModel {
 		return String.init(friend_id ?? sender_id)
 	}
 	
+	// 收到好友上下线状态切换
+	func receivedOnlineStatus() -> OnlineStatus? {
+		var onlineStatus: OnlineStatus?
+		
+		var statusDic: [String: Any] = ext
+		statusDic["friend_id"] = sender_id
+		if let parsedStatus = Mapper<OnlineStatus>().map(JSON: statusDic) {
+			onlineStatus = parsedStatus
+		}
+		return onlineStatus
+	}
+	
 	// 收到的同意 pair 消息
 	func receivedPairGroup() -> PairGroup? {
 		var pairGroup: PairGroup?
