@@ -306,8 +306,6 @@ class SettingsViewController: SwipeableViewController, UITableViewDelegate, UITa
         self.remindPointView.isHidden = true
         self.profilePhoto.uploadProfileImage {
             print("Uploaded profile image")
-			
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: ProfileImageUpdateTag), object: nil)
         }
     }
 

@@ -69,7 +69,7 @@ class TwopMatchController: MonkeyViewController {
 		UIView.animate(withDuration: 0.25, animations: {
 			initialPanel.view.alpha = 1
 		}) { (finished) in
-//			initialPanel.endAppearanceTransition()
+			initialPanel.endAppearanceTransition()
 			initialPanel.didMove(toParentViewController: self)
 			complete?()
 		}

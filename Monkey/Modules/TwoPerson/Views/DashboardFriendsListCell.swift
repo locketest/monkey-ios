@@ -66,12 +66,16 @@ class DashboardFriendsListCell: UITableViewCell {
 					self.actionButton.isJiggling = false
 					// todo，睿，根据剩余时间添加图层
 				} else { // 被邀请
-					self.actionButton.backgroundColor = ActionButtonJigglingColor
-					self.actionButton.isJiggling = true
 					
-					DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + nextInviteTuple.second) {
-						self.actionButton.backgroundColor = UIColor.yellow
-						self.actionButton.isJiggling = false
+					if !nextInviteTuple.isExpired {
+						
+						self.actionButton.backgroundColor = ActionButtonJigglingColor
+						self.actionButton.isJiggling = true
+						
+						DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + nextInviteTuple.second) {
+							self.actionButton.backgroundColor = UIColor.yellow
+							self.actionButton.isJiggling = false
+						}
 					}
 				}
 			}
@@ -189,6 +193,10 @@ class DashboardFriendsListCell: UITableViewCell {
 		shapeLayer.strokeEnd = progress
 		
 		let circlePath = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: self.actionButton.width / 2, height: self.actionButton.height / 2))
+		
+//		let circlePath = UIBezierPath(arcCenter: self.center, radius: self.actionButton.width / 2, startAngle: CGFloat(-0.5 * M_PI), endAngle: CGFloat((CGFloat(-2.5) + progress) * CGFloat(M_PI)), clockwise: false)
+		
+//		circlePath.addArc(withCenter: CGPoint(x: self.actionButton.width / 2, y: self.actionButton.width / 2), radius: 20, startAngle: 0.5 * CGFloat.pi, endAngle: CGFloat.pi * progress / 180, clockwise: true)
 		
 		shapeLayer.path = circlePath.cgPath
 		

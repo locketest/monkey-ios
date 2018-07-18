@@ -87,6 +87,8 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
+		self.loadProfileImageFunc()
+		
 		self.addKeyboardObserverFunc()
 	}
 	
@@ -159,7 +161,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	func pushToDashboardMainVcFunc() {
 		guard let user = UserManager.shared.currentUser else { return }
 		
-		if user.cached_enable_two_p == false, let realm = try? Realm() {
+		if user.cached_unlocked_two_p == false, let realm = try? Realm() {
 			do {
 				try realm.write {
 					user.cached_unlocked_two_p = true
@@ -230,7 +232,7 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		self.layoutTagInt += 1
 	}
 	
-	func profileImageUpdateFunc() {
+	func loadProfileImageFunc() {
 		
 		if let currentUser = UserManager.shared.currentUser {
 			self.planAMeImageView.kf.setImage(with: URL(string: currentUser.profile_photo_url ?? ""), placeholder: UIImage(named: currentUser.defaultAvatar)!)
@@ -238,8 +240,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 	}
 	
 	func initCircleFunc() {
-		
-		self.profileImageUpdateFunc()
 		
 		let MeCircleColor = UIColor(red: 217 / 255, green: 210 / 255, blue: 252 / 255, alpha: 1)
 		self.planAImagesBgView.layer.addSublayer(Tools.drawCircleFunc(imageView: self.planAMeImageView, lineWidth: 2, strokeColor: MeCircleColor, padding: 5))
@@ -266,8 +266,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 		self.searchOutTableTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSForegroundColorAttributeName : UIColor.darkGray])
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(handleRemoteMsgFunc), name: NSNotification.Name(rawValue: GoToSettingTag), object: nil)
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(profileImageUpdateFunc), name: NSNotification.Name(rawValue: ProfileImageUpdateTag), object: nil)
 	}
 	
 	func loadFriendsRequestFunc() {
@@ -410,7 +408,6 @@ class TwoPersonPlanViewController: MonkeyViewController {
 				self.topTitleLabel.text = "🎉 UNLOCKED 🎉"
 				self.topTitleLabel.font = UIFont.boldSystemFont(ofSize: 28)
 			} else {
-				// todo，睿，此处次数从用户配置信息中拿出
 				let contact_invite_remain_times = APIController.shared.currentUser!.cached_contact_invite_remain_times
 				self.topTitleLabel.attributedText = NSMutableAttributedString.attributeStringWithText(textOne: "Invite", textTwo: " \(contact_invite_remain_times) ", textThree:"friends to unlock 2P Chat", colorOne: UIColor.white, colorTwo: UIColor.yellow, fontOne: SystemFont17, fontTwo: BoldSystemFont20)
 			}
@@ -829,7 +826,7 @@ extension TwoPersonPlanViewController {
 				})
 			})
 			
-			print("*** sortedArray = \(JSON(sortedArray))")
+//			print("*** sortedArray = \(JSON(sortedArray))")
 			
 			self.sendUploadContactsRequestFunc(sortedArray: sortedArray)
 		}
@@ -922,7 +919,7 @@ extension TwoPersonPlanViewController {
 		// 截取大写首字母
 		let familyNameString = Tools.subStringFunc(string: uppercasedPinyinString, start: 1, end: 1)
 		
-		if familyNameString.containsEmojiFunc() { return "*" }
+		if familyNameString.containsEmoji { return "*" }
 		
 		// 判断姓名首位是否为大写字母
 		let regexA = "^[A-Z]$"

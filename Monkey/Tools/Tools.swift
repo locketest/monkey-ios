@@ -16,8 +16,6 @@ public let IsUploadContactsTag = "IsUploadContacts"
 
 public let ProfileImageDefault = "ProfileImageDefault"
 
-public let ProfileImageUpdateTag = "ProfileImageUpdate"
-
 public let ActionButtonJigglingColor = UIColor(red: 100 / 255, green: 74 / 255, blue: 241 / 255, alpha: 1)
 
 public let ContactsImageRootPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first! + "/contactsImage"

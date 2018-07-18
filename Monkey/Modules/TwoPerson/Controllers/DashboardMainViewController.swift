@@ -104,6 +104,8 @@ class DashboardMainViewController: MonkeyViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
+		print("*** userId = \(UserManager.shared.currentUser?.user_id), authorization = \(UserManager.authorization)")
+		
         self.initView()
 		
 		self.initData()
@@ -292,7 +294,7 @@ class DashboardMainViewController: MonkeyViewController {
 		}
 	}
 	
-	func initCircleFunc() {
+	func loadProfileImageFunc() {
 		
 		if let currentUser = APIController.shared.currentUser {
 			self.meImageView.kf.setImage(with: URL(string: currentUser.profile_photo_url ?? ""), placeholder: UIImage(named: currentUser.defaultAvatar)!)
@@ -512,8 +514,6 @@ class DashboardMainViewController: MonkeyViewController {
 		
 		self.view.hero.modifiers = [.fade]
 		
-		self.initCircleFunc()
-		
 		self.initInvitingLayerFunc()
 		
 		let cleanButton = self.searchTextField.value(forKey: "_clearButton") as! UIButton
@@ -522,7 +522,7 @@ class DashboardMainViewController: MonkeyViewController {
 		self.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSForegroundColorAttributeName : UIColor.darkGray])
 		
 		MessageCenter.shared.addMessageObserver(observer: self)
-		NotificationCenter.default.addObserver(self, selector: #selector(initCircleFunc), name: NSNotification.Name(rawValue: ProfileImageUpdateTag), object: nil)
+		
 		NotificationCenter.default.addObserver(self, selector: #selector(acceptPairNotificationFunc), name: NSNotification.Name(rawValue: AcceptPairNotificationTag), object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(friendsPairNotificationFunc), name: NSNotification.Name(rawValue: FriendPairNotificationTag), object: nil)
 		
@@ -531,14 +531,30 @@ class DashboardMainViewController: MonkeyViewController {
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
+		
+		self.loadProfileImageFunc()
+		
 		self.addKeyboardObserver()
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		self.initViewConstantFunc()
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
+		
 		self.removeKeyboardObserver()
 		
 		self.stopTimerFunc()
+	}
+	
+	func initViewConstantFunc() {
+		self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
+		self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
+		self.weAreTeamLabel.alpha = 0
 	}
 	
 	func addKeyboardObserver() {
@@ -766,14 +782,18 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			self.someoneLabel.text = "2P Chat Buddy"
 			
 			let inviteeIdInt = APIController.shared.currentUser!.user_id == self.tempModel?.userIdInt?.description ? self.tempModel?.inviteeIdInt : self.tempModel?.userIdInt
-			self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].inviteeIdInt = inviteeIdInt
 			
-			// 接受成功后改变status状态，0未操作
-			self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].isMissedBool = false
-			self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].statusInt = self.pairRequestAcceptModel?.statusInt
-			self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].nextInviteAtDouble = self.pairRequestAcceptModel?.nextInviteAtDouble
-			
-			self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+			if let tempModel = self.tempModel {
+				
+				self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].inviteeIdInt = inviteeIdInt
+				
+				// 接受成功后改变status状态，0未操作
+				self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].isMissedBool = false
+				self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].statusInt = self.pairRequestAcceptModel?.statusInt
+				self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].nextInviteAtDouble = self.pairRequestAcceptModel?.nextInviteAtDouble
+				
+				self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+			}
 		})
 	}
 	
@@ -781,23 +801,22 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 		
 		self.stopPairTimerFunc()
 		
-		self.friendsTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.friends)
-		self.myTeamTopConstraint.constant = CGFloat(self.InitialTopConstraintTuple.myTeam)
-		self.weAreTeamLabel.alpha = 0
-		self.view.layoutIfNeeded()
-		
 		self.someoneImageView.image = UIImage(named: "monkeyDef")
 		self.someoneLabel.text = "2P Chat Buddy"
 		
 		let inviteeIdInt = APIController.shared.currentUser!.user_id == self.tempModel?.userIdInt?.description ? self.tempModel?.inviteeIdInt : self.tempModel?.userIdInt
-		self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].inviteeIdInt = inviteeIdInt
 		
-		// 接受成功后改变status状态，0未操作
-		self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].isMissedBool = false
-		self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].statusInt = self.pairRequestAcceptModel?.statusInt
-		self.twopChatFriendArray[self.twopChatFriendArray.index(of: self.tempModel!)!].nextInviteAtDouble = self.pairRequestAcceptModel?.nextInviteAtDouble
-		
-		self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+		if let tempModel = self.tempModel {
+			
+			self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].inviteeIdInt = inviteeIdInt
+			
+			// 接受成功后改变status状态，0未操作
+			self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].isMissedBool = false
+			self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].statusInt = self.pairRequestAcceptModel?.statusInt
+			self.twopChatFriendArray[self.twopChatFriendArray.index(of: tempModel)!].nextInviteAtDouble = self.pairRequestAcceptModel?.nextInviteAtDouble
+			
+			self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+		}
 	}
 	
 	func closeFunc() {
@@ -817,7 +836,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 			self.view.layoutIfNeeded()
 		}) { (completed) in
 			UIView.animate(withDuration: 0.5, delay: 0.3, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
-				self.someoneImageView.kf.setImage(with: URL(string: self.tempModel!.pathString ?? ""), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc(genderString: self.tempModel!.genderString ?? ""))!)
+				self.someoneImageView.kf.setImage(with: URL(string: self.tempModel?.pathString ?? ""), placeholder: UIImage(named: Tools.getGenderDefaultImageFunc(genderString: self.tempModel?.genderString ?? ""))!)
 				self.someoneLabel.text = self.tempModel?.nameString
 				self.myTeamTopConstraint.constant = 20
 				self.weAreTeamLabel.alpha = 1
