@@ -46,6 +46,10 @@ class DashboardFriendsListCell: UITableViewCell {
 			
 //			print("*** weight = \(newDashboardFriendsListModel.weightDouble!)")
 			
+			let flipTransform = CGAffineTransform(scaleX: -1, y: 1)
+			let rotateTransform = flipTransform.rotated(by: -CGFloat.pi / 2)
+			shapeLayer.setAffineTransform(rotateTransform)
+			
 			self.tempDashboardFriendsListModel = newDashboardFriendsListModel
 			
 			self.actionButton.emojiLabel = self.emojiLabel
@@ -62,9 +66,18 @@ class DashboardFriendsListCell: UITableViewCell {
 				self.emojiLabel.text = "🙌"
 				
 				if newDashboardFriendsListModel.inviteeIdInt?.description != APIController.shared.currentUser!.user_id { // 主动发起邀请
+					
 					self.actionButton.backgroundColor = UIColor.yellow
 					self.actionButton.isJiggling = false
-					// todo，睿，根据剩余时间添加图层
+					
+//					if self.timer != nil { self.stopTimerFunc() }
+					
+					if !nextInviteTuple.isExpired {
+//						self.timeTuple.current = CGFloat(nextInviteTuple.second) / self.timeTuple.total
+//						self.actionButton.isUserInteractionEnabled = false
+//						self.emojiLabel.text = "⏳"
+//						self.addTimerFunc()
+					}
 				} else { // 被邀请
 					
 					if !nextInviteTuple.isExpired {
@@ -149,11 +162,12 @@ class DashboardFriendsListCell: UITableViewCell {
 	func progressUpdateFunc() {
 		
 		if self.timeTuple.current < 0 {
-			self.timer.invalidate()
-			self.timeTuple.current = self.timeTuple.total
+			self.timeTuple.current = self.timeTuple.total + 5
 			self.shapeLayer.removeFromSuperlayer()
-			self.emojiLabel.text = "🙌"
 			self.actionButton.isUserInteractionEnabled = true
+			self.emojiLabel.text = "🙌"
+			self.timer.invalidate()
+			self.timer = nil
 			return
 		}
 		
@@ -193,10 +207,6 @@ class DashboardFriendsListCell: UITableViewCell {
 		shapeLayer.strokeEnd = progress
 		
 		let circlePath = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: self.actionButton.width / 2, height: self.actionButton.height / 2))
-		
-//		let circlePath = UIBezierPath(arcCenter: self.center, radius: self.actionButton.width / 2, startAngle: CGFloat(-0.5 * M_PI), endAngle: CGFloat((CGFloat(-2.5) + progress) * CGFloat(M_PI)), clockwise: false)
-		
-//		circlePath.addArc(withCenter: CGPoint(x: self.actionButton.width / 2, y: self.actionButton.width / 2), radius: 20, startAngle: 0.5 * CGFloat.pi, endAngle: CGFloat.pi * progress / 180, clockwise: true)
 		
 		shapeLayer.path = circlePath.cgPath
 		

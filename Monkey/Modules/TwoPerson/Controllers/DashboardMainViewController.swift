@@ -605,7 +605,12 @@ extension DashboardMainViewController: MessageObserver {
 	}
 	
 	func didReceivePairAccept(acceptedPair: PairGroup) {
-		
+		for dashboardFriendsListModel in self.twopChatFriendArray {
+			if acceptedPair.friend_id == dashboardFriendsListModel.userIdInt {
+				dashboardFriendsListModel.nextInviteAtDouble = acceptedPair.expire_time
+				self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+			}
+		}
 	}
 	
 	func didReceiveFriendAdded() {
@@ -764,6 +769,7 @@ extension DashboardMainViewController : DashboardFriendsListCellDelegate, Dashbo
 							chatFriendModel.isMissedBool = false
 							chatFriendModel.statusInt = pairInvite.status
 							chatFriendModel.nextInviteAtDouble = pairInvite.next_invite_at
+							self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
 							break
 						}
 					}
